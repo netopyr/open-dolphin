@@ -1,0 +1,15 @@
+javaFxHome = System.env['JAVAFX_HOME']
+
+if (! javaFxHome) {
+    println "please set JAVAFX_HOME to the dir that contains the rt/lib/jfxrt.jar"
+    System.exit 1
+}
+
+repositories {
+    flatDir name:'javafx', dirs:["$javaFxHome/rt/lib/"]
+}
+
+dependencies {
+    compile ':jfxrt:'
+    compile project(':shared')
+}

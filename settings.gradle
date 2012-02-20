@@ -1,0 +1,2 @@
+include 'shared', 'server', 'client'
+include 'demo:shared', 'demo:client', 'demo:server'
