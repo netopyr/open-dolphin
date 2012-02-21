@@ -13,7 +13,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$JAVAFX_HOME$/rt/lib/jfxrt.jar!/" />
+          <root url="jar:///usr/lib/javafx-sdk2.1.0-beta/rt/lib/jfxrt.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
