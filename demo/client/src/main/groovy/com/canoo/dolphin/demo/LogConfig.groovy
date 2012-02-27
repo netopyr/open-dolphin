@@ -1,7 +1,7 @@
 package com.canoo.dolphin.demo
 
 import java.util.logging.*
-import com.canoo.dolphin.core.client.InMemoryCommunicator
+import com.canoo.dolphin.core.client.comm.InMemoryClientCommunicator
 
 /** Keep logging details in one place **/
 
@@ -18,7 +18,7 @@ class LogConfig {
     }
 
     static logCommunication() {
-        InMemoryCommunicator.log.level = Level.INFO
+        InMemoryClientCommunicator.log.level = Level.INFO
     }
 
 }

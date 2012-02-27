@@ -3,12 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/client/core client.iml" filepath="$PROJECT_DIR$/client/core client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/combined/src/test/core combined.iml" filepath="$PROJECT_DIR$/combined/src/test/core combined.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/core server.iml" filepath="$PROJECT_DIR$/server/core server.iml" />
       <module fileurl="file://$PROJECT_DIR$/shared/core shared.iml" filepath="$PROJECT_DIR$/shared/core shared.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/client/demo client.iml" filepath="$PROJECT_DIR$/demo/client/demo client.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/server/demo server.iml" filepath="$PROJECT_DIR$/demo/server/demo server.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/shared/demo shared.iml" filepath="$PROJECT_DIR$/demo/shared/demo shared.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dolphin.iml" filepath="$PROJECT_DIR$/dolphin.iml" />
     </modules>
   </component>
 </project>

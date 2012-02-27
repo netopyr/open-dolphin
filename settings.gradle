@@ -1,2 +1,2 @@
-include 'shared', 'server', 'client'
+include 'shared', 'server', 'client', 'combined'
 include 'demo:shared', 'demo:client', 'demo:server'
