@@ -43,4 +43,4 @@ for PMs. (Future: they may be undoable)
 
 How to build
 ------------
-gradlew build 
+gradlew build
