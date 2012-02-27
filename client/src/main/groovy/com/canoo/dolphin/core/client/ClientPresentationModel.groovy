@@ -3,11 +3,15 @@ package com.canoo.dolphin.core.client
 import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.BasePresentationModel
 
-// todo dk: remember why we want to support different impls on client and server context
-class ClientPresentationModel extends BasePresentationModel{
+// impls on client and server are different since client is setting the id
 
-    ClientPresentationModel(List<BaseAttribute> attributes) {
+class ClientPresentationModel extends BasePresentationModel {
+
+    ClientPresentationModel(String id, List<ClientAttribute> attributes) {
         super(attributes)
+        for (att in attributes) {
+            att.communicator.registerAndSend id, this, att // todo: unregister on PCL unbound
+        }
     }
     
     protected boolean isTypeApplicable(BaseAttribute attribute, def newBean) {

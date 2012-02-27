@@ -6,13 +6,13 @@ import groovy.util.logging.Log
 @Log
 class Receiver {
 
-    CommandRegistry registry = new CommandRegistry()
+    ActionRegistry registry = new ActionRegistry()
 
     /** doesn't fail on missing commands **/
-    def receive(Command command) {
+    void receive(Command command) {
         log.info "received: $command"
-        ServerCommand serverCommand = registry[command.commandId]
-        if (!serverCommand){
+        def serverCommand = registry[command.commandId]
+        if (null == serverCommand){
             log.warning "there is no server command registered for received command: $command"
             return
         }
