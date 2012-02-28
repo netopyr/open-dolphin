@@ -8,7 +8,8 @@ Providing a ULC-like facility with visualization in JavaFX 2.0.
 Just like ULC, all application logic resides on the server.
 
 Unlike ULC
-- the client/server split is not though widgets but through
+
+- the client/server split is not through widgets but through
   application-specific presentation models (PM)
 - the split is not based on the half-object-plus-protocol pattern
   but on the command pattern
@@ -21,10 +22,13 @@ Presentation models follow the approach of the GRASP project.
 
 Project layout
 --------------
-The multi-project build consists of three subprojects
+The multi-project build consists of these subprojects
+
 - shared (code that is needed on both client and server)
 - client (visualization)
 - server (domain model and control logic)
+- combined (for testing the client-server combination)
+- demo   (again devided in client - server - shared)
 
 General approach
 ----------------
@@ -40,7 +44,10 @@ Commands are sent between client and server. They are
 concerned with create, read, update, and delete actions
 for PMs. (Future: they may be undoable)
 
-
 How to build
 ------------
 gradlew build
+
+Prerequisites
+-------------
+JAVAFX_HOME must be set to a 2.1.0 version
