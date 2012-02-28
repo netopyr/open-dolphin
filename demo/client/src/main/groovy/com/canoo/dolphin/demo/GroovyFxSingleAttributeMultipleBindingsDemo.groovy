@@ -10,7 +10,7 @@ import javafx.event.EventHandler
 import groovyx.javafx.SceneGraphBuilder
 import static com.canoo.dolphin.demo.DemoStyle.style
 
-LogConfig.logCommunication()
+Startup.bootstrap()
 
 start { app ->
     SceneGraphBuilder builder = delegate
@@ -38,7 +38,7 @@ def layoutFrame(SceneGraphBuilder sgb) {
 Map createData() {
     def titleAttr = new ClientAttribute(DemoBean, 'title')
     titleAttr.bean = new DemoBean(title: "Some Text: <enter> or <submit>")
-    def pm = new ClientPresentationModel([titleAttr])
+    def pm = new ClientPresentationModel('demo', [titleAttr])
     [title: titleAttr, pm: pm]
 }
 

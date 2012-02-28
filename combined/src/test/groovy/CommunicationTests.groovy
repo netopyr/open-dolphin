@@ -8,6 +8,7 @@ import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.comm.AttributeCreatedCommand
 import com.canoo.dolphin.core.comm.NamedCommand
+import com.canoo.dolphin.LogConfig
 
 /**
  * Tests for the sequence between client requests and server responses.
@@ -20,6 +21,7 @@ class CommunicationTests extends GroovyTestCase {
     ClientConnector communicator
 
     protected void setUp() {
+        LogConfig.logCommunication()
         receiver = new Receiver() // no need to put the receiver behind a decoder since we are in-memory
         communicator = InMemoryClientConnector.instance
         communicator.receiver = receiver // inject receiver

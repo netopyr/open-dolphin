@@ -9,7 +9,7 @@ import static javafx.geometry.HPos.*
 import static com.canoo.dolphin.demo.DemoStyle.style
 import com.canoo.dolphin.core.client.ClientPresentationModel
 
-LogConfig.logCommunication()
+Startup.bootstrap()
 
 start { app ->
 
@@ -25,7 +25,7 @@ start { app ->
 
     def actualTitleAttr = new ClientAttribute(DemoBean, 'title')
     // no bean set, value remains null
-    def actualPm = new ClientPresentationModel([actualTitleAttr])
+    def actualPm = new ClientPresentationModel('actualPm', [actualTitleAttr])
 
     stage {
         scene {

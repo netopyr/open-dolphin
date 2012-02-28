@@ -11,7 +11,7 @@ import static com.canoo.dolphin.demo.MyProps.TITLE
 import static com.canoo.dolphin.demo.MyProps.TEXT
 import static com.canoo.dolphin.demo.MyProps.PURPOSE
 
-LogConfig.logCommunication()
+Startup.bootstrap()
 
 start { app ->
 
@@ -19,7 +19,7 @@ start { app ->
     def bean2 = new DemoBean(title: "Bean two", purpose: "Show a second bean")
 
     // construct the PMs
-    def actualPm = new ClientPresentationModel([TITLE,PURPOSE].collect{new ClientAttribute(DemoBean, it)})
+    def actualPm = new ClientPresentationModel('actualPm', [TITLE,PURPOSE].collect{new ClientAttribute(DemoBean, it)})
 
     stage {
         scene {

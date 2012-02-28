@@ -7,8 +7,9 @@ import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.demo.MyProps.*
 import static javafx.geometry.HPos.RIGHT
 import static com.canoo.dolphin.demo.DemoStyle.style
+import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
-LogConfig.logCommunication()
+Startup.bootstrap()
 
 start { app ->
     // construct the PM
@@ -17,7 +18,7 @@ start { app ->
     titleAttr.bean = demo
     def purposeAttr = new ClientAttribute(DemoBean, PURPOSE)
     purposeAttr.bean = demo
-    def pm = new ClientPresentationModel([titleAttr, purposeAttr])
+    def pm = new ClientPresentationModel('demo',[titleAttr, purposeAttr])
     updateTitle   = { titleAttr.value = titleInput.text }
     updatePurpose = { purposeAttr.value = purposeInput.text }
 

@@ -1,6 +1,5 @@
 package com.canoo.dolphin.demo
 
-
 import javafx.application.*
 import javafx.scene.*
 import javafx.scene.control.Label
@@ -20,8 +19,7 @@ public class NoGroovyFxPlainApp extends Application {
 
     @Override public void start(Stage stage) {
 
-
-        LogConfig.logCommunication()
+        Startup.bootstrap()
 
         // construct the view
         stage.title = ""
@@ -40,7 +38,7 @@ public class NoGroovyFxPlainApp extends Application {
         // construct the PM
         def titleAttr = new ClientAttribute(DemoBean, 'title')
         titleAttr.bean = new DemoBean(title: "Hello JavaFX")
-        def pm = new ClientPresentationModel([titleAttr])
+        def pm = new ClientPresentationModel('demo',[titleAttr])
 
         stage.titleProperty().bind(label.textProperty()) // JavaFX: changes to label will be propagated to the stage title
 
