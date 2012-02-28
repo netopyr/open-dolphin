@@ -9,16 +9,16 @@ class Receiver {
     ActionRegistry registry = new ActionRegistry()
 
     /** doesn't fail on missing commands **/
-    void receive(Command command) {
-        log.info "received: $command"
-        def serverCommand = registry[command.commandId]
-        if (null == serverCommand){
-            log.warning "there is no server command registered for received command: $command"
-            return
+    List<Command> receive(Command command) {
+        log.info "S: received: $command"
+        List<Command> response = new LinkedList() // collecting parameter pattern
+        def action = registry[command.id]
+        if (null == action){
+            log.warning "S: there is no server action registered for received command: $command"
+            return response
         }
-        serverCommand command
+        action command, response
+        return response
     }
 
-
-    
 }

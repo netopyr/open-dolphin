@@ -6,4 +6,7 @@ class AttributeCreatedCommand extends Command {
     long    attributeId
     String  propertyName
 
+
+    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName"}
+
 }

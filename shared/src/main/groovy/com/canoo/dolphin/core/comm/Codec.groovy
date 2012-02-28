@@ -1,4 +1,4 @@
-package com.canoo.dolphin.core.client.comm
+package com.canoo.dolphin.core.comm
 
 import org.codehaus.groovy.tools.shell.Command
 
