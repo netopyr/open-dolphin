@@ -1,3 +1,7 @@
+apply plugin: 'idea'
+apply plugin: 'base'
+
+dependsOnChildren()
 
 subprojects {
 	
@@ -83,4 +87,24 @@ subprojects {
 
 task wrap(type:Wrapper, description:"create a gradlew") {
     gradleVersion = '1.0-milestone-6'
+}
+
+def mavenizedProjects() {
+    [
+            project(':client'),
+            project(':shared'),
+            project(':server')
+    ]
+}
+
+configure(mavenizedProjects()) {
+    group = 'com.canoo.dolphin'
+
+    apply plugin: 'maven'
+}
+
+task install << {
+    for(p in mavenizedProjects()) {
+        p.tasks.install.execute()
+    }
 }
