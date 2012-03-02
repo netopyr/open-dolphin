@@ -1,16 +1,16 @@
 apply plugin: 'idea'
 
 subprojects {
-	
+
 	version = '0.1-SNAPSHOT'
-	
+
     apply plugin:'groovy'
     apply plugin:'idea'
-    
-    repositories { 
-    	mavenCentral() 
+
+    repositories {
+    	mavenCentral()
     }
-    
+
     dependencies {
     	groovy  'org.codehaus.groovy:groovy-all:1.8.5'
         testCompile 'org.spockframework:spock-core:0.5-groovy-1.8', {
@@ -72,13 +72,13 @@ subprojects {
         }
     }
 
-    
+
     task makeDirs(description:'make all dirs for project setup') << {
     	def sources = [sourceSets.main, sourceSets.test]
     	sources*.allSource*.srcDirs.flatten().each { File srcDir ->
     		println "making $srcDir"
     		srcDir.mkdirs()
-    	} 
+    	}
     }
 }
 
@@ -101,16 +101,11 @@ configure(mavenizedProjects()) {
 }
 
 task synchronizeBeacon << {
-    copy {
-        from(project(':client').jar.outputs.files)
-        into('../beacon/lib')
-    }
-    copy {
-        from(project(':shared').jar.outputs.files)
-        into('../beacon/lib')
-    }
-    copy {
-        from(project(':server').jar.outputs.files)
-        into('../beacon/lib')
+    ant.delete(dir: '..//beacon/lib', includes:  '*.jar')
+    for (p in mavenizedProjects()) {
+        copy {
+            from(p.jar.outputs.files)
+            into('../beacon/lib')
+        }
     }
 }
