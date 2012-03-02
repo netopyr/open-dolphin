@@ -107,4 +107,8 @@ task install << {
     for(p in mavenizedProjects()) {
         p.tasks.install.execute()
     }
+    
+    File dest = new File("${System.getProperty('user.home')}/.m2/repository/com/canoo")
+    println "$dest exists? ${dest.exists()}"
+    dest.eachFileRecurse { println it.absolutePath }
 }
