@@ -46,7 +46,7 @@ for PMs. (Future: they may be undoable)
 
 How to build
 ------------
-gradlew clean install
+gradlew clean jar synchronizeBeacon
 
 Prerequisites
 -------------
