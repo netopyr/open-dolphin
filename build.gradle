@@ -100,11 +100,17 @@ configure(mavenizedProjects()) {
     apply plugin: 'maven'
 }
 
-task dump << {
-    File dest = new File(".")
-    dest.eachFileRecurse { println it.absolutePath }
-
-    dest = new File("${System.getProperty('user.home')}/.m2/repository/com/canoo")
-    println "$dest exists? ${dest.exists()}"
-    dest.eachFileRecurse { println it.absolutePath }
+task synchronizeBeacon << {
+    copy {
+        from(project(':client').jar.outputs.files)
+        into('../beacon/lib')
+    }
+    copy {
+        from(project(':shared').jar.outputs.files)
+        into('../beacon/lib')
+    }
+    copy {
+        from(project(':server').jar.outputs.files)
+        into('../beacon/lib')
+    }
 }
