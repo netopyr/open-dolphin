@@ -28,7 +28,7 @@ class CommunicationTests extends GroovyTestCase {
     }
 
     void testSimpleAttributeChangeIsVisibleOnServer() {
-        def ca = new ClientAttribute(TestBean, 'name')
+        def ca = new ClientAttribute('name')
 
         assert ca.communicator in InMemoryClientConnector
         assert ca.communicator.codec == null
@@ -40,7 +40,7 @@ class CommunicationTests extends GroovyTestCase {
         receiver.registry.register ValueChangedCommand, testServerAction
 
         def initialBean = new TestBean(name: 'initial')
-        ca.bean = initialBean
+        ca.value = initialBean.name
 
         assert receivedCommand.id == 'ValueChanged'
         assert receivedCommand in ValueChangedCommand
@@ -49,7 +49,7 @@ class CommunicationTests extends GroovyTestCase {
     }
 
     void testServerIsNotifiedAboutNewAttributesAndTheirPms() {
-        def ca = new ClientAttribute(TestBean, 'name')
+        def ca = new ClientAttribute('name')
 
         Command receivedCommand = null
         def testServerAction = { AttributeCreatedCommand command, response ->
@@ -67,7 +67,7 @@ class CommunicationTests extends GroovyTestCase {
     }
 
     void testWhenServerChangesValueThisTriggersUpdateOnClient() {
-        def ca = new ClientAttribute(TestBean, 'name')
+        def ca = new ClientAttribute('name')
 
         def setValueAction = { AttributeCreatedCommand command, response ->
             response << new ValueChangedCommand(

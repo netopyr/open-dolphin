@@ -17,7 +17,7 @@ class PresentationModelSpec extends Specification {
 
     def "simple constructor with immutable list of one Attribute"() {
         given:
-            def attribute = new BaseAttribute(TestBean, "name")
+            def attribute = new ServerAttribute(TestBean, "name")
             def list = [attribute]
         when:
             def pm = new ServerPresentationModel(list)
@@ -38,19 +38,26 @@ class PresentationModelSpec extends Specification {
     @Unroll
     def "when the bean of a PM changes, all attributes change accordingly"() {
         given:
-            def testAttr = new BaseAttribute(TestBean, "name")
+
+            def testAttr = new ServerAttribute(TestBean, "name")
             testAttr.bean = testBean
-            def otherTestAttr = new BaseAttribute(OtherTestBean, "name")
+            def otherTestAttr = new ServerAttribute(OtherTestBean, "name")
             otherTestAttr.bean = otherTestBean
-            def nullTestAttr = new BaseAttribute(TestBean, 'name') // has no bean
+            def nullTestAttr = new ServerAttribute(TestBean, 'name') // has no bean
             def pm = new ServerPresentationModel([testAttr, otherTestAttr, nullTestAttr])
+
         when:
+
             pm.changeBean(oldBean, newBean)
+
         then:
+
             testAttr.bean      == expectedTestBean
             otherTestAttr.bean == expectedOtherTestBean
             nullTestAttr.bean  == expectedNullTestBean
+
         where:
+
         oldBean       | newBean        | expectedTestBean | expectedOtherTestBean | expectedNullTestBean
         testBean      | secondTestBean | secondTestBean   | otherTestBean         | null // happy path
         testBean      | null           | null             | otherTestBean         | null // setting to null, happy path
@@ -58,8 +65,6 @@ class PresentationModelSpec extends Specification {
         null          | null           | testBean         | otherTestBean         | null // no change
         null          | secondTestBean | testBean         | otherTestBean         | secondTestBean // change by Type where null
     }
-
-
 
 }
 

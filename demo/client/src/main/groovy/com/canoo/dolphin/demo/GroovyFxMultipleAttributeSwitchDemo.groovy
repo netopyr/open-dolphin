@@ -13,13 +13,23 @@ import static com.canoo.dolphin.demo.MyProps.PURPOSE
 
 Startup.bootstrap()
 
+fakeServerUpdate = { pm, bean, evt ->
+    for(attr in pm.attributes) {
+        if(null == bean) {
+            attr.value = null
+        } else {
+            attr.value = bean[attr.propertyName]
+        }
+    }
+}
+
 start { app ->
 
     def bean1 = new DemoBean(title: "Bean one", purpose: "Show a first bean")
     def bean2 = new DemoBean(title: "Bean two", purpose: "Show a second bean")
 
     // construct the PMs
-    def actualPm = new ClientPresentationModel('actualPm', [TITLE,PURPOSE].collect{new ClientAttribute(DemoBean, it)})
+    def actualPm = new ClientPresentationModel('actualPm', [TITLE,PURPOSE].collect{new ClientAttribute(it)})
 
     stage {
         scene {
@@ -35,9 +45,9 @@ start { app ->
 
                 hbox styleClass:"submit", row:3, column:1, {
                     button "Actual is one",
-                           onAction: { actualPm.applyBean bean1 }
+                           onAction: fakeServerUpdate.curry(actualPm, bean1)
                     button "Actual is two",
-                           onAction: { actualPm.applyBean bean2 }
+                           onAction: fakeServerUpdate.curry(actualPm, bean2)
                 }
             }
         }

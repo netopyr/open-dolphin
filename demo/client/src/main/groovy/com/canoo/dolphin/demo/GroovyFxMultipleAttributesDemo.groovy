@@ -13,11 +13,10 @@ Startup.bootstrap()
 
 start { app ->
     // construct the PM
-    def demo = new DemoBean(title: "A PM with multiple attributes", purpose: "Show the need for PMs")
-    def titleAttr = new ClientAttribute(DemoBean, TITLE)
-    titleAttr.bean = demo
-    def purposeAttr = new ClientAttribute(DemoBean, PURPOSE)
-    purposeAttr.bean = demo
+    def titleAttr = new ClientAttribute(TITLE)
+    titleAttr.value = "A PM with multiple attributes"
+    def purposeAttr = new ClientAttribute(PURPOSE)
+    purposeAttr.value = "Show the need for PMs"
     def pm = new ClientPresentationModel('demo',[titleAttr, purposeAttr])
     updateTitle   = { titleAttr.value = titleInput.text }
     updatePurpose = { purposeAttr.value = purposeInput.text }

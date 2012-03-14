@@ -13,7 +13,7 @@ subprojects {
 
     dependencies {
     	groovy  'org.codehaus.groovy:groovy-all:1.8.5'
-        testCompile 'org.spockframework:spock-core:0.5-groovy-1.8', {
+        testCompile 'org.spockframework:spock-core:0.6-groovy-1.8', {
             exclude group:'org.codehaus.groovy', module: 'groovy-all'
         }
         testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'

@@ -36,8 +36,8 @@ def layoutFrame(SceneGraphBuilder sgb) {
 }   }   }   }
 
 Map createData() {
-    def titleAttr = new ClientAttribute(DemoBean, 'title')
-    titleAttr.bean = new DemoBean(title: "Some Text: <enter> or <submit>")
+    def titleAttr = new ClientAttribute('title')
+    titleAttr.value = "Some Text: <enter> or <submit>"
     def pm = new ClientPresentationModel('demo', [titleAttr])
     [title: titleAttr, pm: pm]
 }

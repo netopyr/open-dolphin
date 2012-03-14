@@ -11,19 +11,29 @@ import com.canoo.dolphin.core.client.ClientPresentationModel
 
 Startup.bootstrap()
 
+fakeServerUpdate = { pm, bean, evt ->
+    for(attr in pm.attributes) {
+        if(null == bean) {
+            attr.value = null
+        } else {
+            attr.value = bean[attr.propertyName]
+        }
+    }
+}
+
 start { app ->
 
     def bean1 = new DemoBean(title: "Bean one")
     def bean2 = new DemoBean(title: "Bean two")
 
     // construct the PMs
-    def titleAttr1 = new ClientAttribute(DemoBean, 'title')
-    titleAttr1.bean = bean1
+    def titleAttr1 = new ClientAttribute(TITLE)
+    titleAttr1.value = bean1.title
 
-    def titleAttr2 = new ClientAttribute(DemoBean, 'title')
-    titleAttr2.bean = bean2
+    def titleAttr2 = new ClientAttribute(TITLE)
+    titleAttr2.value = bean2.title
 
-    def actualTitleAttr = new ClientAttribute(DemoBean, 'title')
+    def actualTitleAttr = new ClientAttribute(TITLE)
     // no bean set, value remains null
     def actualPm = new ClientPresentationModel('actualPm', [actualTitleAttr])
 
@@ -35,9 +45,9 @@ start { app ->
 
                 hbox styleClass:"submit", row:1, column:0, {
                     button "Actual is one",
-                           onAction: { actualTitleAttr.bean = bean1 }
+                           onAction: fakeServerUpdate.curry(actualPm, bean1)
                     button "Actual is two",
-                           onAction: { actualTitleAttr.bean = bean2 }
+                           onAction: fakeServerUpdate.curry(actualPm, bean2)
                 }
             }
         }
