@@ -1,9 +1,8 @@
 package com.canoo.dolphin.core.server
 
-import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.BasePresentationModel
 
-class ServerPresentationModel extends BasePresentationModel{
+class ServerPresentationModel extends BasePresentationModel {
 
     ServerPresentationModel(List<ServerAttribute> attributes) {
         this(null, attributes)
@@ -30,7 +29,7 @@ class ServerPresentationModel extends BasePresentationModel{
         }
     }
 
-    void applyBean(newBean){
+    void applyBean(newBean) {
         changeBean null, newBean
     }
 
