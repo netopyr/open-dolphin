@@ -10,12 +10,18 @@ package com.canoo.dolphin.core
  */
 
 abstract class BasePresentationModel {
-
     protected List<BaseAttribute> attributes = new LinkedList<BaseAttribute>()
+    final String id
 
     /** @throws AssertionError if the list of attributes is null or empty  **/
     BasePresentationModel(List<BaseAttribute> attributes) {
+        this(null, attributes)
+    }
+    
+    /** @throws AssertionError if the list of attributes is null or empty  **/
+    BasePresentationModel(String id, List<BaseAttribute> attributes) {
         assert attributes
+        this.id = id ?: makeId(this)
         this.attributes.addAll(attributes)
         this.attributes = this.attributes.asImmutable()
     }
@@ -24,4 +30,8 @@ abstract class BasePresentationModel {
     List<BaseAttribute> getAttributes() {
         attributes
     }
+    
+    protected static String makeId(BasePresentationModel instance) {
+        System.identityHashCode(instance).toString()
+    } 
 }

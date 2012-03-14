@@ -6,8 +6,12 @@ import com.canoo.dolphin.core.BasePresentationModel
 
 class ClientPresentationModel extends BasePresentationModel {
 
+    ClientPresentationModel(List<ClientAttribute> attributes) {
+        this(null, attributes)
+    }
+
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
-        super(attributes)
+        super(id, attributes)
         for (att in attributes) {
             att.communicator.registerAndSend id, this, att // todo: unregister on PCL unbound
         }

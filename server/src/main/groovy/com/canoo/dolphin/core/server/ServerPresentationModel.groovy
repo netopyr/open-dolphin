@@ -4,8 +4,13 @@ import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.BasePresentationModel
 
 class ServerPresentationModel extends BasePresentationModel{
+
     ServerPresentationModel(List<ServerAttribute> attributes) {
-        super(attributes)
+        this(null, attributes)
+    }
+
+    ServerPresentationModel(String id, List<ServerAttribute> attributes) {
+        super(id, attributes)
     }
 
     /** Goes through all attributes and changes their bean to the newBean where it was the oldBean.
