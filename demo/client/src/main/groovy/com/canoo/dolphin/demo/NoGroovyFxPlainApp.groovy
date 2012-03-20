@@ -36,9 +36,9 @@ public class NoGroovyFxPlainApp extends Application {
         root.children << vbox
         
         // construct the PM
-        def titleAttr = new ClientAttribute(DemoBean, 'title')
-        titleAttr.bean = new DemoBean(title: "Hello JavaFX")
+        def titleAttr = new ClientAttribute('title')
         def pm = new ClientPresentationModel('demo',[titleAttr])
+        pm.title.value = "Hello JavaFX"
 
         stage.titleProperty().bind(label.textProperty()) // JavaFX: changes to label will be propagated to the stage title
 

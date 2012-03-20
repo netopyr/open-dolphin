@@ -8,6 +8,8 @@ import static com.canoo.dolphin.demo.MyProps.*
 import static javafx.geometry.HPos.RIGHT
 import static com.canoo.dolphin.demo.DemoStyle.style
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import sun.awt.CausedFocusEvent
+import com.canoo.dolphin.core.BasePresentationModel
 
 Startup.bootstrap()
 

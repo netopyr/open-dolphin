@@ -3,7 +3,7 @@ package com.canoo.dolphin.core
 import groovy.beans.Bindable
 
 /**
- An BaseAttribute represents the (transient) value of a property of a backing bean.
+ An BaseAttribute represents the (transient) value of a property of a backing bean (server) or its server counterpart (client).
  The value may be null as long as the BaseAttribute is used as a "placeholder".
  * */
 

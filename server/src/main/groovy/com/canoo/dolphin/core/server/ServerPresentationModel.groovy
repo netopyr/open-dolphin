@@ -2,6 +2,13 @@ package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.BasePresentationModel
 
+/**
+ *
+ *  On the server side, presentation models use attributes that are backed by beans.
+ *  These Attributes may be backed by different beans and even beans of different types.
+ *  For convenience, PMs provide a method to change the backing beans of their Attributes.
+ */
+
 class ServerPresentationModel extends BasePresentationModel {
 
     ServerPresentationModel(List<ServerAttribute> attributes) {

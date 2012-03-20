@@ -17,9 +17,9 @@ start { app ->
     layoutFrame builder
     style       builder
 
-    def data = createData()
-    bindPmToViews  data.pm, builder
-    attachHandlers data,    builder
+    def pm = createPresentationModel()
+    bindPmToViews  pm, builder
+    attachHandlers pm, builder
 
     primaryStage.show() // must come last or css shrinks textfield height
 }
@@ -35,11 +35,10 @@ def layoutFrame(SceneGraphBuilder sgb) {
                             "Update labels and title"
 }   }   }   }
 
-Map createData() {
+ClientPresentationModel createPresentationModel() {
     def titleAttr = new ClientAttribute('title')
     titleAttr.value = "Some Text: <enter> or <submit>"
-    def pm = new ClientPresentationModel('demo', [titleAttr])
-    [title: titleAttr, pm: pm]
+    return new ClientPresentationModel('demo', [titleAttr])
 }
 
 void bindPmToViews(ClientPresentationModel pm, SceneGraphBuilder sgb) {
@@ -51,8 +50,8 @@ void bindPmToViews(ClientPresentationModel pm, SceneGraphBuilder sgb) {
     }
 }
 
-void attachHandlers(Map data, SceneGraphBuilder sgb) {
-    updatePm = { data.title.value = sgb.input.text } as EventHandler
+void attachHandlers(ClientPresentationModel pm, SceneGraphBuilder sgb) {
+    updatePm = { pm.title.value = sgb.input.text } as EventHandler
     sgb.input.onAction  = updatePm
     sgb.submit.onAction = updatePm
 }

@@ -4,6 +4,10 @@ import com.canoo.dolphin.core.BaseAttribute
 import java.beans.Introspector
 import java.beans.PropertyDescriptor
 
+/**
+ * An attribute that holds 'persistent' state, i.e. is backed by a bean.
+ */
+
 class ServerAttribute extends BaseAttribute {
     private static final Object[] NO_ARGS = new Object[0]
 

@@ -5,7 +5,7 @@ import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
 /**
- * A client side (remote) ClientAttribute is considered a remote representation of a server side ClientAttribute.
+ * A client side (remote) ClientAttribute is considered a remote representation of a ServerAttribute.
  * Changes to a remote ClientAttribute are sent to the server. This happens by using a dedicated
  * PropertyChangeListener.
  */

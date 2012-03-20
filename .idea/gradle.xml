@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="GradleSettings">
-    <option name="LINKED_PROJECT_FILE_PATH" value="$PROJECT_DIR$/build.gradle" />
     <option name="GRADLE_HOME" value="/usr/lib/gradle-1.0-milestone-4" />
   </component>
 </project>
