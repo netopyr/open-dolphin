@@ -13,7 +13,7 @@ class ClientPresentationModel extends BasePresentationModel {
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
         super(id, attributes)
         for (att in attributes) {
-            att.communicator.registerAndSend id, this, att // todo: unregister on PCL unbound
+            att.communicator.registerAndSend this, att // todo: unregister on PCL unbound
         }
     }
 }

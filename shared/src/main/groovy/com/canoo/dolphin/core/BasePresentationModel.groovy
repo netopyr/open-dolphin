@@ -18,7 +18,7 @@ class BasePresentationModel {
     }
     
     /** @throws AssertionError if the list of attributes is null or empty  **/
-    BasePresentationModel(String id, List<BaseAttribute> attributes) {
+    BasePresentationModel(String id, List<? extends BaseAttribute> attributes) {
         assert attributes
         this.id = id ?: makeId(this)
         this.attributes.addAll(attributes)

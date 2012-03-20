@@ -26,19 +26,5 @@ class BaseAttribute {
     String toString() { "$id : $propertyName" }
     // more may come later
 
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (getClass() != o.class) return false
-
-        BaseAttribute that = (BaseAttribute) o
-
-        if (id != that.id) return false
-
-        return true
-    }
-
-    int hashCode() {
-        return (int) (id ^ (id >>> 32))
-    }
 }
 
