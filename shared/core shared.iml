@@ -13,18 +13,18 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.codehaus.groovy/groovy-all/c12498cf18507aa6433a94eb7d3e77d5/jars/groovy-all-1.8.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.codehaus.groovy/groovy-all/c12498cf18507aa6433a94eb7d3e77d5/jars/groovy-all-1.8.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.codehaus.groovy/groovy-all/c12498cf18507aa6433a94eb7d3e77d5/sources/groovy-all-1.8.5-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.codehaus.groovy/groovy-all/c12498cf18507aa6433a94eb7d3e77d5/sources/groovy-all-1.8.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.spockframework/spock-core/c12498cf18507aa6433a94eb7d3e77d5/jars/spock-core-0.5-groovy-1.8.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.spockframework/spock-core/c12498cf18507aa6433a94eb7d3e77d5/jars/spock-core-0.5-groovy-1.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
@@ -39,58 +39,58 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/net.sourceforge.cobertura/cobertura/c12498cf18507aa6433a94eb7d3e77d5/sources/cobertura-1.9.4.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/net.sourceforge.cobertura/cobertura/c12498cf18507aa6433a94eb7d3e77d5/sources/cobertura-1.9.4.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.hamcrest/hamcrest-core/c12498cf18507aa6433a94eb7d3e77d5/jars/hamcrest-core-1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.hamcrest/hamcrest-core/c12498cf18507aa6433a94eb7d3e77d5/jars/hamcrest-core-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.hamcrest/hamcrest-core/c12498cf18507aa6433a94eb7d3e77d5/sources/hamcrest-core-1.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.hamcrest/hamcrest-core/c12498cf18507aa6433a94eb7d3e77d5/sources/hamcrest-core-1.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/junit/junit-dep/c12498cf18507aa6433a94eb7d3e77d5/jars/junit-dep-4.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/junit/junit-dep/c12498cf18507aa6433a94eb7d3e77d5/jars/junit-dep-4.8.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/junit/junit-dep/c12498cf18507aa6433a94eb7d3e77d5/sources/junit-dep-4.8.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/junit/junit-dep/c12498cf18507aa6433a94eb7d3e77d5/sources/junit-dep-4.8.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/oro/oro/c12498cf18507aa6433a94eb7d3e77d5/jars/oro-2.0.8.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/oro/oro/c12498cf18507aa6433a94eb7d3e77d5/jars/oro-2.0.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/oro/oro/c12498cf18507aa6433a94eb7d3e77d5/sources/oro-2.0.8-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/oro/oro/c12498cf18507aa6433a94eb7d3e77d5/sources/oro-2.0.8-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/asm/asm/c12498cf18507aa6433a94eb7d3e77d5/jars/asm-3.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/asm/asm/c12498cf18507aa6433a94eb7d3e77d5/jars/asm-3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/asm/asm/c12498cf18507aa6433a94eb7d3e77d5/sources/asm-3.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/asm/asm/c12498cf18507aa6433a94eb7d3e77d5/sources/asm-3.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/asm/asm-tree/c12498cf18507aa6433a94eb7d3e77d5/jars/asm-tree-3.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/asm/asm-tree/c12498cf18507aa6433a94eb7d3e77d5/jars/asm-tree-3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -99,18 +99,18 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/log4j/log4j/c12498cf18507aa6433a94eb7d3e77d5/jars/log4j-1.2.9.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/log4j/log4j/c12498cf18507aa6433a94eb7d3e77d5/jars/log4j-1.2.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/log4j/log4j/c12498cf18507aa6433a94eb7d3e77d5/sources/log4j-1.2.9-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/log4j/log4j/c12498cf18507aa6433a94eb7d3e77d5/sources/log4j-1.2.9-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.apache.ant/ant-launcher/c12498cf18507aa6433a94eb7d3e77d5/jars/ant-launcher-1.7.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.apache.ant/ant-launcher/c12498cf18507aa6433a94eb7d3e77d5/jars/ant-launcher-1.7.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -119,11 +119,11 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.apache.ant/ant/c12498cf18507aa6433a94eb7d3e77d5/jars/ant-1.7.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.apache.ant/ant/c12498cf18507aa6433a94eb7d3e77d5/jars/ant-1.7.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$TEMPLATE$/.gradle/caches/artifacts-4/org.apache.ant/ant/c12498cf18507aa6433a94eb7d3e77d5/sources/ant-1.7.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/artifacts-4/org.apache.ant/ant/c12498cf18507aa6433a94eb7d3e77d5/sources/ant-1.7.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
