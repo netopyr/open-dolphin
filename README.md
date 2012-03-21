@@ -1,5 +1,5 @@
-The ULC-FX Project
-==================
+The Dolphin Project
+===================
 
 Team: Dieter Holz, Andres Almiray, Dierk Koenig
 
@@ -17,8 +17,6 @@ Unlike ULC
   models and controllers remain on the server, 
   presentation models are shared between client and server
 - a server may "push" commands to the client
-
-Presentation models follow the approach of the GRASP project.
 
 Project layout
 --------------
@@ -43,6 +41,14 @@ On the server side, the domain model binds against the PM.
 Commands are sent between client and server. They are 
 concerned with create, read, update, and delete actions
 for PMs. (Future: they may be undoable)
+
+Unlike GRASP there is neiter a PM- nor an AttributeSwitch.
+In contrast, switches are ordinary attributes that
+happen to have the same id as the source attributes that there are "pointing"
+to. They do *not* maintain a reference to the source attribute.
+
+When "switching" all attribute properties get updated for all attributes
+that share the same id. The same is true when any value changes.
 
 How to build
 ------------
