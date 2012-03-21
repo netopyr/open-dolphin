@@ -56,7 +56,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     void send(Command command) {
         log.info "C: transmitting $command"
-        List<Command> response = transmit(command) // there is no need for encoding since we are in-memory
+        List<Command> response = transmit(command)
         log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
 
         for (serverCommand in response) {
