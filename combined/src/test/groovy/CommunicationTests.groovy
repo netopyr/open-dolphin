@@ -98,10 +98,9 @@ class CommunicationTests extends GroovyTestCase {
 		assert reached
 	}
 
-	void testSwitch() {
-		def selectedPM = new ClientPresentationModel([new ClientAttribute('name')])
-		def pm1 = new ClientPresentationModel([new ClientAttribute('name')])
-		def pm2 = new ClientPresentationModel([new ClientAttribute('name')])
+	void testWritingToASwitchAlsoWritesBackToTheSource() {
+		def switchPm = new ClientPresentationModel([new ClientAttribute('name')])
+		def sourcePm = new ClientPresentationModel([new ClientAttribute('name')])
 
 		// this is supposed to become a default action on the server side
 		def valueChangedAction = { ValueChangedCommand command, response ->
@@ -110,23 +109,66 @@ class CommunicationTests extends GroovyTestCase {
 		receiver.registry.register ValueChangedCommand, valueChangedAction
 
 		// switches need to set both, id and value!
-		selectedPM.name.id = pm1.name.id
-		selectedPM.name.value = pm1.name.value
+		switchPm.name.id = sourcePm.name.id
+		switchPm.name.value = sourcePm.name.value
 
-		selectedPM.name.value = 'firstValue'
-		assert pm1.name.value == 'firstValue'
+        assert sourcePm.name.value == null
+		switchPm.name.value = 'newValue'
+		assert sourcePm.name.value == 'newValue'
+	}
+
+	void testWritingToTheSourceAlsoUpdatesTheSwitch() {
+		def switchPm = new ClientPresentationModel([new ClientAttribute('name')])
+		def sourcePm = new ClientPresentationModel([new ClientAttribute('name')])
+
+		// this is supposed to become a default action on the server side
+		def valueChangedAction = { ValueChangedCommand command, response ->
+			response << command
+		}
+		receiver.registry.register ValueChangedCommand, valueChangedAction
 
 		// switches need to set both, id and value!
-		selectedPM.name.id = pm2.name.id
-		selectedPM.name.value = pm2.name.value
+		switchPm.name.id = sourcePm.name.id
+		switchPm.name.value = sourcePm.name.value
+
+        assert switchPm.name.value == null
+		sourcePm.name.value = 'newValue'
+		assert switchPm.name.value == 'newValue'
+	}
+
+	void testWritingToSwitchesWithSwitchingSources() {
+		def switchPm = new ClientPresentationModel([new ClientAttribute('name')])
+		def sourcePm = new ClientPresentationModel([new ClientAttribute('name')])
+		def otherPm  = new ClientPresentationModel([new ClientAttribute('name')])
+
+		// this is supposed to become a default action on the server side
+		def valueChangedAction = { ValueChangedCommand command, response ->
+			response << command
+		}
+		receiver.registry.register ValueChangedCommand, valueChangedAction
+
+		// switches need to set both, id and value!
+		switchPm.name.id = sourcePm.name.id
+		switchPm.name.value = sourcePm.name.value
+
+		switchPm.name.value = 'firstValue'
+		assert sourcePm.name.value == 'firstValue'
+        assert otherPm.name.value  == null           // untouched
+
+		// switches need to set both, id and value!
+		switchPm.name.id = otherPm.name.id
+		switchPm.name.value = otherPm.name.value
+
+        assert switchPm.name.value == null
+        assert sourcePm.name.value == 'firstValue'   // untouched
 
 		// updating the selection should update the referred-to attribute but not the old one
-		selectedPM.name.value = 'secondValue'
-		assert pm1.name.value == 'firstValue'
-		assert pm2.name.value == 'secondValue'
+		switchPm.name.value = 'secondValue'
+		assert sourcePm.name.value == 'firstValue'   // untouched
+		assert otherPm.name.value == 'secondValue'
 
-		pm2.name.value = 'otherValue'
-		assert selectedPM.name.value == 'otherValue'
+		otherPm.name.value = 'otherValue'
+		assert switchPm.name.value == 'otherValue'
 	}
 
 }
