@@ -7,6 +7,7 @@ import com.canoo.dolphin.core.comm.Codec
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.comm.ValueChangedCommand
 import groovy.util.logging.Log
+
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.concurrent.ConcurrentHashMap
@@ -14,69 +15,68 @@ import java.util.concurrent.ConcurrentHashMap
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
 
-	Codec codec
-	ConcurrentHashMap<String, ClientPresentationModel> modelStore = new ConcurrentHashMap<String, ClientPresentationModel>()// later, this may live somewhere else
+    Codec codec
+    ConcurrentHashMap<String, ClientPresentationModel> modelStore = new ConcurrentHashMap<String, ClientPresentationModel>()// later, this may live somewhere else
 
-	void propertyChange(PropertyChangeEvent evt) {
-		if (evt.oldValue == evt.newValue) return
-		send constructValueChangedCommand(evt)
-	}
+    void propertyChange(PropertyChangeEvent evt) {
+        if (evt.oldValue == evt.newValue) return
+        send constructValueChangedCommand(evt)
+    }
 
-	void register(ClientPresentationModel cpModel) {
-		modelStore.put cpModel.id, cpModel
-	}
+    void register(ClientPresentationModel cpModel) {
+        modelStore.put cpModel.id, cpModel
+    }
 
-	void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
-		register cpm
-		send constructAttributeCreatedCommand(cpm.id, ca)
-	}
+    void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
+        register cpm
+        send constructAttributeCreatedCommand(cpm.id, ca)
+    }
 
-	ValueChangedCommand constructValueChangedCommand(PropertyChangeEvent evt) {
-		new ValueChangedCommand(
-				attributeId: evt.source.id,
-				oldValue: evt.oldValue,
-				newValue: evt.newValue
-		)
-	}
+    ValueChangedCommand constructValueChangedCommand(PropertyChangeEvent evt) {
+        new ValueChangedCommand(
+                attributeId: evt.source.id,
+                oldValue: evt.oldValue,
+                newValue: evt.newValue
+        )
+    }
 
-	AttributeCreatedCommand constructAttributeCreatedCommand(String pmId, ClientAttribute attribute) {
-		new AttributeCreatedCommand(
-				pmId: pmId,
-				attributeId: attribute.id,
-				propertyName: attribute.propertyName
-		)
-	}
+    AttributeCreatedCommand constructAttributeCreatedCommand(String pmId, ClientAttribute attribute) {
+        new AttributeCreatedCommand(
+                pmId: pmId,
+                attributeId: attribute.id,
+                propertyName: attribute.propertyName
+        )
+    }
 
-	abstract List<Command> transmit(Command command)
+    abstract List<Command> transmit(Command command)
 
-	void send(Command command) {
-		log.info "C: transmitting $command"
-		List<Command> response = transmit(command) // there is no need for encoding since we are in-memory
-		log.info "C: server responded with ${response?.size()} command(s): ${response?.id}"
+    List<ClientAttribute> findAllClientAttributesById(long id) {
+        modelStore.values().attributes.flatten().findAll { it.id == id } // todo: be more efficient
+    }
 
-		for (serverCommand in response) {
-			switch (serverCommand) {
-				case ValueChangedCommand:
-					List<ClientAttribute> clientAttributes = findAllClientAttributesById(serverCommand.attributeId)
-					if (!clientAttributes) {
-						log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
-					}
-					clientAttributes.each { ca ->
-						if (ca.value != serverCommand.newValue) {
-							log.info ca.toString() + " " + ca.hashCode()
-							log.info "C: updating attribute id '$serverCommand.attributeId' with value '$serverCommand.newValue'"
-							ca.value = serverCommand.newValue
-						}
-					}
-					break
-			// todo more cases to come
-				default: log.warning "C: cannot handle $serverCommand"
-			}
-		}
-	}
+    void send(Command command) {
+        log.info "C: transmitting $command"
+        List<Command> response = transmit(command) // there is no need for encoding since we are in-memory
+        log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
 
-	List<ClientAttribute> findAllClientAttributesById(long id) {
-		modelStore.values().attributes.flatten().findAll { it.id == id } // todo: be more efficient
-	}
+        for (serverCommand in response) {
+            handle serverCommand
+        }
+    }
 
+    def handle(Command serverCommand) {
+        log.warning "C: cannot handle $serverCommand"
+    }
+
+    def handle(ValueChangedCommand serverCommand) {
+        List<ClientAttribute> clientAttributes = findAllClientAttributesById(serverCommand.attributeId)
+        if (!clientAttributes) {
+            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
+            return
+        }
+        clientAttributes.findAll{ it.value != serverCommand.newValue }.each { outdated ->
+            log.info "C: updating attribute id '$serverCommand.attributeId' with value '$serverCommand.newValue'"
+            outdated.value = serverCommand.newValue
+        }
+    }
 }
