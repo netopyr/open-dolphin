@@ -1,4 +1,4 @@
-package com.canoo.dolphin.demo
+package com.canoo.dolphin.core.server.action
 
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 import com.canoo.dolphin.core.comm.AttributeCreatedCommand

@@ -4,6 +4,9 @@ import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
 import com.canoo.dolphin.core.server.comm.Receiver
+import com.canoo.dolphin.core.server.action.MirrorValueChangeAction
+import com.canoo.dolphin.core.server.action.StoreAttributeAction
+import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 
 class InMemoryConfig {
 

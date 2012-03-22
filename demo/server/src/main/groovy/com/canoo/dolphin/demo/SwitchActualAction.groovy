@@ -3,6 +3,7 @@ package com.canoo.dolphin.demo
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
+import com.canoo.dolphin.core.server.action.StoreAttributeAction
 
 class SwitchActualAction {
 

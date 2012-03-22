@@ -5,6 +5,7 @@ import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.server.comm.Receiver
+import com.canoo.dolphin.core.server.action.MirrorValueChangeAction
 
 /**
  * Tests for the approach of using plain attributes as switches by sharing the id and
@@ -20,28 +21,19 @@ class AttributeSwitchTests extends GroovyTestCase {
         def receiver = new Receiver()
         def communicator = InMemoryClientConnector.instance
         communicator.receiver = receiver
+        new MirrorValueChangeAction().registerIn(receiver.registry)
 
         switchPm = new ClientPresentationModel([new ClientAttribute('name')])
         sourcePm = new ClientPresentationModel([new ClientAttribute('name')])
-
-        // this is supposed to become a default action on the server side
-        def valueChangedAction = { ValueChangedCommand command, response ->
-            response << command
-        }
-        receiver.registry.register ValueChangedCommand, valueChangedAction
     }
 
     /** switching needs to set both, id and value! **/
-    protected void switchNameAttributeTo(ClientPresentationModel switchPM, ClientPresentationModel source) {
-        switchPM.name.id = source.name.id
-        switchPM.name.value = source.name.value
-    }
 
     void testWritingToASwitchAlsoWritesBackToTheSource() {
         assert switchPm.name.value == null  //
         assert sourcePm.name.value == null
 
-        switchNameAttributeTo switchPm, sourcePm
+        switchPm.name.syncWith sourcePm.name
 
         assert switchPm.name.value == null
         assert sourcePm.name.value == null
@@ -53,7 +45,7 @@ class AttributeSwitchTests extends GroovyTestCase {
 
     void testWritingToTheSourceAlsoUpdatesTheSwitch() {
 
-        switchNameAttributeTo switchPm, sourcePm
+        switchPm.name.syncWith sourcePm.name
 
         sourcePm.name.value = 'newValue'
 
@@ -64,14 +56,14 @@ class AttributeSwitchTests extends GroovyTestCase {
 
         def otherPm = new ClientPresentationModel([new ClientAttribute('name')])
 
-        switchNameAttributeTo switchPm, sourcePm
+        switchPm.name.syncWith sourcePm.name
 
         switchPm.name.value = 'firstValue'
 
         assert sourcePm.name.value == 'firstValue'
         assert otherPm.name.value == null           // untouched
 
-        switchNameAttributeTo switchPm, otherPm
+        switchPm.name.syncWith otherPm.name
 
         assert switchPm.name.value == null
         assert sourcePm.name.value == 'firstValue'   // untouched
