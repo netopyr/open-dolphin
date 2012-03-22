@@ -7,6 +7,7 @@ import com.canoo.dolphin.core.server.comm.Receiver
 import com.canoo.dolphin.core.server.action.MirrorValueChangeAction
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
+import com.canoo.dolphin.core.server.action.SwitchPmAction
 
 class InMemoryConfig {
 
@@ -21,7 +22,8 @@ class InMemoryConfig {
         [   new MirrorValueChangeAction(),
             new StoreValueChangeAction(),
             StoreAttributeAction.instance,
-            new SwitchActualAction(),
+            new SwitchPmAction(),
+            new CustomAction(), // just to have also some application-specific action
         ].each { it.registerIn receiver.registry }
     }
 }
