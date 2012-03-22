@@ -23,10 +23,10 @@ class BaseAttribute {
     String toString() { "$id : $propertyName" }
     // more may come later
 
-    void syncWith(BaseAttribute other) {
-        if (this.id == other.id) return
-        id = other.id
-        setValue other.value // go through setter to make sure PCLs are triggered
+    void syncWith(BaseAttribute source) {
+        if (this.id == source.id) return
+        id = source.id
+        setValue source.value // go through setter to make sure PCLs are triggered
     }
 
 }
