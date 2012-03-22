@@ -19,8 +19,6 @@ public class NoGroovyFxPlainApp extends Application {
 
     @Override public void start(Stage stage) {
 
-        Startup.bootstrap()
-
         // construct the view
         stage.title = ""
 

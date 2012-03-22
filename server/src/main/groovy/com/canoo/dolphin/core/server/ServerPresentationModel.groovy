@@ -14,7 +14,6 @@ class ServerPresentationModel extends BasePresentationModel {
     }
 
     void syncWith(ServerPresentationModel sourcePm, Closure onAttribute) {
-        if (this.is(sourcePm)) return
         sourcePm.attributes.each { sourceAttribute ->
             def attribute = attributes.find { it.propertyName == sourceAttribute.propertyName }
             if (attribute.id == sourceAttribute.id) return
