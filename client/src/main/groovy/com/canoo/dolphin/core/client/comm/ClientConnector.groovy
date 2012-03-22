@@ -12,12 +12,13 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
 import com.canoo.dolphin.core.comm.SwitchPmCommand
+import java.util.concurrent.ConcurrentHashMap
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
 
     Codec codec
-    Map<String, ClientPresentationModel> modelStore = new ObservableMap<String, ClientPresentationModel>()// later, this may live somewhere else
+    Map<String, ClientPresentationModel> modelStore = new ConcurrentHashMap<String, ClientPresentationModel>()// later, this may live somewhere else
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
@@ -55,17 +56,20 @@ abstract class ClientConnector implements PropertyChangeListener {
         modelStore.values().attributes.flatten().findAll { it.id == id } // todo: be more efficient
     }
 
-    void send(Command command) {
+    void send(Command command, Closure onFinished = null ) {
         log.info "C: transmitting $command"
         List<Command> response = transmit(command)
         log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
 
+        Set<String> pmIds = []
         for (serverCommand in response) {
-            handle serverCommand
+            def result = handle serverCommand
+            if (result && result in String) pmIds << result
         }
+        if(onFinished) onFinished pmIds
     }
 
-    def handle(Command serverCommand) {
+    def handle(Command serverCommand, Set pmIds) {
         log.warning "C: cannot handle $serverCommand"
     }
 
@@ -98,6 +102,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             return
         }
         switchAtt.syncWith sourceAtt
+        serverCommand.pmId
     }
 
     def handle(SwitchPmCommand serverCommand) {
@@ -112,16 +117,18 @@ abstract class ClientConnector implements PropertyChangeListener {
             return
         }
         switchPm.syncWith sourcePm
+        return serverCommand.pmId
     }
 
     def handle(AttributeCreatedCommand serverCommand){
         def attribute = new ClientAttribute(serverCommand.propertyName)
         if (!modelStore.containsKey(serverCommand.pmId)) {
             modelStore[serverCommand.pmId] = new ClientPresentationModel(serverCommand.pmId, [attribute])
-            return
+            return serverCommand.pmId
         }
         def pm = modelStore[serverCommand.pmId]
         pm.addAttribute(attribute)
+        return null // already there, no need to return it
     }
 
 }

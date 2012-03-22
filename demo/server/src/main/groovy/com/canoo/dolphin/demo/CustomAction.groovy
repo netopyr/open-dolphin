@@ -24,11 +24,12 @@ class CustomAction {
             response << new AttributeCreatedCommand(pmId:'blackRect', propertyName:'width')
             response << new AttributeCreatedCommand(pmId:'blackRect', propertyName:'height')
         }
-        registry.register 'pullValues',  {NamedCommand command, response ->
+        registry.register 'pullValues',  { NamedCommand command, response ->
             def attrId = StoreAttributeAction.instance.modelStore.blackRect.x.id
-            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: 10)
+            int newVal = 300 * Math.random()
+            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: newVal)
              attrId = StoreAttributeAction.instance.modelStore.blackRect.y.id
-            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: 10)
+            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: newVal)
              attrId = StoreAttributeAction.instance.modelStore.blackRect.width.id
             response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: 100)
              attrId = StoreAttributeAction.instance.modelStore.blackRect.height.id
