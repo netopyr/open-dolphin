@@ -19,10 +19,8 @@ class BasePresentationModel {
     
     /** @throws AssertionError if the list of attributes is null or empty  **/
     BasePresentationModel(String id, List<? extends BaseAttribute> attributes) {
-//        assert attributes
         this.id = id ?: makeId(this)
         this.attributes.addAll(attributes)
-//        this.attributes = this.attributes.asImmutable()
     }
 
     /** @return the immutable internal representation */
@@ -38,5 +36,13 @@ class BasePresentationModel {
         def result = attributes.find { it.propertyName == propName }
         if (null == result) throw new MissingPropertyException("The presentation model doesn't understand '$propName'. Known attributes are ${attributes*.propertyName}", propName, this.getClass())
         return result
+    }
+
+    void syncWith(BasePresentationModel sourcePm ) {
+        sourcePm.attributes.each { sourceAttribute ->
+            def attribute = attributes.find { it.propertyName == sourceAttribute.propertyName }
+            if (attribute.id == sourceAttribute.id) return
+            attribute.syncWith sourceAttribute
+        }
     }
 }

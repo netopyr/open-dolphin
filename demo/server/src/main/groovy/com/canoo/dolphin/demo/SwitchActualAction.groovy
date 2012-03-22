@@ -2,8 +2,8 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.server.comm.ActionRegistry
-import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
+import com.canoo.dolphin.core.comm.SwitchPmCommand
 
 class SwitchActualAction {
 
@@ -11,9 +11,8 @@ class SwitchActualAction {
         def actual   = StoreAttributeAction.instance.modelStore['actualPm']
         def sourcePm = StoreAttributeAction.instance.modelStore[sourcePmId]
 
-        actual.syncWith(sourcePm) { actAtt, sourceAtt ->
-            response << new SwitchAttributeIdCommand(pmId: 'actualPm', propertyName: actAtt.propertyName, newId: sourceAtt.id)
-        }
+        actual.syncWith sourcePm
+        response << new SwitchPmCommand(pmId: 'actualPm', sourcePmId: sourcePmId)
     }
 
     def registerIn(ActionRegistry registry) {

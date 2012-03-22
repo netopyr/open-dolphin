@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.concurrent.ConcurrentHashMap
 import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
+import com.canoo.dolphin.core.comm.SwitchPmCommand
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -98,6 +99,20 @@ abstract class ClientConnector implements PropertyChangeListener {
             return
         }
         switchAtt.syncWith sourceAtt
+    }
+
+    def handle(SwitchPmCommand serverCommand) {
+        def switchPm = modelStore[serverCommand.pmId]
+        if (!switchPm) {
+            log.warning "C: switch pm with id '$serverCommand.pmId' not found, cannot switch"
+            return
+        }
+        def sourcePm = modelStore[serverCommand.sourcePmId]
+        if (!sourcePm) {
+            log.warning "C: source pm with id '$serverCommand.sourcePmId' not found, cannot switch"
+            return
+        }
+        switchPm.syncWith sourcePm
     }
 
 }
