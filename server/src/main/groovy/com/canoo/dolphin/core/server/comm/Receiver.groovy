@@ -10,14 +10,16 @@ class Receiver {
 
     /** doesn't fail on missing commands **/
     List<Command> receive(Command command) {
-        log.info "S: received: $command"
+        log.info "S:     received $command"
         List<Command> response = new LinkedList() // collecting parameter pattern
-        def action = registry[command.id]
-        if (null == action){
+        def actions = registry[command.id]
+        if (! actions){
             log.warning "S: there is no server action registered for received command: $command"
             return response
         }
-        action command, response
+        for (action in actions) {
+            action command, response
+        }
         return response
     }
 

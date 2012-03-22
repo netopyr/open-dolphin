@@ -11,6 +11,7 @@ import groovy.util.logging.Log
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.concurrent.ConcurrentHashMap
+import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -79,4 +80,24 @@ abstract class ClientConnector implements PropertyChangeListener {
             outdated.value = serverCommand.newValue
         }
     }
+
+    def handle(SwitchAttributeIdCommand serverCommand) {
+        def sourceAtt = modelStore.values().attributes.flatten().find { it.id == serverCommand.newId } // one is enough
+        if (!sourceAtt) {
+            log.warning "C: attribute with id '$serverCommand.newId' not found, cannot switch"
+            return
+        }
+        def switchPm = modelStore[serverCommand.pmId]
+        if (!switchPm) {
+            log.warning "C: pm with id '$serverCommand.pmId' not found, cannot switch"
+            return
+        }
+        def switchAtt = switchPm[serverCommand.propertyName]
+        if (!switchAtt) {
+            log.warning "C: pm '$serverCommand.pmId' has no attribute of name '$serverCommand.propertyName'. Cannot switch"
+            return
+        }
+        switchAtt.syncWith sourceAtt
+    }
+
 }

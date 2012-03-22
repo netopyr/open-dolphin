@@ -8,16 +8,13 @@ import groovy.beans.Bindable
  * */
 
 class BaseAttribute {
-    long id = System.identityHashCode(this)
+
+    long id = System.identityHashCode(this) // todo: dk: has to change to tell client from server
     final String propertyName
 
     /** may be null **/
     @Bindable Object value
 
-    /** @throws AssertionError if
-     * a property of the given name cannot be read from
-     * a bean of the given type
-     * */
     BaseAttribute(String propertyName) {
         assert propertyName
         this.propertyName = propertyName
@@ -25,6 +22,12 @@ class BaseAttribute {
 
     String toString() { "$id : $propertyName" }
     // more may come later
+
+    void syncWith(BaseAttribute other) {
+        if (this.id == other.id) return
+        id = other.id
+        setValue other.value // go through setter to make sure PCLs are triggered
+    }
 
 }
 

@@ -1,50 +1,25 @@
 package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.BasePresentationModel
-
-/**
- *
- *  On the server side, presentation models use attributes that are backed by beans.
- *  These Attributes may be backed by different beans and even beans of different types.
- *  For convenience, PMs provide a method to change the backing beans of their Attributes.
- */
+import com.canoo.dolphin.core.BaseAttribute
 
 class ServerPresentationModel extends BasePresentationModel {
 
-    ServerPresentationModel(List<ServerAttribute> attributes) {
+    ServerPresentationModel(List<BaseAttribute> attributes) {
         this(null, attributes)
     }
 
-    ServerPresentationModel(String id, List<ServerAttribute> attributes) {
+    ServerPresentationModel(String id, List<BaseAttribute> attributes) {
         super(id, attributes)
     }
 
-    /** Goes through all attributes and changes their bean to the newBean where it was the oldBean.
-     * If oldBean == null, it relies on the type of newBean to find appropriate Attributes.
-     * If both are null, do nothing.
-     */
-    void changeBean(oldBean, newBean) {
-        if (null == oldBean && null == newBean) return // yoda says: nothing to do
-        def select
-        if (oldBean) {
-            select = { areBeansTheSame(it, oldBean) }
-        } else {
-            select = { isTypeApplicable(it, newBean) }
+    void syncWith(ServerPresentationModel sourcePm, Closure onAttribute) {
+        if (this.is(sourcePm)) return
+        sourcePm.attributes.each { sourceAttribute ->
+            def attribute = attributes.find { it.propertyName == sourceAttribute.propertyName }
+            if (attribute.id == sourceAttribute.id) return
+            onAttribute attribute, sourceAttribute
+            attribute.syncWith sourceAttribute
         }
-        for (attribute in attributes) {
-            if (select(attribute)) attribute.bean = newBean
-        }
-    }
-
-    void applyBean(newBean) {
-        changeBean null, newBean
-    }
-
-    protected boolean isTypeApplicable(ServerAttribute attribute, Object newBean) {
-        attribute.bean == null && attribute.beanType.isAssignableFrom(newBean.getClass())
-    }
-
-    protected boolean areBeansTheSame(ServerAttribute attribute, Object oldBean) {
-        oldBean.is(attribute.bean)
     }
 }
