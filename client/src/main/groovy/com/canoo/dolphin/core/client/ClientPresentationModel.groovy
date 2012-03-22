@@ -16,4 +16,9 @@ class ClientPresentationModel extends BasePresentationModel {
             att.communicator.registerAndSend this, att // todo: unregister on PCL unbound
         }
     }
+
+    void addAttribute(ClientAttribute attribute){
+        attributes << attribute
+        attribute.communicator.registerAndSend this, attribute
+    }
 }

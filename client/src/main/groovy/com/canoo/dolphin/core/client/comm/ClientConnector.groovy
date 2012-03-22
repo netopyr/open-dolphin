@@ -10,7 +10,6 @@ import groovy.util.logging.Log
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import java.util.concurrent.ConcurrentHashMap
 import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
 import com.canoo.dolphin.core.comm.SwitchPmCommand
 
@@ -18,7 +17,7 @@ import com.canoo.dolphin.core.comm.SwitchPmCommand
 abstract class ClientConnector implements PropertyChangeListener {
 
     Codec codec
-    ConcurrentHashMap<String, ClientPresentationModel> modelStore = new ConcurrentHashMap<String, ClientPresentationModel>()// later, this may live somewhere else
+    Map<String, ClientPresentationModel> modelStore = new ObservableMap<String, ClientPresentationModel>()// later, this may live somewhere else
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
@@ -113,6 +112,16 @@ abstract class ClientConnector implements PropertyChangeListener {
             return
         }
         switchPm.syncWith sourcePm
+    }
+
+    def handle(AttributeCreatedCommand serverCommand){
+        def attribute = new ClientAttribute(serverCommand.propertyName)
+        if (!modelStore.containsKey(serverCommand.pmId)) {
+            modelStore[serverCommand.pmId] = new ClientPresentationModel(serverCommand.pmId, [attribute])
+            return
+        }
+        def pm = modelStore[serverCommand.pmId]
+        pm.addAttribute(attribute)
     }
 
 }
