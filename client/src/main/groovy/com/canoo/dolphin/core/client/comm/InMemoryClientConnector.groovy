@@ -6,7 +6,11 @@ import groovy.util.logging.Log
 @Singleton @Log
 class InMemoryClientConnector extends ClientConnector {
 
+    def processAsync = true
+    def sleepMillis = 0
     def receiver // must be injected since the class is only available in a "combined" context
+
+    int getPoolSize() { 1 } // we want to be asynchronous but with one thread only
 
     @Override
     List<Command> transmit(Command command) {
@@ -14,6 +18,19 @@ class InMemoryClientConnector extends ClientConnector {
             log.warning "no receiver wired for in-memory connector"
             return Collections.EMPTY_LIST
         }
+        if (sleepMillis) sleep sleepMillis
         receiver.receive(command) // there is no need for encoding since we are in-memory
+    }
+
+    @Override
+    void insideUiThread(Closure processing) {
+        if (processAsync) super.insideUiThread(processing)
+        else processing()
+    }
+
+    @Override
+    void processAsync(Closure processing) {
+        if (processAsync) super.processAsync(processing)
+        else processing()
     }
 }

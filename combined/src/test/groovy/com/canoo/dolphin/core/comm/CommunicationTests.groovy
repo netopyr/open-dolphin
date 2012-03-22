@@ -5,10 +5,7 @@ import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-import com.canoo.dolphin.core.comm.AttributeCreatedCommand
-import com.canoo.dolphin.core.comm.Command
-import com.canoo.dolphin.core.comm.NamedCommand
-import com.canoo.dolphin.core.comm.ValueChangedCommand
+
 import com.canoo.dolphin.core.server.comm.Receiver
 
 /**
@@ -25,6 +22,7 @@ class CommunicationTests extends GroovyTestCase {
 		LogConfig.logCommunication()
 		receiver = new Receiver() // no need to put the receiver behind a decoder since we are in-memory
 		communicator = InMemoryClientConnector.instance
+        communicator.processAsync = false
 		communicator.receiver = receiver // inject receiver
 	}
 

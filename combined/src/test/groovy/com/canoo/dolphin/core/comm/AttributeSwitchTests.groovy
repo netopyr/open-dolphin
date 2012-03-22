@@ -20,6 +20,7 @@ class AttributeSwitchTests extends GroovyTestCase {
         LogConfig.logCommunication()
         def receiver = new Receiver()
         def communicator = InMemoryClientConnector.instance
+        communicator.processAsync = false
         communicator.receiver = receiver
         new MirrorValueChangeAction().registerIn(receiver.registry)
 

@@ -17,6 +17,7 @@
     <orderEntry type="module" module-name="core client" />
     <orderEntry type="module" module-name="core server" />
     <orderEntry type="module" module-name="core shared" />
+    <orderEntry type="library" name="groovy-1.8.6" level="application" />
   </component>
 </module>
 

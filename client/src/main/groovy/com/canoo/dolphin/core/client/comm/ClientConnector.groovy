@@ -13,6 +13,16 @@ import java.beans.PropertyChangeListener
 import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
 import com.canoo.dolphin.core.comm.SwitchPmCommand
 import java.util.concurrent.ConcurrentHashMap
+import groovyx.gpars.GParsPool
+
+import static groovyx.gpars.GParsPool.withPool
+import groovyx.gpars.dataflow.Dataflow
+
+import static groovyx.gpars.dataflow.Dataflow.task
+import groovyx.gpars.dataflow.DataflowVariable
+import javafx.application.Platform
+import groovyx.gpars.group.DefaultPGroup
+import java.util.concurrent.CountDownLatch
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -52,21 +62,39 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     abstract List<Command> transmit(Command command)
 
+    abstract int getPoolSize()
+
     List<ClientAttribute> findAllClientAttributesById(long id) {
         modelStore.values().attributes.flatten().findAll { it.id == id } // todo: be more efficient
     }
 
-    void send(Command command, Closure onFinished = null ) {
-        log.info "C: transmitting $command"
-        List<Command> response = transmit(command)
-        log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
+    def group = new DefaultPGroup(poolSize)
 
-        Set<String> pmIds = []
-        for (serverCommand in response) {
-            def result = handle serverCommand
-            if (result && result in String) pmIds << result
+    void send(Command command, Closure onFinished = null ) {
+        def result = new DataflowVariable()
+        processAsync {
+            log.info "C: transmitting $command"
+            result << transmit(command)
+            insideUiThread {
+                List<Command> response = result.get()
+                log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
+
+                Set<String> pmIds = []
+                for (serverCommand in response) {
+                    def pms = handle serverCommand
+                    if (pms && pms in String) pmIds << pms
+                }
+                if (onFinished) onFinished pmIds
+            }
         }
-        if(onFinished) onFinished pmIds
+    }
+
+    void processAsync(Closure processing) {
+        group.task processing
+    }
+
+    void insideUiThread(Closure processing) {
+        Platform.runLater processing
     }
 
     def handle(Command serverCommand, Set pmIds) {
@@ -80,7 +108,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             return
         }
         clientAttributes.findAll{ it.value != serverCommand.newValue }.each { outdated ->
-            log.info "C: updating attribute id '$serverCommand.attributeId' with value '$serverCommand.newValue'"
+            log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' with value '$serverCommand.newValue'"
             outdated.value = serverCommand.newValue
         }
     }

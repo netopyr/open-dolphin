@@ -15,6 +15,7 @@ class InMemoryConfig {
 
     InMemoryConfig() {
         LogConfig.logCommunication()
+        InMemoryClientConnector.instance.sleepMillis = 100
         InMemoryClientConnector.instance.receiver = receiver
     }
 
