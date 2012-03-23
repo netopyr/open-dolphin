@@ -9,7 +9,7 @@ package com.canoo.dolphin.core
  */
 
 class BasePresentationModel {
-    protected List<BaseAttribute> attributes = new LinkedList<BaseAttribute>()
+    protected List<BaseAttribute> attributes = new LinkedList<BaseAttribute>().asSynchronized()
     final String id
 
     /** @throws AssertionError if the list of attributes is null or empty  **/

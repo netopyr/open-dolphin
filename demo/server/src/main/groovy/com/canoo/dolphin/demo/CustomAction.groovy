@@ -19,25 +19,27 @@ class CustomAction {
     }
 
     def registerIn(ActionRegistry registry) {
+        def vehicles = ['red','blue','green','orange']
+        def rand = { (Math.random() * 350).toInteger() }
         registry.register 'setTitle',   impl.curry('title')
         registry.register 'setPurpose', impl.curry('purpose')
-        registry.register 'pullBlackAndBlueRect',  { NamedCommand command, response ->
-            def pos = 0
-            ['black','blue'].each {
-                pos += 100
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'x',      newValue:pos)
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'y',      newValue:pos)
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'width',  newValue:50)
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'height', newValue:50)
+        registry.register 'pullVehicles',  { NamedCommand command, response ->
+            vehicles.each {
+                response << new InitializeAttributeCommand(pmId:it, propertyName:'x',      newValue:rand())
+                response << new InitializeAttributeCommand(pmId:it, propertyName:'y',      newValue:rand())
+                response << new InitializeAttributeCommand(pmId:it, propertyName:'width',  newValue:80)
+                response << new InitializeAttributeCommand(pmId:it, propertyName:'height', newValue:25)
+                response << new InitializeAttributeCommand(pmId:it, propertyName:'rotate', newValue:rand()%180)
             }
         }
-        registry.register 'randomMove',  { NamedCommand command, response ->
-            sleep 1000 // long-polling: server sleeps
-            ['black','blue'].each {
-                def pm = StoreAttributeAction.instance.modelStore[it]
-                response << new ValueChangedCommand(attributeId: pm.x.id, oldValue:pm.x.value , newValue: (pm.x.value+20) % 350 )
-                response << new ValueChangedCommand(attributeId: pm.y.id, oldValue:pm.y.value , newValue: (pm.y.value+20) % 350 )
-            }
+        registry.register 'longPoll',  { NamedCommand command, response ->
+            sleep 1000 // long-polling: server sleeps until new info is available
+            Collections.shuffle(vehicles)
+            def pm = StoreAttributeAction.instance.modelStore[vehicles.first()]
+            response << new ValueChangedCommand(attributeId: pm.x.id, oldValue:pm.x.value , newValue: rand() )
+            response << new ValueChangedCommand(attributeId: pm.y.id, oldValue:pm.y.value , newValue: rand() )
+            response << new ValueChangedCommand(attributeId: pm.rotate.id, oldValue:pm.rotate.value , newValue: rand()%90 )
+
         }
     }
 }
