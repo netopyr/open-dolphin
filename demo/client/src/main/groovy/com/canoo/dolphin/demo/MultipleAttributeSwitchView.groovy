@@ -22,15 +22,11 @@ class MultipleAttributeSwitchView {
 
         start { app ->
 
-            def pm1 = new ClientPresentationModel('First PM', [TITLE,PURPOSE].collect{new ClientAttribute(it)})
-            pm1.title.value = 'First PM'
-            pm1.purpose.value = "Show a first pm"
+            def pm1 = makePm 'First PM',  "Show a first pm"
+            def pm2 = makePm 'Second PM', "Show a second pm"
 
-            def pm2 = new ClientPresentationModel('Second PM', [TITLE,PURPOSE].collect{new ClientAttribute(it)})
-            pm2.title.value = 'Second PM'
-            pm2.purpose.value = "Show a second pm"
-
-            def actualPm = new ClientPresentationModel('actualPm', [TITLE,PURPOSE].collect{new ClientAttribute(it)})
+            def actualPm = makePm 'actualPm', null
+            actualPm.syncWith pm1
 
             stage {
                 scene {
@@ -49,6 +45,8 @@ class MultipleAttributeSwitchView {
                                    onAction: { communicator.send(new SwitchPmCommand(pmId: 'actualPm', sourcePmId: 'First PM')) }
                             button "Actual is two",
                                    onAction: { communicator.send(new SwitchPmCommand(pmId: 'actualPm', sourcePmId: 'Second PM')) }
+                        }
+                        hbox styleClass:"submit", row:4, column:1, {
                             button "Set title",
                                    onAction: { communicator.send(new NamedCommand(id: "setTitle")) }
                             button "Set purpose",
@@ -64,5 +62,12 @@ class MultipleAttributeSwitchView {
 
             primaryStage.show()
         }
+    }
+
+    protected static ClientPresentationModel makePm(String id, String purpose) {
+        def pm = new ClientPresentationModel(id, [TITLE, PURPOSE].collect { new ClientAttribute(it) })
+        pm.title.value   = id
+        pm.purpose.value = purpose
+        pm
     }
 }

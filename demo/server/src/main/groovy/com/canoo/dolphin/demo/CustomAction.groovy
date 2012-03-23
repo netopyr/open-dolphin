@@ -18,22 +18,22 @@ class CustomAction {
     def registerIn(ActionRegistry registry) {
         registry.register 'setTitle',   impl.curry('title')
         registry.register 'setPurpose', impl.curry('purpose')
-        registry.register 'pullPm',  {NamedCommand command, response ->
-            response << new AttributeCreatedCommand(pmId:'blackRect', propertyName:'x')
-            response << new AttributeCreatedCommand(pmId:'blackRect', propertyName:'y')
-            response << new AttributeCreatedCommand(pmId:'blackRect', propertyName:'width')
-            response << new AttributeCreatedCommand(pmId:'blackRect', propertyName:'height')
+        registry.register 'pullPm',  { NamedCommand command, response ->
+            'x y width height'.split().each {
+                response << new AttributeCreatedCommand(pmId:'blackRect', propertyName: it)
+            }
         }
         registry.register 'pullValues',  { NamedCommand command, response ->
-            def attrId = StoreAttributeAction.instance.modelStore.blackRect.x.id
+            def rect = StoreAttributeAction.instance.modelStore.blackRect
             int newVal = 300 * Math.random()
-            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: newVal)
-             attrId = StoreAttributeAction.instance.modelStore.blackRect.y.id
-            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: newVal)
-             attrId = StoreAttributeAction.instance.modelStore.blackRect.width.id
-            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: 100)
-             attrId = StoreAttributeAction.instance.modelStore.blackRect.height.id
-            response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: 100)
+            sendVal(response, rect.x.id, newVal)
+            sendVal(response, rect.y.id, newVal)
+            sendVal(response, rect.width.id, 100)
+            sendVal(response, rect.height.id, 100)
         }
+    }
+
+    protected void sendVal(response, attrId, int newVal) {
+        response << new ValueChangedCommand(attributeId: attrId, oldValue: null, newValue: newVal)
     }
 }
