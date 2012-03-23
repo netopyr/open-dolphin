@@ -12,6 +12,7 @@ repositories {
 dependencies {
     compile ':jfxrt:'
     compile project(':shared')
+    compile  'org.codehaus.gpars:gpars:0.12'
 }
 
 configure(install.repositories.mavenInstaller) {

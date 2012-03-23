@@ -15,16 +15,16 @@ class PushView {
             def sgb = delegate
             def rects = [:]
             stage {
-                scene width: 400, height: 400, {
+                scene width: 500, height: 500, {
                     stackPane {
-                        group id:'parent', {
-                            rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent) // rigidArea
+                        group id:'parent', effect: dropShadow(offsetY:2,radius:3), {
+                            rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0.5) // rigidArea
             }   }   }   }
 
             communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
                 pmIds.each { id ->
                     rects[id] = rectangle(fill: sgb[id], arcWidth:10, arcHeight:10) {
-                        effect lighting(surfaceScale: 1.0) { distant(azimuth: 180.0) }
+                        effect lighting(surfaceScale: 1.0)
                     }
                     def pm = communicator.modelStore[id]
                     pm.attributes*.propertyName.each { prop ->

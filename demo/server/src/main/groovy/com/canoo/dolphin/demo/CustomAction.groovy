@@ -29,7 +29,7 @@ class CustomAction {
                 response << new InitializeAttributeCommand(pmId:it, propertyName:'y',      newValue:rand())
                 response << new InitializeAttributeCommand(pmId:it, propertyName:'width',  newValue:80)
                 response << new InitializeAttributeCommand(pmId:it, propertyName:'height', newValue:25)
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'rotate', newValue:rand()%180)
+                response << new InitializeAttributeCommand(pmId:it, propertyName:'rotate', newValue:rand())
             }
         }
         registry.register 'longPoll',  { NamedCommand command, response ->
@@ -38,7 +38,7 @@ class CustomAction {
             def pm = StoreAttributeAction.instance.modelStore[vehicles.first()]
             response << new ValueChangedCommand(attributeId: pm.x.id, oldValue:pm.x.value , newValue: rand() )
             response << new ValueChangedCommand(attributeId: pm.y.id, oldValue:pm.y.value , newValue: rand() )
-            response << new ValueChangedCommand(attributeId: pm.rotate.id, oldValue:pm.rotate.value , newValue: rand()%90 )
+            response << new ValueChangedCommand(attributeId: pm.rotate.id, oldValue:pm.rotate.value , newValue: rand() )
 
         }
     }
