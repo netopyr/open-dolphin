@@ -5,10 +5,7 @@ class AttributeCreatedCommand extends Command {
     String  pmId
     long    attributeId
     String  propertyName
+    def     newValue
 
-    // todo dk: possible optimization: provide initial value
-
-
-    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName"}
-
+    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName value:$newValue"}
 }

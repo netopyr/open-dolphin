@@ -23,6 +23,7 @@ import groovyx.gpars.dataflow.DataflowVariable
 import javafx.application.Platform
 import groovyx.gpars.group.DefaultPGroup
 import java.util.concurrent.CountDownLatch
+import com.canoo.dolphin.core.comm.InitializeAttributeCommand
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -56,7 +57,8 @@ abstract class ClientConnector implements PropertyChangeListener {
         new AttributeCreatedCommand(
                 pmId: pmId,
                 attributeId: attribute.id,
-                propertyName: attribute.propertyName
+                propertyName: attribute.propertyName,
+                newValue: attribute.value
         )
     }
 
@@ -148,8 +150,10 @@ abstract class ClientConnector implements PropertyChangeListener {
         return serverCommand.pmId
     }
 
-    def handle(AttributeCreatedCommand serverCommand){
-        def attribute = new ClientAttribute(serverCommand.propertyName)
+    def handle(InitializeAttributeCommand serverCommand){
+        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
+        transmit(new AttributeCreatedCommand(pmId: serverCommand.pmId, attributeId: attribute.id, propertyName: serverCommand.propertyName, newValue:serverCommand.newValue))
+
         if (!modelStore.containsKey(serverCommand.pmId)) {
             modelStore[serverCommand.pmId] = new ClientPresentationModel(serverCommand.pmId, [attribute])
             return serverCommand.pmId

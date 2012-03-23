@@ -3,6 +3,7 @@ package com.canoo.dolphin.core.client
 import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import com.canoo.dolphin.core.comm.AttributeCreatedCommand
 
 /**
  * A client side (remote) ClientAttribute is considered a remote representation of a ServerAttribute.
@@ -15,7 +16,12 @@ class ClientAttribute extends BaseAttribute {
     ClientConnector communicator = InMemoryClientConnector.instance // todo: make configurable
 
     ClientAttribute(String propertyName) {
+        this(propertyName, null)
+    }
+
+    ClientAttribute(String propertyName, newValue) {
         super(propertyName)
+        value = newValue
         addPropertyChangeListener 'value', communicator
     }
 }
