@@ -101,11 +101,13 @@ configure(mavenizedProjects()) {
 }
 
 task synchronizeBeacon << {
-    ant.delete(dir: '..//beacon/lib', includes:  '*.jar')
+    ant.delete(dir: '../beacon/lib', includes:  '*.jar')
+    /*
     for (p in mavenizedProjects()) {
         copy {
             from(p.jar.outputs.files)
             into('../beacon/lib')
         }
     }
+    */
 }

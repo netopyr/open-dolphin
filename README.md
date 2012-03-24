@@ -52,7 +52,7 @@ that share the same id. The same is true when any value changes.
 
 How to build
 ------------
-gradlew clean jar synchronizeBeacon
+gradlew clean install
 
 Prerequisites
 -------------
