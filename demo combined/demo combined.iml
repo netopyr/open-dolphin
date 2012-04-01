@@ -14,6 +14,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="demo client" />
     <orderEntry type="module" module-name="demo server" />
+    <orderEntry type="module" module-name="demo shared" />
     <orderEntry type="module" module-name="core client" />
     <orderEntry type="module" module-name="core server" />
     <orderEntry type="module" module-name="core shared" />

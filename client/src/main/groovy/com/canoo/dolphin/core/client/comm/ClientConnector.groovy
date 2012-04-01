@@ -110,7 +110,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             return
         }
         clientAttributes.findAll{ it.value != serverCommand.newValue }.each { outdated ->
-            log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' with value '$serverCommand.newValue'"
+            log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
             outdated.value = serverCommand.newValue
         }
     }

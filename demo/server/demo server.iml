@@ -16,6 +16,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="core server" />
     <orderEntry type="module" module-name="core shared" />
+    <orderEntry type="module" module-name="demo shared" />
   </component>
 </module>
 

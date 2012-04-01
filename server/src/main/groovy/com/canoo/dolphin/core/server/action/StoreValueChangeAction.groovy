@@ -8,8 +8,8 @@ class StoreValueChangeAction {
     def registerIn(ActionRegistry registry) {
         registry.register(ValueChangedCommand) { ValueChangedCommand command, response ->
             def attributes = StoreAttributeAction.instance.modelStore.values().attributes.flatten()
-            def att = attributes.find { it.id == command.attributeId}
-            att.value = command.newValue // no change check here since we have no events on the server side
+            def atts = attributes.findAll { it.id == command.attributeId}
+            atts.each { it.value = command.newValue} // no change check here since we have no events on the server side
         }
     }
 

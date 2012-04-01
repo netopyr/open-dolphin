@@ -4,10 +4,8 @@ import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.comm.ValueChangedCommand
-import com.canoo.dolphin.core.comm.AttributeCreatedCommand
-import com.canoo.dolphin.core.BasePresentationModel
-import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.comm.InitializeAttributeCommand
+import static com.canoo.dolphin.demo.VehicleProperties.*
 
 class CustomAction {
 
@@ -25,20 +23,20 @@ class CustomAction {
         registry.register 'setPurpose', impl.curry('purpose')
         registry.register 'pullVehicles',  { NamedCommand command, response ->
             vehicles.each {
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'x',      newValue:rand())
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'y',      newValue:rand())
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'width',  newValue:80)
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'height', newValue:25)
-                response << new InitializeAttributeCommand(pmId:it, propertyName:'rotate', newValue:rand())
+                response << new InitializeAttributeCommand(pmId:it, propertyName:X,      newValue:rand())
+                response << new InitializeAttributeCommand(pmId:it, propertyName:Y,      newValue:rand())
+                response << new InitializeAttributeCommand(pmId:it, propertyName:WIDTH,  newValue:80)
+                response << new InitializeAttributeCommand(pmId:it, propertyName:HEIGHT, newValue:25)
+                response << new InitializeAttributeCommand(pmId:it, propertyName:ROTATE, newValue:rand())
             }
         }
         registry.register 'longPoll',  { NamedCommand command, response ->
-            sleep 1000 // long-polling: server sleeps until new info is available
+            sleep ((Math.random() * 1000).toInteger()) // long-polling: server sleeps until new info is available
             Collections.shuffle(vehicles)
             def pm = StoreAttributeAction.instance.modelStore[vehicles.first()]
-            response << new ValueChangedCommand(attributeId: pm.x.id, oldValue:pm.x.value , newValue: rand() )
-            response << new ValueChangedCommand(attributeId: pm.y.id, oldValue:pm.y.value , newValue: rand() )
-            response << new ValueChangedCommand(attributeId: pm.rotate.id, oldValue:pm.rotate.value , newValue: rand() )
+            response << new ValueChangedCommand(attributeId: pm[X].id, oldValue:pm[X].value , newValue: rand() )
+            response << new ValueChangedCommand(attributeId: pm[Y].id, oldValue:pm[Y].value , newValue: rand() )
+            response << new ValueChangedCommand(attributeId: pm[ROTATE].id, oldValue:pm[ROTATE].value , newValue: rand() )
 
         }
     }

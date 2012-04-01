@@ -9,14 +9,17 @@ import javafx.stage.Stage
 
 class DemoStyle {
 
+    static blueStyle(SceneGraphBuilder sgb){
+        sgb.with {
+            primaryStage.scene.fill = radialGradient(stops: [groovyblue.brighter(), groovyblue.darker()]).build()
+            primaryStage.scene.stylesheets << 'demo.css'
+        }
+    }
+
     static style(SceneGraphBuilder sgb) {
+        blueStyle(sgb)
         Stage frame = sgb.primaryStage
         Scene scene = frame.scene
-        def groovyblue = sgb.groovyblue
-        scene.fill = sgb.radialGradient(stops: [
-            groovyblue.brighter(),
-            groovyblue.darker()]
-        ).build() // a scene fill cannot be set via css
 
         GridPane grid = scene.root
         grid.styleClass << 'form'
@@ -24,8 +27,6 @@ class DemoStyle {
         grid.vgap = 10
         grid.columnConstraints << sgb.columnConstraints(halignment: RIGHT, hgrow: ALWAYS)
         grid.columnConstraints << sgb.columnConstraints(halignment: LEFT,  hgrow: ALWAYS)
-
-        scene.stylesheets << 'demo.css'
 
         sgb.translateTransition(1.s, node: grid, fromY: -100, toY: 0).play()
     }
