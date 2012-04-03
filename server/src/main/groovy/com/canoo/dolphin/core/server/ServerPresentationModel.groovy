@@ -1,17 +1,14 @@
 package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.BasePresentationModel
-import com.canoo.dolphin.core.BaseAttribute
 
 class ServerPresentationModel extends BasePresentationModel {
 
-    ServerPresentationModel(List<BaseAttribute> attributes) {
+    ServerPresentationModel(List<ServerAttribute> attributes) {
         this(null, attributes)
     }
 
-    ServerPresentationModel(String id, List<BaseAttribute> attributes) {
+    ServerPresentationModel(String id, List<ServerAttribute> attributes) {
         super(id, attributes)
     }
-
-
 }

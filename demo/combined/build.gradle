@@ -7,7 +7,7 @@ if (! javaFxHome) {
 
 repositories {
     flatDir name:'javafx', dirs:["$javaFxHome/rt/lib/"]
-    flatDir name:'lib',    dirs:[ project.file('../client/lib') ]
+    flatDir name:'lib',    dirs:[ project.file('../../groovyfx') ]
 }
 dependencies {
 

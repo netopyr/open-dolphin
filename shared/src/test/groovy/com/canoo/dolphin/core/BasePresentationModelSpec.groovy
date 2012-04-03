@@ -7,7 +7,7 @@ class BasePresentationModelSpec extends Specification {
     def "attributes are accessible as properties"() {
         given:
 
-        def baseAttribute = new BaseAttribute('myPropName')
+        def baseAttribute = new MyAttribute('myPropName')
         def pm = new BasePresentationModel([baseAttribute])
 
         expect:
@@ -18,7 +18,7 @@ class BasePresentationModelSpec extends Specification {
 
     def "missing attributes throw MissingPropertyException on access"() {
         given:
-        def baseAttribute = new BaseAttribute('myPropName')
+        def baseAttribute = new MyAttribute('myPropName')
         def pm = new BasePresentationModel([baseAttribute])
 
         when:
