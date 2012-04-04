@@ -9,6 +9,7 @@ import static javafx.geometry.HPos.*
 import javafx.event.EventHandler
 import groovyx.javafx.SceneGraphBuilder
 import static com.canoo.dolphin.demo.DemoStyle.style
+import com.canoo.dolphin.binding.Binder
 
 class SingleAttributeMultipleBindingsView {
     void show() {
@@ -44,11 +45,19 @@ class SingleAttributeMultipleBindingsView {
 
     void bindPmToViews(ClientPresentationModel pm, SceneGraphBuilder sgb) {
         sgb.with {
-            bind TITLE  of pm  to TITLE of primaryStage    // groovy style
-            bind TITLE  of pm  to TEXT  of label
+            bind TITLE  of pm  to TITLE of primaryStage // groovy style
 
-            //bind(TITLE).of(pm).to(TEXT).of(input)   // java style // binding inputs disables textField
-            bind TEXT of label to TEXT  of header   // bind javafx implementation-wise (regression test)
+            bind(TITLE).of(pm).to(TEXT).of(label)       // java fluent-interface style
+
+            Binder.bind TITLE of pm to TEXT of input    // PCL binding to input since JavaFx would disable key-listening otherwise
+
+            // auto-update the header with every keystroke
+            bind TEXT of input to TEXT  of header       // bind javafx xProperty().bind implementation-wise (regression test)
+
+            // the below is an alternative that "works" but has these (probably unwanted) effects:
+            // - no server roundtrip is issued on value change since input.textProperty().bind(...) doesn't call setValue()
+            // - the pm.title.value cannot be set anymore since a bound value cannot be set
+            //bind TEXT of input to 'value' of pm.title   // javafx property binding against client attribute
         }
     }
 

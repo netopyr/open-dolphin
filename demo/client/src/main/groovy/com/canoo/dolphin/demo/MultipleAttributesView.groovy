@@ -7,6 +7,7 @@ import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.demo.MyProps.*
 import static javafx.geometry.HPos.RIGHT
 import static com.canoo.dolphin.demo.DemoStyle.style
+import com.canoo.dolphin.binding.Binder
 
 class MultipleAttributesView {
 
@@ -50,10 +51,10 @@ class MultipleAttributesView {
             style delegate
 
             bind TITLE of pm to TEXT of titleLabel
-            // bind TITLE of pm to TEXT of titleInput
+            Binder.bind TITLE of pm to TEXT of titleInput
 
             bind PURPOSE of pm to TEXT of purposeLabel
-            // bind PURPOSE of pm to TEXT of purposeInput
+            Binder.bind PURPOSE of pm to TEXT of purposeInput
 
             primaryStage.show()
         }
