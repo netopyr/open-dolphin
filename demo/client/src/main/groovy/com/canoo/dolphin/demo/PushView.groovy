@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle
 import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.VehicleProperties.*
-import static com.canoo.dolphin.demo.DemoStyle.style
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 
 class PushView {
@@ -50,7 +49,7 @@ class PushView {
             communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
                 pmIds.each { id ->
                     rects[id] = rectangle(fill: sgb[id], arcWidth:10, arcHeight:10, stroke: cyan, strokeWidth: 0, strokeType:'outside') {
-                        effect lighting(surfaceScale: 1.0)
+                        effect lighting()
                     }
                     Rectangle rectangle = rects[id]
                     rectangle.onMouseClicked = {

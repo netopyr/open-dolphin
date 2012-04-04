@@ -26,7 +26,7 @@ The multi-project build consists of these subprojects
 - client (visualization)
 - server (domain model and control logic)
 - combined (for testing the client-server combination)
-- demo   (again devided in client - server - shared)
+- demo   (again devided in client - server - shared - combined)
 
 General approach
 ----------------

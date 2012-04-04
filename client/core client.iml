@@ -21,6 +21,15 @@
     </orderEntry>
     <orderEntry type="module" module-name="core shared" />
     <orderEntry type="library" name="groovy-1.8.6" level="application" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../groovyfx/groovyfx-0.1-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

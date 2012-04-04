@@ -50,10 +50,10 @@ class MultipleAttributesView {
             style delegate
 
             bind TITLE of pm to TEXT of titleLabel
-            bind TITLE of pm to TEXT of titleInput
+            // bind TITLE of pm to TEXT of titleInput
 
             bind PURPOSE of pm to TEXT of purposeLabel
-            bind PURPOSE of pm to TEXT of purposeInput
+            // bind PURPOSE of pm to TEXT of purposeInput
 
             primaryStage.show()
         }

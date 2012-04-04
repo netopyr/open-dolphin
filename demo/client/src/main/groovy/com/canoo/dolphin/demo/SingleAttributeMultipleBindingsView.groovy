@@ -46,7 +46,8 @@ class SingleAttributeMultipleBindingsView {
         sgb.with {
             bind TITLE  of pm  to TITLE of primaryStage    // groovy style
             bind TITLE  of pm  to TEXT  of label
-            bind(TITLE).of(pm).to(TEXT).of(input)   // java style
+
+            //bind(TITLE).of(pm).to(TEXT).of(input)   // java style // binding inputs disables textField
             bind TEXT of label to TEXT  of header   // bind javafx implementation-wise (regression test)
         }
     }

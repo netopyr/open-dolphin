@@ -14,7 +14,10 @@ import java.beans.PropertyChangeSupport
 /**
  * A client side (remote) ClientAttribute is considered a remote representation of a ServerAttribute.
  * Changes to a remote ClientAttribute are sent to the server. This happens by using a dedicated
- * PropertyChangeListener.
+ * PropertyChangeListener that connects the ClientAttribute with a Connector.
+ * One can bind against a ClientAttribute in two ways
+ * a) as a PropertyChangeListener
+ * b) through the valueProperty() method for JavaFx
  */
 
 class ClientAttribute extends BaseAttribute {

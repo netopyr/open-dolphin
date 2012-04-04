@@ -1,6 +1,10 @@
 package com.canoo.dolphin.binding
 
 import com.canoo.dolphin.core.BasePresentationModel
+import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.ClientAttribute
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 
 @Immutable
 class JFXOfAble {
@@ -12,6 +16,10 @@ class JFXOfAble {
 
     ToAble of(BasePresentationModel source) {
         return Binder.bind(propName).of(source)
+    }
+
+    ClientToAble of(ClientPresentationModel source) {
+        new ClientToAble(source[propName])
     }
 }
 
@@ -29,6 +37,18 @@ class JFXToAble {
     }
 }
 
+class ClientToAble {
+    final ClientAttribute attribute
+
+    ClientToAble(ClientAttribute attribute) {
+        this.attribute = attribute
+    }
+
+    ClientOtherOfAble to(String targetPropertyName) {
+        new ClientOtherOfAble(attribute, targetPropertyName)
+    }
+}
+
 class JFXOtherOfAble {
     final javafx.scene.Node source
     final String sourcePropName
@@ -40,7 +60,25 @@ class JFXOtherOfAble {
         this.targetPropName = targetPropName
     }
 
-    void of(javafx.scene.Node target) {
+    void of(target) { // cannot use Node type here since e.g. stage is not a node
         target."${targetPropName}Property"().bind(source."${sourcePropName}Property"())
+    }
+}
+
+class ClientOtherOfAble {
+    final ClientAttribute attribute
+    final String targetPropName
+
+    ClientOtherOfAble(ClientAttribute attribute, String targetPropName) {
+        this.attribute = attribute
+        this.targetPropName = targetPropName
+    }
+
+    void of(target, Closure convert = null) { // cannot use Node type here since e.g. stage is not a node
+        attribute.valueProperty().addListener(new ChangeListener() {
+                public void changed(ObservableValue o, Object oldVal, Object newVal) {
+                    target[targetPropName] = ( convert != null ) ? convert(newVal) : newVal
+                }
+        })
     }
 }
