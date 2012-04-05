@@ -29,7 +29,8 @@ import com.canoo.dolphin.core.comm.InitializeAttributeCommand
 abstract class ClientConnector implements PropertyChangeListener {
 
     Codec codec
-    Map<String, ClientPresentationModel> modelStore = new ConcurrentHashMap<String, ClientPresentationModel>()// later, this may live somewhere else
+
+    def modelStore = new ClientModelStore().modelStore
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
