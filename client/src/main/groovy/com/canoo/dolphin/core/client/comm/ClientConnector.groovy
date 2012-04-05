@@ -12,17 +12,11 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
 import com.canoo.dolphin.core.comm.SwitchPmCommand
-import java.util.concurrent.ConcurrentHashMap
-import groovyx.gpars.GParsPool
 
-import static groovyx.gpars.GParsPool.withPool
-import groovyx.gpars.dataflow.Dataflow
-
-import static groovyx.gpars.dataflow.Dataflow.task
 import groovyx.gpars.dataflow.DataflowVariable
 import javafx.application.Platform
 import groovyx.gpars.group.DefaultPGroup
-import java.util.concurrent.CountDownLatch
+
 import com.canoo.dolphin.core.comm.InitializeAttributeCommand
 
 @Log
@@ -30,19 +24,15 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     Codec codec
 
-    def modelStore = new ClientModelStore().modelStore
+    def clientModelStore = new ClientModelStore()
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
     }
 
-    void register(ClientPresentationModel cpModel) {
-        modelStore.put cpModel.id, cpModel
-    }
-
     void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
-        register cpm
+        clientModelStore.register(cpm)
         send constructAttributeCreatedCommand(cpm.id, ca)
     }
 
@@ -68,7 +58,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     abstract int getPoolSize()
 
     List<ClientAttribute> findAllClientAttributesById(long id) {
-        modelStore.values().attributes.flatten().findAll { it.id == id } // todo: be more efficient
+        clientModelStore.findAllClientAttributesById(id)
     }
 
     def group = new DefaultPGroup(poolSize)
@@ -117,12 +107,12 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     def handle(SwitchAttributeIdCommand serverCommand) {
-        def sourceAtt = modelStore.values().attributes.flatten().find { it.id == serverCommand.newId } // one is enough
+        def sourceAtt = clientModelStore.findFirstAttributeById(serverCommand.newId) // one is enough
         if (!sourceAtt) {
             log.warning "C: attribute with id '$serverCommand.newId' not found, cannot switch"
             return
         }
-        def switchPm = modelStore[serverCommand.pmId]
+        def switchPm = clientModelStore.findPmById(serverCommand.pmId)
         if (!switchPm) {
             log.warning "C: pm with id '$serverCommand.pmId' not found, cannot switch"
             return
@@ -137,12 +127,12 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     def handle(SwitchPmCommand serverCommand) {
-        def switchPm = modelStore[serverCommand.pmId]
+        def switchPm = clientModelStore.findPmById(serverCommand.pmId)
         if (!switchPm) {
             log.warning "C: switch pm with id '$serverCommand.pmId' not found, cannot switch"
             return
         }
-        def sourcePm = modelStore[serverCommand.sourcePmId]
+        def sourcePm = clientModelStore.findPmById(serverCommand.sourcePmId)
         if (!sourcePm) {
             log.warning "C: source pm with id '$serverCommand.sourcePmId' not found, cannot switch"
             return
@@ -155,11 +145,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
         transmit(new AttributeCreatedCommand(pmId: serverCommand.pmId, attributeId: attribute.id, propertyName: serverCommand.propertyName, newValue:serverCommand.newValue))
 
-        if (!modelStore.containsKey(serverCommand.pmId)) {
-            modelStore[serverCommand.pmId] = new ClientPresentationModel(serverCommand.pmId, [attribute])
+        if (!clientModelStore.containsPm(serverCommand.pmId)) {
+            clientModelStore.storePm(serverCommand.pmId, new ClientPresentationModel(serverCommand.pmId, [attribute]))
             return serverCommand.pmId
         }
-        def pm = modelStore[serverCommand.pmId]
+        def pm = clientModelStore.findPmById(serverCommand.pmId)
         pm.addAttribute(attribute)
         return null // already there, no need to return it
     }
