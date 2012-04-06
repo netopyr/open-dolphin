@@ -52,6 +52,9 @@ class ClientAttribute extends BaseAttribute {
         addPropertyChangeListener 'value', communicator
     }
 
+
+    String toString() { "$id : $propertyName = ${getValue()}" }
+
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
