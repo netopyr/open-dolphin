@@ -2,12 +2,10 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.comm.NamedCommand
-import java.beans.PropertyChangeListener
-import javafx.event.EventHandler
+
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.comm.SwitchPmCommand
-import javafx.scene.shape.Rectangle
 
 import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.binding.JFXBinder.bind
@@ -17,21 +15,34 @@ import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import javafx.util.Callback
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import javafx.collections.ListChangeListener
+import javafx.scene.shape.Rectangle
+import javafx.event.EventHandler
+import java.beans.PropertyChangeListener
+import groovyx.javafx.SceneGraphBuilder
 
 class PushView {
 
     static show() {
 
         def communicator = InMemoryClientConnector.instance
+
+        def longPoll
+        longPoll = {
+            communicator.send(new NamedCommand(id: "longPoll"), longPoll)
+        }
+
         def selectedVehicle = new ClientPresentationModel(
                 'selectedVehicle',
                 [X, Y, WIDTH, HEIGHT, ROTATE].collect { new ClientAttribute(it) }
         )
-        def obsPmList = FXCollections.observableArrayList()
-        def rects = [:] // pmId to rectangle
+
+        ObservableList obsPmList = FXCollections.observableArrayList()
+        Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
 
         start { app ->
-            def sgb = delegate
+            SceneGraphBuilder sgb = delegate
             stage {
                 scene width: 700, height: 500, {
                     borderPane {
@@ -68,41 +79,45 @@ class PushView {
             rotCol.cellValueFactory = { return it.getValue().rotate.valueProperty() } as Callback
 
             // used as both, event handler and change listener
-            def changeSelectionHandler = { id ->
+            def changeSelectionHandler = { pm ->
                 return {
-                    rects.values().each { it.strokeWidth = 0 }
-                    communicator.send(new SwitchPmCommand(pmId: selectedVehicle.id, sourcePmId: id))
-                    def rectangle = rects[id]
+                    pmIdsToRect.values().each { it.strokeWidth = 0 }
+                    communicator.send(new SwitchPmCommand(pmId: selectedVehicle.id, sourcePmId: pm.id))
+                    def rectangle = pmIdsToRect[pm.id]
                     sgb.selRect.fill = rectangle.fill // todo: should not know the view!
+                    // -> we need to make the color its own ClientAttribute
                     rectangle.strokeWidth = 3
 
-                    def pm = communicator.clientModelStore.findPmById(id)
                     sgb.table.selectionModel.select pm // todo: should not know the view!
+                    // -> we need to make the id of the ClientAttribute observable
                 }
             }
 
-            communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
-                pmIds.each { id ->
-                    rects[id] = rectangle(fill: sgb[id], arcWidth:10, arcHeight:10, stroke: cyan, strokeWidth: 0, strokeType:'outside') {
-                        effect lighting()
-                    }
-                    Rectangle rectangle = rects[id]
-                    rectangle.onMouseClicked = changeSelectionHandler(id) as EventHandler
-                    def pm = communicator.clientModelStore.findPmById(id)
-                    obsPmList.add pm
-                    pm.attributes*.propertyName.each { prop ->
-                        rectangle[prop] = pm[prop].value
-                        pm[prop].addPropertyChangeListener 'value', { evt ->
-                            timeline {
-                                at(0.5.s) { change(rectangle, prop) to evt.newValue tween "ease_both" }
-                            }.play()
-                        } as PropertyChangeListener
+            // when a new pm is added to the list, create the rectangles
+            obsPmList.addListener({ ListChangeListener.Change listChange ->
+                while(listChange.next()) { /*sigh*/
+                    for (ClientPresentationModel pm in listChange.addedSubList) {
+                        pmIdsToRect[pm.id] = sgb.rectangle(fill: sgb[pm.id], arcWidth:10, arcHeight:10, stroke: cyan, strokeWidth: 0, strokeType:'outside') {
+                            effect lighting()
+                        }
+                        Rectangle rectangle = pmIdsToRect[pm.id]
+                        rectangle.onMouseClicked = changeSelectionHandler(pm) as EventHandler
+                        pm.attributes*.propertyName.each { prop ->
+                            rectangle[prop] = pm[prop].value
+                            pm[prop].addPropertyChangeListener 'value', { evt ->
+                                sgb.timeline {
+                                    at(0.5.s) { change(rectangle, prop) to evt.newValue tween "ease_both" }
+                                }.play()
+                            } as PropertyChangeListener
+                        }
+                        sgb.parent.children << rectangle
                     }
                 }
-                parent.children.addAll rects.values()
-                def longPoll
-                longPoll = {
-                    communicator.send(new NamedCommand(id: "longPoll"), longPoll)
+            } as ListChangeListener)
+
+            communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
+                for (id in pmIds) {
+                    obsPmList << communicator.clientModelStore.findPmById(id)
                 }
                 longPoll()
             }
@@ -112,13 +127,12 @@ class PushView {
             bind Y      of selectedVehicle to 'text' of selY
             bind ROTATE of selectedVehicle to 'text' of selAngle
 
-            table.selectionModel.selectedItemProperty().addListener( { o, oldVal, newVal ->
-                changeSelectionHandler(newVal.id).call()
+            // bind 'selectedItem' of table.selectionModel to { ... }
+            table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->
+                changeSelectionHandler(selectedPm).call()
             } as ChangeListener )
 
             primaryStage.show()
         }
     }
 }
-
-class XY { def x, y }
