@@ -28,6 +28,7 @@ class CustomAction {
                 response << new InitializeAttributeCommand(pmId:it, propertyName:WIDTH,  newValue:80)
                 response << new InitializeAttributeCommand(pmId:it, propertyName:HEIGHT, newValue:25)
                 response << new InitializeAttributeCommand(pmId:it, propertyName:ROTATE, newValue:rand())
+                response << new InitializeAttributeCommand(pmId:it, propertyName:COLOR,  newValue:it)
             }
         }
         registry.register 'longPoll',  { NamedCommand command, response ->

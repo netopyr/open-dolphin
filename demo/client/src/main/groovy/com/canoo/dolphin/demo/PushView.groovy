@@ -35,10 +35,10 @@ class PushView {
 
         def selectedVehicle = new ClientPresentationModel(
                 'selectedVehicle',
-                [X, Y, WIDTH, HEIGHT, ROTATE].collect { new ClientAttribute(it) }
+                [X, Y, WIDTH, HEIGHT, ROTATE, COLOR].collect { new ClientAttribute(it) }
         )
 
-        ObservableList obsPmList = FXCollections.observableArrayList()
+        ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
 
         start { app ->
@@ -50,12 +50,12 @@ class PushView {
                             rectangle(x: 0, y: 0, width: 1, height: 40, fill: transparent) // rigidArea
                             hbox alignment:'center', prefWidth: 700, spacing:5, id:'header', {
                                 label 'selected'
-                                rectangle(id:'selRect', fill: transparent, arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {
+                                rectangle(id:'selRect', arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {
                                     effect dropShadow(offsetY:2,radius:3)
                                 }
-                                label ' x:';     label id: 'selX'
-                                label ' y:';     label id: 'selY'
-                                label ' angle:'; label id: 'selAngle'
+                                label ' X:';     label id: 'selX'
+                                label ' Y:';     label id: 'selY'
+                                label ' Angle:'; label id: 'selAngle'
                             }
                         }
                         left margin:10, {
@@ -71,7 +71,7 @@ class PushView {
                                 rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0.5) // rigidArea
             }   }   }   }   }
 
-            table.items = obsPmList
+            table.items = observableListOfPms
 
             // auto-update the cell values
             xCol.cellValueFactory   = { return it.getValue().x.valueProperty() } as Callback
@@ -81,20 +81,12 @@ class PushView {
             // used as both, event handler and change listener
             def changeSelectionHandler = { pm ->
                 return {
-                    pmIdsToRect.values().each { it.strokeWidth = 0 }
                     communicator.send(new SwitchPmCommand(pmId: selectedVehicle.id, sourcePmId: pm.id))
-                    def rectangle = pmIdsToRect[pm.id]
-                    sgb.selRect.fill = rectangle.fill // todo: should not know the view!
-                    // -> we need to make the color its own ClientAttribute
-                    rectangle.strokeWidth = 3
-
-                    sgb.table.selectionModel.select pm // todo: should not know the view!
-                    // -> we need to make the id of the ClientAttribute observable
                 }
             }
 
-            // when a new pm is added to the list, create the rectangles
-            obsPmList.addListener({ ListChangeListener.Change listChange ->
+            // when a new pm is added to the list, create the rectangles along with their animations
+            observableListOfPms.addListener({ ListChangeListener.Change listChange ->
                 while(listChange.next()) { /*sigh*/
                     for (ClientPresentationModel pm in listChange.addedSubList) {
                         pmIdsToRect[pm.id] = sgb.rectangle(fill: sgb[pm.id], arcWidth:10, arcHeight:10, stroke: cyan, strokeWidth: 0, strokeType:'outside') {
@@ -103,6 +95,7 @@ class PushView {
                         Rectangle rectangle = pmIdsToRect[pm.id]
                         rectangle.onMouseClicked = changeSelectionHandler(pm) as EventHandler
                         pm.attributes*.propertyName.each { prop ->
+                            if(prop == 'fill') return // only for the moment - until we convert types
                             rectangle[prop] = pm[prop].value
                             pm[prop].addPropertyChangeListener 'value', { evt ->
                                 sgb.timeline {
@@ -115,22 +108,35 @@ class PushView {
                 }
             } as ListChangeListener)
 
+            // startup and main loop
+
             communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
                 for (id in pmIds) {
-                    obsPmList << communicator.clientModelStore.findPmById(id)
+                    observableListOfPms << communicator.clientModelStore.findPmById(id)
                 }
                 longPoll()
             }
             blueStyle sgb
 
+            // all the bindings ...
+
             bind X      of selectedVehicle to 'text' of selX
             bind Y      of selectedVehicle to 'text' of selY
             bind ROTATE of selectedVehicle to 'text' of selAngle
+            // bind ROTATE of selectedVehicle to 'rotate' of selRect, { (it ?: 0 ).toDouble() } // just for fun
+            bind COLOR  of selectedVehicle to 'fill' of selRect, { it ? sgb[it] : sgb.transparent }
 
             // bind 'selectedItem' of table.selectionModel to { ... }
             table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->
                 changeSelectionHandler(selectedPm).call()
             } as ChangeListener )
+
+            // bind COLOR of selectedVehicle to { ... }
+            selectedVehicle[COLOR].valueProperty().addListener( { o, from, to ->
+                if (from) pmIdsToRect[from].strokeWidth = 0
+                pmIdsToRect[to].strokeWidth = 3
+                table.selectionModel.select communicator.clientModelStore.findPmById(to)
+            } as ChangeListener)
 
             primaryStage.show()
         }

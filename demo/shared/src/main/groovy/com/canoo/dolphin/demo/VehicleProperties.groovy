@@ -7,8 +7,9 @@ class VehicleProperties {
 
     static String X = "x"
     static String Y = "y"
-    static String WIDTH = "width"
+    static String WIDTH  = "width"
     static String HEIGHT = "height"
     static String ROTATE = "rotate"
+    static String COLOR  = "fill"
 
 }

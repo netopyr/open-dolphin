@@ -75,7 +75,9 @@ class ClientOtherOfAble {
     }
 
     void of(target, Closure convert = null) { // cannot use Node type here since e.g. stage is not a node
-        def update = { target[targetPropName] = ( convert != null ) ? convert(attribute.value) : attribute.value }
+        def update = {
+            target[targetPropName] = (convert != null) ? convert(attribute.value) : attribute.value
+        }
         attribute.valueProperty().addListener( { a,b,c -> update() } as ChangeListener  )
         update () // set the initial value after the binding and trigger the first notification
     }
