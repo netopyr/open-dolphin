@@ -49,15 +49,13 @@ class SingleAttributeMultipleBindingsView {
 
             bind(TITLE).of(pm).to(TEXT).of(label)       // java fluent-interface style
 
-            Binder.bind TITLE of pm to TEXT of input    // PCL binding to input since JavaFx would disable key-listening otherwise
+            bind TITLE of pm to TEXT of input
 
             // auto-update the header with every keystroke
-            bind TEXT of input to TEXT  of header       // bind javafx xProperty().bind implementation-wise (regression test)
+            bind TEXT of input to TEXT  of header
 
-            // the below is an alternative that "works" but has these (probably unwanted) effects:
-            // - no server roundtrip is issued on value change since input.textProperty().bind(...) doesn't call setValue()
-            // - the pm.title.value cannot be set anymore since a bound value cannot be set
-            //bind TEXT of input to 'value' of pm.title   // javafx property binding against client attribute
+            // the below is an alternative that updates the pm with every keystroke and thus all bound listeners
+            // bind TEXT of input to TITLE of pm
         }
     }
 

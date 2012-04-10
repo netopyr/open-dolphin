@@ -60,8 +60,20 @@ class JFXOtherOfAble {
         this.targetPropName = targetPropName
     }
 
-    void of(target) { // cannot use Node type here since e.g. stage is not a node
-        target."${targetPropName}Property"().bind(source."${sourcePropName}Property"())
+    void of(target, Closure convert = null) {  // todo dk: remove the duplication
+        def update = {
+            target[targetPropName] = (convert != null) ? convert(source[sourcePropName]) : source[sourcePropName]
+        }
+        source."${sourcePropName}Property"().addListener( { a,b,c -> update() } as ChangeListener  )
+        update () // set the initial value after the binding and trigger the first notification
+    }
+
+    void of(ClientPresentationModel presentationModel, Closure convert = null) {  // todo dk: remove the duplication
+        def update = {
+            presentationModel[targetPropName].value = (convert != null) ? convert(source[sourcePropName]) : source[sourcePropName]
+        }
+        source."${sourcePropName}Property"().addListener( { a,b,c -> update() } as ChangeListener  )
+        update () // set the initial value after the binding and trigger the first notification
     }
 }
 
@@ -74,7 +86,7 @@ class ClientOtherOfAble {
         this.targetPropName = targetPropName
     }
 
-    void of(target, Closure convert = null) { // cannot use Node type here since e.g. stage is not a node
+    void of(target, Closure convert = null) { // todo dk: remove the duplication
         def update = {
             target[targetPropName] = (convert != null) ? convert(attribute.value) : attribute.value
         }

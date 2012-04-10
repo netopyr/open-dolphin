@@ -20,6 +20,7 @@ import javafx.scene.shape.Rectangle
 import javafx.event.EventHandler
 import java.beans.PropertyChangeListener
 import groovyx.javafx.SceneGraphBuilder
+import com.canoo.dolphin.binding.Binder
 
 class PushView {
 
@@ -52,9 +53,9 @@ class PushView {
                                 rectangle(id:'selRect', arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {
                                     effect dropShadow(offsetY:2,radius:3)
                                 }
-                                label ' X:';     label id: 'selX'
-                                label ' Y:';     label id: 'selY'
-                                label ' Angle:'; label id: 'selAngle'
+                                label ' X:';     textField id: 'selX', prefColumnCount:3, onAction: { selectedVehicle.x.value = it.source.text.toInteger() }
+                                label ' Y:';     textField id: 'selY', prefColumnCount:3
+                                label ' Angle:'; rectangle id: 'selAngle', width:26, height:5, fill: linearGradient(stops: [[0.6, white], [1, red]])
                             }
                         }
                         left margin:10, {
@@ -119,11 +120,13 @@ class PushView {
 
             // all the bindings ...
 
-            bind X      of selectedVehicle to 'text' of selX
-            bind Y      of selectedVehicle to 'text' of selY
-            bind ROTATE of selectedVehicle to 'text' of selAngle
-            // bind ROTATE of selectedVehicle to 'rotate' of selRect, { (it ?: 0 ).toDouble() } // just for fun
-            bind COLOR  of selectedVehicle to 'fill' of selRect, { it ? sgb[it] : sgb.transparent }
+            bind X      of selectedVehicle to 'text' of selX // simple binding + action
+
+            bind Y      of selectedVehicle to 'text' of selY // example of a "bidirectional" binding
+            bind 'text' of selY            to Y      of selectedVehicle, { it ? it.toInteger() : 0 }
+
+            bind ROTATE of selectedVehicle to 'rotate' of selAngle, { (it ?: 0 ).toDouble() }
+            bind COLOR  of selectedVehicle to 'fill' of selRect,    { it ? sgb[it] : sgb.transparent }
 
             // bind 'selectedItem' of table.selectionModel to { ... }
             table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->
