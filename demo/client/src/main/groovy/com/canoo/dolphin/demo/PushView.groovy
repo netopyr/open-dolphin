@@ -48,7 +48,7 @@ class PushView {
                         top margin:10, {
                             rectangle(x: 0, y: 0, width: 1, height: 40, fill: transparent) // rigidArea
                             hbox alignment:'center', prefWidth: 700, spacing:5, id:'header', {
-                                label 'selected'
+                                label 'Selected'
                                 rectangle(id:'selRect', arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {
                                     effect dropShadow(offsetY:2,radius:3)
                                 }
