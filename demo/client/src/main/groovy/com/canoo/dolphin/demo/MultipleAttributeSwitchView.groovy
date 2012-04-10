@@ -12,7 +12,6 @@ import static com.canoo.dolphin.demo.MyProps.TEXT
 import static com.canoo.dolphin.demo.MyProps.PURPOSE
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-import com.canoo.dolphin.core.comm.SwitchPmCommand
 
 class MultipleAttributeSwitchView {
 
@@ -42,9 +41,9 @@ class MultipleAttributeSwitchView {
 
                         hbox styleClass:"submit", row:3, column:1, {
                             button "Actual is one",
-                                   onAction: { communicator.send(new SwitchPmCommand(pmId: 'actualPm', sourcePmId: 'First PM')) }
+                                   onAction: { communicator.switchPmAndSend(actualPm, pm1) }
                             button "Actual is two",
-                                   onAction: { communicator.send(new SwitchPmCommand(pmId: 'actualPm', sourcePmId: 'Second PM')) }
+                                   onAction: { communicator.switchPmAndSend(actualPm, pm2) }
                         }
                         hbox styleClass:"submit", row:4, column:1, {
                             button "Set title",

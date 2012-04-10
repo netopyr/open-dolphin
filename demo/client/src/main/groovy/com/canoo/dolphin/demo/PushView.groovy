@@ -5,7 +5,6 @@ import com.canoo.dolphin.core.comm.NamedCommand
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
-import com.canoo.dolphin.core.comm.SwitchPmCommand
 
 import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.binding.JFXBinder.bind
@@ -81,7 +80,7 @@ class PushView {
             // used as both, event handler and change listener
             def changeSelectionHandler = { pm ->
                 return {
-                    communicator.send(new SwitchPmCommand(pmId: selectedVehicle.id, sourcePmId: pm.id))
+                    communicator.switchPmAndSend selectedVehicle, pm
                 }
             }
 
