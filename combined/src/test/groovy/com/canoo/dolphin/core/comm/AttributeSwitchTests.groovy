@@ -1,36 +1,19 @@
 package com.canoo.dolphin.core.comm
 
-import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-import com.canoo.dolphin.core.server.comm.Receiver
-import com.canoo.dolphin.core.server.action.MirrorValueChangeAction
-import com.canoo.dolphin.core.server.action.SwitchPmAction
-import com.canoo.dolphin.core.server.action.StoreAttributeAction
-import com.canoo.dolphin.core.server.action.StoreValueChangeAction
+
 
 /**
- * Tests for the approach of using plain attributes as switches by sharing the id and
- * letting server roundtrip care for distribution of value changes.
+ * Tests for the approach of using plain attributes as switches by sharing the id.
  */
+
 class AttributeSwitchTests extends GroovyTestCase {
 
     ClientPresentationModel switchPm
     ClientPresentationModel sourcePm
-    def communicator
 
     protected void setUp() {
-        LogConfig.logCommunication()
-        def receiver = new Receiver()
-        communicator = InMemoryClientConnector.instance
-        communicator.processAsync = false
-        communicator.receiver = receiver
-        new MirrorValueChangeAction().registerIn(receiver.registry)
-        new SwitchPmAction().registerIn(receiver.registry)
-        StoreAttributeAction.instance.registerIn(receiver.registry)
-        new StoreValueChangeAction().registerIn(receiver.registry)
-
         switchPm = new ClientPresentationModel([new ClientAttribute('name')])
         sourcePm = new ClientPresentationModel([new ClientAttribute('name')])
     }
