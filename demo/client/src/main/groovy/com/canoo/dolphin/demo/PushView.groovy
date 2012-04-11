@@ -53,13 +53,13 @@ class PushView {
                                 rectangle(id:'selRect', arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {
                                     effect dropShadow(offsetY:2,radius:3)
                                 }
-                                label ' X:';     textField id: 'selX', prefColumnCount:3, onAction: { selectedVehicle.x.value = it.source.text.toInteger() }
+                                label ' X:';     textField id: 'selX', prefColumnCount:3
                                 label ' Y:';     textField id: 'selY', prefColumnCount:3
                                 label ' Angle:'; rectangle id: 'selAngle', width:26, height:5, fill: linearGradient(stops: [[0.6, white], [1, red]])
                             }
                         }
                         left margin:10, {
-                            tableView(id: 'table') {
+                            tableView(id: 'table', opacity: 0.8d) {
                                 tableColumn(property:'id', text:"Color", prefWidth: 50 )
                                 xCol   = tableColumn(text:'X', prefWidth: 40)
                                 yCol   = tableColumn(text:'Y', prefWidth: 40)
@@ -121,6 +121,7 @@ class PushView {
             // all the bindings ...
 
             bind X      of selectedVehicle to 'text' of selX // simple binding + action
+            selX.onAction = { selectedVehicle.x.value = it.source.text.toInteger() } as EventHandler
 
             bind Y      of selectedVehicle to 'text' of selY // example of a "bidirectional" binding
             bind 'text' of selY            to Y      of selectedVehicle, { it ? it.toInteger() : 0 }
