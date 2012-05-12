@@ -51,7 +51,7 @@ class PushView {
                             hbox alignment:'center', prefWidth: 700, spacing:5, id:'header', {
                                 label 'Selected'
                                 rectangle(id:'selRect', arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {
-                                    effect dropShadow(offsetY:2,radius:3)
+                                    effect dropShadow(offsetY:2, offsetX:2, radius:3, input: lighting{distant(azimuth: -135.0)})
                                 }
                                 label ' X:';     textField id: 'selX', prefColumnCount:3
                                 label ' Y:';     textField id: 'selY', prefColumnCount:3
@@ -59,7 +59,7 @@ class PushView {
                             }
                         }
                         left margin:10, {
-                            tableView(id: 'table', opacity: 0.8d) {
+                            tableView(id: 'table', opacity: 0.2d) {
                                 tableColumn(property:'id', text:"Color", prefWidth: 50 )
                                 xCol   = tableColumn(text:'X', prefWidth: 40)
                                 yCol   = tableColumn(text:'Y', prefWidth: 40)
@@ -67,7 +67,7 @@ class PushView {
                             }
                         }
                         stackPane {
-                            group id: 'parent', effect: dropShadow(offsetY: 2, radius: 3), {
+                            group id: 'parent', effect: dropShadow(offsetY: 2, offsetX: 2, radius: 3, input: lighting{distant(azimuth: -135.0)}), {
                                 rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0.5) // rigidArea
             }   }   }   }   }
 
@@ -90,7 +90,7 @@ class PushView {
                 while(listChange.next()) { /*sigh*/
                     for (ClientPresentationModel pm in listChange.addedSubList) {
                         pmIdsToRect[pm.id] = sgb.rectangle(fill: sgb[pm.id], arcWidth:10, arcHeight:10, stroke: cyan, strokeWidth: 0, strokeType:'outside') {
-                            effect lighting()
+                            //effect lighting()
                         }
                         Rectangle rectangle = pmIdsToRect[pm.id]
                         rectangle.onMouseClicked = changeSelectionHandler(pm) as EventHandler
@@ -114,6 +114,7 @@ class PushView {
                 for (id in pmIds) {
                     observableListOfPms << communicator.clientModelStore.findPmById(id)
                 }
+                fadeTransition(1.s, node:table, to:1).playFromStart()
                 longPoll()
             }
             blueStyle sgb
