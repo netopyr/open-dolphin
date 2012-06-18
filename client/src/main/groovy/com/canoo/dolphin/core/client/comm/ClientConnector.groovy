@@ -24,7 +24,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     Codec codec
 
-    def clientModelStore = new ClientModelStore()
+    ClientModelStore clientModelStore = new ClientModelStore()
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return

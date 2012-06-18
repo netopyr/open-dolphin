@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="GradleSettings">
-    <option name="expandStates">
-      <map>
-        <entry key="core client/ulcfx" value="true" />
-        <entry key="core combined/ulcfx" value="true" />
-        <entry key="core server/ulcfx" value="true" />
-        <entry key="core shared/ulcfx" value="true" />
-        <entry key="demo client/ulcfx" value="true" />
-        <entry key="demo combined/ulcfx" value="true" />
-        <entry key="demo server/ulcfx" value="true" />
-        <entry key="demo shared/ulcfx" value="true" />
-        <entry key="dependencies/core client/ulcfx" value="true" />
-        <entry key="dependencies/core combined/ulcfx" value="true" />
-        <entry key="dependencies/core server/ulcfx" value="true" />
-        <entry key="dependencies/core shared/ulcfx" value="true" />
-        <entry key="dependencies/demo client/ulcfx" value="true" />
-        <entry key="dependencies/demo combined/ulcfx" value="true" />
-        <entry key="dependencies/demo server/ulcfx" value="true" />
-        <entry key="dependencies/demo shared/ulcfx" value="true" />
-        <entry key="ulcfx" value="true" />
-      </map>
-    </option>
     <option name="gradleHome" value="/usr/lib/gradle-1.0-milestone-9/bin" />
     <option name="linkedProjectPath" value="$PROJECT_DIR$/build.gradle" />
   </component>
