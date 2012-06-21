@@ -69,8 +69,9 @@ class SharedAttributesView {
                     // tab view to its value change. Also consider the "tab closed" case.
                     def tab = sgb.vehicles.tabs.find { it.id == pm.id }
                     if (! tab) {
-                        tab = sgb.tab id: pm.id, {
-                            gridPane(hgap: 5, vgap: 5, padding: 10, alignment: "top_left") {
+                        def grid
+                        tab = sgb.tab   {
+                            grid = gridPane hgap: 5, vgap: 5, padding: 10, alignment: "top_left", translateY: -200, {
                                 columnConstraints(halignment: "right")
                                 text ' X:', row: 0, column:0
                                 textField id:'x', prefColumnCount:3, row: 0, column:1
@@ -96,6 +97,8 @@ class SharedAttributesView {
 
                             bind WIDTH of detailPm to 'text' of sgb.width
                             bind 'text' of sgb.width to WIDTH of detailPm
+
+                            translateTransition(1.s, node:grid, to:0).playFromStart()
                         }
 
                         sgb.vehicles.tabs << tab

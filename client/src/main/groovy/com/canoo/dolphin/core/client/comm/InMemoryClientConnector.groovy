@@ -23,12 +23,6 @@ class InMemoryClientConnector extends ClientConnector {
     }
 
     @Override
-    void insideUiThread(Closure processing) {
-        if (processAsync) super.insideUiThread(processing)
-        else processing()
-    }
-
-    @Override
     void processAsync(Closure processing) {
         if (processAsync) super.processAsync(processing)
         else processing()

@@ -20,6 +20,8 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     ClientModelStore clientModelStore = new ClientModelStore()
 
+    Closure howToProcessInsideUI = { Closure whatToDoInside -> Platform.runLater whatToDoInside }
+
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
@@ -90,7 +92,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     void insideUiThread(Closure processing) {
-        Platform.runLater processing
+        howToProcessInsideUI processing
     }
 
     def handle(Command serverCommand, Set pmIds) {
