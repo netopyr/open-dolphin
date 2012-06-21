@@ -23,6 +23,7 @@ class CommunicationTests extends GroovyTestCase {
 		receiver = new Receiver() // no need to put the receiver behind a decoder since we are in-memory
 		communicator = InMemoryClientConnector.instance
         communicator.processAsync = false
+        communicator.howToProcessInsideUI = { it() }
 		communicator.receiver = receiver // inject receiver
 	}
 

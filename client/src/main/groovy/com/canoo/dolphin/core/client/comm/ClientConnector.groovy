@@ -6,7 +6,6 @@ import com.canoo.dolphin.core.client.ClientPresentationModel
 import groovy.util.logging.Log
 import groovyx.gpars.dataflow.DataflowVariable
 import groovyx.gpars.group.DefaultPGroup
-import javafx.application.Platform
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
@@ -20,7 +19,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     ClientModelStore clientModelStore = new ClientModelStore()
 
-    Closure howToProcessInsideUI = { Closure whatToDoInside -> Platform.runLater whatToDoInside }
+    Closure howToProcessInsideUI // must be set from the outside - toolkit specific
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
@@ -92,7 +91,12 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     void insideUiThread(Closure processing) {
-        howToProcessInsideUI processing
+        if (howToProcessInsideUI) {
+            howToProcessInsideUI processing
+        } else {
+            log.warning("please provide howToProcessInsideUI handler")
+            processing
+        }
     }
 
     def handle(Command serverCommand, Set pmIds) {

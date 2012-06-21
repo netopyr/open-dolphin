@@ -8,6 +8,7 @@ import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPmAction
 import com.canoo.dolphin.core.client.comm.ClientConnector
+import javafx.application.Platform
 
 class InMemoryConfig {
 
@@ -17,6 +18,7 @@ class InMemoryConfig {
         LogConfig.logCommunication()
         connector.sleepMillis = 100
         connector.receiver = receiver
+        connector.howToProcessInsideUI = { Platform.runLater it }
     }
 
     ClientConnector getConnector() { InMemoryClientConnector.instance }

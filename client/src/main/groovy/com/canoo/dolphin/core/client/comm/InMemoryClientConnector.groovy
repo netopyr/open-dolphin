@@ -27,4 +27,5 @@ class InMemoryClientConnector extends ClientConnector {
         if (processAsync) super.processAsync(processing)
         else processing()
     }
+
 }

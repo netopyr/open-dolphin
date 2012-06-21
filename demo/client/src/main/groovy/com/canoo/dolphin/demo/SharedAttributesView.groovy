@@ -70,8 +70,8 @@ class SharedAttributesView {
                     def tab = sgb.vehicles.tabs.find { it.id == pm.id }
                     if (! tab) {
                         def grid
-                        tab = sgb.tab   {
-                            grid = gridPane hgap: 5, vgap: 5, padding: 10, alignment: "top_left", translateY: -200, {
+                        tab = sgb.tab  id:pm.id, {
+                            grid = gridPane hgap: 5, vgap: 5, padding: 10, alignment: "top_left", opacity: 0.3d, translateY: -200, {
                                 columnConstraints(halignment: "right")
                                 text ' X:', row: 0, column:0
                                 textField id:'x', prefColumnCount:3, row: 0, column:1
@@ -81,6 +81,7 @@ class SharedAttributesView {
                                 textField id:'angle', prefColumnCount:3, row: 2, column: 1
                                 text ' Width:', row: 3, column:0
                                 textField id:'width', prefColumnCount:3, row: 3, column: 1
+                                translateTransition(0.5.s, to:0).playFromStart()
                             }
                         }
 
@@ -98,9 +99,8 @@ class SharedAttributesView {
                             bind WIDTH of detailPm to 'text' of sgb.width
                             bind 'text' of sgb.width to WIDTH of detailPm
 
-                            translateTransition(1.s, node:grid, to:0).playFromStart()
+                            fadeTransition(1.s, node:grid, to:1).playFromStart()
                         }
-
                         sgb.vehicles.tabs << tab
                     }
                     sgb.vehicles.selectionModel.select(tab)
