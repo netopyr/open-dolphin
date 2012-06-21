@@ -15,7 +15,7 @@ abstract class BaseAttribute {
     abstract void setValue(Object value)
 
     BaseAttribute(String propertyName) {
-        assert propertyName
+        assert propertyName     // todo: think about using GContract for the precondition
         this.propertyName = propertyName
     }
 
@@ -23,7 +23,8 @@ abstract class BaseAttribute {
     // more may come later
 
     void syncWith(BaseAttribute source) {
-        if (this.id == source.id) return
+        assert source           // todo: think about using GContract for the precondition
+        if (this.is(source)) return
         id = source.id
         setValue source.value // go through setter to make sure PCLs are triggered
     }

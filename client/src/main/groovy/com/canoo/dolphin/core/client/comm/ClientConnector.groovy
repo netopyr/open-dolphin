@@ -1,23 +1,17 @@
 package com.canoo.dolphin.core.client.comm
 
+import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.comm.AttributeCreatedCommand
-import com.canoo.dolphin.core.comm.Codec
-import com.canoo.dolphin.core.comm.Command
-import com.canoo.dolphin.core.comm.ValueChangedCommand
 import groovy.util.logging.Log
+import groovyx.gpars.dataflow.DataflowVariable
+import groovyx.gpars.group.DefaultPGroup
+import javafx.application.Platform
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import com.canoo.dolphin.core.comm.SwitchAttributeIdCommand
-import com.canoo.dolphin.core.comm.SwitchPmCommand
 
-import groovyx.gpars.dataflow.DataflowVariable
-import javafx.application.Platform
-import groovyx.gpars.group.DefaultPGroup
-
-import com.canoo.dolphin.core.comm.InitializeAttributeCommand
+import com.canoo.dolphin.core.comm.*
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -57,7 +51,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         )
     }
 
-    void switchPmAndSend(ClientPresentationModel switcher, ClientPresentationModel newSource){
+    void switchPmAndSend(ClientPresentationModel switcher, ClientPresentationModel newSource) {
         switcher.syncWith newSource
         send new SwitchPmCommand(pmId: switcher.id, sourcePmId: newSource.id)
     }
@@ -72,7 +66,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     def group = new DefaultPGroup(poolSize)
 
-    void send(Command command, Closure onFinished = null ) {
+    void send(Command command, Closure onFinished = null) {
         def result = new DataflowVariable()
         processAsync {
             log.info "C: transmitting $command"
@@ -109,7 +103,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
             return
         }
-        clientAttributes.findAll{ it.value != serverCommand.newValue }.each { outdated ->
+        clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
             log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
             outdated.value = serverCommand.newValue
         }
@@ -150,9 +144,9 @@ abstract class ClientConnector implements PropertyChangeListener {
         return serverCommand.pmId
     }
 
-    def handle(InitializeAttributeCommand serverCommand){
+    def handle(InitializeAttributeCommand serverCommand) {
         def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
-        transmit(new AttributeCreatedCommand(pmId: serverCommand.pmId, attributeId: attribute.id, propertyName: serverCommand.propertyName, newValue:serverCommand.newValue))
+        transmit(new AttributeCreatedCommand(pmId: serverCommand.pmId, attributeId: attribute.id, propertyName: serverCommand.propertyName, newValue: serverCommand.newValue))
 
         if (!clientModelStore.containsPm(serverCommand.pmId)) {
             clientModelStore.storePm(serverCommand.pmId, new ClientPresentationModel(serverCommand.pmId, [attribute]))
@@ -160,7 +154,72 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
         def pm = clientModelStore.findPmById(serverCommand.pmId)
         pm.addAttribute(attribute)
-        return null // already there, no need to return it
+        return serverCommand.pmId // todo dk: check and test
     }
 
+    def handle(InitializeSharedAttributeCommand serverCommand) {
+
+        // todo: check if attribute for that PM already exists and use it
+
+        ClientPresentationModel sharedPm = clientModelStore.findPmById(serverCommand.sharedPmId)
+        if (!sharedPm) {
+            storeAndSendAttributeWithNewPm serverCommand.sharedPmId, serverCommand.sharedPropertyName, serverCommand.newValue
+        }
+
+        ClientAttribute sharedAttr = findAttributeByPmIdAndPropName(serverCommand.sharedPmId, serverCommand.sharedPropertyName)
+
+        if (!sharedAttr) {
+            sharedAttr = storeAndSendAttributeWithExistingPm serverCommand.sharedPmId, serverCommand.sharedPropertyName, serverCommand.newValue
+        }
+
+        if (null != serverCommand.newValue) {
+            sharedAttr.value = serverCommand.newValue
+        }
+
+        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
+        attribute.syncWith(sharedAttr)
+
+        if (!clientModelStore.containsPm(serverCommand.pmId)) {
+            clientModelStore.storePm(serverCommand.pmId, new ClientPresentationModel(serverCommand.pmId, [attribute]))
+            return serverCommand.pmId
+        }
+        def pm = clientModelStore.findPmById(serverCommand.pmId)
+        pm.addAttribute(attribute)
+
+        return serverCommand.pmId
+    }
+
+    /** May return null if Attribute not found but throws no MissingPropertyException */
+    def BaseAttribute findAttributeByPmIdAndPropName(String pmId, propertyName) {
+        clientModelStore.findPmById(pmId).attributes.find { it.propertyName == propertyName }
+    }
+
+    def ClientAttribute storeAndSendAttributeWithExistingPm(String pmId, String propertyName, newValue) {
+        ClientAttribute attribute = new ClientAttribute(propertyName, newValue)
+        transmit(new AttributeCreatedCommand(pmId: pmId, attributeId: attribute.id, propertyName: propertyName, newValue: newValue))
+        clientModelStore.findPmById(pmId).addAttribute(attribute)
+        return attribute
+    }
+
+    def ClientAttribute storeAndSendAttributeWithNewPm(String pmId, String propertyName, newValue) {
+        def attribute = new ClientAttribute(propertyName, newValue)
+        transmit(new AttributeCreatedCommand(pmId: pmId, attributeId: attribute.id, propertyName: propertyName, newValue: newValue))
+        clientModelStore.storePm(pmId, new ClientPresentationModel(pmId, [attribute]))
+        return attribute
+    }
+
+
+    void withPm(String viewPmId, String discriminator, Closure onFinished) {
+        ClientPresentationModel result = clientModelStore.findPmById("$viewPmId-$discriminator")
+        if (result) {
+            onFinished result
+            return
+        }
+        send(new GetPmCommand(pmType: viewPmId, selector: discriminator)) { pmIds ->
+            def theOnlyOne = pmIds.toList().first()
+            assert theOnlyOne == "$viewPmId-$discriminator" // sanity check
+            result = clientModelStore.findPmById(theOnlyOne)
+            onFinished result
+        }
+    }
 }

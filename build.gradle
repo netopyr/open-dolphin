@@ -111,3 +111,18 @@ task synchronizeBeacon << {
     }
     */
 }
+
+task copyCoreJars(type: Copy) {
+    from 'client/build/libs'
+    from 'server/build/libs'
+    from 'combined/build/libs'
+    from 'shared/build/libs'
+    into './jars'
+}
+task copyDemoJars(type: Copy) {
+    from 'demo/client/build/libs'
+    from 'demo/server/build/libs'
+    from 'demo/combined/build/libs'
+    from 'demo/shared/build/libs'
+    into './jars/demo'
+}
