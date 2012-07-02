@@ -12,13 +12,14 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
 import com.canoo.dolphin.core.comm.*
+import groovyx.gpars.group.PGroup
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
-
     Codec codec
 
     ClientModelStore clientModelStore = new ClientModelStore()
+    UiThreadHandler uiThreadHandler = new JavaFXUiThreadHandler()
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
@@ -64,7 +65,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         clientModelStore.findAllClientAttributesById(id)
     }
 
-    def group = new DefaultPGroup(poolSize)
+    PGroup group = new DefaultPGroup(poolSize)
 
     void send(Command command, Closure onFinished = null) {
         def result = new DataflowVariable()
@@ -85,12 +86,12 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
     }
 
-    void processAsync(Closure processing) {
+    void processAsync(Runnable processing) {
         group.task processing
     }
 
-    void insideUiThread(Closure processing) {
-        Platform.runLater processing
+    void insideUiThread(Runnable processing) {
+        uiThreadHandler.executeInsideUiThread(processing)
     }
 
     def handle(Command serverCommand, Set pmIds) {
@@ -190,18 +191,18 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     /** May return null if Attribute not found but throws no MissingPropertyException */
-    def BaseAttribute findAttributeByPmIdAndPropName(String pmId, propertyName) {
+    BaseAttribute findAttributeByPmIdAndPropName(String pmId, propertyName) {
         clientModelStore.findPmById(pmId).attributes.find { it.propertyName == propertyName }
     }
 
-    def ClientAttribute storeAndSendAttributeWithExistingPm(String pmId, String propertyName, newValue) {
+    ClientAttribute storeAndSendAttributeWithExistingPm(String pmId, String propertyName, newValue) {
         ClientAttribute attribute = new ClientAttribute(propertyName, newValue)
         transmit(new AttributeCreatedCommand(pmId: pmId, attributeId: attribute.id, propertyName: propertyName, newValue: newValue))
         clientModelStore.findPmById(pmId).addAttribute(attribute)
         return attribute
     }
 
-    def ClientAttribute storeAndSendAttributeWithNewPm(String pmId, String propertyName, newValue) {
+    ClientAttribute storeAndSendAttributeWithNewPm(String pmId, String propertyName, newValue) {
         def attribute = new ClientAttribute(propertyName, newValue)
         transmit(new AttributeCreatedCommand(pmId: pmId, attributeId: attribute.id, propertyName: propertyName, newValue: newValue))
         clientModelStore.storePm(pmId, new ClientPresentationModel(pmId, [attribute]))
