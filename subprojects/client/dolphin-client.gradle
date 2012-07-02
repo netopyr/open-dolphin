@@ -1,4 +1,6 @@
-javaFxHome = System.env['JAVAFX_HOME']
+ext {
+    javaFxHome = System.env['JAVAFX_HOME']
+}
 
 if (!javaFxHome) {
     println "please set JAVAFX_HOME to the dir that contains the rt/lib/jfxrt.jar"
@@ -11,9 +13,9 @@ repositories {
 }
 
 dependencies {
-    compile ':jfxrt:'
-    compile project(':shared')
-    compile 'org.codehaus.gpars:gpars:0.12'
+    compile project(':shared'),
+            ':jfxrt:',
+            'org.codehaus.gpars:gpars:0.12'
 }
 
 configure(install.repositories.mavenInstaller) {
