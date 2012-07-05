@@ -1,2 +1,30 @@
-include 'shared', 'server', 'client', 'combined'
-include 'demo:shared', 'demo:client', 'demo:server', 'demo:combined'
+include 'shared'
+include 'server'
+include 'client'
+// include 'client-common'
+// include 'client-javafx'
+// include 'client-swing'
+// include 'client-swt'
+
+include 'combined-javafx'
+
+include 'demo-javafx/shared'
+include 'demo-javafx/server'
+include 'demo-javafx/client'
+include 'demo-javafx/combined'
+
+rootProject.name = 'dolphin'
+rootProject.children.each { project ->
+    String fileBaseName = project.name
+    String projectDirName = "subprojects/$fileBaseName"
+    project.projectDir = new File(settingsDir, projectDirName)
+    if (project.name.startsWith('demo')) {
+        String[] paths = project.name.split('/')
+        project.buildFileName = "${paths[0]}-${paths[1]}.gradle"
+        project.name = "${paths[0]}-${paths[1]}"
+    } else {
+        project.buildFileName = "${rootProject.name}-${project.name}.gradle"
+    }
+    assert project.projectDir.isDirectory()
+    assert project.buildFile.isFile()
+}

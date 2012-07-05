@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':server'),
+            project(':demo-javafx-shared')
+}

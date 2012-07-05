@@ -1,94 +1,47 @@
 apply plugin: 'idea'
 
+ext {
+    dolphinVersion = '0.1-SNAPSHOT'
+}
+
 subprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'idea'
 
-	version = '0.1-SNAPSHOT'
-
-    apply plugin:'groovy'
-    apply plugin:'idea'
+    sourceCompatibility = '1.5'
+    targetCompatibility = '1.5'
+    archivesBaseName = "dolphin-${project.name}"
+    version = dolphinVersion
 
     repositories {
-    	mavenCentral()
+        mavenCentral()
     }
 
     dependencies {
-    	groovy  'org.codehaus.groovy:groovy-all:1.8.5'
+        groovy  'org.codehaus.groovy:groovy-all:1.8.6'
         testCompile 'org.spockframework:spock-core:0.6-groovy-1.8', {
             exclude group:'org.codehaus.groovy', module: 'groovy-all'
         }
         testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
     }
 
-    /*
-    Code Coverage. Eventually move to a plugin.
-    */
-    def cobSerFile="${project.buildDir}/cobertura.ser"
-    def mainCompiledClasses= sourceSets.main.output.classesDir
-    def srcCopy="${mainCompiledClasses}-copy"
-
-    test.doFirst  {
-
-        if ( ! project.hasProperty('coverage')) return
-
-        ant {
-            // delete data file for Cobertura, otherwise coverage would be added
-            delete file: cobSerFile, failonerror: false
-            // delete copy of original classes
-            delete dir: srcCopy, failonerror: false
-            // import cobertura task, so it is available in the script
-            taskdef resource: "tasks.properties", classpath: configurations.testRuntime.asPath
-            // create copy (backup) of original class files
-            copy(todir: srcCopy) {
-                fileset dir: mainCompiledClasses
-            }
-            // instrument the relevant classes in-place
-            'cobertura-instrument'(datafile:cobSerFile) {
-                fileset dir: mainCompiledClasses, includes: "com/canoo/**/*.class"
-            }
-        }
-    }
-
-    test {
-        systemProperties.put("net.sourceforge.cobertura.datafile", cobSerFile)
-    }
-
-    test.doLast {
-
-        if ( ! project.hasProperty('coverage')) return
-
-        if (new File(srcCopy).exists()) {
-            // replace instrumented classes with backup copy again
-            ant {
-                delete file: mainCompiledClasses
-                move file: srcCopy, tofile: mainCompiledClasses
-            }
-            // create cobertura reports
-            ant.'cobertura-report'(destdir:"${project.buildDirName}/reports/coverage",
-                 format:'html', datafile:cobSerFile) {
-                sourceSets.main.allSource.srcDirs.each {
-                    fileset dir: it
-                }
-            }
-        }
-    }
-
-
     task makeDirs(description:'make all dirs for project setup') << {
-    	def sources = [sourceSets.main, sourceSets.test]
-    	sources*.allSource*.srcDirs.flatten().each { File srcDir ->
-    		println "making $srcDir"
-    		srcDir.mkdirs()
-    	}
+        def sources = [sourceSets.main, sourceSets.test]
+        sources*.allSource*.srcDirs.flatten().each { File srcDir ->
+            println "making $srcDir"
+            srcDir.mkdirs()
+        }
     }
-}
 
-task wrap(type:Wrapper, description:"create a gradlew") {
-    gradleVersion = '1.0-milestone-6'
+    apply from: "${rootDir}/gradle/coverage.gradle"
 }
 
 def mavenizedProjects() {
     [
             project(':client'),
+            // project(':client-javafx'),
+            // project(':client-swing'),
+            // project(':client-swt'),
             project(':shared'),
             project(':server')
     ]
@@ -100,29 +53,8 @@ configure(mavenizedProjects()) {
     apply plugin: 'maven'
 }
 
-task synchronizeBeacon << {
-    ant.delete(dir: '../beacon/lib', includes:  '*.jar')
-    /*
-    for (p in mavenizedProjects()) {
-        copy {
-            from(p.jar.outputs.files)
-            into('../beacon/lib')
-        }
-    }
-    */
-}
+subprojects.each { evaluationDependsOn it.path }
 
-task copyCoreJars(type: Copy) {
-    from 'client/build/libs'
-    from 'server/build/libs'
-    from 'combined/build/libs'
-    from 'shared/build/libs'
-    into './jars'
-}
-task copyDemoJars(type: Copy) {
-    from 'demo/client/build/libs'
-    from 'demo/server/build/libs'
-    from 'demo/combined/build/libs'
-    from 'demo/shared/build/libs'
-    into './jars/demo'
+task wrapper(type:Wrapper, description:"create a gradlew") {
+    gradleVersion = '1.0'
 }
