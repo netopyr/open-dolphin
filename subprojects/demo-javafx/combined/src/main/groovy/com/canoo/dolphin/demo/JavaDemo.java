@@ -1,7 +1,7 @@
 package com.canoo.dolphin.demo;
 
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector;
-import groovy.lang.Closure;
+import com.canoo.dolphin.core.client.comm.UiThreadHandler;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -11,23 +11,26 @@ public class JavaDemo {
         InMemoryConfig inMemoryConfig = new InMemoryConfig();
         InMemoryClientConnector connector = (InMemoryClientConnector) inMemoryConfig.getConnector();
 
-        connector.setHowToProcessInsideUI(new Closure("") {
-            public Object call(final Closure whatToDoInside) {
+        connector.setUiThreadHandler(new UiThreadHandler() {
+            @Override
+            public void executeInsideUiThread(Runnable runnable) {
                 System.out.println("going inside ui");
                 // do inside the UI thread:
-                whatToDoInside.call();
+                runnable.run();
                 latch.countDown();
-                return null;
             }
         });
-
         inMemoryConfig.withActions();
         inMemoryConfig.register(new JavaAction());
 
         ConsoleView.show(connector);
         System.out.println("waiting to finish");
-        try { latch.await(); } catch (InterruptedException e) { e.printStackTrace();  }
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
 }
 
 

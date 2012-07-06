@@ -47,7 +47,7 @@ class PushView {
                 scene width: 700, height: 500, {
                     borderPane {
                         top margin:10, {
-                            rectangle(x: 0, y: 0, width: 1, height: 40, fill: transparent) // rigidArea
+                            //rectangle(x: 0, y: 0, width: 1, height: 40, fill: transparent) // rigidArea only needed with the b15, no longer with b19
                             hbox alignment:'center', prefWidth: 700, spacing:5, id:'header', {
                                 label 'Selected'
                                 rectangle(id:'selRect', arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {

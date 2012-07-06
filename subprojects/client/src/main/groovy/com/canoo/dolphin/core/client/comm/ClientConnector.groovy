@@ -18,8 +18,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
 
     ClientModelStore clientModelStore = new ClientModelStore()
-
-    Closure howToProcessInsideUI // must be set from the outside - toolkit specific
+    UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
@@ -90,12 +89,12 @@ abstract class ClientConnector implements PropertyChangeListener {
         group.task processing
     }
 
-    void insideUiThread(Closure processing) {
-        if (howToProcessInsideUI) {
-            howToProcessInsideUI processing
+    void insideUiThread(Runnable processing) {
+        if (uiThreadHandler) {
+            uiThreadHandler.executeInsideUiThread( processing )
         } else {
             log.warning("please provide howToProcessInsideUI handler")
-            processing
+            processing.run()
         }
     }
 
