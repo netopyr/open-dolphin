@@ -8,8 +8,7 @@ import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPmAction
 import com.canoo.dolphin.core.client.comm.ClientConnector
-import javafx.application.Platform
-import com.canoo.dolphin.core.client.comm.UiThreadHandler
+import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
 
 class InMemoryConfig {
 
@@ -19,7 +18,7 @@ class InMemoryConfig {
         LogConfig.logCommunication()
         connector.sleepMillis = 100
         connector.receiver = receiver
-        connector.uiThreadHandler = { Platform.runLater it } as UiThreadHandler
+        connector.uiThreadHandler = new JavaFXUiThreadHandler()
     }
 
     ClientConnector getConnector() { InMemoryClientConnector.instance }
