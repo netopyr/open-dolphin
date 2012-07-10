@@ -22,12 +22,12 @@ class CustomAction {
         registry.register 'setPurpose', impl.curry('purpose')
         registry.register 'pullVehicles', { NamedCommand command, response ->
             vehicles.each {
-                response << new InitializeSharedAttributeCommand(pmId: it, propertyName: X, newValue: rand(), sharedPmId: "vehicle-$it", sharedPropertyName: X)
-                response << new InitializeSharedAttributeCommand(pmId: it, propertyName: Y, newValue: rand(), sharedPmId: "vehicle-$it", sharedPropertyName: Y)
-                response << new InitializeAttributeCommand(pmId: it, propertyName: WIDTH, newValue: 80)
+                response << new InitializeAttributeCommand(pmId: it, propertyName: X,      newValue: rand(), dataId: "vehicle-${it}.x")
+                response << new InitializeAttributeCommand(pmId: it, propertyName: Y,      newValue: rand(), dataId: "vehicle-${it}.y")
+                response << new InitializeAttributeCommand(pmId: it, propertyName: WIDTH,  newValue: 80)
                 response << new InitializeAttributeCommand(pmId: it, propertyName: HEIGHT, newValue: 25)
-                response << new InitializeSharedAttributeCommand(pmId: it, propertyName: ROTATE, newValue: rand(), sharedPmId: "vehicle-$it", sharedPropertyName: ROTATE)
-                response << new InitializeSharedAttributeCommand(pmId: it, propertyName: COLOR, newValue: it, sharedPmId: "vehicle-$it", sharedPropertyName: COLOR)
+                response << new InitializeAttributeCommand(pmId: it, propertyName: ROTATE, newValue: rand(), dataId: "vehicle-${it}.rotate")
+                response << new InitializeAttributeCommand(pmId: it, propertyName: COLOR,  newValue: it,     dataId: "vehicle-${it}.color")
             }
         }
         registry.register 'longPoll', { NamedCommand command, response ->
@@ -42,24 +42,27 @@ class CustomAction {
         registry.register 'pullTasks', { NamedCommand command, response ->
             vehicles.each {
                 response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "description", newValue: rand())
-                response << new InitializeSharedAttributeCommand(pmId: "TaskFor " + it, propertyName: "vehicleFill", newValue: it, sharedPmId: "vehicle-$it", sharedPropertyName: COLOR)
-                response << new InitializeSharedAttributeCommand(pmId: "TaskFor " + it, propertyName: "vehicleX", newValue: null, sharedPmId: "vehicle-$it", sharedPropertyName: X)
+                response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "fill", dataId: "vehicle-${it}.color")
+                response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "x",    dataId: "vehicle-${it}.x")
             }
         }
 
         registry.register GetPmCommand, { GetPmCommand command, response ->
-
             switch (command.pmType) {
                 case 'vehicleDetail':
                     def pmId = command.pmId
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: WIDTH,     newValue: rand(),  )
-                    response << new InitializeSharedAttributeCommand(pmId: pmId, propertyName: X,     newValue: null, sharedPmId: "vehicle-${ command.selector }", sharedPropertyName: X)
-                    response << new InitializeSharedAttributeCommand(pmId: pmId, propertyName: Y,      newValue: null, sharedPmId: "vehicle-${ command.selector }", sharedPropertyName: Y)
-                    response << new InitializeSharedAttributeCommand(pmId: pmId, propertyName: ROTATE, newValue: null, sharedPmId: "vehicle-${ command.selector }", sharedPropertyName: ROTATE)
-                    response << new InitializeSharedAttributeCommand(pmId: pmId, propertyName: COLOR, newValue: null, sharedPmId: "vehicle-${ command.selector }", sharedPropertyName: COLOR)
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: WIDTH,  newValue: rand(),  )
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: X,      dataId: "vehicle-${command.selector}.x")//,      newValue: attributeValue("vehicle-${command.selector}.x"))
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: Y,      dataId: "vehicle-${command.selector}.y")//,      newValue: attributeValue("vehicle-${command.selector}.y"))
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: ROTATE, dataId: "vehicle-${command.selector}.rotate")//, newValue: attributeValue("vehicle-${command.selector}.rotate"))
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: COLOR,  dataId: "vehicle-${command.selector}.color")//,  newValue: attributeValue("vehicle-${command.selector}.color"))
                     break
             }
-
         }
+    }
+
+    private attributeValue(String dataId) {
+        def attr = StoreAttributeAction.instance.modelStore.values().attributes.flatten().find { it.dataId == dataId }
+        attr?.value
     }
 }

@@ -46,7 +46,7 @@ class SharedAttributesView {
                             tableView(id: 'taskTable', opacity: 0.2d) {
                                 tableColumn(property: 'id', text: "descr", prefWidth: 100)
                                 vehicleFillCol = tableColumn(text: 'Vehicle Color', prefWidth: 50)
-                                vehicleX = tableColumn(text: 'Vehicle X', prefWidth: 50)
+                                vehicleXCol = tableColumn(text: 'Vehicle X', prefWidth: 50)
                             }
                         }
                     }
@@ -61,8 +61,8 @@ class SharedAttributesView {
             yCol.cellValueFactory = { return it.getValue().y.valueProperty() } as Callback
             rotCol.cellValueFactory = { return it.getValue().rotate.valueProperty() } as Callback
 
-            vehicleFillCol.cellValueFactory = { return it.getValue().vehicleFill.valueProperty() } as Callback
-            vehicleX.cellValueFactory = { return it.getValue().vehicleX.valueProperty() } as Callback
+            vehicleFillCol.cellValueFactory = { return it.getValue().fill.valueProperty() } as Callback
+            vehicleXCol.cellValueFactory = { return it.getValue().x.valueProperty() } as Callback
 
 
             // startup and main loop
@@ -91,7 +91,7 @@ class SharedAttributesView {
             } as ChangeListener)
 
             taskTable.selectionModel.selectedItemProperty().addListener({ o, oldVal, selectedPm ->
-                selectedVehicle.vehiclePmId.value = selectedPm.vehicleFill.value
+                selectedVehicle.vehiclePmId.value = selectedPm.fill.value
             } as ChangeListener)
 
             selectedVehicle.vehiclePmId.valueProperty().addListener({ o, oldVal, selectedPmId ->

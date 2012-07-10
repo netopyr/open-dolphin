@@ -39,4 +39,9 @@ class ClientModelStore {
     void storePm(String id, ClientPresentationModel model) {
         modelStore[id] = model
     }
+
+    List<ClientAttribute> findAllClientAttributesByDataId(List<String> ids) {
+        if(!ids || ids == [null]) return []
+        modelStore.values().attributes.flatten().findAll { it.dataId in ids }
+    }
 }

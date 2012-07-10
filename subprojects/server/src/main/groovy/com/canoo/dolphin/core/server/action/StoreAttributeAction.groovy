@@ -16,6 +16,7 @@ class StoreAttributeAction {
             def attribute = new ServerAttribute(command.propertyName)
             attribute.id = command.attributeId
             attribute.value = command.newValue
+            attribute.dataId = command.dataId
             if (!modelStore.containsKey(command.pmId)) modelStore[command.pmId] = new ServerPresentationModel(command.pmId, [])
             def pm = modelStore[command.pmId]
             pm.attributes << attribute

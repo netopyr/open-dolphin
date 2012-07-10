@@ -10,6 +10,7 @@ abstract class BaseAttribute {
 
     long id = System.identityHashCode(this) // todo: dk: has to change to tell client from server
     final String propertyName
+    String dataId // application specific semantics apply
 
     abstract Object getValue()
     abstract void setValue(Object value)
@@ -19,7 +20,7 @@ abstract class BaseAttribute {
         this.propertyName = propertyName
     }
 
-    String toString() { "$id : $propertyName" }
+    String toString() { "$id : $propertyName ($dataId)" }
     // more may come later
 
     void syncWith(BaseAttribute source) {

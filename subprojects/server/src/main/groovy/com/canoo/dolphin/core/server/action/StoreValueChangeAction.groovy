@@ -10,6 +10,8 @@ class StoreValueChangeAction {
             def attributes = StoreAttributeAction.instance.modelStore.values().attributes.flatten()
             def atts = attributes.findAll { it.id == command.attributeId}
             atts.each { it.value = command.newValue} // no change check here since we have no events on the server side
+            atts = attributes.findAll { it.dataId in atts.dataId }
+            atts.each { it.value = command.newValue} // no change check here since we have no events on the server side
         }
     }
 

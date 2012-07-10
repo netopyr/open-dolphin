@@ -4,8 +4,8 @@ class InitializeAttributeCommand extends Command {
 
     String pmId
     String propertyName
+    String dataId
+    def    newValue
 
-    def  newValue
-
-    String toString() { super.toString() + " pm '$pmId' property '$propertyName' initial value '$newValue'"}
+    String toString() { super.toString() + " pm '$pmId' property '$propertyName' initial value '$newValue' dataId $dataId"}
 }
