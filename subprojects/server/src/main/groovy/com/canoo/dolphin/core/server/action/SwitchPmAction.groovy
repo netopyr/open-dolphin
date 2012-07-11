@@ -1,5 +1,6 @@
 package com.canoo.dolphin.core.server.action
 
+import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.comm.SwitchPmCommand
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
@@ -11,12 +12,17 @@ import com.canoo.dolphin.core.server.comm.ActionRegistry
  * When a switch originates on the server, though, the server may still send
  * SwitchPmCommands to the client.
  */
-class SwitchPmAction {
+class SwitchPmAction implements ServerAction {
+    private final ModelStore modelStore
 
-    def registerIn(ActionRegistry registry) {
+    SwitchPmAction(ModelStore modelStore) {
+        this.modelStore = modelStore
+    }
+
+    void registerIn(ActionRegistry registry) {
         registry.register SwitchPmCommand, { SwitchPmCommand command, response ->
-            def actualPm = StoreAttributeAction.instance.modelStore.findPresentationModelById(command.pmId)
-            def sourcePm = StoreAttributeAction.instance.modelStore.findPresentationModelById(command.sourcePmId)
+            def actualPm = modelStore.findPresentationModelById(command.pmId)
+            def sourcePm = modelStore.findPresentationModelById(command.sourcePmId)
 
             actualPm.syncWith sourcePm
         }

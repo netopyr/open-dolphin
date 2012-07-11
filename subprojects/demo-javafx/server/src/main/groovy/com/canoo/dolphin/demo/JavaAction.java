@@ -2,17 +2,16 @@ package com.canoo.dolphin.demo;
 
 import com.canoo.dolphin.core.comm.InitializeAttributeCommand;
 import com.canoo.dolphin.core.comm.NamedCommand;
+import com.canoo.dolphin.core.server.action.ServerAction;
 import com.canoo.dolphin.core.server.comm.ActionRegistry;
 import groovy.lang.Closure;
 
 import java.util.List;
 
-public class JavaAction {
-
-    void registerIn(ActionRegistry registry) {
+public class JavaAction implements ServerAction {
+    public void registerIn(ActionRegistry registry) {
 
         registry.register("javaAction", new Closure(this) {
-
             public Object call(NamedCommand cmd, List response) {
 
                 InitializeAttributeCommand initializeAttributeCommand = new InitializeAttributeCommand();
@@ -23,6 +22,6 @@ public class JavaAction {
                 response.add(initializeAttributeCommand);
                 return response;
             }
-        }  );
+        });
     }
 }

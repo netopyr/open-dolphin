@@ -1,18 +1,19 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.LogConfig
+import com.canoo.dolphin.core.ModelStore
+import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-
-import com.canoo.dolphin.core.server.comm.Receiver
+import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPmAction
-import com.canoo.dolphin.core.client.comm.ClientConnector
-import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
+import com.canoo.dolphin.core.server.comm.Receiver
 
 class InMemoryConfig {
 
     Receiver receiver = new Receiver()
+    ModelStore modelStore = new ModelStore()
 
     InMemoryConfig() {
         LogConfig.logCommunication()
@@ -25,10 +26,10 @@ class InMemoryConfig {
 
     void withActions() {
         [
-            new StoreValueChangeAction(),
-            StoreAttributeAction.instance,
-            new SwitchPmAction(),
-            new CustomAction(), // just to have also some application-specific action
+                new StoreValueChangeAction(modelStore),
+                new StoreAttributeAction(modelStore),
+                new SwitchPmAction(modelStore),
+                new CustomAction(modelStore), // just to have also some application-specific action
         ].each { register it }
     }
 
