@@ -12,7 +12,7 @@ class PullPmValuesAction {
     def registerIn(ActionRegistry registry) {
         registry.register GetPmCommand, { GetPmCommand command, response ->
 
-            BasePresentationModel pm = StoreAttributeAction.instance.modelStore[command.pmId]
+            BasePresentationModel pm = StoreAttributeAction.instance.modelStore.findPresentationModelById(command.pmId)
             pm.attributes.each {
                 response << new InitializeAttributeCommand(pmId: pm.id, propertyName: it.propertyName, newValue: it.value)
             }

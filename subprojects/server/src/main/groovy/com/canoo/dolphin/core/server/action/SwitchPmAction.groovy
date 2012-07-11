@@ -15,8 +15,8 @@ class SwitchPmAction {
 
     def registerIn(ActionRegistry registry) {
         registry.register SwitchPmCommand, { SwitchPmCommand command, response ->
-            def actualPm = StoreAttributeAction.instance.modelStore[command.pmId]
-            def sourcePm = StoreAttributeAction.instance.modelStore[command.sourcePmId]
+            def actualPm = StoreAttributeAction.instance.modelStore.findPresentationModelById(command.pmId)
+            def sourcePm = StoreAttributeAction.instance.modelStore.findPresentationModelById(command.sourcePmId)
 
             actualPm.syncWith sourcePm
         }

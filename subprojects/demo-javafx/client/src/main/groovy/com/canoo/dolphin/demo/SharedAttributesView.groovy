@@ -69,14 +69,14 @@ class SharedAttributesView {
 
             communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
                 for (id in pmIds) {
-                    observableListOfPms << communicator.clientModelStore.findPmById(id)
+                    observableListOfPms << communicator.clientModelStore.findPresentationModelById(id)
                 }
                 fadeTransition(1.s, node: table, to: 1).playFromStart()
             }
 
             communicator.send(new NamedCommand(id: 'pullTasks')) { pmIds ->
                 for (id in pmIds) {
-                    observableListOfTasks << communicator.clientModelStore.findPmById(id)
+                    observableListOfTasks << communicator.clientModelStore.findPresentationModelById(id)
                 }
                 fadeTransition(1.s, node: taskTable, to: 1).playFromStart()
             }

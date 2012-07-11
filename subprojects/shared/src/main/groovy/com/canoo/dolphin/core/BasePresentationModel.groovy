@@ -8,8 +8,8 @@ package com.canoo.dolphin.core
  * a specialized "PersonPresentationModel" or so.
  */
 
-class BasePresentationModel {
-    protected List<BaseAttribute> attributes = new LinkedList<BaseAttribute>().asSynchronized()
+class BasePresentationModel implements PresentationModel {
+    protected List<Attribute> attributes = new LinkedList<Attribute>().asSynchronized()
     final String id
 
     /** @throws AssertionError if the list of attributes is null or empty  **/
@@ -24,7 +24,7 @@ class BasePresentationModel {
     }
 
     /** @return the immutable internal representation */
-    List<BaseAttribute> getAttributes() {
+    List<Attribute> getAttributes() {
         attributes
     }
     
@@ -32,15 +32,27 @@ class BasePresentationModel {
         System.identityHashCode(instance).toString()
     }
 
+    Attribute findAttributeByPropertyName(String propertyName) {
+        attributes.find { it.propertyName == propertyName }
+    }
+
+    Attribute findAttributeByDataId(String dataId) {
+        attributes.find { it.dataId == dataId }
+    }
+
+    Attribute findAttributeById(long id) {
+        attributes.find { it.id == id }
+    }
+
     def propertyMissing(String propName) {
-        def result = attributes.find { it.propertyName == propName }
+        def result = findAttributeByPropertyName(propName)
         if (null == result) throw new MissingPropertyException("The presentation model doesn't understand '$propName'. Known attributes are ${attributes*.propertyName}", propName, this.getClass())
         return result
     }
 
-    void syncWith(BasePresentationModel sourcePm ) {
+    void syncWith(PresentationModel sourcePm ) {
         sourcePm.attributes.each { sourceAttribute ->
-            def attribute = attributes.find { it.propertyName == sourceAttribute.propertyName }
+            def attribute = findAttributeByPropertyName(sourceAttribute.propertyName)
             if (attribute.id == sourceAttribute.id) return
             attribute.syncWith sourceAttribute
         }

@@ -7,12 +7,16 @@ class StoreValueChangeAction {
 
     def registerIn(ActionRegistry registry) {
         registry.register(ValueChangedCommand) { ValueChangedCommand command, response ->
-            def attributes = StoreAttributeAction.instance.modelStore.values().attributes.flatten()
-            def atts = attributes.findAll { it.id == command.attributeId}
-            atts.each { it.value = command.newValue} // no change check here since we have no events on the server side
-            atts = attributes.findAll { it.dataId in atts.dataId }
-            atts.each { it.value = command.newValue} // no change check here since we have no events on the server side
+            def attribute = StoreAttributeAction.instance.modelStore.findAttributeById(command.attributeId)
+            /*
+               attribute should exist in the store before this type of command comes
+               this can only happen if the server is the sole responsible for creating attributes
+            */
+            if (attribute) {
+                attribute.value = command.newValue
+                def attributes = StoreAttributeAction.instance.modelStore.findAllAttributesByDataId(attribute.dataId)
+                attributes.each { it.value = command.newValue }
+            }
         }
     }
-
 }

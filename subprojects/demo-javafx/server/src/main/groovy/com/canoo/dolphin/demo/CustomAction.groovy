@@ -9,7 +9,7 @@ import static com.canoo.dolphin.demo.VehicleProperties.*
 class CustomAction {
 
     def impl = { propertyName, NamedCommand command, response ->
-        def actual = StoreAttributeAction.instance.modelStore['actualPm']
+        def actual = StoreAttributeAction.instance.modelStore.findPresentationModelById('actualPm')
         def att = actual[propertyName]
 
         response << new ValueChangedCommand(attributeId: att.id, oldValue: att.value, newValue: "from server")
@@ -33,7 +33,7 @@ class CustomAction {
         registry.register 'longPoll', { NamedCommand command, response ->
             sleep((Math.random() * 1000).toInteger()) // long-polling: server sleeps until new info is available
             Collections.shuffle(vehicles)
-            def pm = StoreAttributeAction.instance.modelStore[vehicles.first()]
+            def pm = StoreAttributeAction.instance.modelStore.findPresentationModelById(vehicles.first())
             response << new ValueChangedCommand(attributeId: pm[X].id, oldValue: pm[X].value, newValue: rand())
             response << new ValueChangedCommand(attributeId: pm[Y].id, oldValue: pm[Y].value, newValue: rand())
             response << new ValueChangedCommand(attributeId: pm[ROTATE].id, oldValue: pm[ROTATE].value, newValue: rand())
@@ -52,17 +52,12 @@ class CustomAction {
                 case 'vehicleDetail':
                     def pmId = command.pmId
                     response << new InitializeAttributeCommand(pmId: pmId, propertyName: WIDTH,  newValue: rand(),  )
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: X,      dataId: "vehicle-${command.selector}.x")//,      newValue: attributeValue("vehicle-${command.selector}.x"))
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: Y,      dataId: "vehicle-${command.selector}.y")//,      newValue: attributeValue("vehicle-${command.selector}.y"))
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: ROTATE, dataId: "vehicle-${command.selector}.rotate")//, newValue: attributeValue("vehicle-${command.selector}.rotate"))
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: COLOR,  dataId: "vehicle-${command.selector}.color")//,  newValue: attributeValue("vehicle-${command.selector}.color"))
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: X,      dataId: "vehicle-${command.selector}.x")
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: Y,      dataId: "vehicle-${command.selector}.y")
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: ROTATE, dataId: "vehicle-${command.selector}.rotate")
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: COLOR,  dataId: "vehicle-${command.selector}.color")
                     break
             }
         }
-    }
-
-    private attributeValue(String dataId) {
-        def attr = StoreAttributeAction.instance.modelStore.values().attributes.flatten().find { it.dataId == dataId }
-        attr?.value
     }
 }

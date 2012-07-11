@@ -112,7 +112,7 @@ class PushView {
 
             communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
                 for (id in pmIds) {
-                    observableListOfPms << communicator.clientModelStore.findPmById(id)
+                    observableListOfPms << communicator.clientModelStore.findPresentationModelById(id)
                 }
                 fadeTransition(1.s, node:table, to:1).playFromStart()
                 longPoll()
@@ -139,7 +139,7 @@ class PushView {
             selectedVehicle[COLOR].valueProperty().addListener( { o, from, to ->
                 if (from) pmIdsToRect[from].strokeWidth = 0
                 pmIdsToRect[to].strokeWidth = 3
-                table.selectionModel.select communicator.clientModelStore.findPmById(to)
+                table.selectionModel.select communicator.clientModelStore.findPresentationModelById(to)
             } as ChangeListener)
 
             primaryStage.show()

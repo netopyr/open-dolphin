@@ -1,40 +1,36 @@
 package com.canoo.dolphin.core.client.comm
 
-import com.canoo.dolphin.core.BaseAttribute
+import com.canoo.dolphin.core.Attribute
+import com.canoo.dolphin.core.ModelStore
+import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import groovy.util.logging.Log
 import groovyx.gpars.dataflow.DataflowVariable
 import groovyx.gpars.group.DefaultPGroup
+import groovyx.gpars.group.PGroup
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
 import com.canoo.dolphin.core.comm.*
-import groovyx.gpars.group.PGroup
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
 
-    ClientModelStore clientModelStore = new ClientModelStore()
+    ModelStore clientModelStore = new ModelStore()
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
-        // also inform all other attributes of the same id. This may recurse into this method!
-        List<ClientAttribute> clientAttributes = findAllClientAttributesById(evt.source.id)
-        clientAttributes.remove { it.value == evt.newValue } // well, better be safe than sorry
-        clientAttributes.each { it.value = evt.newValue }
-
-        clientAttributes = findAllClientAttributesByDataId([evt.source.dataId])
-        clientAttributes.remove { it.value == evt.newValue } // well, better be safe than sorry
-        clientAttributes.each { it.value = evt.newValue }
+        List<Attribute> attributes = clientModelStore.findAllAttributesByDataId([evt.source.dataId])
+        attributes.each { it.value = evt.newValue }
     }
 
     void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
-        clientModelStore.register(cpm)
+        clientModelStore.add(cpm)
         send constructAttributeCreatedCommand(cpm.id, ca)
     }
 
@@ -65,20 +61,6 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     abstract int getPoolSize()
 
-    List<ClientAttribute> findAllClientAttributesById(long id) {
-        clientModelStore.findAllClientAttributesById(id)
-    }
-
-    // todo: index attributes by dataId
-    private List<ClientAttribute> findAllClientAttributesByDataId(List<String> ids) {
-        clientModelStore.findAllClientAttributesByDataId(ids)
-    }
-
-    // todo: index attributes by dataId
-    private List<ClientAttribute> findAllClientAttributesByDataId(id) {
-        clientModelStore.findAllClientAttributesByDataId([id])
-    }
-
     PGroup group = new DefaultPGroup(poolSize)
 
     void send(Command command, Closure onFinished = null) {
@@ -106,7 +88,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     void insideUiThread(Runnable processing) {
         if (uiThreadHandler) {
-            uiThreadHandler.executeInsideUiThread( processing )
+            uiThreadHandler.executeInsideUiThread(processing)
         } else {
             log.warning("please provide howToProcessInsideUI handler")
             processing.run()
@@ -118,17 +100,16 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     def handle(ValueChangedCommand serverCommand) {
-        List<ClientAttribute> clientAttributes = findAllClientAttributesById(serverCommand.attributeId)
-        if (!clientAttributes) {
+        Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
+        if (!attribute) {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
             return
         }
-        clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
-            log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
-            outdated.value = serverCommand.newValue
-        }
 
-        clientAttributes = findAllClientAttributesByDataId(clientAttributes.dataId.unique())
+        log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
+        attribute.value = serverCommand.newValue
+
+        List<Attribute> clientAttributes = clientModelStore.findAllAttributesByDataId(attribute.dataId)
         clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
             log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
             outdated.value = serverCommand.newValue
@@ -136,12 +117,12 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     def handle(SwitchAttributeIdCommand serverCommand) {
-        def sourceAtt = clientModelStore.findFirstAttributeById(serverCommand.newId) // one is enough
+        def sourceAtt = clientModelStore.findAttributeById(serverCommand.newId) // one is enough
         if (!sourceAtt) {
             log.warning "C: attribute with id '$serverCommand.newId' not found, cannot switch"
             return
         }
-        def switchPm = clientModelStore.findPmById(serverCommand.pmId)
+        def switchPm = clientModelStore.findPresentationModelById(serverCommand.pmId)
         if (!switchPm) {
             log.warning "C: pm with id '$serverCommand.pmId' not found, cannot switch"
             return
@@ -156,12 +137,12 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     def handle(SwitchPmCommand serverCommand) {
-        def switchPm = clientModelStore.findPmById(serverCommand.pmId)
+        def switchPm = clientModelStore.findPresentationModelById(serverCommand.pmId)
         if (!switchPm) {
             log.warning "C: switch pm with id '$serverCommand.pmId' not found, cannot switch"
             return
         }
-        def sourcePm = clientModelStore.findPmById(serverCommand.sourcePmId)
+        def sourcePm = clientModelStore.findPresentationModelById(serverCommand.sourcePmId)
         if (!sourcePm) {
             log.warning "C: source pm with id '$serverCommand.sourcePmId' not found, cannot switch"
             return
@@ -186,92 +167,32 @@ abstract class ClientConnector implements PropertyChangeListener {
                 dataId: attribute.dataId))
         */
 
+        // todo: add check for no-value; null is a valid value
         if (serverCommand.dataId) {
-            def copies = findAllClientAttributesByDataId(serverCommand.dataId)
-            if (null == serverCommand.newValue) {
-                attribute.value = copies.first()?.value
-            } else {
-                copies.each { attr ->
-                    attr.value = attribute.value
+            def copies = clientModelStore.findAllAttributesByDataId(serverCommand.dataId)
+            if (copies) {
+                if (null == serverCommand.newValue) {
+                    attribute.value = copies.first()?.value
+                } else {
+                    copies.each { attr ->
+                        attr.value = attribute.value
+                    }
                 }
             }
         }
 
-        if (!clientModelStore.containsPm(serverCommand.pmId)) {
-            clientModelStore.storePm(serverCommand.pmId, new ClientPresentationModel(serverCommand.pmId, [attribute]))
+        if (!clientModelStore.containsPresentationModel(serverCommand.pmId)) {
+            clientModelStore.add(new ClientPresentationModel(serverCommand.pmId, [attribute]))
             return serverCommand.pmId
         }
-        def pm = clientModelStore.findPmById(serverCommand.pmId)
+        def pm = clientModelStore.findPresentationModelById(serverCommand.pmId)
         pm.addAttribute(attribute)
+        clientModelStore.registerAttribute(attribute)
         return serverCommand.pmId // todo dk: check and test
     }
 
-    /*
-    def handle(InitializeSharedAttributeCommand serverCommand) {
-
-        // todo: check if attribute for that PM already exists and use it
-
-        ClientPresentationModel sharedPm = clientModelStore.findPmById(serverCommand.sharedPmId)
-        if (!sharedPm) {
-            storeAndSendAttributeWithNewPm serverCommand.sharedPmId, serverCommand.sharedPropertyName, serverCommand.newValue
-        }
-
-        ClientAttribute sharedAttr = findAttributeByPmIdAndPropName(serverCommand.sharedPmId, serverCommand.sharedPropertyName)
-
-        if (!sharedAttr) {
-            sharedAttr = storeAndSendAttributeWithExistingPm serverCommand.sharedPmId, serverCommand.sharedPropertyName, serverCommand.newValue
-        }
-
-        if (null != serverCommand.newValue) {
-            sharedAttr.value = serverCommand.newValue
-        }
-
-        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
-        attribute.syncWith(sharedAttr)
-
-        if (!clientModelStore.containsPm(serverCommand.pmId)) {
-            clientModelStore.storePm(serverCommand.pmId, new ClientPresentationModel(serverCommand.pmId, [attribute]))
-            return serverCommand.pmId
-        }
-        def pm = clientModelStore.findPmById(serverCommand.pmId)
-        pm.addAttribute(attribute)
-
-        return serverCommand.pmId
-    }
-    */
-
-    /** May return null if Attribute not found but throws no MissingPropertyException */
-    BaseAttribute findAttributeByPmIdAndPropName(String pmId, propertyName) {
-        clientModelStore.findPmById(pmId).attributes.find { it.propertyName == propertyName }
-    }
-
-    ClientAttribute storeAndSendAttributeWithExistingPm(String pmId, String propertyName, newValue) {
-        ClientAttribute attribute = new ClientAttribute(propertyName, newValue)
-        transmit(new AttributeCreatedCommand(
-                pmId: pmId,
-                attributeId: attribute.id,
-                propertyName: propertyName,
-                newValue: newValue,
-                dataId: attribute.dataId))
-        clientModelStore.findPmById(pmId).addAttribute(attribute)
-        return attribute
-    }
-
-    ClientAttribute storeAndSendAttributeWithNewPm(String pmId, String propertyName, newValue) {
-        def attribute = new ClientAttribute(propertyName, newValue)
-        transmit(new AttributeCreatedCommand(
-                pmId: pmId,
-                attributeId: attribute.id,
-                propertyName: propertyName,
-                newValue: newValue,
-                dataId: attribute.dataId))
-        clientModelStore.storePm(pmId, new ClientPresentationModel(pmId, [attribute]))
-        return attribute
-    }
-
-
     void withPm(String viewPmId, String discriminator, Closure onFinished) {
-        ClientPresentationModel result = clientModelStore.findPmById("$viewPmId-$discriminator")
+        PresentationModel result = clientModelStore.findPresentationModelById("$viewPmId-$discriminator")
         if (result) {
             onFinished result
             return
@@ -279,7 +200,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         send(new GetPmCommand(pmType: viewPmId, selector: discriminator)) { pmIds ->
             def theOnlyOne = pmIds.toList().first()
             assert theOnlyOne == "$viewPmId-$discriminator" // sanity check
-            result = clientModelStore.findPmById(theOnlyOne)
+            result = clientModelStore.findPresentationModelById(theOnlyOne)
             onFinished result
         }
     }
