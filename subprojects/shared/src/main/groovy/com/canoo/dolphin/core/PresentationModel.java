@@ -14,4 +14,6 @@ public interface PresentationModel {
     Attribute findAttributeById(long id);
 
     void syncWith(PresentationModel other);
+
+    String getPresentationModelType();
 }

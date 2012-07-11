@@ -37,7 +37,7 @@ class PushView {
                 'selectedVehicle',
                 [X, Y, WIDTH, HEIGHT, ROTATE, COLOR].collect { new ClientAttribute(it) }
         )
-        communicator.clientModelStore.add selectedVehicle
+        //communicator.clientModelStore.add selectedVehicle
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle

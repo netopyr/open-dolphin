@@ -11,6 +11,7 @@ package com.canoo.dolphin.core
 class BasePresentationModel implements PresentationModel {
     protected List<Attribute> attributes = new LinkedList<Attribute>().asSynchronized()
     final String id
+    String presentationModelType
 
     /** @throws AssertionError if the list of attributes is null or empty  **/
     BasePresentationModel(List<BaseAttribute> attributes) {
