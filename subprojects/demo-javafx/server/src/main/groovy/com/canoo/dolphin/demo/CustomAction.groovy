@@ -10,7 +10,7 @@ class CustomAction {
 
     def impl = { propertyName, NamedCommand command, response ->
         def actual = StoreAttributeAction.instance.modelStore.findPresentationModelById('actualPm')
-        def att = actual[propertyName]
+        def att = actual.findAttributeByPropertyName(propertyName)
 
         response << new ValueChangedCommand(attributeId: att.id, oldValue: att.value, newValue: "from server")
     }

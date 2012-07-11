@@ -21,7 +21,7 @@ public class ModelStore {
             String oldDataId = (String) event.getOldValue();
             String newDataId = (String) event.getNewValue();
 
-            if (null != oldDataId) removeAttributeByDataId(oldDataId);
+            if (null != oldDataId) removeAttributeByDataId(attribute, oldDataId);
             if (null != newDataId) addAttributeByDataId(attribute);
         }
     };
@@ -32,10 +32,9 @@ public class ModelStore {
         if (!presentationModels.containsValue(model)) {
             presentationModels.put(model.getId(), model);
             for (Attribute attribute : model.getAttributes()) {
-                if (null == attribute.getDataId()) continue;
                 addAttributeById(attribute);
-                addAttributeByDataId(attribute);
                 attribute.addPropertyChangeListener(Attribute.DATA_ID_PROPERTY, ATTRIBUTE_WORKER);
+                if (!isBlank(attribute.getDataId())) addAttributeByDataId(attribute);
             }
             added = true;
         }
@@ -48,10 +47,9 @@ public class ModelStore {
         if (presentationModels.containsValue(model)) {
             presentationModels.remove(model.getId());
             for (Attribute attribute : model.getAttributes()) {
-                if (null == attribute.getDataId()) continue;
                 removeAttributeById(attribute);
-                removeAttributeByDataId(attribute);
                 attribute.removePropertyChangeListener(Attribute.DATA_ID_PROPERTY, ATTRIBUTE_WORKER);
+                if (!isBlank(attribute.getDataId())) removeAttributeByDataId(attribute);
             }
             removed = true;
         }
@@ -71,7 +69,7 @@ public class ModelStore {
     private void addAttributeByDataId(Attribute attribute) {
         if (null == attribute) return;
         String dataId = attribute.getDataId();
-        if (null == dataId) return;
+        if (isBlank(dataId)) return;
         List<Attribute> list = attributesPerDataId.get(dataId);
         if (null == list) {
             list = new ArrayList<Attribute>();
@@ -83,25 +81,18 @@ public class ModelStore {
     private void removeAttributeByDataId(Attribute attribute) {
         if (null == attribute) return;
         String dataId = attribute.getDataId();
-        if (null == dataId) return;
+        if (isBlank(dataId)) return;
         List<Attribute> list = attributesPerDataId.get(dataId);
         if (null != list) {
             list.remove(attribute);
         }
     }
 
-    private void removeAttributeByDataId(String dataId) {
-        if (null == dataId) return;
+    private void removeAttributeByDataId(Attribute attribute, String dataId) {
+        if (isBlank(dataId)) return;
         List<Attribute> list = attributesPerDataId.get(dataId);
         if (null == list) return;
-        Attribute attribute = null;
-        for (Attribute attr : list) {
-            if (dataId.equals(attr.getDataId())) {
-                attribute = attr;
-                break;
-            }
-        }
-        if (null != attribute) list.remove(attribute);
+        list.remove(attribute);
     }
 
     public PresentationModel findPresentationModelById(String id) {
@@ -117,7 +108,7 @@ public class ModelStore {
     }
 
     public List<Attribute> findAllAttributesByDataId(String dataId) {
-        if (null == dataId || !attributesPerDataId.containsKey(dataId)) return Collections.emptyList();
+        if (isBlank(dataId) || !attributesPerDataId.containsKey(dataId)) return Collections.emptyList();
         return Collections.unmodifiableList(attributesPerDataId.get(dataId));
     }
 
@@ -137,5 +128,9 @@ public class ModelStore {
 
         addAttributeByDataId(attribute);
         addAttributeById(attribute);
+    }
+
+    public static boolean isBlank(String str) {
+        return null == str || str.trim().length() == 0;
     }
 }

@@ -51,10 +51,9 @@ class BasePresentationModel implements PresentationModel {
     }
 
     void syncWith(PresentationModel sourcePm ) {
-        sourcePm.attributes.each { sourceAttribute ->
-            def attribute = findAttributeByPropertyName(sourceAttribute.propertyName)
-            if (attribute.id == sourceAttribute.id) return
-            attribute.syncWith sourceAttribute
+        attributes.each { Attribute targetAttribute ->
+            Attribute sourceAttribute = sourcePm.findAttributeByPropertyName(targetAttribute.propertyName)
+            if(sourceAttribute) targetAttribute.syncWith sourceAttribute
         }
     }
 }

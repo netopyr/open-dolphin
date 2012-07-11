@@ -38,10 +38,11 @@ abstract class BaseAttribute implements Attribute {
     String toString() { "$id : $propertyName ($dataId)" }
     // more may come later
 
-    void syncWith(BaseAttribute source) {
+    void syncWith(Attribute source) {
         assert source           // todo: think about using GContract for the precondition
         if (this.is(source)) return
-        id = source.id
+
+        setDataId source.dataId
         setValue source.value // go through setter to make sure PCLs are triggered
     }
 

@@ -12,4 +12,6 @@ public interface Attribute extends Observable {
     String getDataId();
 
     long getId();
+
+    void syncWith(Attribute source);
 }

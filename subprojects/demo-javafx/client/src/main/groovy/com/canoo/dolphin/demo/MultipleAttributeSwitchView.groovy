@@ -21,10 +21,10 @@ class MultipleAttributeSwitchView {
 
         start { app ->
 
-            def pm1 = makePm 'First PM',  "Show a first pm"
-            def pm2 = makePm 'Second PM', "Show a second pm"
+            def pm1 = makePm 'pm1', 'First PM',  "Show a first pm"
+            def pm2 = makePm 'pm2', 'Second PM', "Show a second pm"
 
-            def actualPm = makePm 'actualPm', null
+            def actualPm = makePm 'pm', 'actualPm', null
             actualPm.syncWith pm1
 
             stage {
@@ -63,10 +63,16 @@ class MultipleAttributeSwitchView {
         }
     }
 
-    protected static ClientPresentationModel makePm(String id, String purpose) {
-        def pm = new ClientPresentationModel(id, [TITLE, PURPOSE].collect { new ClientAttribute(it) })
+    protected static ClientPresentationModel makePm(String idPrefix, String id, String purpose) {
+        def attributes = [TITLE, PURPOSE].collect { propName ->
+            def attr = new ClientAttribute(propName)
+            attr.dataId = idPrefix + '.' + propName
+            attr
+        }
+        def pm = new ClientPresentationModel(id, attributes)
         pm.title.value   = id
         pm.purpose.value = purpose
+        InMemoryClientConnector.instance.clientModelStore.add pm
         pm
     }
 }

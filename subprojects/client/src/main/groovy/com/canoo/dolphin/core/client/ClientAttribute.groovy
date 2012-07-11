@@ -25,6 +25,12 @@ class ClientAttribute extends BaseAttribute {
         this(propertyName, null)
     }
 
+    ClientAttribute(String propertyName, initialValue) {
+        super(propertyName)
+        value.set(initialValue)
+        addPropertyChangeListener 'value', communicator
+    }
+
     final Property valueProperty() {
         value
     }
@@ -38,12 +44,6 @@ class ClientAttribute extends BaseAttribute {
         Object oldValue = this.value.get()
         value.set(newValue)
         firePropertyChange("value", oldValue, newValue)
-    }
-
-    ClientAttribute(String propertyName, initialValue) {
-        super(propertyName)
-        value.set(initialValue)
-        addPropertyChangeListener 'value', communicator
     }
 
     String toString() { "$id : $propertyName = ${getValue()}" }
