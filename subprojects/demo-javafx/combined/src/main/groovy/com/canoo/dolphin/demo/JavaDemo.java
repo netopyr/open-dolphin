@@ -1,5 +1,7 @@
 package com.canoo.dolphin.demo;
 
+import com.canoo.dolphin.core.ModelStore;
+import com.canoo.dolphin.core.client.ClientModelStore;
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector;
 import com.canoo.dolphin.core.client.comm.UiThreadHandler;
 
@@ -10,6 +12,7 @@ public class JavaDemo {
         final CountDownLatch latch = new CountDownLatch(1);
         InMemoryConfig inMemoryConfig = new InMemoryConfig();
         InMemoryClientConnector connector = (InMemoryClientConnector) inMemoryConfig.getConnector();
+        ClientModelStore clientModelStore = new ClientModelStore(connector);
 
         connector.setUiThreadHandler(new UiThreadHandler() {
             @Override

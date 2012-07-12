@@ -22,6 +22,7 @@ class SharedAttributesView {
         def communicator = InMemoryClientConnector.instance
 
         def selectedVehicle = new ClientPresentationModel('selectedVehicle', [new ClientAttribute('vehiclePmId')])
+        communicator.clientModelStore.add selectedVehicle
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfTasks = FXCollections.observableArrayList()
@@ -63,7 +64,6 @@ class SharedAttributesView {
 
             vehicleFillCol.cellValueFactory = { return it.getValue().fill.valueProperty() } as Callback
             vehicleXCol.cellValueFactory = { return it.getValue().x.valueProperty() } as Callback
-
 
             // startup and main loop
 

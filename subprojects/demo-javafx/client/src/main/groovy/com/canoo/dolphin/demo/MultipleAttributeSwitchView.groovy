@@ -12,6 +12,7 @@ import static com.canoo.dolphin.demo.MyProps.TEXT
 import static com.canoo.dolphin.demo.MyProps.PURPOSE
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import com.canoo.dolphin.core.ModelStore
 
 class MultipleAttributeSwitchView {
 

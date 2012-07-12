@@ -19,7 +19,7 @@ import com.canoo.dolphin.core.comm.*
 abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
 
-    ModelStore clientModelStore = new ModelStore()
+    ModelStore clientModelStore
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
     void propertyChange(PropertyChangeEvent evt) {
@@ -31,6 +31,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
         clientModelStore.add(cpm)
+        clientModelStore.registerAttribute(ca)
         send constructAttributeCreatedCommand(cpm.id, ca)
     }
 
@@ -97,6 +98,21 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     def handle(Command serverCommand, Set pmIds) {
         log.warning "C: cannot handle $serverCommand"
+    }
+
+    def handle(CreatePresentationModelCommand serverCommand) {
+        List<ClientAttribute> attributes = []
+        serverCommand.attributes.each { attr ->
+            ClientAttribute attribute = new ClientAttribute(attr.propertyName)
+            attribute.value = attr.value
+            attribute.id = attr.id
+            attribute.dataId = attr.dataId
+            attributes << attribute
+        }
+        PresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
+        model.presentationModelType = serverCommand.pmType
+        clientModelStore.add(model)
+        model.id
     }
 
     def handle(ValueChangedCommand serverCommand) {

@@ -9,6 +9,10 @@ import com.canoo.dolphin.core.server.action.ServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 import static com.canoo.dolphin.demo.VehicleProperties.*
+import com.canoo.dolphin.core.server.ServerPresentationModel
+import com.canoo.dolphin.core.server.ServerAttribute
+import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 
 class CustomAction implements ServerAction {
     private final ModelStore modelStore
@@ -30,13 +34,26 @@ class CustomAction implements ServerAction {
         registry.register 'setTitle', impl.curry('title')
         registry.register 'setPurpose', impl.curry('purpose')
         registry.register 'pullVehicles', { NamedCommand command, response ->
-            vehicles.each {
+            vehicles.each { String pmId ->
+                PresentationModel model = new ServerPresentationModel(pmId, [
+                        newAttribute(propertyName: X,      value: rand(), dataId: "vehicle-${pmId}.x"),
+                        newAttribute(propertyName: Y,      value: rand(), dataId: "vehicle-${pmId}.y"),
+                        newAttribute(propertyName: WIDTH,  value: 80),
+                        newAttribute(propertyName: HEIGHT, value: 25),
+                        newAttribute(propertyName: ROTATE, value: rand(), dataId: "vehicle-${pmId}.rotate"),
+                        newAttribute(propertyName: COLOR,  value: pmId,   dataId: "vehicle-${pmId}.color")
+                ])
+                //modelStore.add model
+                response << new CreatePresentationModelCommand(model)
+
+                /*
                 response << new InitializeAttributeCommand(pmId: it, propertyName: X, newValue: rand(), dataId: "vehicle-${it}.x")
                 response << new InitializeAttributeCommand(pmId: it, propertyName: Y, newValue: rand(), dataId: "vehicle-${it}.y")
                 response << new InitializeAttributeCommand(pmId: it, propertyName: WIDTH, newValue: 80)
                 response << new InitializeAttributeCommand(pmId: it, propertyName: HEIGHT, newValue: 25)
                 response << new InitializeAttributeCommand(pmId: it, propertyName: ROTATE, newValue: rand(), dataId: "vehicle-${it}.rotate")
                 response << new InitializeAttributeCommand(pmId: it, propertyName: COLOR, newValue: it, dataId: "vehicle-${it}.color")
+                */
             }
         }
         registry.register 'longPoll', { NamedCommand command, response ->
@@ -68,5 +85,11 @@ class CustomAction implements ServerAction {
                     break
             }
         }
+    }
+
+    private ServerAttribute newAttribute(Map params) {
+        ServerAttribute attribute = new ServerAttribute(params.remove('propertyName'))
+        params.each { key, value -> attribute[key] = value }
+        attribute
     }
 }

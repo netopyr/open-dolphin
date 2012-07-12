@@ -8,6 +8,8 @@ import static com.canoo.dolphin.demo.MyProps.*
 import static javafx.geometry.HPos.RIGHT
 import static com.canoo.dolphin.demo.DemoStyle.style
 import com.canoo.dolphin.binding.Binder
+import com.canoo.dolphin.core.ModelStore
+import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
 class MultipleAttributesView {
 
@@ -20,6 +22,8 @@ class MultipleAttributesView {
             def purposeAttr = new ClientAttribute(PURPOSE)
             purposeAttr.value = "Show the need for PMs"
             def pm = new ClientPresentationModel('demo',[titleAttr, purposeAttr])
+            InMemoryClientConnector.instance.clientModelStore.add pm
+
             def updateTitle   = { pm.title.value = titleInput.text }
             def updatePurpose = { pm.purpose.value = purposeInput.text }
 

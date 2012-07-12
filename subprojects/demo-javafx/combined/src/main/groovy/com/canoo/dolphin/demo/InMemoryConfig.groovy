@@ -9,6 +9,8 @@ import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPmAction
 import com.canoo.dolphin.core.server.comm.Receiver
+import com.canoo.dolphin.core.client.ClientModelStore
+import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 
 class InMemoryConfig {
 
@@ -20,6 +22,7 @@ class InMemoryConfig {
         connector.sleepMillis = 100
         connector.receiver = receiver
         connector.uiThreadHandler = new JavaFXUiThreadHandler()
+        new ClientModelStore(connector)
     }
 
     ClientConnector getConnector() { InMemoryClientConnector.instance }
@@ -28,6 +31,7 @@ class InMemoryConfig {
         [
                 new StoreValueChangeAction(modelStore),
                 new StoreAttributeAction(modelStore),
+                new CreatePresentationModelAction(modelStore),
                 new SwitchPmAction(modelStore),
                 new CustomAction(modelStore), // just to have also some application-specific action
         ].each { register it }
