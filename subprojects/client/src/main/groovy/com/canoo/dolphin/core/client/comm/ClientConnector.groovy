@@ -101,18 +101,38 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     def handle(CreatePresentationModelCommand serverCommand) {
-        List<ClientAttribute> attributes = []
-        serverCommand.attributes.each { attr ->
-            ClientAttribute attribute = new ClientAttribute(attr.propertyName)
-            attribute.value = attr.value
-            attribute.id = attr.id
-            attribute.dataId = attr.dataId
-            attributes << attribute
+        // check if we already have serverCommand.pmId in our store
+        // if true we simply update attribute ids and add any missing attributes
+
+        if (clientModelStore.containsPresentationModel(serverCommand.pmId)) {
+            PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
+            serverCommand.attributes.each { attr ->
+                ClientAttribute attribute = model.findAttributeByPropertyName(attr.propertyName)
+                if (null == attribute) {
+                    attribute = new ClientAttribute(attr.propertyName)
+                    attribute.value = attr.value
+                    attribute.id = attr.id
+                    attribute.dataId = attr.dataId
+                    model.addAttribute(attribute)
+                    clientModelStore.registerAttribute(attribute)
+                } else {
+                    attribute.id = attr.id
+                }
+            }
+        } else {
+            List<ClientAttribute> attributes = []
+            serverCommand.attributes.each { attr ->
+                ClientAttribute attribute = new ClientAttribute(attr.propertyName)
+                attribute.value = attr.value
+                attribute.id = attr.id
+                attribute.dataId = attr.dataId
+                attributes << attribute
+            }
+            PresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
+            model.presentationModelType = serverCommand.pmType
+            clientModelStore.add(model)
         }
-        PresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
-        model.presentationModelType = serverCommand.pmType
-        clientModelStore.add(model)
-        model.id
+        serverCommand.pmId
     }
 
     def handle(ValueChangedCommand serverCommand) {
