@@ -14,12 +14,12 @@ class BasePresentationModel implements PresentationModel {
     String presentationModelType
 
     /** @throws AssertionError if the list of attributes is null or empty  **/
-    BasePresentationModel(List<BaseAttribute> attributes) {
+    BasePresentationModel(List<Attribute> attributes) {
         this(null, attributes)
     }
     
     /** @throws AssertionError if the list of attributes is null or empty  **/
-    BasePresentationModel(String id, List<? extends BaseAttribute> attributes) {
+    BasePresentationModel(String id, List<? extends Attribute> attributes) {
         this.id = id ?: makeId(this)
         this.attributes.addAll(attributes)
     }
@@ -29,7 +29,7 @@ class BasePresentationModel implements PresentationModel {
         attributes
     }
     
-    protected static String makeId(BasePresentationModel instance) {
+    protected static String makeId(PresentationModel instance) {
         System.identityHashCode(instance).toString()
     }
 

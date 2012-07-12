@@ -1,6 +1,5 @@
 package com.canoo.dolphin.core
 
-import java.beans.PropertyChangeListener
 import spock.lang.Specification
 
 class BasePresentationModelSpec extends Specification {
@@ -25,10 +24,8 @@ class BasePresentationModelSpec extends Specification {
         pm.noSuchAttributeName
 
         then:
-        def exception =  thrown(MissingPropertyException)
+        def exception = thrown(MissingPropertyException)
         exception.message.contains('noSuchAttributeName')
         exception.message.contains('myPropName')
     }
-
-
 }

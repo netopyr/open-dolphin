@@ -1,10 +1,9 @@
 package com.canoo.dolphin.binding
 
-import com.canoo.dolphin.core.BasePresentationModel
-import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
+import com.canoo.dolphin.core.client.ClientPresentationModel
 import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
 
 @Immutable
 class JFXOfAble {
@@ -14,12 +13,12 @@ class JFXOfAble {
         new JFXToAble(source, propName)
     }
 
-    ToAble of(BasePresentationModel source) {
+    ToAble of(PresentationModel source) {
         return Binder.bind(propName).of(source)
     }
 
     ClientToAble of(ClientPresentationModel source) {
-        new ClientToAble(source[propName])
+        new ClientToAble(source.findAttributeByPropertyName(propName))
     }
 }
 
@@ -64,16 +63,16 @@ class JFXOtherOfAble {
         def update = {
             target[targetPropName] = (convert != null) ? convert(source[sourcePropName]) : source[sourcePropName]
         }
-        source."${sourcePropName}Property"().addListener( { a,b,c -> update() } as ChangeListener  )
-        update () // set the initial value after the binding and trigger the first notification
+        source."${sourcePropName}Property"().addListener({ a, b, c -> update() } as ChangeListener)
+        update() // set the initial value after the binding and trigger the first notification
     }
 
     void of(ClientPresentationModel presentationModel, Closure convert = null) {  // todo dk: remove the duplication
         def update = {
             presentationModel[targetPropName].value = (convert != null) ? convert(source[sourcePropName]) : source[sourcePropName]
         }
-        source."${sourcePropName}Property"().addListener( { a,b,c -> update() } as ChangeListener  )
-        update () // set the initial value after the binding and trigger the first notification
+        source."${sourcePropName}Property"().addListener({ a, b, c -> update() } as ChangeListener)
+        update() // set the initial value after the binding and trigger the first notification
     }
 }
 
@@ -90,7 +89,7 @@ class ClientOtherOfAble {
         def update = {
             target[targetPropName] = (convert != null) ? convert(attribute.value) : attribute.value
         }
-        attribute.valueProperty().addListener( { a,b,c -> update() } as ChangeListener  )
-        update () // set the initial value after the binding and trigger the first notification
+        attribute.valueProperty().addListener({ a, b, c -> update() } as ChangeListener)
+        update() // set the initial value after the binding and trigger the first notification
     }
 }
