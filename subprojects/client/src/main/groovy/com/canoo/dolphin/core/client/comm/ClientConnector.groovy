@@ -14,12 +14,13 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
 import com.canoo.dolphin.core.comm.*
+import com.canoo.dolphin.core.client.ClientModelStore
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
 
-    ModelStore clientModelStore
+    ClientModelStore clientModelStore
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
     void propertyChange(PropertyChangeEvent evt) {
@@ -105,7 +106,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         // if true we simply update attribute ids and add any missing attributes
 
         if (clientModelStore.containsPresentationModel(serverCommand.pmId)) {
-            PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
+            ClientPresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
             serverCommand.attributes.each { attr ->
                 ClientAttribute attribute = model.findAttributeByPropertyName(attr.propertyName)
                 if (null == attribute) {
@@ -116,7 +117,7 @@ abstract class ClientConnector implements PropertyChangeListener {
                     model.addAttribute(attribute)
                     clientModelStore.registerAttribute(attribute)
                 } else {
-                    attribute.id = attr.id
+                    clientModelStore.updateAttributeId(attribute, attr.id)
                 }
             }
         } else {
@@ -128,7 +129,7 @@ abstract class ClientConnector implements PropertyChangeListener {
                 attribute.dataId = attr.dataId
                 attributes << attribute
             }
-            PresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
+            ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
             model.presentationModelType = serverCommand.pmType
             clientModelStore.add(model)
         }
@@ -152,6 +153,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
     }
 
+    /*
     def handle(SwitchAttributeIdCommand serverCommand) {
         def sourceAtt = clientModelStore.findAttributeById(serverCommand.newId) // one is enough
         if (!sourceAtt) {
@@ -171,6 +173,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         switchAtt.syncWith sourceAtt
         serverCommand.pmId
     }
+    */
 
     def handle(SwitchPmCommand serverCommand) {
         def switchPm = clientModelStore.findPresentationModelById(serverCommand.pmId)
