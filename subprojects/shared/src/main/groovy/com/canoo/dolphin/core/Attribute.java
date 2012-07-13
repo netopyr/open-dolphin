@@ -13,5 +13,7 @@ public interface Attribute extends Observable {
 
     long getId();
 
+    void setId(long id);
+
     void syncWith(Attribute source);
 }

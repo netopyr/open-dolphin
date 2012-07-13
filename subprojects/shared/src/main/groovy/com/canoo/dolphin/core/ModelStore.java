@@ -13,7 +13,6 @@ public class ModelStore {
     private final Map<Long, Attribute> attributesPerId = new ConcurrentHashMap<Long, Attribute>();
     private final Map<String, List<Attribute>> attributesPerDataId = new ConcurrentHashMap<String, List<Attribute>>();
 
-
     private final PropertyChangeListener ATTRIBUTE_WORKER = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent event) {
@@ -56,17 +55,17 @@ public class ModelStore {
         return removed;
     }
 
-    private void addAttributeById(Attribute attribute) {
-        if (null == attribute) return;
+    protected void addAttributeById(Attribute attribute) {
+        if (null == attribute || attributesPerId.containsKey(attribute.getId())) return;
         attributesPerId.put(attribute.getId(), attribute);
     }
 
-    private void removeAttributeById(Attribute attribute) {
+    protected void removeAttributeById(Attribute attribute) {
         if (null == attribute) return;
         attributesPerId.remove(attribute.getId());
     }
 
-    private void addAttributeByDataId(Attribute attribute) {
+    protected void addAttributeByDataId(Attribute attribute) {
         if (null == attribute) return;
         String dataId = attribute.getDataId();
         if (isBlank(dataId)) return;
@@ -78,7 +77,7 @@ public class ModelStore {
         if (!list.contains(attribute)) list.add(attribute);
     }
 
-    private void removeAttributeByDataId(Attribute attribute) {
+    protected void removeAttributeByDataId(Attribute attribute) {
         if (null == attribute) return;
         String dataId = attribute.getDataId();
         if (isBlank(dataId)) return;
@@ -88,7 +87,7 @@ public class ModelStore {
         }
     }
 
-    private void removeAttributeByDataId(Attribute attribute, String dataId) {
+    protected void removeAttributeByDataId(Attribute attribute, String dataId) {
         if (isBlank(dataId)) return;
         List<Attribute> list = attributesPerDataId.get(dataId);
         if (null == list) return;
