@@ -151,7 +151,9 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     def handle(InitializeAttributeCommand serverCommand) {
         def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
-        transmit(new AttributeCreatedCommand(pmId: serverCommand.pmId, attributeId: attribute.id, propertyName: serverCommand.propertyName, newValue: serverCommand.newValue))
+
+        // todo dk: looks like this notification is not needed
+        //transmit(new AttributeCreatedCommand(pmId: serverCommand.pmId, attributeId: attribute.id, propertyName: serverCommand.propertyName, newValue: serverCommand.newValue))
 
         if (!clientModelStore.containsPm(serverCommand.pmId)) {
             clientModelStore.storePm(serverCommand.pmId, new ClientPresentationModel(serverCommand.pmId, [attribute]))
