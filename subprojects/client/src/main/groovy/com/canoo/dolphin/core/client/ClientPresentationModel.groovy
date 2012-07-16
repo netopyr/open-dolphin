@@ -12,15 +12,11 @@ class ClientPresentationModel extends BasePresentationModel {
 
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
         super(id, attributes)
-        /*
-        for (att in attributes) {
-            att.communicator.registerAndSend this, att // todo: unregister on PCL unbound
-        }
-        */
     }
 
     void addAttribute(ClientAttribute attribute){
         attributes << attribute
+        // TODO refactor this call once the communicator property is removed from ClientAttribute
         attribute.communicator.registerAndSend this, attribute
     }
 }

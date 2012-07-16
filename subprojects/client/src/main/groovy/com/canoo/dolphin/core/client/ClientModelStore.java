@@ -25,6 +25,9 @@ public class ClientModelStore extends ModelStore {
         boolean success = super.add(model);
         if (success) {
             /*
+
+            TODO: handle attribute registration with the current communicator
+
             List<Attribute> attributes = model.getAttributes();
             synchronized (attributes) {
                 for (Attribute attribute : attributes) {
