@@ -8,6 +8,7 @@ import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
 import com.canoo.dolphin.core.server.comm.Receiver
 import com.canoo.dolphin.core.client.comm.UiThreadHandler
+import com.canoo.dolphin.core.client.ClientModelStore
 
 /**
  * Tests for the sequence between client requests and server responses.
@@ -18,6 +19,7 @@ class CommunicationTests extends GroovyTestCase {
 
 	Receiver receiver
 	ClientConnector communicator
+    ClientModelStore clientModelStore
 
 	protected void setUp() {
 		LogConfig.logCommunication()
@@ -26,6 +28,7 @@ class CommunicationTests extends GroovyTestCase {
         communicator.processAsync = false
         communicator.uiThreadHandler = { it() } as UiThreadHandler
 		communicator.receiver = receiver // inject receiver
+        clientModelStore = new ClientModelStore(communicator)
 	}
 
 	void testSimpleAttributeChangeIsVisibleOnServer() {
@@ -52,31 +55,30 @@ class CommunicationTests extends GroovyTestCase {
 		def ca = new ClientAttribute('name')
 
 		Command receivedCommand = null
-		def testServerAction = { AttributeCreatedCommand command, response ->
+		def testServerAction = { CreatePresentationModelCommand command, response ->
 			receivedCommand = command
 		}
-		receiver.registry.register AttributeCreatedCommand, testServerAction
+		receiver.registry.register CreatePresentationModelCommand, testServerAction
 
-		new ClientPresentationModel('testPm', [ca])
+		clientModelStore.add new ClientPresentationModel('testPm', [ca])
 
-		assert receivedCommand.id == "AttributeCreated"
-		assert receivedCommand in AttributeCreatedCommand
+		assert receivedCommand.id == "CreatePresentationModel"
+		assert receivedCommand instanceof CreatePresentationModelCommand
 		assert receivedCommand.pmId == 'testPm'
-		assert receivedCommand.propertyName == 'name'
-		assert receivedCommand.attributeId
+		assert receivedCommand.attributes.name
 	}
 
 	void testWhenServerChangesValueThisTriggersUpdateOnClient() {
 		def ca = new ClientAttribute('name')
 
-		def setValueAction = { AttributeCreatedCommand command, response ->
+		def setValueAction = { CreatePresentationModelCommand command, response ->
 			response << new ValueChangedCommand(
-					attributeId: command.attributeId,
+					attributeId: command.attributes.id.first(),
 					newValue: "set from server",
 					oldValue: null
 			)
 		}
-		receiver.registry.register AttributeCreatedCommand, setValueAction
+		receiver.registry.register CreatePresentationModelCommand, setValueAction
 
 		Command receivedCommand = null
 		def valueChangedAction = { ValueChangedCommand command, response ->
@@ -84,7 +86,7 @@ class CommunicationTests extends GroovyTestCase {
 		}
 		receiver.registry.register ValueChangedCommand, valueChangedAction
 
-		new ClientPresentationModel('testPm', [ca]) // trigger the whole cycle
+        clientModelStore.add new ClientPresentationModel('testPm', [ca]) // trigger the whole cycle
 
 		assert ca.value == "set from server"	// client is updated
 

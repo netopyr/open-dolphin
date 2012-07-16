@@ -31,6 +31,11 @@ class ClientAttribute extends BaseAttribute {
         addPropertyChangeListener 'value', communicator
     }
 
+    ClientAttribute(Map props) {
+        this(props.propertyName, props.initialValue)
+        this.dataId = props.dataId
+    }
+
     final Property valueProperty() {
         value
     }

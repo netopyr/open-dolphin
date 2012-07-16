@@ -2,7 +2,8 @@ package com.canoo.dolphin.core.comm
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-
+import com.canoo.dolphin.core.client.ClientModelStore
+import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
 /**
  * Tests for the approach of using plain attributes as switches by sharing the id.
@@ -12,10 +13,14 @@ class AttributeSwitchTests extends GroovyTestCase {
 
     ClientPresentationModel switchPm
     ClientPresentationModel sourcePm
+    ClientModelStore clientModelStore
 
     protected void setUp() {
-        switchPm = new ClientPresentationModel([new ClientAttribute('name')])
-        sourcePm = new ClientPresentationModel([new ClientAttribute('name')])
+        clientModelStore = new ClientModelStore(InMemoryClientConnector.instance)
+        switchPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', dataId: 'dataid1')])
+        sourcePm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', dataId: 'dataid2')])
+        clientModelStore.add switchPm
+        clientModelStore.add sourcePm
     }
 
     /** switching needs to set both, id and value! **/
@@ -45,7 +50,8 @@ class AttributeSwitchTests extends GroovyTestCase {
 
     void testWritingToSwitchesWithSwitchingSources() {
 
-        def otherPm = new ClientPresentationModel([new ClientAttribute('name')])
+        def otherPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', dataId: 'dataid3')])
+        clientModelStore.add otherPm
 
         switchPm.name.syncWith sourcePm.name
 
