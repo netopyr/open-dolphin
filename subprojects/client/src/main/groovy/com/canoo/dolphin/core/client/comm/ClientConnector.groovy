@@ -26,8 +26,8 @@ abstract class ClientConnector implements PropertyChangeListener {
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
-        List<Attribute> attributes = clientModelStore.findAllAttributesByDataId([evt.source.dataId])
-        attributes.each { it.value = evt.newValue }
+        List<Attribute> attributes = clientModelStore?.findAllAttributesByDataId([evt.source.dataId])
+        attributes?.each { it.value = evt.newValue }
     }
 
     void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
@@ -193,31 +193,6 @@ abstract class ClientConnector implements PropertyChangeListener {
     def handle(InitializeAttributeCommand serverCommand) {
         def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
         attribute.dataId = serverCommand.dataId
-
-        // todo dk: looks like this notification is not needed
-        //transmit(new AttributeCreatedCommand(pmId: serverCommand.pmId, attributeId: attribute.id, propertyName: serverCommand.propertyName, newValue: serverCommand.newValue))
-
-        if (!clientModelStore.containsPm(serverCommand.pmId)) {
-            clientModelStore.storePm(serverCommand.pmId, new ClientPresentationModel(serverCommand.pmId, [attribute]))
-            return serverCommand.pmId
-        }
-        def pm = clientModelStore.findPmById(serverCommand.pmId)
-        pm.addAttribute(attribute)
-        return serverCommand.pmId // todo dk: check and test
-    }
-
-    def handle(InitializeSharedAttributeCommand serverCommand) {
-        /*
-        Why do we send the command back to the server again?
-        We just received this command from the server anyway.
-
-        transmit(new AttributeCreatedCommand(
-                pmId: serverCommand.pmId,
-                attributeId: attribute.id,
-                propertyName: serverCommand.propertyName,
-                newValue: serverCommand.newValue,
-                dataId: attribute.dataId))
-        */
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.dataId) {
