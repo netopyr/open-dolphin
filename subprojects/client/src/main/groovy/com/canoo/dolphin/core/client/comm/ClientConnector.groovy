@@ -26,8 +26,8 @@ abstract class ClientConnector implements PropertyChangeListener {
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
-        List<Attribute> attributes = clientModelStore?.findAllAttributesByDataId([evt.source.dataId])
-        attributes?.each { it.value = evt.newValue }
+        List<Attribute> attributes = clientModelStore.findAllAttributesByDataId([evt.source.dataId])
+        attributes.each { it.value = evt.newValue }
     }
 
     void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
