@@ -26,6 +26,5 @@ class BasePresentationModelSpec extends Specification {
         then:
         def exception = thrown(MissingPropertyException)
         exception.message.contains('noSuchAttributeName')
-        exception.message.contains('myPropName')
     }
 }

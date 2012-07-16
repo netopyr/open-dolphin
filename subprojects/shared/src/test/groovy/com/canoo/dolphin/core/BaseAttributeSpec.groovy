@@ -12,16 +12,6 @@ class BaseAttributeSpec extends Specification {
 
         attribute.value == null
     }
-
-    def "false constructor calls"() {
-        when:
-
-        new MyAttribute(null)
-
-        then:
-
-        thrown(AssertionError)
-    }
 }
 
 class MyAttribute extends BaseAttribute {
