@@ -66,7 +66,7 @@ class DemoSearchView {
 
             communicator.send(new NamedCommand(id: FIRST_FILL_CMD)) { pmIds ->
                 for (id in pmIds) {
-                    gvf.items << communicator.clientModelStore.findPmById(id)[TEXT].value
+                    gvf.items << communicator.clientModelStore.findPresentationModelById(id)[TEXT].value
                 }
                 gvf.selectionModel.selectedIndex = 0
                 fadeTransition(1.s, node: gvf, to: 1).playFromStart()
@@ -74,7 +74,7 @@ class DemoSearchView {
 
             communicator.send(new NamedCommand(id: SECOND_FILL_CMD)) { pmIds ->
                 for (id in pmIds) {
-                    dst.items << communicator.clientModelStore.findPmById(id)[TEXT].value
+                    dst.items << communicator.clientModelStore.findPresentationModelById(id)[TEXT].value
                 }
                 dst.selectionModel.selectedIndex = 0
                 fadeTransition(1.s, node: dst, to: 1).playFromStart()
@@ -88,7 +88,7 @@ class DemoSearchView {
                 observableListOfKoPms.clear()
                 communicator.send(new NamedCommand(id: SEARCH_CMD)) { pmIds ->
                     for (id in pmIds) {
-                        observableListOfKoPms << communicator.clientModelStore.findPmById(id)
+                        observableListOfKoPms << communicator.clientModelStore.findPresentationModelById(id)
                     }
                     search.disabled = false
                     fadeTransition(0.5.s, node: table, to: 1).playFromStart()

@@ -1,5 +1,8 @@
 package com.canoo.dolphin.core.comm
 
+import groovy.transform.TupleConstructor
+
+@TupleConstructor
 class InitializeAttributeCommand extends Command {
 
     String pmId

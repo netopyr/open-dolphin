@@ -1,33 +1,34 @@
 package com.canoo.dolphin.demo;
 
-import com.canoo.dolphin.core.BaseAttribute;
+
+import com.canoo.dolphin.core.Attribute;
+import com.canoo.dolphin.core.ModelStore;
+import com.canoo.dolphin.core.PresentationModel;
 import com.canoo.dolphin.core.comm.InitializeAttributeCommand;
 import com.canoo.dolphin.core.comm.NamedCommand;
-import com.canoo.dolphin.core.server.ServerPresentationModel;
-import com.canoo.dolphin.core.server.action.StoreAttributeAction;
+import com.canoo.dolphin.core.server.action.ServerAction;
 import com.canoo.dolphin.core.server.comm.ActionRegistry;
 import groovy.lang.Closure;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static com.canoo.dolphin.demo.DemoSearchProperties.*;
 
-public class DemoSearchAction {
+public class DemoSearchAction implements ServerAction {
+    protected final ModelStore modelStore;
 
-    void registerIn(ActionRegistry registry) {
+    public DemoSearchAction(ModelStore modelStore) {
+        this.modelStore = modelStore;
+    }
+
+    public void registerIn(final ActionRegistry registry) {
 
         registry.register(FIRST_FILL_CMD, new Closure(this) {
             public Object call(NamedCommand cmd, List response) {
                 for (int i = 0; i<10; i++){
                     String pmid = "First "+i;
-                    InitializeAttributeCommand initializeAttributeCommand = new InitializeAttributeCommand();
-                    initializeAttributeCommand.setPmId(pmid);
-                    initializeAttributeCommand.setPropertyName(DemoSearchProperties.TEXT);
-                    initializeAttributeCommand.setNewValue(pmid);
-
-                    response.add(initializeAttributeCommand);
+                    response.add(new InitializeAttributeCommand(pmid, TEXT, null, pmid));
                 }
                 return response;
             }
@@ -37,12 +38,7 @@ public class DemoSearchAction {
             public Object call(NamedCommand cmd, List response) {
                 for (int i = 0; i<10; i++){
                     String pmid = "Second "+i;
-                    InitializeAttributeCommand initializeAttributeCommand = new InitializeAttributeCommand();
-                    initializeAttributeCommand.setPmId(pmid);
-                    initializeAttributeCommand.setPropertyName(DemoSearchProperties.TEXT);
-                    initializeAttributeCommand.setNewValue(pmid);
-
-                    response.add(initializeAttributeCommand);
+                    response.add(new InitializeAttributeCommand(pmid, TEXT, null, pmid));
                 }
                 return response;
             }
@@ -52,32 +48,18 @@ public class DemoSearchAction {
 
             public Object call(NamedCommand cmd, List response) {
 
-                String contactName = "";
-
-                Map<String, ServerPresentationModel> modelStore = StoreAttributeAction.getInstance().getModelStore();
-                ServerPresentationModel searchCriteria = modelStore.get(SEARCH_CRITERIA);
-                List<BaseAttribute> attributes = searchCriteria.getAttributes();
-                for (BaseAttribute att : attributes ) {
-                    if (att.getPropertyName().equals(NAME)) {
-                        contactName = att.getValue() == null ? "" : att.getValue().toString() ;
-                    }
+                PresentationModel searchCriteria = modelStore.findPresentationModelById(SEARCH_CRITERIA);
+                if (searchCriteria == null) {
+                    throw new IllegalStateException("No search criteria known on the server!");
                 }
+                Attribute attribute = searchCriteria.findAttributeByPropertyName(NAME);
+                Object value = (attribute == null) ? null : attribute.getValue();
+                String contactName = (value == null) ? "" : value.toString();
 
                 for (int i = 0; i<10; i++){
                     String pmid = contactName + " contact " + i;
-                    InitializeAttributeCommand initializeAttributeCommand = new InitializeAttributeCommand();
-                    initializeAttributeCommand.setPmId(pmid);
-                    initializeAttributeCommand.setPropertyName(CONTACT_NAME);
-                    initializeAttributeCommand.setNewValue(contactName);
-
-                    response.add(initializeAttributeCommand);
-
-                    InitializeAttributeCommand dateAttributeCmd = new InitializeAttributeCommand();
-                    dateAttributeCmd.setPmId(pmid);
-                    dateAttributeCmd.setPropertyName(CONTACT_DATE);
-                    dateAttributeCmd.setNewValue(new Date(i*1000000000).toString());
-
-                    response.add(dateAttributeCmd);
+                    response.add(new InitializeAttributeCommand(pmid,CONTACT_NAME, null, contactName));
+                    response.add(new InitializeAttributeCommand(pmid, CONTACT_DATE, null, new Date(i*1000000000).toString()));
                 }
                 return response;
             }

@@ -7,7 +7,7 @@ import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 class StoreAttributeAction implements ServerAction {
-    private final ModelStore modelStore
+    final ModelStore modelStore
 
     StoreAttributeAction(ModelStore modelStore) {
         this.modelStore = modelStore
