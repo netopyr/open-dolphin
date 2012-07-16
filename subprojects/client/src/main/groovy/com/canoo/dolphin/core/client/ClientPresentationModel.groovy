@@ -12,6 +12,9 @@ class ClientPresentationModel extends BasePresentationModel {
 
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
         super(id, attributes)
+        for (ClientAttribute attribute in attributes) {
+            attribute.communicator.registerAndSend this, attribute
+        }
     }
 
     void addAttribute(ClientAttribute attribute){
