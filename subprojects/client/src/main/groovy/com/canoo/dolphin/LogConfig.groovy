@@ -4,7 +4,7 @@ import java.util.logging.*
 import com.canoo.dolphin.core.client.comm.ClientConnector
 
 /** Keep logging details in one place **/
-
+// todo dk: provide a consistent counterpart for the server
 class LogConfig {
 
     private static final Logger ROOT_LOGGER = LogManager.logManager.getLogger('')

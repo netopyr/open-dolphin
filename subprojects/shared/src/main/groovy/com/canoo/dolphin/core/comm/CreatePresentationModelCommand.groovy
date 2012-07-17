@@ -2,10 +2,12 @@ package com.canoo.dolphin.core.comm
 
 import com.canoo.dolphin.core.PresentationModel
 
-class CreatePresentationModelCommand extends Command{
+// todo dk: review this design.
+
+class CreatePresentationModelCommand extends Command {
     String pmId
     String pmType
-    List<Map<String, Object>> attributes = []
+    List<Map<String, Object>> attributes = [] // todo dk: I wouldn't want to have collective command properties
 
     CreatePresentationModelCommand(PresentationModel model) {
         pmId = model.id

@@ -12,6 +12,8 @@ import com.canoo.dolphin.core.server.comm.Receiver
 import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 
+// todo dk: move default in-memory config to shared such that it can be used without dependencies to demo-javafx
+
 class InMemoryConfig {
 
     Receiver receiver = new Receiver()
