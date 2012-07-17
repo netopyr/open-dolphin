@@ -26,7 +26,7 @@ The multi-project build consists of these subprojects
 - client (visualization)
 - server (domain model and control logic)
 - combined (for testing the client-server combination)
-- demo   (again devided in client - server - shared - combined)
+- demo   (again divided in client - server - shared - combined)
 
 General approach
 ----------------
@@ -42,13 +42,22 @@ Commands are sent between client and server. They are
 concerned with create, read, update, and delete actions
 for PMs. (Future: they may be undoable)
 
-Unlike GRASP there is neiter a PM- nor an AttributeSwitch.
+For PM/attributes to be synchronized between client and server developers
+must make use of the respective modelStore. Here's for example how to create
+a PM on the client side and sync it with it's server counterpart
+
+    def pm = new ClientPresentationModel('myPmId', [
+        new ClientAttribute(propertyName: 'name', 'Dolphin')
+    ])
+    Dolphin.clientModelStore.add(pm)
+
+Unlike GRASP there is neither a PM- nor an AttributeSwitch.
 In contrast, switches are ordinary attributes that
-happen to have the same id as the source attributes that there are "pointing"
+happen to have the same dataId as the source attributes that there are "pointing"
 to. They do *not* maintain a reference to the source attribute.
 
 When "switching" all attribute properties get updated for all attributes
-that share the same id. The same is true when any value changes.
+that share the same dataId. The same is true when any value changes.
 
 How to build
 ------------

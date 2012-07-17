@@ -2,7 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
@@ -19,10 +19,10 @@ class SharedAttributesView {
 
     static show() {
 
-        def communicator = InMemoryClientConnector.instance
+        def communicator = Dolphin.clientConnector
 
         def selectedVehicle = new ClientPresentationModel('selectedVehicle', [new ClientAttribute('vehiclePmId')])
-        communicator.clientModelStore.add selectedVehicle
+        Dolphin.clientModelStore.add selectedVehicle
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfTasks = FXCollections.observableArrayList()
@@ -69,14 +69,14 @@ class SharedAttributesView {
 
             communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
                 for (id in pmIds) {
-                    observableListOfPms << communicator.clientModelStore.findPresentationModelById(id)
+                    observableListOfPms << Dolphin.clientModelStore.findPresentationModelById(id)
                 }
                 fadeTransition(1.s, node: table, to: 1).playFromStart()
             }
 
             communicator.send(new NamedCommand(id: 'pullTasks')) { pmIds ->
                 for (id in pmIds) {
-                    observableListOfTasks << communicator.clientModelStore.findPresentationModelById(id)
+                    observableListOfTasks << Dolphin.clientModelStore.findPresentationModelById(id)
                 }
                 fadeTransition(1.s, node: taskTable, to: 1).playFromStart()
             }

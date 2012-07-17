@@ -19,10 +19,6 @@ import javafx.beans.property.SimpleObjectProperty
 class ClientAttribute extends BaseAttribute {
     private ObjectProperty value = new SimpleObjectProperty()
 
-    // TODO: remove this property, it makes no sense at all given that the ClientModelStore is
-    // responsible for syncing values
-    ClientConnector communicator = InMemoryClientConnector.instance // todo: make configurable
-
     ClientAttribute(String propertyName) {
         this(propertyName, null)
     }
@@ -30,8 +26,6 @@ class ClientAttribute extends BaseAttribute {
     ClientAttribute(String propertyName, initialValue) {
         super(propertyName)
         value.set(initialValue)
-        // TODO remove this call
-        addPropertyChangeListener 'value', communicator
     }
 
     ClientAttribute(Map props) {

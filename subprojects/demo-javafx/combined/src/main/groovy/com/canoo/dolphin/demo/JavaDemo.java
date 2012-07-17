@@ -1,8 +1,6 @@
 package com.canoo.dolphin.demo;
 
-import com.canoo.dolphin.core.ModelStore;
-import com.canoo.dolphin.core.client.ClientModelStore;
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector;
+import com.canoo.dolphin.core.client.Dolphin;
 import com.canoo.dolphin.core.client.comm.UiThreadHandler;
 
 import java.util.concurrent.CountDownLatch;
@@ -11,10 +9,8 @@ public class JavaDemo {
     public static void main(String[] args) {
         final CountDownLatch latch = new CountDownLatch(1);
         InMemoryConfig inMemoryConfig = new InMemoryConfig();
-        InMemoryClientConnector connector = (InMemoryClientConnector) inMemoryConfig.getConnector();
-        ClientModelStore clientModelStore = new ClientModelStore(connector);
 
-        connector.setUiThreadHandler(new UiThreadHandler() {
+        Dolphin.getClientConnector().setUiThreadHandler(new UiThreadHandler() {
             @Override
             public void executeInsideUiThread(Runnable runnable) {
                 System.out.println("going inside ui");
@@ -26,7 +22,7 @@ public class JavaDemo {
         inMemoryConfig.withActions();
         inMemoryConfig.register(new JavaAction());
 
-        ConsoleView.show(connector);
+        ConsoleView.show();
         System.out.println("waiting to finish");
         try {
             latch.await();

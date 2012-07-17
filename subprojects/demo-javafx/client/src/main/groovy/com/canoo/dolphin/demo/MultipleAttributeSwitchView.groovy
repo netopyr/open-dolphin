@@ -2,17 +2,15 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import com.canoo.dolphin.core.comm.NamedCommand
+
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
-
+import static com.canoo.dolphin.demo.MyProps.*
 import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.CENTER
-import static com.canoo.dolphin.demo.MyProps.TITLE
-import static com.canoo.dolphin.demo.MyProps.TEXT
-import static com.canoo.dolphin.demo.MyProps.PURPOSE
-import com.canoo.dolphin.core.comm.NamedCommand
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-import com.canoo.dolphin.core.ModelStore
 
 class MultipleAttributeSwitchView {
 
@@ -73,7 +71,7 @@ class MultipleAttributeSwitchView {
         def pm = new ClientPresentationModel(id, attributes)
         pm.title.value   = id
         pm.purpose.value = purpose
-        InMemoryClientConnector.instance.clientModelStore.add pm
+        Dolphin.clientModelStore.add pm
         pm
     }
 }

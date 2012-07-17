@@ -2,15 +2,16 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.ModelStore
+import com.canoo.dolphin.core.client.ClientModelStore
+import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
+import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPmAction
 import com.canoo.dolphin.core.server.comm.Receiver
-import com.canoo.dolphin.core.client.ClientModelStore
-import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 
 // todo dk: move default in-memory config to shared such that it can be used without dependencies to demo-javafx
 
@@ -24,7 +25,8 @@ class InMemoryConfig {
         connector.sleepMillis = 100
         connector.receiver = receiver
         connector.uiThreadHandler = new JavaFXUiThreadHandler()
-        new ClientModelStore(connector)
+        Dolphin.setClientConnector(connector)
+        Dolphin.setClientModelStore(new ClientModelStore())
     }
 
     ClientConnector getConnector() { InMemoryClientConnector.instance }

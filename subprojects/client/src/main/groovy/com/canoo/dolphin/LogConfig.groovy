@@ -1,7 +1,8 @@
 package com.canoo.dolphin
 
-import java.util.logging.*
 import com.canoo.dolphin.core.client.comm.ClientConnector
+
+import java.util.logging.*
 
 /** Keep logging details in one place **/
 // todo dk: provide a consistent counterpart for the server

@@ -1,18 +1,14 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.ModelStore
-import com.canoo.dolphin.core.comm.GetPmCommand
-import com.canoo.dolphin.core.comm.InitializeAttributeCommand
-import com.canoo.dolphin.core.comm.NamedCommand
-import com.canoo.dolphin.core.comm.ValueChangedCommand
+import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.server.ServerAttribute
+import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.action.ServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import com.canoo.dolphin.core.comm.*
 
 import static com.canoo.dolphin.demo.VehicleProperties.*
-import com.canoo.dolphin.core.server.ServerPresentationModel
-import com.canoo.dolphin.core.server.ServerAttribute
-import com.canoo.dolphin.core.PresentationModel
-import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 
 class CustomAction implements ServerAction {
     private final ModelStore modelStore
@@ -43,17 +39,7 @@ class CustomAction implements ServerAction {
                         newAttribute(propertyName: ROTATE, value: rand(), dataId: "vehicle-${pmId}.rotate"),
                         newAttribute(propertyName: COLOR,  value: pmId,   dataId: "vehicle-${pmId}.color")
                 ])
-                //modelStore.add model
                 response << new CreatePresentationModelCommand(model)
-
-                /*
-                response << new InitializeAttributeCommand(pmId: it, propertyName: X, newValue: rand(), dataId: "vehicle-${it}.x")
-                response << new InitializeAttributeCommand(pmId: it, propertyName: Y, newValue: rand(), dataId: "vehicle-${it}.y")
-                response << new InitializeAttributeCommand(pmId: it, propertyName: WIDTH, newValue: 80)
-                response << new InitializeAttributeCommand(pmId: it, propertyName: HEIGHT, newValue: 25)
-                response << new InitializeAttributeCommand(pmId: it, propertyName: ROTATE, newValue: rand(), dataId: "vehicle-${it}.rotate")
-                response << new InitializeAttributeCommand(pmId: it, propertyName: COLOR, newValue: it, dataId: "vehicle-${it}.color")
-                */
             }
         }
         registry.register 'longPoll', { NamedCommand command, response ->

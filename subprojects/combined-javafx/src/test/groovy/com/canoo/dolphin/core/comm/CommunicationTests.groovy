@@ -2,13 +2,13 @@ package com.canoo.dolphin.core.comm
 
 import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.client.ClientAttribute
+import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-
-import com.canoo.dolphin.core.server.comm.Receiver
 import com.canoo.dolphin.core.client.comm.UiThreadHandler
-import com.canoo.dolphin.core.client.ClientModelStore
+import com.canoo.dolphin.core.server.comm.Receiver
 
 /**
  * Tests for the sequence between client requests and server responses.
@@ -28,14 +28,15 @@ class CommunicationTests extends GroovyTestCase {
         communicator.processAsync = false
         communicator.uiThreadHandler = { it() } as UiThreadHandler
 		communicator.receiver = receiver // inject receiver
-        clientModelStore = new ClientModelStore(communicator)
+        clientModelStore = new ClientModelStore()
+        Dolphin.setClientConnector(communicator)
+        Dolphin.setClientModelStore(clientModelStore)
 	}
 
 	void testSimpleAttributeChangeIsVisibleOnServer() {
 		def ca = new ClientAttribute('name')
-
-		assert ca.communicator in InMemoryClientConnector
-		assert ca.communicator.codec == null
+        def cpm = new ClientPresentationModel('model', [ca])
+        clientModelStore.add cpm
 
 		Command receivedCommand = null
 		def testServerAction = { ValueChangedCommand command, response ->
