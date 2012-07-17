@@ -39,17 +39,7 @@ class CustomAction implements ServerAction {
                         newAttribute(propertyName: ROTATE, value: rand(), dataId: "vehicle-${pmId}.rotate"),
                         newAttribute(propertyName: COLOR,  value: pmId,   dataId: "vehicle-${pmId}.color")
                 ])
-                //modelStore.add model
                 response << new CreatePresentationModelCommand(model)
-
-                /*
-                response << new InitializeAttributeCommand(pmId: it, propertyName: X, newValue: rand(), dataId: "vehicle-${it}.x")
-                response << new InitializeAttributeCommand(pmId: it, propertyName: Y, newValue: rand(), dataId: "vehicle-${it}.y")
-                response << new InitializeAttributeCommand(pmId: it, propertyName: WIDTH, newValue: 80)
-                response << new InitializeAttributeCommand(pmId: it, propertyName: HEIGHT, newValue: 25)
-                response << new InitializeAttributeCommand(pmId: it, propertyName: ROTATE, newValue: rand(), dataId: "vehicle-${it}.rotate")
-                response << new InitializeAttributeCommand(pmId: it, propertyName: COLOR, newValue: it, dataId: "vehicle-${it}.color")
-                */
             }
         }
         registry.register 'longPoll', { NamedCommand command, response ->

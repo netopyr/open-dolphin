@@ -24,7 +24,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
-        List<Attribute> attributes = Dolphin.clientModelStore.findAllAttributesByDataId([evt.source.dataId])
+        List<Attribute> attributes = Dolphin.clientModelStore.findAllAttributesByDataId(evt.source.dataId)
         attributes.each { it.value = evt.newValue }
     }
 
