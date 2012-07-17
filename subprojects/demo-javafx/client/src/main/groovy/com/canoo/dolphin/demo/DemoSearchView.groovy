@@ -2,29 +2,25 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
-
+import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
-
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
-
 import javafx.util.Callback
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
-import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-
-import static groovyx.javafx.GroovyFX.start
-import javafx.beans.value.ChangeListener
 import static com.canoo.dolphin.demo.DemoSearchProperties.*
+import static com.canoo.dolphin.demo.DemoStyle.blueStyle
+import static groovyx.javafx.GroovyFX.start
 
 class DemoSearchView {
 
     static show() {
 
-        def communicator = InMemoryClientConnector.instance
+        def communicator = Dolphin.clientConnector
 
         def searchCriteria = new ClientPresentationModel(
                 SEARCH_CRITERIA,
@@ -66,7 +62,7 @@ class DemoSearchView {
 
             communicator.send(new NamedCommand(id: FIRST_FILL_CMD)) { pmIds ->
                 for (id in pmIds) {
-                    gvf.items << communicator.clientModelStore.findPresentationModelById(id)[TEXT].value
+                    gvf.items << Dolphin.clientModelStore.findPresentationModelById(id)[TEXT].value
                 }
                 gvf.selectionModel.selectedIndex = 0
                 fadeTransition(1.s, node: gvf, to: 1).playFromStart()
@@ -74,7 +70,7 @@ class DemoSearchView {
 
             communicator.send(new NamedCommand(id: SECOND_FILL_CMD)) { pmIds ->
                 for (id in pmIds) {
-                    dst.items << communicator.clientModelStore.findPresentationModelById(id)[TEXT].value
+                    dst.items << Dolphin.clientModelStore.findPresentationModelById(id)[TEXT].value
                 }
                 dst.selectionModel.selectedIndex = 0
                 fadeTransition(1.s, node: dst, to: 1).playFromStart()
@@ -88,7 +84,7 @@ class DemoSearchView {
                 observableListOfKoPms.clear()
                 communicator.send(new NamedCommand(id: SEARCH_CMD)) { pmIds ->
                     for (id in pmIds) {
-                        observableListOfKoPms << communicator.clientModelStore.findPresentationModelById(id)
+                        observableListOfKoPms << Dolphin.clientModelStore.findPresentationModelById(id)
                     }
                     search.disabled = false
                     fadeTransition(0.5.s, node: table, to: 1).playFromStart()

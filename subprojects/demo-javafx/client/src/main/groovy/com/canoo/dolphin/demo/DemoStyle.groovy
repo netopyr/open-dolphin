@@ -1,11 +1,13 @@
 package com.canoo.dolphin.demo
 
-import javafx.scene.Scene
 import groovyx.javafx.SceneGraphBuilder
+import javafx.scene.Scene
 import javafx.scene.layout.GridPane
-import static javafx.geometry.HPos.*
-import static javafx.scene.layout.Priority.ALWAYS
 import javafx.stage.Stage
+
+import static javafx.geometry.HPos.LEFT
+import static javafx.geometry.HPos.RIGHT
+import static javafx.scene.layout.Priority.ALWAYS
 
 class DemoStyle {
 

@@ -51,10 +51,12 @@ public abstract class BaseAttribute implements Attribute {
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (listener == null || containsListener(listener, getPropertyChangeListeners(propertyName))) return;
         pcs.addPropertyChangeListener(listener);
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        if (listener == null || containsListener(listener, getPropertyChangeListeners(propertyName))) return;
         pcs.addPropertyChangeListener(propertyName, listener);
     }
 
@@ -75,10 +77,19 @@ public abstract class BaseAttribute implements Attribute {
     }
 
     protected void firePropertyChange(PropertyChangeEvent event) {
+        if (event != null && event.getOldValue() == event.getNewValue()) return;
         pcs.firePropertyChange(event);
     }
 
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        if (oldValue == newValue) return;
         pcs.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    private boolean containsListener(PropertyChangeListener listener, PropertyChangeListener[] listeners) {
+        for (PropertyChangeListener subject : listeners) {
+            if (subject == listener) return true;
+        }
+        return false;
     }
 }

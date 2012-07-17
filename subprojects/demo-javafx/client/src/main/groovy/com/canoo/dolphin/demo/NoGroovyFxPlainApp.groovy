@@ -1,19 +1,19 @@
 package com.canoo.dolphin.demo
 
-import javafx.application.*
-import javafx.scene.*
-import javafx.scene.control.Label
-import javafx.stage.Stage
-import javafx.scene.control.TextField
-import javafx.scene.layout.VBox
-
-import static com.canoo.dolphin.demo.MyProps.TITLE
-import static com.canoo.dolphin.demo.MyProps.TEXT
-import javafx.event.EventHandler
-import static com.canoo.dolphin.binding.Binder.bind
-
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import javafx.application.Application
+import javafx.event.EventHandler
+import javafx.scene.Group
+import javafx.scene.Scene
+import javafx.scene.control.Label
+import javafx.scene.control.TextField
+import javafx.scene.layout.VBox
+import javafx.stage.Stage
+
+import static com.canoo.dolphin.binding.Binder.bind
+import static com.canoo.dolphin.demo.MyProps.TEXT
+import static com.canoo.dolphin.demo.MyProps.TITLE
 
 public class NoGroovyFxPlainApp extends Application {
 

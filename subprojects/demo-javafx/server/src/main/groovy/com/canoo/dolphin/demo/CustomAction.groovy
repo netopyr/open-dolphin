@@ -1,18 +1,14 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.ModelStore
-import com.canoo.dolphin.core.comm.GetPmCommand
-import com.canoo.dolphin.core.comm.InitializeAttributeCommand
-import com.canoo.dolphin.core.comm.NamedCommand
-import com.canoo.dolphin.core.comm.ValueChangedCommand
+import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.server.ServerAttribute
+import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.action.ServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import com.canoo.dolphin.core.comm.*
 
 import static com.canoo.dolphin.demo.VehicleProperties.*
-import com.canoo.dolphin.core.server.ServerPresentationModel
-import com.canoo.dolphin.core.server.ServerAttribute
-import com.canoo.dolphin.core.PresentationModel
-import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 
 class CustomAction implements ServerAction {
     private final ModelStore modelStore

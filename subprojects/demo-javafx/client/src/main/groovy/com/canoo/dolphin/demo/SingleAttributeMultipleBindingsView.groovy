@@ -2,6 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.Dolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
 
@@ -11,7 +12,6 @@ import static com.canoo.dolphin.demo.MyProps.getTEXT
 import static com.canoo.dolphin.demo.MyProps.getTITLE
 import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.RIGHT
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
 class SingleAttributeMultipleBindingsView {
     void show() {
@@ -21,7 +21,7 @@ class SingleAttributeMultipleBindingsView {
             style builder
 
             def pm = createPresentationModel()
-            InMemoryClientConnector.instance.clientModelStore.add pm
+            Dolphin.clientModelStore.add pm
             bindPmToViews pm, builder
             attachHandlers pm, builder
 

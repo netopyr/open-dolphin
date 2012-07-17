@@ -1,33 +1,30 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-import com.canoo.dolphin.core.comm.NamedCommand
-
-import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
-
-import static groovyx.javafx.GroovyFX.start
-import static com.canoo.dolphin.binding.JFXBinder.bind
-import static com.canoo.dolphin.demo.VehicleProperties.*
-import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-
-import javafx.util.Callback
+import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.comm.NamedCommand
+import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import javafx.collections.ListChangeListener
-import javafx.scene.shape.Rectangle
+import javafx.collections.ObservableList
 import javafx.event.EventHandler
+import javafx.scene.shape.Rectangle
+import javafx.util.Callback
+
 import java.beans.PropertyChangeListener
-import groovyx.javafx.SceneGraphBuilder
-import com.canoo.dolphin.binding.Binder
-import com.canoo.dolphin.core.ModelStore
+
+import static com.canoo.dolphin.binding.JFXBinder.bind
+import static com.canoo.dolphin.demo.DemoStyle.blueStyle
+import static com.canoo.dolphin.demo.VehicleProperties.*
+import static groovyx.javafx.GroovyFX.start
 
 class PushView {
 
     static show() {
 
-        def communicator = InMemoryClientConnector.instance
+        def communicator = Dolphin.clientConnector
 
         def longPoll
         longPoll = {
@@ -38,7 +35,7 @@ class PushView {
                 'selectedVehicle',
                 [X, Y, WIDTH, HEIGHT, ROTATE, COLOR].collect { new ClientAttribute(it) }
         )
-        communicator.clientModelStore.add selectedVehicle
+        Dolphin.clientModelStore.add selectedVehicle
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
@@ -114,7 +111,7 @@ class PushView {
 
             communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
                 for (id in pmIds) {
-                    observableListOfPms << communicator.clientModelStore.findPresentationModelById(id)
+                    observableListOfPms << Dolphin.clientModelStore.findPresentationModelById(id)
                 }
                 fadeTransition(1.s, node:table, to:1).playFromStart()
                 longPoll()
@@ -141,7 +138,7 @@ class PushView {
             selectedVehicle[COLOR].valueProperty().addListener( { o, from, to ->
                 if (from) pmIdsToRect[from].strokeWidth = 0
                 pmIdsToRect[to].strokeWidth = 3
-                table.selectionModel.select communicator.clientModelStore.findPresentationModelById(to)
+                table.selectionModel.select Dolphin.clientModelStore.findPresentationModelById(to)
             } as ChangeListener)
 
             primaryStage.show()
