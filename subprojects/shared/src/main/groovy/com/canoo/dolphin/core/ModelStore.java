@@ -27,6 +27,10 @@ public class ModelStore {
 
     public boolean add(PresentationModel model) {
         if (null == model) return false;
+
+	    if(presentationModels.containsKey(model.getId())) {
+		    throw new IllegalArgumentException("there already is a PM with id " + model.getId());
+	    }
         boolean added = false;
         if (!presentationModels.containsValue(model)) {
             presentationModels.put(model.getId(), model);

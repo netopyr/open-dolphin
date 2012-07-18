@@ -9,8 +9,13 @@ import java.beans.PropertyChangeListener
 class MyPropChangeListener implements PropertyChangeListener{
     def target
     def targetPropName
+    Closure converter
 
     void propertyChange(PropertyChangeEvent evt) {
-        target[targetPropName] = evt.newValue
+        target[targetPropName] = convert(evt.newValue)
+    }
+
+    Object convert(Object value) {
+        converter != null ? converter(value) : value
     }
 }

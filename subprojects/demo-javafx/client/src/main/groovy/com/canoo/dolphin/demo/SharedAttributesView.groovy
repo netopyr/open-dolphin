@@ -1,6 +1,7 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
+import com.canoo.dolphin.core.client.ClientAttributeWrapper
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.comm.NamedCommand
@@ -9,6 +10,8 @@ import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.util.Callback
+
+import java.beans.PropertyChangeListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
@@ -58,12 +61,12 @@ class SharedAttributesView {
             taskTable.items = observableListOfTasks
 
             // auto-update the cell values
-            xCol.cellValueFactory = { return it.getValue().x.valueProperty() } as Callback
-            yCol.cellValueFactory = { return it.getValue().y.valueProperty() } as Callback
-            rotCol.cellValueFactory = { return it.getValue().rotate.valueProperty() } as Callback
+            xCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
+            yCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.y) } as Callback
+            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.rotate) } as Callback
 
-            vehicleFillCol.cellValueFactory = { return it.getValue().fill.valueProperty() } as Callback
-            vehicleXCol.cellValueFactory = { return it.getValue().x.valueProperty() } as Callback
+            vehicleFillCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.fill) } as Callback
+            vehicleXCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
 
             // startup and main loop
 
@@ -94,7 +97,8 @@ class SharedAttributesView {
                 selectedVehicle.vehiclePmId.value = selectedPm.fill.value
             } as ChangeListener)
 
-            selectedVehicle.vehiclePmId.valueProperty().addListener({ o, oldVal, selectedPmId ->
+            selectedVehicle.vehiclePmId.addPropertyChangeListener('value', { evt ->
+                def selectedPmId = evt.newValue
                 def tab = sgb.vehicles.tabs.find { it.id == selectedPmId }
                 if (!tab) {
                     def grid
@@ -132,7 +136,7 @@ class SharedAttributesView {
                     sgb.vehicles.tabs << tab
                 }
                 sgb.vehicles.selectionModel.select(tab)
-            } as ChangeListener)
+            } as PropertyChangeListener)
 
             primaryStage.show()
         }

@@ -39,6 +39,7 @@ class CustomAction implements ServerAction {
                         newAttribute(propertyName: ROTATE, value: rand(), dataId: "vehicle-${pmId}.rotate"),
                         newAttribute(propertyName: COLOR,  value: pmId,   dataId: "vehicle-${pmId}.color")
                 ])
+				model.setPresentationModelType('vehicle')
                 response << new CreatePresentationModelCommand(model)
             }
         }

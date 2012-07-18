@@ -24,7 +24,7 @@ class StoreAttributeAction implements ServerAction {
                 pm = new ServerPresentationModel(command.pmId, [])
                 modelStore.add(pm)
             }
-            pm.attributes << attribute
+            pm.addAttribute(attribute)
             modelStore.registerAttribute(attribute)
         }
     }

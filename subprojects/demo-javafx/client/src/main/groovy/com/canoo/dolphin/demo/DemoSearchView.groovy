@@ -15,6 +15,7 @@ import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoSearchProperties.*
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import static groovyx.javafx.GroovyFX.start
+import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 class DemoSearchView {
 
@@ -57,8 +58,8 @@ class DemoSearchView {
 
             table.items = observableListOfKoPms
 
-            koNameCol.cellValueFactory = { return it.getValue()[CONTACT_NAME].valueProperty() } as Callback
-            dateCol.cellValueFactory   = { return it.getValue()[CONTACT_DATE].valueProperty() } as Callback
+            koNameCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[CONTACT_NAME]) } as Callback
+            dateCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value[CONTACT_DATE]) } as Callback
 
             communicator.send(new NamedCommand(id: FIRST_FILL_CMD)) { pmIds ->
                 for (id in pmIds) {
