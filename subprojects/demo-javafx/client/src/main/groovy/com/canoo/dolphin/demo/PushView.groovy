@@ -19,6 +19,7 @@ import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import static com.canoo.dolphin.demo.VehicleProperties.*
 import static groovyx.javafx.GroovyFX.start
+import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 class PushView {
 
@@ -73,9 +74,9 @@ class PushView {
             table.items = observableListOfPms
 
             // auto-update the cell values
-            xCol.cellValueFactory   = { return it.getValue().x.valueProperty() } as Callback
-            yCol.cellValueFactory   = { return it.getValue().y.valueProperty() } as Callback
-            rotCol.cellValueFactory = { return it.getValue().rotate.valueProperty() } as Callback
+            xCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.x) } as Callback
+            yCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.y) } as Callback
+            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.rotate) } as Callback
 
             // used as both, event handler and change listener
             def changeSelectionHandler = { pm ->
@@ -135,11 +136,13 @@ class PushView {
             } as ChangeListener )
 
             // bind COLOR of selectedVehicle to { ... }
-            selectedVehicle[COLOR].valueProperty().addListener( { o, from, to ->
-                if (from) pmIdsToRect[from].strokeWidth = 0
+            selectedVehicle[COLOR].addPropertyChangeListener('value', { evt ->
+                def from = evt.oldValue
+                def to   = evt.newValue
+                if (from ) pmIdsToRect[from].strokeWidth = 0
                 pmIdsToRect[to].strokeWidth = 3
                 table.selectionModel.select Dolphin.clientModelStore.findPresentationModelById(to)
-            } as ChangeListener)
+            } as PropertyChangeListener)
 
             primaryStage.show()
         }

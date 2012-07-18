@@ -11,17 +11,53 @@ import java.beans.PropertyChangeSupport;
 public abstract class BaseAttribute implements Attribute {
     private final String propertyName;
     private final PropertyChangeSupport pcs;
+    private Object value;
+    private Object initialValue;
+    private boolean dirty = false;
 
     private long id = System.identityHashCode(this); // todo: dk: has to change to tell client from server
     private String dataId; // application specific semantics apply
 
     public BaseAttribute(String propertyName) {
+        this(propertyName, null);
+    }
+
+    public BaseAttribute(String propertyName, Object initialValue) {
         this.propertyName = propertyName;
+        this.initialValue = initialValue;
+        this.value = initialValue;
         pcs = new PropertyChangeSupport(this);
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public Object getInitialValue() {
+        return initialValue;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        firePropertyChange("value", this.value, this.value = value);
+        setDirty(initialValue == null ? value != null : !initialValue.equals(value));
+    }
+
+    private void setDirty(boolean dirty) {
+        firePropertyChange("dirty", this.dirty, this.dirty = dirty);
+    }
+
     public String toString() {
-        return new StringBuilder().append(id).append(" : ").append(propertyName).append(" (").append(dataId).append(")").toString();
+        return new StringBuilder()
+                .append(id)
+                .append(" : ")
+                .append(propertyName)
+                .append(" (")
+                .append(dataId).append(") ")
+                .append(value).toString();
     }
 
     public String getPropertyName() {

@@ -7,5 +7,8 @@ class ServerAttribute extends BaseAttribute {
         super(propertyName)
     }
 
-    Object value
+    ServerAttribute(Map props) {
+        this(props.propertyName, props.initialValue)
+        this.dataId = props.dataId
+    }
 }

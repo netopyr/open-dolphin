@@ -43,7 +43,7 @@ concerned with create, read, update, and delete actions
 for PMs. (Future: they may be undoable)
 
 For PM/attributes to be synchronized between client and server developers
-must make use of the respective modelStore. Here's for example how to create
+must make use of the respective ModelStore. Here's for example how to create
 a PM on the client side and sync it with it's server counterpart
 
     def pm = new ClientPresentationModel('myPmId', [
@@ -58,6 +58,12 @@ to. They do *not* maintain a reference to the source attribute.
 
 When "switching" all attribute properties get updated for all attributes
 that share the same dataId. The same is true when any value changes.
+
+== Dirt Flag ==
+
+Attributes have a dirty flag that can be used to detect when the attribute
+contains a value different that its original one. This flag is observable trough
+standard POJO bindings (i.e, PropertyChangeListener).
 
 How to build
 ------------
