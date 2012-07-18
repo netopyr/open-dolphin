@@ -61,7 +61,7 @@ class CommunicationTests extends GroovyTestCase {
 		}
 		receiver.registry.register CreatePresentationModelCommand, testServerAction
 
-		clientModelStore.add new ClientPresentationModel('testPm', [ca])
+		clientModelStore.add new ClientPresentationModel('testPm', [ca]) // todo dk: this should be automatic!
 
 		assert receivedCommand.id == "CreatePresentationModel"
 		assert receivedCommand instanceof CreatePresentationModelCommand

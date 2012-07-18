@@ -1,0 +1,14 @@
+Todos
+=====
+
+dk: build
+    jar bundles for client+shared, server+shared, and combined
+
+dk: provide a Swing-based example
+    to prove the multi-toolkit capabilities and have a role-model for KBS/UBS/Siemens
+
+dk: bring grails branch into the master
+
+dk: complete the codec
+
+??: allow a "data" request, i.e. ask server for data that is no PM
