@@ -49,15 +49,27 @@ configure(mavenizedProjects()) {
     apply plugin: 'maven'
 }
 
+def distDir = new File(rootDir, 'dist')
 subprojects.each { proj ->
     evaluationDependsOn proj.path
     proj.jar.doLast { jarTask ->
         copy {
             from jarTask.archivePath
-            into new File(rootDir, 'dist')
+            into distDir
+        }
+    }
+    if (proj.name.startsWith('demo-')){
+        proj.tasks.add(name: 'demoZip', type: Zip) {
+            classifier = 'src'
+            destinationDir = distDir
+            from proj.sourceSets*.allSource
         }
     }
 }
+
+
+
+
 
 
 task wrapper(type:Wrapper, description:"create a gradlew") {
