@@ -11,4 +11,4 @@ dk: bring grails branch into the master
 
 dk: complete the codec
 
-??: allow a "data" request, i.e. ask server for data that is no PM
+??: allow a "data" request, i.e. ask server for data that is no PM, aka ReferenceTable

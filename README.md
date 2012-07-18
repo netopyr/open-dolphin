@@ -25,8 +25,8 @@ The multi-project build consists of these subprojects
 - shared (code that is needed on both client and server)
 - client (visualization)
 - server (domain model and control logic)
-- combined (for testing the client-server combination)
-- demo   (again divided in client - server - shared - combined)
+- combined-javafx (for testing the client-server combination)
+- demo-javafx   (again divided in client - server - shared - combined)
 
 General approach
 ----------------
@@ -66,3 +66,13 @@ gradlew clean install
 Prerequisites
 -------------
 JAVAFX_HOME must be set to a 2.1.0 version
+
+Design decisions
+----------------
+#1 All access to the ModelStore, PresentationModels, and Attributes must be thread confined, just like any
+   access to Swing or JavaFX models. No additional measures of thread safety
+   are applied to the ModelStore. Using the store or models from some other thread
+   will result in unguaranteed behaviour.
+#2 Any PresentationModel id must be unique inside the ModelStore.
+#3 Any Attribute id must be unique inside the ModelStore.
+
