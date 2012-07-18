@@ -16,6 +16,7 @@ import javafx.event.EventHandler
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.PresentationModelListChangedListener
+import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 
 class BindListView {
@@ -65,8 +66,8 @@ class BindListView {
 
 
             // auto-update the cell values
-            x1Col.cellValueFactory = { return it.getValue().x.valueProperty() } as Callback
-            x2Col.cellValueFactory = { return it.getValue().x.valueProperty() } as Callback
+            x1Col.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
+            x2Col.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
 
             // startup and main loop
 
