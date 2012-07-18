@@ -5,6 +5,8 @@ import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import javafx.beans.value.ChangeListener
 
+import java.beans.PropertyChangeListener
+
 @Immutable
 class JFXOfAble {
     String propName
@@ -19,6 +21,10 @@ class JFXOfAble {
 
     ClientToAble of(ClientPresentationModel source) {
         new ClientToAble(source.findAttributeByPropertyName(propName))
+    }
+
+    PojoToAble of(Object source) {
+        return Binder.bind(propName).of(source)
     }
 }
 
@@ -89,7 +95,7 @@ class ClientOtherOfAble {
         def update = {
             target[targetPropName] = (convert != null) ? convert(attribute.value) : attribute.value
         }
-        attribute.valueProperty().addListener({ a, b, c -> update() } as ChangeListener)
+        attribute.addPropertyChangeListener({ update() } as PropertyChangeListener)
         update() // set the initial value after the binding and trigger the first notification
     }
 }
