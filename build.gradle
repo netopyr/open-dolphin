@@ -39,9 +39,6 @@ subprojects {
 def mavenizedProjects() {
     [
             project(':client'),
-            // project(':client-javafx'),
-            // project(':client-swing'),
-            // project(':client-swt'),
             project(':shared'),
             project(':server')
     ]
@@ -49,11 +46,19 @@ def mavenizedProjects() {
 
 configure(mavenizedProjects()) {
     group = 'com.canoo.dolphin'
-
     apply plugin: 'maven'
 }
 
-subprojects.each { evaluationDependsOn it.path }
+subprojects.each { proj ->
+    evaluationDependsOn proj.path
+    proj.jar.doLast { jarTask ->
+        copy {
+            from jarTask.archivePath
+            into new File(rootDir, 'dist')
+        }
+    }
+}
+
 
 task wrapper(type:Wrapper, description:"create a gradlew") {
     gradleVersion = '1.0'
