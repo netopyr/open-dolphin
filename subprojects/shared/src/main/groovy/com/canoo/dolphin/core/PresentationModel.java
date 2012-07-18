@@ -2,7 +2,9 @@ package com.canoo.dolphin.core;
 
 import java.util.List;
 
-public interface PresentationModel {
+public interface PresentationModel extends Observable {
+    String DIRTY_PROPERTY = "dirty";
+
     String getId();
 
     List<Attribute> getAttributes();
@@ -16,4 +18,6 @@ public interface PresentationModel {
     void syncWith(PresentationModel other);
 
     String getPresentationModelType();
+
+    void addAttribute(Attribute attribute);
 }

@@ -4,6 +4,7 @@ import groovy.beans.Bindable
 import javafx.scene.paint.Color
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
+import static com.canoo.dolphin.binding.JFXBinder.bindInfo
 
 class JFXBinderTest extends GroovyTestCase {
 
@@ -36,7 +37,7 @@ class JFXBinderTest extends GroovyTestCase {
 
         when:
 
-        bind 'value' of bean to 'text' of label
+        bindInfo 'value' of bean to 'text' of label
 
         then:
 
@@ -52,7 +53,7 @@ class JFXBinderTest extends GroovyTestCase {
 
         when:
 
-        bind 'value' of bean to 'textFill' of label, {it == 'white' ? Color.WHITE : Color.BLACK}
+        bindInfo 'value' of bean to 'textFill' of label, {it == 'white' ? Color.WHITE : Color.BLACK}
 
         then:
 

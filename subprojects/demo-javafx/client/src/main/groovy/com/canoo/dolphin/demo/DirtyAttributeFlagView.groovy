@@ -7,10 +7,12 @@ import com.canoo.dolphin.core.client.Dolphin
 import javafx.scene.paint.Color
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
+import static com.canoo.dolphin.binding.JFXBinder.bindInfo
 import static com.canoo.dolphin.demo.DemoStyle.style
 import static com.canoo.dolphin.demo.MyProps.*
 import static groovyx.javafx.GroovyFX.start
-import com.canoo.dolphin.core.Attribute
+
+import static com.canoo.dolphin.core.Attribute.DIRTY_PROPERTY
 
 class DirtyAttributeFlagView {
     static show() {
@@ -29,19 +31,23 @@ class DirtyAttributeFlagView {
 
                         label id: 'lastnameLabel', 'Lastname: ', row: 2, column: 0
                         textField id: 'lastnameInput', row: 2, column: 1
+
+                        button id: 'saveButton', 'Save', row: 3, column: 1
                     }
                 }
             }
 
             style delegate
 
-            bind NAME of model to TEXT of nameInput
-            bind LASTNAME of model to TEXT of lastnameInput
-            bind TEXT of nameInput to NAME of model
-            bind TEXT of lastnameInput to LASTNAME of model
+            bind NAME     of model         to TEXT     of nameInput
+            bind LASTNAME of model         to TEXT     of lastnameInput
+            bind TEXT     of nameInput     to NAME     of model
+            bind TEXT     of lastnameInput to LASTNAME of model
 
-            bind Attribute.DIRTY_PROPERTY of model[NAME]     to TEXT_FILL of nameLabel,     { it ? Color.RED: Color.WHITE }
-            bind Attribute.DIRTY_PROPERTY of model[LASTNAME] to TEXT_FILL of lastnameLabel, { it ? Color.RED: Color.WHITE }
+            bindInfo DIRTY_PROPERTY of model[NAME]     to TEXT_FILL  of nameLabel,     { it ? Color.RED: Color.WHITE }
+            bindInfo DIRTY_PROPERTY of model[LASTNAME] to TEXT_FILL  of lastnameLabel, { it ? Color.RED: Color.WHITE }
+            bindInfo DIRTY_PROPERTY of model           to TITLE      of primaryStage , { it ? '** DIRTY **': '' }
+            bindInfo DIRTY_PROPERTY of model           to DISABLED   of saveButton,    { !it }
 
             primaryStage.show()
         }

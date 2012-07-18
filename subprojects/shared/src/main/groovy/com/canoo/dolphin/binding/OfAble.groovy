@@ -10,10 +10,6 @@ class OfAble {
     ToAble of(PresentationModel source) {
         new ToAble(source, propName)
     }
-
-    PojoToAble of(Object source) {
-        new PojoToAble(source, propName)
-    }
 }
 
 class ToAble {
@@ -49,6 +45,15 @@ class OtherOfAble {
         if (!(changeListener in attribute.getPropertyChangeListeners('value'))) { // don't add the listener twice
             attribute.addPropertyChangeListener('value', changeListener)
         }
+    }
+}
+
+@Immutable
+class PojoOfAble {
+    String propName
+
+    PojoToAble of(Object source) {
+        new PojoToAble(source, propName)
     }
 }
 

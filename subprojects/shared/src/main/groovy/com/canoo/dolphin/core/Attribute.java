@@ -18,4 +18,6 @@ public interface Attribute extends Observable {
     void setId(long id);
 
     void syncWith(Attribute source);
+
+    boolean isDirty();
 }

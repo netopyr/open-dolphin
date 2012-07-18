@@ -112,7 +112,7 @@ abstract class ClientConnector implements PropertyChangeListener {
                     attribute.value = attr.value
                     attribute.id = attr.id
                     attribute.dataId = attr.dataId
-                    model.attributes << attribute
+                    model.addAttribute(attribute)
                     Dolphin.clientModelStore.registerAttribute(attribute)
                 } else {
                     Dolphin.clientModelStore.updateAttributeId(attribute, attr.id)
@@ -190,7 +190,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             return serverCommand.pmId
         }
         def pm = Dolphin.clientModelStore.findPresentationModelById(serverCommand.pmId)
-        pm.attributes << attribute
+        pm.addAttribute(attribute)
         Dolphin.clientModelStore.registerAttribute(attribute)
         return serverCommand.pmId // todo dk: check and test
     }

@@ -7,4 +7,5 @@ class MyProps {
     static final String NAME = 'name'
     static final String LASTNAME = 'lastname'
     static final String TEXT_FILL = "textFill"
+    static final String DISABLED = "disabled"
 }
