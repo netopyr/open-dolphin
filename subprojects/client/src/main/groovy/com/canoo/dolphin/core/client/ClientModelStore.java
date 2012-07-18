@@ -13,10 +13,8 @@ public class ClientModelStore extends ModelStore {
         boolean success = super.add(model);
         if (success) {
             List<Attribute> attributes = model.getAttributes();
-            synchronized (attributes) {
-                for (Attribute attribute : attributes) {
-                    attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
-                }
+            for (Attribute attribute : attributes) {
+                attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
             }
             Dolphin.getClientConnector().send(new CreatePresentationModelCommand(model));
         }

@@ -65,6 +65,16 @@ Attributes have a dirty flag that can be used to detect when the attribute
 contains a value different that its original one. This flag is observable trough
 standard POJO bindings (i.e, PropertyChangeListener).
 
+PresentationModels also have a dirty flag which is dependent on the dirty status
+of each of the attributes the model holds. This flag too is observable trough
+standard POJO bindings (i.e, PropertyChangeListener).
+
+== Thread Safety ==
+
+Dolphin makes the assumption that changes to PresentationModel and Attributes will
+occur inside the UI thread when in the client side of the application. Changes on
+the server must occur in the same thread without enforcing one in particular.
+
 How to build
 ------------
 gradlew clean install

@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class BasePresentationModel extends AbstractObservable implements PresentationModel {
-    protected final List<Attribute> attributes = Collections.synchronizedList(new LinkedList<Attribute>());
+    protected final List<Attribute> attributes = new LinkedList<Attribute>();
     private final String id;
     private String presentationModelType;
     private boolean dirty = false;
@@ -25,15 +25,13 @@ public class BasePresentationModel extends AbstractObservable implements Present
     private final PropertyChangeListener DIRTY_FLAG_CHECKER = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            synchronized (attributes) {
-                for (Attribute attr : attributes) {
-                    if (attr.isDirty()) {
-                        setDirty(true);
-                        return;
-                    }
+            for (Attribute attr : attributes) {
+                if (attr.isDirty()) {
+                    setDirty(true);
+                    return;
                 }
-                setDirty(false);
             }
+            setDirty(false);
         }
     };
 
@@ -50,10 +48,8 @@ public class BasePresentationModel extends AbstractObservable implements Present
     public BasePresentationModel(String id, List<? extends Attribute> attributes) {
         this.id = id != null ? id : makeId(this);
         this.attributes.addAll(attributes);
-        synchronized (attributes) {
-            for (Attribute attr : attributes) {
-                attr.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);
-            }
+        for (Attribute attr : attributes) {
+            attr.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);
         }
     }
 
@@ -90,11 +86,9 @@ public class BasePresentationModel extends AbstractObservable implements Present
 
     public Attribute findAttributeByPropertyName(String propertyName) {
         if (null == propertyName) return null;
-        synchronized (attributes) {
-            for (Attribute attribute : attributes) {
-                if (attribute.getPropertyName().equals(propertyName)) {
-                    return attribute;
-                }
+        for (Attribute attribute : attributes) {
+            if (attribute.getPropertyName().equals(propertyName)) {
+                return attribute;
             }
         }
         return null;
@@ -102,22 +96,18 @@ public class BasePresentationModel extends AbstractObservable implements Present
 
     public Attribute findAttributeByDataId(String dataId) {
         if (null == dataId) return null;
-        synchronized (attributes) {
-            for (Attribute attribute : attributes) {
-                if (dataId.equals(attribute.getDataId())) {
-                    return attribute;
-                }
+        for (Attribute attribute : attributes) {
+            if (dataId.equals(attribute.getDataId())) {
+                return attribute;
             }
         }
         return null;
     }
 
     public Attribute findAttributeById(long id) {
-        synchronized (attributes) {
-            for (Attribute attribute : attributes) {
-                if (attribute.getId() == id) {
-                    return attribute;
-                }
+        for (Attribute attribute : attributes) {
+            if (attribute.getId() == id) {
+                return attribute;
             }
         }
         return null;
@@ -132,11 +122,9 @@ public class BasePresentationModel extends AbstractObservable implements Present
     }
 
     public void syncWith(PresentationModel sourcePresentationModel) {
-        synchronized (attributes) {
-            for (Attribute targetAttribute : attributes) {
-                Attribute sourceAttribute = sourcePresentationModel.findAttributeByPropertyName(targetAttribute.getPropertyName());
-                if (sourceAttribute != null) targetAttribute.syncWith(sourceAttribute);
-            }
+        for (Attribute targetAttribute : attributes) {
+            Attribute sourceAttribute = sourcePresentationModel.findAttributeByPropertyName(targetAttribute.getPropertyName());
+            if (sourceAttribute != null) targetAttribute.syncWith(sourceAttribute);
         }
     }
 
