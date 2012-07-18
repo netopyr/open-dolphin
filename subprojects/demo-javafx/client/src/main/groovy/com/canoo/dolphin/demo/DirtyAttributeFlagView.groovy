@@ -6,12 +6,11 @@ import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
 import javafx.scene.paint.Color
 
-import java.beans.PropertyChangeListener
-
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
 import static com.canoo.dolphin.demo.MyProps.*
 import static groovyx.javafx.GroovyFX.start
+import com.canoo.dolphin.core.Attribute
 
 class DirtyAttributeFlagView {
     static show() {
@@ -41,11 +40,8 @@ class DirtyAttributeFlagView {
             bind TEXT of nameInput to NAME of model
             bind TEXT of lastnameInput to LASTNAME of model
 
-            def colorSwapper = { target, evt ->
-                target.textFill = evt.newValue ? Color.RED : Color.WHITE
-            }
-            model[NAME].addPropertyChangeListener('dirty', colorSwapper.curry(nameLabel) as PropertyChangeListener)
-            model[LASTNAME].addPropertyChangeListener('dirty', colorSwapper.curry(lastnameLabel) as PropertyChangeListener)
+            bind Attribute.DIRTY_PROPERTY of model[NAME]     to TEXT_FILL of nameLabel,     { it ? Color.RED: Color.WHITE }
+            bind Attribute.DIRTY_PROPERTY of model[LASTNAME] to TEXT_FILL of lastnameLabel, { it ? Color.RED: Color.WHITE }
 
             primaryStage.show()
         }

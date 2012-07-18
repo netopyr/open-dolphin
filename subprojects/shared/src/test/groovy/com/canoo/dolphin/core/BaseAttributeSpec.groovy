@@ -23,7 +23,7 @@ class BaseAttributeSpec extends Specification {
 
         when:
 
-        attribute.addPropertyChangeListener("dirty", changeListener)
+        attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, changeListener)
         attribute.value = 'foo'
 
         then:
@@ -64,7 +64,7 @@ class BaseAttributeSpec extends Specification {
 
         when:
 
-        attribute.addPropertyChangeListener("dirty", changeListener)
+        attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, changeListener)
         attribute.value = 'foo'
 
         then:

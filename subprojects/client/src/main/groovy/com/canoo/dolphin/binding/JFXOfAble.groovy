@@ -22,6 +22,10 @@ class JFXOfAble {
     ClientToAble of(ClientPresentationModel source) {
         new ClientToAble(source.findAttributeByPropertyName(propName))
     }
+
+    PojoToAble of(Object source) {
+        return Binder.bind(propName).of(source)
+    }
 }
 
 class JFXToAble {

@@ -47,7 +47,7 @@ public abstract class BaseAttribute implements Attribute {
     }
 
     private void setDirty(boolean dirty) {
-        firePropertyChange("dirty", this.dirty, this.dirty = dirty);
+        firePropertyChange(DIRTY_PROPERTY, this.dirty, this.dirty = dirty);
     }
 
     public String toString() {
