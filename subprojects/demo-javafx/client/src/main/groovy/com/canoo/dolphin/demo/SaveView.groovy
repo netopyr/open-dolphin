@@ -1,6 +1,5 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
@@ -8,10 +7,11 @@ import javafx.scene.paint.Color
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JFXBinder.bindInfo
-import static com.canoo.dolphin.core.Attribute.DIRTY_PROPERTY
 import static com.canoo.dolphin.demo.DemoStyle.style
 import static com.canoo.dolphin.demo.MyProps.*
 import static groovyx.javafx.GroovyFX.start
+
+import static com.canoo.dolphin.core.Attribute.DIRTY_PROPERTY
 
 class SaveView {
     static show() {

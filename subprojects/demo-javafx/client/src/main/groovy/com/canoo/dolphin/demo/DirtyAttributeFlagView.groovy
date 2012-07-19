@@ -1,6 +1,5 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
@@ -53,7 +52,7 @@ class DirtyAttributeFlagView {
         }
     }
 
-    private static PresentationModel createPresentationModel() {
+    private static ClientPresentationModel createPresentationModel() {
         def nameAttribute = new ClientAttribute(NAME, '')
         def lastnameAttribute = new ClientAttribute(LASTNAME, 'Smith')
         def model = new ClientPresentationModel('person', [nameAttribute, lastnameAttribute])
