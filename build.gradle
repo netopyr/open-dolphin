@@ -33,6 +33,8 @@ subprojects {
         }
     }
 
+    if ( ! project.hasProperty('coverage')) return
+    if ( project.name.startsWith('demo-'))  return
     apply from: "${rootDir}/gradle/coverage.gradle"
 }
 
