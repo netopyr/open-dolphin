@@ -205,7 +205,6 @@ abstract class ClientConnector implements PropertyChangeListener {
             def theOnlyOne = pmIds.toList().first()
             assert theOnlyOne == "$viewPmId-$discriminator" // sanity check
             result = Dolphin.clientModelStore.findPresentationModelById(theOnlyOne)
-            Dolphin.clientModelStore.add result
             onFinished result
         }
     }
