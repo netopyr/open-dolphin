@@ -10,6 +10,7 @@ import com.canoo.dolphin.core.Attribute;
 import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.PresentationModel;
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand;
+import com.canoo.dolphin.core.comm.SavePresentationModelCommand;
 
 public class ClientModelStore extends ModelStore {
 
@@ -102,6 +103,15 @@ public class ClientModelStore extends ModelStore {
 		void doIt(PresentationModelListChangedListener listener);
 	}
 
+    public void save(String modelId) {
+        save(findPresentationModelById(modelId));
+    }
 
-
+    public void save(PresentationModel model) {
+        if (model == null) return;
+        if (!containsPresentationModel(model.getId())) {
+            add(model);
+        }
+        Dolphin.getClientConnector().send(new SavePresentationModelCommand(model.getId()));
+    }
 }

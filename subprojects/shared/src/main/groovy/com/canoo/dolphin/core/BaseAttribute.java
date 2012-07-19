@@ -44,6 +44,15 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         firePropertyChange(DIRTY_PROPERTY, this.dirty, this.dirty = dirty);
     }
 
+    private void setInitialValue(Object initialValue) {
+        firePropertyChange(INITIAL_VALUE, this.initialValue, this.initialValue = initialValue);
+    }
+
+    public void save() {
+        setInitialValue(getValue());
+        setDirty(false);
+    }
+
     public String toString() {
         return new StringBuilder()
                 .append(id)

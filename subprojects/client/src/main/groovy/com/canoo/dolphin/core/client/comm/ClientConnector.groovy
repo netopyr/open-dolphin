@@ -4,6 +4,7 @@ import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.Dolphin
 import groovy.util.logging.Log
 import groovyx.gpars.dataflow.DataflowVariable
 import groovyx.gpars.group.DefaultPGroup
@@ -13,7 +14,6 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
 import com.canoo.dolphin.core.comm.*
-import com.canoo.dolphin.core.client.Dolphin
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -193,6 +193,16 @@ abstract class ClientConnector implements PropertyChangeListener {
         pm.addAttribute(attribute)
         Dolphin.clientModelStore.registerAttribute(attribute)
         return serverCommand.pmId // todo dk: check and test
+    }
+
+    String handle(PresentationModelSavedCommand serverCommand) {
+        if (!serverCommand.pmId) return null
+        PresentationModel model = Dolphin.getClientModelStore().findPresentationModelById(serverCommand.pmId)
+        // save locally first
+        model.attributes*.save()
+        // inform server of changes
+        model.attributes.each { attribute -> send(new InitialValueChangedCommand(attributeId: attribute.id)) }
+        model.id
     }
 
     void withPm(String viewPmId, String discriminator, Closure onFinished) {

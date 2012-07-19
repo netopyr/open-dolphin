@@ -5,6 +5,8 @@ public interface Attribute extends Observable {
 
     String DIRTY_PROPERTY = "dirty";
 
+    String INITIAL_VALUE = "initialValue";
+
     Object getValue();
 
     void setValue(Object value);
@@ -20,4 +22,8 @@ public interface Attribute extends Observable {
     void syncWith(Attribute source);
 
     boolean isDirty();
+
+    Object getInitialValue();
+
+    void save();
 }
