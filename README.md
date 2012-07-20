@@ -44,7 +44,7 @@ The multi-project build consists of these subprojects
 - shared (code that is needed on both client and server)
 - client (visualization)
 - server (domain model and control logic)
-- combined-javafx (for testing the client-server combination)
+- combined (for testing the client-server combination)
 - demo-javafx   (again divided in client - server - shared - combined)
 
 General approach

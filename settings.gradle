@@ -6,7 +6,7 @@ include 'client'
 // include 'client-swing'
 // include 'client-swt'
 
-include 'combined-javafx'
+include 'combined'
 
 include 'demo-javafx/shared'
 include 'demo-javafx/server'
