@@ -15,6 +15,6 @@ repositories {
 dependencies {
     compile ':jfxrt:',
             project(':demo-javafx-shared'),
-            project(':client'),
+            project(':client-javafx'),
             'org.codehaus.groovyfx:groovyfx:0.2'
 }
