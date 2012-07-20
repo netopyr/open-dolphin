@@ -15,7 +15,7 @@ class StoreAttributeAction implements ServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(AttributeCreatedCommand) { AttributeCreatedCommand command, response ->
-            def attribute = new ServerAttribute(command.propertyName)
+            def attribute = new ServerAttribute(command.propertyName, command.newValue)
             attribute.id = command.attributeId
             attribute.value = command.newValue
             attribute.dataId = command.dataId

@@ -4,7 +4,11 @@ import com.canoo.dolphin.core.BaseAttribute
 
 class ServerAttribute extends BaseAttribute {
     ServerAttribute(String propertyName) {
-        super(propertyName)
+        this(propertyName, null)
+    }
+
+    ServerAttribute(String propertyName, Object initialValue) {
+        super(propertyName, initialValue)
     }
 
     ServerAttribute(Map props) {

@@ -75,7 +75,7 @@ class CustomAction implements ServerAction {
     }
 
     private ServerAttribute newAttribute(Map params) {
-        ServerAttribute attribute = new ServerAttribute(params.remove('propertyName'))
+        ServerAttribute attribute = new ServerAttribute(params.remove('propertyName'), params.value)
         params.each { key, value -> attribute[key] = value }
         attribute
     }

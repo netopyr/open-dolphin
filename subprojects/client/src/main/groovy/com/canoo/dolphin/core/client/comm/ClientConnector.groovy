@@ -108,7 +108,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             serverCommand.attributes.each { attr ->
                 ClientAttribute attribute = model.findAttributeByPropertyName(attr.propertyName)
                 if (null == attribute) {
-                    attribute = new ClientAttribute(attr.propertyName)
+                    attribute = new ClientAttribute(attr.propertyName, attr.value)
                     attribute.value = attr.value
                     attribute.id = attr.id
                     attribute.dataId = attr.dataId
@@ -121,7 +121,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         } else {
             List<ClientAttribute> attributes = []
             serverCommand.attributes.each { attr ->
-                ClientAttribute attribute = new ClientAttribute(attr.propertyName)
+                ClientAttribute attribute = new ClientAttribute(attr.propertyName, attr.value)
                 attribute.value = attr.value
                 attribute.id = attr.id
                 attribute.dataId = attr.dataId

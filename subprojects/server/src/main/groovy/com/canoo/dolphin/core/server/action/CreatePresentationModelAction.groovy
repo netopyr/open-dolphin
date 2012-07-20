@@ -18,7 +18,7 @@ class CreatePresentationModelAction implements ServerAction {
         registry.register(CreatePresentationModelCommand) { CreatePresentationModelCommand command, response ->
             List<ServerAttribute> attributes = []
             command.attributes.each { attr ->
-                ServerAttribute attribute = new ServerAttribute(attr.propertyName)
+                ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value)
                 attribute.value = attr.value
                 attribute.id = attr.id
                 attribute.dataId = attr.dataId
