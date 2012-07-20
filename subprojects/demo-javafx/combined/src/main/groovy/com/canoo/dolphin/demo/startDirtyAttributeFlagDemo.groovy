@@ -1,5 +1,5 @@
 package com.canoo.dolphin.demo
 
-new CustomJavaFxInMemoryConfig()
+new JavaFxInMemoryConfig()
 
 new DirtyAttributeFlagView().show()

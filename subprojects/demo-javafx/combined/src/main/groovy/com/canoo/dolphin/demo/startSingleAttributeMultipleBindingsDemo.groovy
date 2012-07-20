@@ -1,5 +1,5 @@
 package com.canoo.dolphin.demo
 
-new CustomJavaFxInMemoryConfig().registerDefaultActions()
+new JavaFxInMemoryConfig()
 
 new SingleAttributeMultipleBindingsView().show()

@@ -10,6 +10,8 @@ import com.canoo.dolphin.core.comm.*
 
 import static com.canoo.dolphin.demo.VehicleProperties.*
 
+// todo dk: split into separate actions
+
 class CustomAction implements ServerAction {
     private final ModelStore modelStore
 
