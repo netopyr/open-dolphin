@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ModelStore {
     private final Map<String, PresentationModel> presentationModels = new ConcurrentHashMap<String, PresentationModel>();
+    private final Map<String, List<PresentationModel>> modelsPerType = new ConcurrentHashMap<String, List<PresentationModel>>();
     private final Map<Long, Attribute> attributesPerId = new ConcurrentHashMap<Long, Attribute>();
     private final Map<String, List<Attribute>> attributesPerDataId = new ConcurrentHashMap<String, List<Attribute>>();
 
@@ -28,12 +29,13 @@ public class ModelStore {
     public boolean add(PresentationModel model) {
         if (null == model) return false;
 
-	    if(presentationModels.containsKey(model.getId())) {
-		    throw new IllegalArgumentException("there already is a PM with id " + model.getId());
-	    }
+        if (presentationModels.containsKey(model.getId())) {
+            throw new IllegalArgumentException("there already is a PM with id " + model.getId());
+        }
         boolean added = false;
         if (!presentationModels.containsValue(model)) {
             presentationModels.put(model.getId(), model);
+            addPresentationModelByType(model);
             for (Attribute attribute : model.getAttributes()) {
                 addAttributeById(attribute);
                 attribute.addPropertyChangeListener(Attribute.DATA_ID_PROPERTY, ATTRIBUTE_WORKER);
@@ -48,6 +50,7 @@ public class ModelStore {
         if (null == model) return false;
         boolean removed = false;
         if (presentationModels.containsValue(model)) {
+            removePresentationModelByType(model);
             presentationModels.remove(model.getId());
             for (Attribute attribute : model.getAttributes()) {
                 removeAttributeById(attribute);
@@ -91,6 +94,28 @@ public class ModelStore {
         }
     }
 
+    protected void addPresentationModelByType(PresentationModel model) {
+        if (null == model) return;
+        String type = model.getPresentationModelType();
+        if (isBlank(type)) return;
+        List<PresentationModel> list = modelsPerType.get(type);
+        if (null == list) {
+            list = new ArrayList<PresentationModel>();
+            modelsPerType.put(type, list);
+        }
+        if (!list.contains(model)) list.add(model);
+    }
+
+    protected void removePresentationModelByType(PresentationModel model) {
+        if (null == model) return;
+        String type = model.getPresentationModelType();
+        if (isBlank(type)) return;
+        List<PresentationModel> list = modelsPerType.get(type);
+        if (null != list) {
+            list.remove(model);
+        }
+    }
+
     protected void removeAttributeByDataId(Attribute attribute, String dataId) {
         if (isBlank(dataId)) return;
         List<Attribute> list = attributesPerDataId.get(dataId);
@@ -100,6 +125,11 @@ public class ModelStore {
 
     public PresentationModel findPresentationModelById(String id) {
         return presentationModels.get(id);
+    }
+
+    public List<PresentationModel> findAllPresentationModelsByType(String type) {
+        if (isBlank(type) || !modelsPerType.containsKey(type)) return Collections.emptyList();
+        return Collections.unmodifiableList(modelsPerType.get(type));
     }
 
     public boolean containsPresentationModel(String id) {
