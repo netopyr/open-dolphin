@@ -1,8 +1,8 @@
 package com.canoo.dolphin.demo
 
-def config = new InMemoryConfig()
+def config = new CustomJavaFxInMemoryConfig()
 //config.connector.sleepMillis = 500
-config.withActions()
+config.registerDefaultActions()
 config.register(new DemoSearchAction(config.modelStore));
 
 DemoSearchView.show()

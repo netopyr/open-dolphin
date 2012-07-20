@@ -2,13 +2,14 @@ package com.canoo.dolphin.demo;
 
 import com.canoo.dolphin.core.client.Dolphin;
 import com.canoo.dolphin.core.client.comm.UiThreadHandler;
+import com.canoo.dolphin.core.comm.DefaultInMemoryConfig;
 
 import java.util.concurrent.CountDownLatch;
 
 public class JavaDemo {
     public static void main(String[] args) {
         final CountDownLatch latch = new CountDownLatch(1);
-        InMemoryConfig inMemoryConfig = new InMemoryConfig();
+        DefaultInMemoryConfig inMemoryConfig = new DefaultInMemoryConfig();
 
         Dolphin.getClientConnector().setUiThreadHandler(new UiThreadHandler() {
             @Override
@@ -19,7 +20,7 @@ public class JavaDemo {
                 latch.countDown();
             }
         });
-        inMemoryConfig.withActions();
+        inMemoryConfig.registerDefaultActions();
         inMemoryConfig.register(new JavaAction());
 
         ConsoleView.show();

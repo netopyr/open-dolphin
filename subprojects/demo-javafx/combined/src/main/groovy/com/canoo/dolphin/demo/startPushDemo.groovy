@@ -1,5 +1,5 @@
 package com.canoo.dolphin.demo
 
-new InMemoryConfig().withActions()
+new CustomJavaFxInMemoryConfig().registerDefaultActions()
 
 PushView.show()
