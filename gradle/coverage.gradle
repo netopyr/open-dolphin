@@ -47,6 +47,8 @@ test.doLast {
             delete file: mergedSerFile
             move file: srcCopy, tofile: mainCompiledClasses
         }
+        // we would like to get a combined report over all subprojects
+        // except the demos
         ant.'cobertura-merge'(datafile: mergedSerFile) {
             fileset dir: coverageDir, {
                 include name: "ser/*.ser"
@@ -54,12 +56,15 @@ test.doLast {
         }
         // create cobertura reports
         ant.'cobertura-report'(destdir: coverageDir, format: 'html', datafile:mergedSerFile ) {
-            project.sourceSets*.allSource.srcDirs.each { LinkedHashSet set ->
-                set.each {
-                    if (it.exists()) {
-                        fileset dir: it, {
-                            include name: "**/*.java"
-                            include name: "**/*.groovy"
+            rootProject.subprojects.each { proj -> // not nice but works...
+                if (proj.name.startsWith('demo-')) return
+                proj.sourceSets*.allSource.srcDirs.each { LinkedHashSet set ->
+                    set.each {
+                        if (it.exists()) {
+                            fileset dir: it, {
+                                include name: "**/*.java"
+                                include name: "**/*.groovy"
+                            }
                         }
                     }
                 }
