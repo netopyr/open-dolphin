@@ -11,7 +11,7 @@ repositories {
 }
 dependencies {
     compile ':jfxrt:',
-            project(':combined-javafx'),
+            project(':combined'),
             project(':demo-javafx-client'),
             project(':demo-javafx-server')
 }

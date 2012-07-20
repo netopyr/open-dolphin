@@ -12,7 +12,12 @@ repositories {
 }
 
 dependencies {
-    compile ':jfxrt:',
-            project(':client'),
-            project(':server')
+    compile ':jfxrt:', project(':client')
+}
+
+configure(install.repositories.mavenInstaller) {
+    pom.whenConfigured {pm ->
+        def dep = pm.dependencies.find {dep -> dep.artifactId == 'jfxrt' }
+        pm.dependencies.remove(dep)
+    }
 }

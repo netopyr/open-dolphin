@@ -1,11 +1,6 @@
 package com.canoo.dolphin.core.client
 
 import com.canoo.dolphin.core.BaseAttribute
-import com.canoo.dolphin.core.client.comm.ClientConnector
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-import javafx.beans.property.ObjectProperty
-import javafx.beans.property.Property
-import javafx.beans.property.SimpleObjectProperty
 
 /**
  * A client side (remote) ClientAttribute is considered a remote representation of a ServerAttribute.

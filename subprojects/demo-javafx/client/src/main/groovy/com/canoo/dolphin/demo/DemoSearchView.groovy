@@ -27,6 +27,7 @@ class DemoSearchView {
                 SEARCH_CRITERIA,
                 [FIRST,SECOND,NAME].collect { new ClientAttribute(it) }
         )
+        Dolphin.clientModelStore.add searchCriteria
 
         ObservableList<ClientPresentationModel> observableListOfKoPms = FXCollections.observableArrayList()
 

@@ -1,5 +1,6 @@
 package com.canoo.dolphin.demo
 
-new InMemoryConfig().withActions()
+def config = new JavaFxInMemoryConfig()
+config.register new CustomAction(config.modelStore)
 
 PushView.show()

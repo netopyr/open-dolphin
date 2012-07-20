@@ -2,11 +2,11 @@ include 'shared'
 include 'server'
 include 'client'
 // include 'client-common'
-// include 'client-javafx'
+include 'client-javafx'
 // include 'client-swing'
 // include 'client-swt'
 
-include 'combined-javafx'
+include 'combined'
 
 include 'demo-javafx/shared'
 include 'demo-javafx/server'

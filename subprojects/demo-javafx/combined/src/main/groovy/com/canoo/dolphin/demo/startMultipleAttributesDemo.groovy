@@ -1,4 +1,5 @@
 package com.canoo.dolphin.demo
 
-new InMemoryConfig()
+new JavaFxInMemoryConfig()
+
 MultipleAttributesView.show()
