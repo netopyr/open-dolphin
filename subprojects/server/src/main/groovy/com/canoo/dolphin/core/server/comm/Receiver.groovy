@@ -14,7 +14,8 @@ class Receiver {
         List<Command> response = new LinkedList() // collecting parameter pattern
         def actions = registry[command.id]
         if (! actions){
-            log.warning "S: there is no server action registered for received command: $command"
+            log.warning "S: there is no server action registered for received command: $command, " +
+                        "known commands are ${registry.actions.keySet()}"
             return response
         }
         for (action in actions) {

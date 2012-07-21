@@ -8,15 +8,16 @@ import java.util.concurrent.CountDownLatch
 
 class TestInMemoryConfig extends DefaultInMemoryConfig {
 
-    /** needed to since tests should run fully asynchronous but we have to wait at the end of the test */
+    /** needed since tests should run fully asynchronous but we have to wait at the end of the test */
     CountDownLatch done = new CountDownLatch(1)
 
     TestInMemoryConfig() {
         registerDefaultActions()
+        connector.sleepMillis = 0
         connector.uiThreadHandler = { it() } as UiThreadHandler
     }
 
-    /** convenience method do register a named action */
+    /** convenience method to register a named action */
     ServerAction register(String name, Closure logic){
         register new ServerAction() {
             @Override

@@ -13,4 +13,11 @@ class ClientPresentationModel extends BasePresentationModel {
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
         super(id, attributes)
     }
+
+    /** Convenience method for a typical case */
+    static ClientPresentationModel make(String id, List<String> attributeNames) {
+        def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)})
+        Dolphin.clientModelStore.add result
+        return result
+    }
 }
