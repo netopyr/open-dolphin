@@ -13,10 +13,7 @@ def mainCompiledClasses= sourceSets.main.output.classesDir
 def srcCopy="${mainCompiledClasses}-copy"
 
 test.doFirst  {
-
     ant {
-        // delete data file for Cobertura, otherwise coverage would be added
-        delete file: coberturaSerFileName , failonerror: false
         // delete copy of original classes
         delete dir: srcCopy, failonerror: false
         // import cobertura task, so it is available in the script
