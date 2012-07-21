@@ -18,7 +18,7 @@ public class ShowLogo extends Application {
 
         Scene scene = new Scene(pane, 440, 297, Color.FLORALWHITE);
 
-        stage.setTitle("JavaFX Custom Control");
+        stage.setTitle("Dolphin Greetings");
         stage.setScene(scene);
         stage.show();
     }

@@ -12,6 +12,8 @@ import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPmAction
 import com.canoo.dolphin.core.server.comm.Receiver
 
+import java.util.logging.Level
+
 class DefaultInMemoryConfig {
 
     Receiver receiver = new Receiver()
