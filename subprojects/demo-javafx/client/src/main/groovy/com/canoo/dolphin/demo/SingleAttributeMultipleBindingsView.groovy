@@ -8,6 +8,7 @@ import javafx.event.EventHandler
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
+import static com.canoo.dolphin.demo.MyProps.TITLE
 import static com.canoo.dolphin.demo.MyProps.getTEXT
 import static com.canoo.dolphin.demo.MyProps.getTITLE
 import static groovyx.javafx.GroovyFX.start
@@ -44,7 +45,7 @@ class SingleAttributeMultipleBindingsView {
     }
 
     ClientPresentationModel createPresentationModel() {
-        def titleAttr = new ClientAttribute('title')
+        def titleAttr = new ClientAttribute(TITLE)
         titleAttr.value = "Some Text: <enter> or <submit>"
         return new ClientPresentationModel('demo', [titleAttr])
     }

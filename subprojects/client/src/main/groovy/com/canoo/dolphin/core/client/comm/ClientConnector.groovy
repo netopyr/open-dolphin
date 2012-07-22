@@ -72,12 +72,12 @@ abstract class ClientConnector implements PropertyChangeListener {
                 List<Command> response = result.get()
                 log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
 
-                Set<String> pmIds = []
+                List<String> pmIds = []
                 for (serverCommand in response) {
                     def pms = handle serverCommand
                     if (pms && pms instanceof String) pmIds << pms
                 }
-                if (onFinished) onFinished pmIds
+                if (onFinished) onFinished pmIds.unique()
             }
         }
     }

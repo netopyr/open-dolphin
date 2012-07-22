@@ -37,10 +37,9 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             }
         }
         // client part
-        context.send "fetchData", { Set<String> pmIds ->
+        context.send "fetchData", { List<String> pmIds ->
             assert pmIds.size() == 26
-            // todo: pmIds from a single action should come in sequence
-            // assert pmIds.sort(false) == pmIds
+            assert pmIds.sort(false) == pmIds   // pmIds from a single action should come in sequence
             assert 'a' == Dolphin.clientModelStore.findPresentationModelById('a').char.value
             assert 'z' == Dolphin.clientModelStore.findPresentationModelById('z').char.value
             context.assertionsDone() // make sure the assertions are really executed
