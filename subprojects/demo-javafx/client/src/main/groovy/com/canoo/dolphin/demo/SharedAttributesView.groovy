@@ -117,7 +117,7 @@ class SharedAttributesView {
                         }
                     }
 
-                    communicator.withPm('vehicleDetail', selectedPmId) { ClientPresentationModel detailPm ->
+                    communicator.withPresentationModel('vehicleDetail', selectedPmId) { ClientPresentationModel detailPm ->
                         assert detailPm
 
                         bind COLOR of detailPm to 'text' of tab
