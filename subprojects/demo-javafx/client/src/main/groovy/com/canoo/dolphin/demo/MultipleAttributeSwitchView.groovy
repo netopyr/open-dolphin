@@ -40,9 +40,9 @@ class MultipleAttributeSwitchView {
 
                         hbox styleClass:"submit", row:3, column:1, {
                             button "Actual is one",
-                                   onAction: { communicator.switchPmAndSend(actualPm, pm1) }
+                                   onAction: { communicator.switchPresentationModelAndSend(actualPm, pm1) }
                             button "Actual is two",
-                                   onAction: { communicator.switchPmAndSend(actualPm, pm2) }
+                                   onAction: { communicator.switchPresentationModelAndSend(actualPm, pm2) }
                         }
                         hbox styleClass:"submit", row:4, column:1, {
                             button "Set title",
@@ -65,7 +65,7 @@ class MultipleAttributeSwitchView {
     protected static ClientPresentationModel makePm(String idPrefix, String id, String purpose) {
         def attributes = [TITLE, PURPOSE].collect { propName ->
             def attr = new ClientAttribute(propName)
-            attr.dataId = idPrefix + '.' + propName
+            attr.qualifier = idPrefix + '.' + propName
             attr
         }
         def pm = new ClientPresentationModel(id, attributes)

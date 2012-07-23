@@ -11,7 +11,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     private boolean dirty = false;
 
     private long id = System.identityHashCode(this); // todo: dk: has to change to tell client from server
-    private String dataId; // application specific semantics apply
+    private String qualifier; // application specific semantics apply
 
     public BaseAttribute(String propertyName) {
         this(propertyName, null);
@@ -59,7 +59,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
                 .append(" : ")
                 .append(propertyName)
                 .append(" (")
-                .append(dataId).append(") ")
+                .append(qualifier).append(") ")
                 .append(value).toString();
     }
 
@@ -75,17 +75,17 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         this.id = id;
     }
 
-    public String getDataId() {
-        return dataId;
+    public String getQualifier() {
+        return qualifier;
     }
 
-    public void setDataId(String dataId) {
-        firePropertyChange(DATA_ID_PROPERTY, this.dataId, this.dataId = dataId);
+    public void setQualifier(String qualifier) {
+        firePropertyChange(QUALIFIER_PROPERTY, this.qualifier, this.qualifier = qualifier);
     }
 
     public void syncWith(Attribute source) {
         if (this == source || null == source) return;
-        setDataId(source.getDataId());
+        setQualifier(source.getQualifier());
         setValue(source.getValue());
     }
 }

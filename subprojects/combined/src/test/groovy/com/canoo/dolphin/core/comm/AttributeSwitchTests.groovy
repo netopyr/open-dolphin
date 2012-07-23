@@ -20,8 +20,8 @@ class AttributeSwitchTests extends GroovyTestCase {
         clientModelStore = new ClientModelStore()
         Dolphin.setClientConnector(InMemoryClientConnector.instance)
         Dolphin.setClientModelStore(clientModelStore)
-        switchPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', dataId: 'dataid1')])
-        sourcePm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', dataId: 'dataid2')])
+        switchPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid1')])
+        sourcePm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid2')])
         clientModelStore.add switchPm
         clientModelStore.add sourcePm
     }
@@ -53,7 +53,7 @@ class AttributeSwitchTests extends GroovyTestCase {
 
     void testWritingToSwitchesWithSwitchingSources() {
 
-        def otherPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', dataId: 'dataid3')])
+        def otherPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid3')])
         clientModelStore.add otherPm
 
         switchPm.name.syncWith sourcePm.name

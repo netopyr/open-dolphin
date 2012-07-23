@@ -20,7 +20,7 @@ class StoreValueChangeAction implements ServerAction {
             */
             if (attribute) {
                 attribute.value = command.newValue
-                def attributes = modelStore.findAllAttributesByDataId(attribute.dataId)
+                def attributes = modelStore.findAllAttributesByQualifier(attribute.qualifier)
                 attributes.each { it.value = command.newValue }
             }
         }

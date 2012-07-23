@@ -21,7 +21,7 @@ class CreatePresentationModelAction implements ServerAction {
                 ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value)
                 attribute.value = attr.value
                 attribute.id = attr.id
-                attribute.dataId = attr.dataId
+                attribute.qualifier = attr.qualifier
                 attributes << attribute
             }
             PresentationModel model = new ServerPresentationModel(command.pmId, attributes)

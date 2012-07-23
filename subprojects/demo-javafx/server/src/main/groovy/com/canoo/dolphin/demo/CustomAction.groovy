@@ -34,12 +34,12 @@ class CustomAction implements ServerAction {
         registry.register 'pullVehicles', { NamedCommand command, response ->
             vehicles.each { String pmId ->
                 PresentationModel model = new ServerPresentationModel(pmId, [
-                        newAttribute(propertyName: X,      value: rand(), dataId: "vehicle-${pmId}.x"),
-                        newAttribute(propertyName: Y,      value: rand(), dataId: "vehicle-${pmId}.y"),
+                        newAttribute(propertyName: X,      value: rand(), qualifier: "vehicle-${pmId}.x"),
+                        newAttribute(propertyName: Y,      value: rand(), qualifier: "vehicle-${pmId}.y"),
                         newAttribute(propertyName: WIDTH,  value: 80),
                         newAttribute(propertyName: HEIGHT, value: 25),
-                        newAttribute(propertyName: ROTATE, value: rand(), dataId: "vehicle-${pmId}.rotate"),
-                        newAttribute(propertyName: COLOR,  value: pmId,   dataId: "vehicle-${pmId}.color")
+                        newAttribute(propertyName: ROTATE, value: rand(), qualifier: "vehicle-${pmId}.rotate"),
+                        newAttribute(propertyName: COLOR,  value: pmId,   qualifier: "vehicle-${pmId}.color")
                 ])
 				model.setPresentationModelType('vehicle')
                 response << new CreatePresentationModelCommand(model)
@@ -57,20 +57,20 @@ class CustomAction implements ServerAction {
         registry.register 'pullTasks', { NamedCommand command, response ->
             vehicles.each {
                 response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "description", newValue: rand())
-                response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "fill", dataId: "vehicle-${it}.color")
-                response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "x", dataId: "vehicle-${it}.x")
+                response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "fill", qualifier: "vehicle-${it}.color")
+                response << new InitializeAttributeCommand(pmId: "TaskFor " + it, propertyName: "x", qualifier: "vehicle-${it}.x")
             }
         }
 
-        registry.register GetPmCommand, { GetPmCommand command, response ->
+        registry.register GetPresentationModelCommand, { GetPresentationModelCommand command, response ->
             switch (command.pmType) {
                 case 'vehicleDetail':
                     def pmId = command.pmId
                     response << new InitializeAttributeCommand(pmId: pmId, propertyName: WIDTH, newValue: rand(),)
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: X, dataId: "vehicle-${command.selector}.x")
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: Y, dataId: "vehicle-${command.selector}.y")
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: ROTATE, dataId: "vehicle-${command.selector}.rotate")
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: COLOR, dataId: "vehicle-${command.selector}.color")
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: X, qualifier: "vehicle-${command.selector}.x")
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: Y, qualifier: "vehicle-${command.selector}.y")
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: ROTATE, qualifier: "vehicle-${command.selector}.rotate")
+                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: COLOR, qualifier: "vehicle-${command.selector}.color")
                     break
             }
         }

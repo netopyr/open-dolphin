@@ -11,7 +11,7 @@ public interface PresentationModel extends Observable {
 
     Attribute findAttributeByPropertyName(String propertyName);
 
-    Attribute findAttributeByDataId(String dataId);
+    Attribute findAttributeByQualifier(String qualifier);
 
     Attribute findAttributeById(long id);
 

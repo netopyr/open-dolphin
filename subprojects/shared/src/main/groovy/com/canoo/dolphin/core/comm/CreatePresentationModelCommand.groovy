@@ -16,7 +16,7 @@ class CreatePresentationModelCommand extends Command {
             attributes << [
                     propertyName: attr.propertyName,
                     id: attr.id,
-                    dataId: attr.dataId,
+                    qualifier: attr.qualifier,
                     value: attr.value
             ]
         }

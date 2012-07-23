@@ -72,11 +72,11 @@ a PM on the client side and sync it with it's server counterpart
 
 Unlike GRASP there is neither a PM- nor an AttributeSwitch.
 In contrast, switches are ordinary attributes that
-happen to have the same dataId as the source attributes that there are "pointing"
+happen to have the same qualifier as the source attributes that there are "pointing"
 to. They do *not* maintain a reference to the source attribute.
 
 When "switching" all attribute properties get updated for all attributes
-that share the same dataId. The same is true when any value changes.
+that share the same qualifier. The same is true when any value changes.
 
 == Dirty state ==
 

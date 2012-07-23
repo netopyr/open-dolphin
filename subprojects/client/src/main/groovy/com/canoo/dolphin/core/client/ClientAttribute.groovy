@@ -21,6 +21,6 @@ class ClientAttribute extends BaseAttribute {
 
     ClientAttribute(Map props) {
         this(props.propertyName, props.initialValue)
-        this.dataId = props.dataId
+        this.qualifier = props.qualifier
     }
 }

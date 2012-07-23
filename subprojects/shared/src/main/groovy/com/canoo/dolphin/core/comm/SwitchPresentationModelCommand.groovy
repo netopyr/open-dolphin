@@ -1,6 +1,6 @@
 package com.canoo.dolphin.core.comm
 
-class SwitchPmCommand extends Command {
+class SwitchPresentationModelCommand extends Command {
 
     String pmId
     String sourcePmId

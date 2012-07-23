@@ -1,7 +1,7 @@
 package com.canoo.dolphin.core;
 
 public interface Attribute extends Observable {
-    String DATA_ID_PROPERTY = "dataId";
+    String QUALIFIER_PROPERTY = "qualifier";
 
     String DIRTY_PROPERTY = "dirty";
 
@@ -13,7 +13,7 @@ public interface Attribute extends Observable {
 
     String getPropertyName();
 
-    String getDataId();
+    String getQualifier();
 
     long getId();
 

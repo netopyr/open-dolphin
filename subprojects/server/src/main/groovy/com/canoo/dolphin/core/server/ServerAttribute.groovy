@@ -14,7 +14,7 @@ class ServerAttribute extends BaseAttribute {
 
     ServerAttribute(Map props) {
         this(props.propertyName, props.initialValue)
-        this.dataId = props.dataId
+        this.qualifier = props.qualifier
     }
 
     /** A value should never be set directly on the server.

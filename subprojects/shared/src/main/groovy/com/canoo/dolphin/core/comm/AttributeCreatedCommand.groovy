@@ -6,7 +6,7 @@ class AttributeCreatedCommand extends Command {
     long    attributeId
     String  propertyName
     def     newValue
-    String  dataId
+    String  qualifier
 
-    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName value:$newValue dataId:$dataId"}
+    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName value:$newValue qualifier:$qualifier"}
 }

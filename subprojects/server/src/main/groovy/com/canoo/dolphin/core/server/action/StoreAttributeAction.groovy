@@ -18,7 +18,7 @@ class StoreAttributeAction implements ServerAction {
             def attribute = new ServerAttribute(command.propertyName, command.newValue)
             attribute.id = command.attributeId
             attribute.value = command.newValue
-            attribute.dataId = command.dataId
+            attribute.qualifier = command.qualifier
             def pm = modelStore.findPresentationModelById(command.pmId)
             if (null == pm) {
                 pm = new ServerPresentationModel(command.pmId, [])

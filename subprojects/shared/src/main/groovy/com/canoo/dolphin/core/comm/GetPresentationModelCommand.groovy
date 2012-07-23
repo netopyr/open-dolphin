@@ -1,6 +1,6 @@
 package com.canoo.dolphin.core.comm
 
-class GetPmCommand extends Command {
+class GetPresentationModelCommand extends Command {
 
     String pmType
     String selector

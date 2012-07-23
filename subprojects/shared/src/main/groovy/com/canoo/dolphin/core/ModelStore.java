@@ -12,17 +12,17 @@ public class ModelStore {
     private final Map<String, PresentationModel> presentationModels = new ConcurrentHashMap<String, PresentationModel>();
     private final Map<String, List<PresentationModel>> modelsPerType = new ConcurrentHashMap<String, List<PresentationModel>>();
     private final Map<Long, Attribute> attributesPerId = new ConcurrentHashMap<Long, Attribute>();
-    private final Map<String, List<Attribute>> attributesPerDataId = new ConcurrentHashMap<String, List<Attribute>>();
+    private final Map<String, List<Attribute>> attributesPerQualifier = new ConcurrentHashMap<String, List<Attribute>>();
 
     private final PropertyChangeListener ATTRIBUTE_WORKER = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent event) {
             Attribute attribute = (Attribute) event.getSource();
-            String oldDataId = (String) event.getOldValue();
-            String newDataId = (String) event.getNewValue();
+            String oldQualifier = (String) event.getOldValue();
+            String newQualifier = (String) event.getNewValue();
 
-            if (null != oldDataId) removeAttributeByDataId(attribute, oldDataId);
-            if (null != newDataId) addAttributeByDataId(attribute);
+            if (null != oldQualifier) removeAttributeByQualifier(attribute, oldQualifier);
+            if (null != newQualifier) addAttributeByQualifier(attribute);
         }
     };
 
@@ -38,8 +38,8 @@ public class ModelStore {
             addPresentationModelByType(model);
             for (Attribute attribute : model.getAttributes()) {
                 addAttributeById(attribute);
-                attribute.addPropertyChangeListener(Attribute.DATA_ID_PROPERTY, ATTRIBUTE_WORKER);
-                if (!isBlank(attribute.getDataId())) addAttributeByDataId(attribute);
+                attribute.addPropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
+                if (!isBlank(attribute.getQualifier())) addAttributeByQualifier(attribute);
             }
             added = true;
         }
@@ -54,8 +54,8 @@ public class ModelStore {
             presentationModels.remove(model.getId());
             for (Attribute attribute : model.getAttributes()) {
                 removeAttributeById(attribute);
-                attribute.removePropertyChangeListener(Attribute.DATA_ID_PROPERTY, ATTRIBUTE_WORKER);
-                if (!isBlank(attribute.getDataId())) removeAttributeByDataId(attribute);
+                attribute.removePropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
+                if (!isBlank(attribute.getQualifier())) removeAttributeByQualifier(attribute);
             }
             removed = true;
         }
@@ -72,23 +72,23 @@ public class ModelStore {
         attributesPerId.remove(attribute.getId());
     }
 
-    protected void addAttributeByDataId(Attribute attribute) {
+    protected void addAttributeByQualifier(Attribute attribute) {
         if (null == attribute) return;
-        String dataId = attribute.getDataId();
-        if (isBlank(dataId)) return;
-        List<Attribute> list = attributesPerDataId.get(dataId);
+        String qualifier = attribute.getQualifier();
+        if (isBlank(qualifier)) return;
+        List<Attribute> list = attributesPerQualifier.get(qualifier);
         if (null == list) {
             list = new ArrayList<Attribute>();
-            attributesPerDataId.put(dataId, list);
+            attributesPerQualifier.put(qualifier, list);
         }
         if (!list.contains(attribute)) list.add(attribute);
     }
 
-    protected void removeAttributeByDataId(Attribute attribute) {
+    protected void removeAttributeByQualifier(Attribute attribute) {
         if (null == attribute) return;
-        String dataId = attribute.getDataId();
-        if (isBlank(dataId)) return;
-        List<Attribute> list = attributesPerDataId.get(dataId);
+        String qualifier = attribute.getQualifier();
+        if (isBlank(qualifier)) return;
+        List<Attribute> list = attributesPerQualifier.get(qualifier);
         if (null != list) {
             list.remove(attribute);
         }
@@ -116,9 +116,9 @@ public class ModelStore {
         }
     }
 
-    protected void removeAttributeByDataId(Attribute attribute, String dataId) {
-        if (isBlank(dataId)) return;
-        List<Attribute> list = attributesPerDataId.get(dataId);
+    protected void removeAttributeByQualifier(Attribute attribute, String qualifier) {
+        if (isBlank(qualifier)) return;
+        List<Attribute> list = attributesPerQualifier.get(qualifier);
         if (null == list) return;
         list.remove(attribute);
     }
@@ -140,15 +140,15 @@ public class ModelStore {
         return attributesPerId.get(id);
     }
 
-    public List<Attribute> findAllAttributesByDataId(String dataId) {
-        if (isBlank(dataId) || !attributesPerDataId.containsKey(dataId)) return Collections.emptyList();
-        return Collections.unmodifiableList(attributesPerDataId.get(dataId));
+    public List<Attribute> findAllAttributesByQualifier(String qualifier) {
+        if (isBlank(qualifier) || !attributesPerQualifier.containsKey(qualifier)) return Collections.emptyList();
+        return Collections.unmodifiableList(attributesPerQualifier.get(qualifier));
     }
 
     public void registerAttribute(Attribute attribute) {
         if (null == attribute) return;
         boolean listeningAlready = false;
-        for (PropertyChangeListener listener : attribute.getPropertyChangeListeners(Attribute.DATA_ID_PROPERTY)) {
+        for (PropertyChangeListener listener : attribute.getPropertyChangeListeners(Attribute.QUALIFIER_PROPERTY)) {
             if (ATTRIBUTE_WORKER == listener) {
                 listeningAlready = true;
                 break;
@@ -156,10 +156,10 @@ public class ModelStore {
         }
 
         if (!listeningAlready) {
-            attribute.addPropertyChangeListener(Attribute.DATA_ID_PROPERTY, ATTRIBUTE_WORKER);
+            attribute.addPropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
         }
 
-        addAttributeByDataId(attribute);
+        addAttributeByQualifier(attribute);
         addAttributeById(attribute);
     }
 

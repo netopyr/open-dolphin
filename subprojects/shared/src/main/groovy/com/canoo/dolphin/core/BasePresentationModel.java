@@ -94,10 +94,10 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return null;
     }
 
-    public Attribute findAttributeByDataId(String dataId) {
-        if (null == dataId) return null;
+    public Attribute findAttributeByQualifier(String qualifier) {
+        if (null == qualifier) return null;
         for (Attribute attribute : attributes) {
-            if (dataId.equals(attribute.getDataId())) {
+            if (qualifier.equals(attribute.getQualifier())) {
                 return attribute;
             }
         }

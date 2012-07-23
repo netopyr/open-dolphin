@@ -81,7 +81,7 @@ class PushView {
             // used as both, event handler and change listener
             def changeSelectionHandler = { pm ->
                 return {
-                    communicator.switchPmAndSend selectedVehicle, pm
+                    communicator.switchPresentationModelAndSend selectedVehicle, pm
                 }
             }
 

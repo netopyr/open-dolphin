@@ -24,7 +24,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
-        List<Attribute> attributes = Dolphin.clientModelStore.findAllAttributesByDataId(evt.source.dataId)
+        List<Attribute> attributes = Dolphin.clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
         attributes.each { it.value = evt.newValue }
     }
 
@@ -48,13 +48,13 @@ abstract class ClientConnector implements PropertyChangeListener {
                 attributeId: attribute.id,
                 propertyName: attribute.propertyName,
                 newValue: attribute.value,
-                dataId: attribute.dataId
+                qualifier: attribute.qualifier
         )
     }
 
-    void switchPmAndSend(ClientPresentationModel switcher, ClientPresentationModel newSource) {
+    void switchPresentationModelAndSend(ClientPresentationModel switcher, ClientPresentationModel newSource) {
         switcher.syncWith newSource
-        send new SwitchPmCommand(pmId: switcher.id, sourcePmId: newSource.id)
+        send new SwitchPresentationModelCommand(pmId: switcher.id, sourcePmId: newSource.id)
     }
 
     abstract List<Command> transmit(Command command)
@@ -111,7 +111,7 @@ abstract class ClientConnector implements PropertyChangeListener {
                     attribute = new ClientAttribute(attr.propertyName, attr.value)
                     attribute.value = attr.value
                     attribute.id = attr.id
-                    attribute.dataId = attr.dataId
+                    attribute.qualifier = attr.qualifier
                     model.addAttribute(attribute)
                     Dolphin.clientModelStore.registerAttribute(attribute)
                 } else {
@@ -124,7 +124,7 @@ abstract class ClientConnector implements PropertyChangeListener {
                 ClientAttribute attribute = new ClientAttribute(attr.propertyName, attr.value)
                 attribute.value = attr.value
                 attribute.id = attr.id
-                attribute.dataId = attr.dataId
+                attribute.qualifier = attr.qualifier
                 attributes << attribute
             }
             ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
@@ -144,7 +144,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
         attribute.value = serverCommand.newValue
 
-        List<Attribute> clientAttributes = Dolphin.clientModelStore.findAllAttributesByDataId(attribute.dataId)
+        List<Attribute> clientAttributes = Dolphin.clientModelStore.findAllAttributesByQualifier(attribute.qualifier)
         clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
             log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
             outdated.value = serverCommand.newValue
@@ -152,7 +152,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         return null
     }
 
-    String handle(SwitchPmCommand serverCommand) {
+    String handle(SwitchPresentationModelCommand serverCommand) {
         def switchPm = Dolphin.clientModelStore.findPresentationModelById(serverCommand.pmId)
         if (!switchPm) {
             log.warning "C: switch pm with id '$serverCommand.pmId' not found, cannot switch"
@@ -169,11 +169,11 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     String handle(InitializeAttributeCommand serverCommand) {
         def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
-        attribute.dataId = serverCommand.dataId
+        attribute.qualifier = serverCommand.qualifier
 
         // todo: add check for no-value; null is a valid value
-        if (serverCommand.dataId) {
-            def copies = Dolphin.clientModelStore.findAllAttributesByDataId(serverCommand.dataId)
+        if (serverCommand.qualifier) {
+            def copies = Dolphin.clientModelStore.findAllAttributesByQualifier(serverCommand.qualifier)
             if (copies) {
                 if (null == serverCommand.newValue) {
                     attribute.value = copies.first()?.value
@@ -205,15 +205,15 @@ abstract class ClientConnector implements PropertyChangeListener {
         model.id
     }
 
-    void withPm(String viewPmId, String discriminator, Closure onFinished) {
-        PresentationModel result = Dolphin.clientModelStore.findPresentationModelById("$viewPmId-$discriminator")
+    void withPm(String viewPmId, String selector, Closure onFinished) {
+        PresentationModel result = Dolphin.clientModelStore.findPresentationModelById("$viewPmId-$selector")
         if (result) {
             onFinished result
             return
         }
-        send(new GetPmCommand(pmType: viewPmId, selector: discriminator)) { pmIds ->
+        send(new GetPresentationModelCommand(pmType: viewPmId, selector: selector)) { pmIds ->
             def theOnlyOne = pmIds.toList().first()
-            assert theOnlyOne == "$viewPmId-$discriminator" // sanity check
+            assert theOnlyOne == "$viewPmId-$selector" // sanity check
             result = Dolphin.clientModelStore.findPresentationModelById(theOnlyOne)
             onFinished result
         }

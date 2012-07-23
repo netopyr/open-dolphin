@@ -9,10 +9,8 @@ import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
-import com.canoo.dolphin.core.server.action.SwitchPmAction
+import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
 import com.canoo.dolphin.core.server.comm.Receiver
-
-import java.util.logging.Level
 
 class DefaultInMemoryConfig {
 
@@ -34,7 +32,7 @@ class DefaultInMemoryConfig {
                 new StoreValueChangeAction(modelStore),
                 new StoreAttributeAction(modelStore),
                 new CreatePresentationModelAction(modelStore),
-                new SwitchPmAction(modelStore),
+                new SwitchPresentationModelAction(modelStore),
         ].each { register it }
     }
 
