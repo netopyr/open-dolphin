@@ -30,7 +30,7 @@ class PushView {
 
         def longPoll
         longPoll = {
-            communicator.send(new NamedCommand(id: "longPoll"), longPoll)
+            communicator.send(new NamedCommand(id: "longPoll"), longPoll as OnFinishedHandler)
         }
 
         def selectedVehicle = new ClientPresentationModel(
