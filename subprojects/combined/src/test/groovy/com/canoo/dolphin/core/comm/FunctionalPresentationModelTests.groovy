@@ -1,7 +1,6 @@
 package com.canoo.dolphin.core.comm
 
 import com.canoo.dolphin.core.PresentationModel
-import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
@@ -59,13 +58,17 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         def user = ClientPresentationModel.make('user', ['name','password','loggedIn'])
         context.send ( "loginCmd", {
             assert ! user.loggedIn.value
+
+            user.name.value = "Dierk"
+            user.password.value = "Koenig"
+
+            context.send("loginCmd", {
+                assert user.loggedIn.value
+                context.assertionsDone()
+            } as OnFinishedHandler)
+
         } as OnFinishedHandler )
 
-        user.name.value = "Dierk"
-        user.password.value = "Koenig"
-        context.send ( "loginCmd", {
-            assert user.loggedIn.value
-            context.assertionsDone()
-        } as OnFinishedHandler )
+
     }
 }
