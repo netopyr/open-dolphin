@@ -1,5 +1,6 @@
 package com.canoo.dolphin.core.comm
 
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.client.comm.UiThreadHandler
 import com.canoo.dolphin.core.server.action.ServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
@@ -28,7 +29,7 @@ class TestInMemoryConfig extends DefaultInMemoryConfig {
     }
 
     /** convenience method to send a named command */
-    void send(String commandName, Closure onFinished = null) {
+    void send(String commandName, OnFinishedHandler onFinished = null) {
         connector.send new NamedCommand(commandName), onFinished
     }
 

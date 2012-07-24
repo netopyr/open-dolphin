@@ -3,6 +3,7 @@ package com.canoo.dolphin.demo
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
@@ -62,21 +63,21 @@ class DemoSearchView {
             koNameCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[CONTACT_NAME]) } as Callback
             dateCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value[CONTACT_DATE]) } as Callback
 
-            communicator.send(new NamedCommand(id: FIRST_FILL_CMD)) { pmIds ->
-                for (id in pmIds) {
-                    gvf.items << Dolphin.clientModelStore.findPresentationModelById(id)[TEXT].value
+            communicator.send(new NamedCommand(id: FIRST_FILL_CMD), { pms ->
+                for (pm in pms) {
+                    gvf.items << pm[TEXT].value
                 }
                 gvf.selectionModel.selectedIndex = 0
                 fadeTransition(1.s, node: gvf, to: 1).playFromStart()
-            }
+            } as OnFinishedHandler )
 
-            communicator.send(new NamedCommand(id: SECOND_FILL_CMD)) { pmIds ->
-                for (id in pmIds) {
-                    dst.items << Dolphin.clientModelStore.findPresentationModelById(id)[TEXT].value
+            communicator.send(new NamedCommand(id: SECOND_FILL_CMD), { pms ->
+                for (pm in pms) {
+                    dst.items << pm[TEXT].value
                 }
                 dst.selectionModel.selectedIndex = 0
                 fadeTransition(1.s, node: dst, to: 1).playFromStart()
-            }
+            } as OnFinishedHandler )
 
             // listeners
             search.onAction = {
@@ -84,13 +85,13 @@ class DemoSearchView {
                 searchCriteria[NAME].value = bez.text
                 table.opacity = 0.2
                 observableListOfKoPms.clear()
-                communicator.send(new NamedCommand(id: SEARCH_CMD)) { pmIds ->
-                    for (id in pmIds) {
-                        observableListOfKoPms << Dolphin.clientModelStore.findPresentationModelById(id)
+                communicator.send(new NamedCommand(id: SEARCH_CMD), { pms ->
+                    for (pm in pms) {
+                        observableListOfKoPms << pm
                     }
                     search.disabled = false
                     fadeTransition(0.5.s, node: table, to: 1).playFromStart()
-                }
+                } as OnFinishedHandler )
             } as EventHandler
 
             blueStyle sgb

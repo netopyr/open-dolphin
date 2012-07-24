@@ -4,6 +4,7 @@ import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
@@ -70,19 +71,19 @@ class SharedAttributesView {
 
             // startup and main loop
 
-            communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
-                for (id in pmIds) {
-                    observableListOfPms << Dolphin.clientModelStore.findPresentationModelById(id)
+            communicator.send(new NamedCommand(id: 'pullVehicles'), { pms ->
+                for (pm in pms) {
+                    observableListOfPms << pm
                 }
                 fadeTransition(1.s, node: table, to: 1).playFromStart()
-            }
+            } as OnFinishedHandler )
 
-            communicator.send(new NamedCommand(id: 'pullTasks')) { pmIds ->
-                for (id in pmIds) {
-                    observableListOfTasks << Dolphin.clientModelStore.findPresentationModelById(id)
+            communicator.send(new NamedCommand(id: 'pullTasks'), { pms ->
+                for (pm in pms) {
+                    observableListOfTasks << pm
                 }
                 fadeTransition(1.s, node: taskTable, to: 1).playFromStart()
-            }
+            } as OnFinishedHandler )
 
             blueStyle sgb
 

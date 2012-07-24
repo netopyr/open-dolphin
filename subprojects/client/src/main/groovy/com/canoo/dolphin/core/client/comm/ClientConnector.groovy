@@ -63,7 +63,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     PGroup group = new DefaultPGroup(poolSize)
 
-    void send(Command command, Closure onFinished = null) {
+    void send(Command command, OnFinishedHandler callback = null) {
         def result = new DataflowVariable()
         processAsync {
             log.info "C: transmitting $command"
@@ -72,12 +72,14 @@ abstract class ClientConnector implements PropertyChangeListener {
                 List<Command> response = result.get()
                 log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
 
-                List<String> pmIds = []
+                List<ClientPresentationModel> pms = []
                 for (serverCommand in response) {
-                    def pms = handle serverCommand
-                    if (pms && pms instanceof String) pmIds << pms
+                    def pmId = handle serverCommand
+                    if (pmId && pmId instanceof String) {
+                        pms << Dolphin.clientModelStore.findPresentationModelById(pmId)
+                    }
                 }
-                if (onFinished) onFinished pmIds.unique()
+                if (callback) callback.onFinished( pms.unique() )
             }
         }
     }
@@ -211,11 +213,11 @@ abstract class ClientConnector implements PropertyChangeListener {
             onFinished result
             return
         }
-        send(new GetPresentationModelCommand(pmType: viewPmId, selector: selector)) { pmIds ->
+        send(new GetPresentationModelCommand(pmType: viewPmId, selector: selector), { pmIds ->
             def theOnlyOne = pmIds.toList().first()
             assert theOnlyOne == "$viewPmId-$selector" // sanity check
             result = Dolphin.clientModelStore.findPresentationModelById(theOnlyOne)
             onFinished result
-        }
+        } as OnFinishedHandler )
     }
 }

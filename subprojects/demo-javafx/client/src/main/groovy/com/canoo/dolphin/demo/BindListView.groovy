@@ -2,6 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
 
@@ -71,10 +72,10 @@ class BindListView {
 
             // startup and main loop
 
-            communicator.send(new NamedCommand(id: 'pullVehicles')) { pmIds ->
+            communicator.send(new NamedCommand(id: 'pullVehicles'), { pms ->
                 fadeTransition(1.s, node: table, to: 1).playFromStart()
                 fadeTransition(1.s, node: smallTable, to: 1).playFromStart()
-            }
+            } as OnFinishedHandler )
 
             blueStyle sgb
 
