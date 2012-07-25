@@ -16,11 +16,6 @@ config.register new ServerAction() {
             ServerPresentationModel pm2 = new ServerPresentationModel("First 2", [new ServerAttribute("value","odd")])
             response << new CreatePresentationModelCommand(pm2)
         }
-        registry.register("fillSecond") { cmd, response ->
-            10.times {
-                response << new InitializeAttributeCommand(pmId: "Second $it", propertyName: "value", newValue: it)
-            }
-        }
         registry.register("fillRelation") { cmd, response ->
             [0,2,4,6,8].each {
                 ServerPresentationModel pm = new ServerPresentationModel([

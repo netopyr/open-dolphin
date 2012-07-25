@@ -1,25 +1,14 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.ClientAttributeWrapper
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
-import javafx.beans.value.ChangeListener
-import javafx.collections.FXCollections
-import javafx.collections.ListChangeListener
-import javafx.collections.ObservableList
-import javafx.event.EventHandler
-import javafx.scene.shape.Rectangle
-import javafx.util.Callback
-import javafx.util.StringConverter
 
 import java.beans.PropertyChangeListener
 
-import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-import static com.canoo.dolphin.demo.VehicleProperties.*
 import static groovyx.javafx.GroovyFX.start
 
 class DependentChoiceBoxView {
@@ -52,7 +41,7 @@ class DependentChoiceBoxView {
 
             Dolphin.clientConnector.send(new NamedCommand("fillRelation"))
 
-            selectedFirst.findAttributeByPropertyName('value').addPropertyChangeListener({evt->
+            selectedFirst.value.addPropertyChangeListener({evt->
                 def evenOdd = evt.source.value
                 def relations = Dolphin.getClientModelStore().findAllPresentationModelsByType("FirstSecondRelation")
 
