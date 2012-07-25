@@ -33,11 +33,7 @@ class PushView {
             communicator.send(new NamedCommand(id: "longPoll"), longPoll as OnFinishedHandler)
         }
 
-        def selectedVehicle = new ClientPresentationModel(
-                'selectedVehicle',
-                [X, Y, WIDTH, HEIGHT, ROTATE, COLOR].collect { new ClientAttribute(it) }
-        )
-        Dolphin.clientModelStore.add selectedVehicle
+        def selectedVehicle = ClientPresentationModel.make('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
