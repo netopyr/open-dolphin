@@ -15,11 +15,23 @@ import java.beans.PropertyChangeListener
 
 import com.canoo.dolphin.core.comm.*
 
+import java.util.concurrent.CountDownLatch
+
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
 
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
+
+    protected DataflowVariable<Throwable> exceptionHappened
+
+    ClientConnector() {
+        exceptionHappened = new DataflowVariable<Throwable>()
+        exceptionHappened.whenBound {
+            println Thread.currentThread()
+            throw exceptionHappened.val
+        }
+    }
 
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
@@ -79,21 +91,33 @@ abstract class ClientConnector implements PropertyChangeListener {
                         pms << Dolphin.clientModelStore.findPresentationModelById(pmId)
                     }
                 }
-                if (callback) callback.onFinished( pms.unique() )
+                if (callback) callback.onFinished( pms.unique {it.id} )
             }
         }
     }
 
     void processAsync(Runnable processing) {
-        group.task processing
+        group.task {
+            try {
+                processing.run()
+            } catch (e) {
+                exceptionHappened << e
+                throw e
+            }
+        }
     }
 
     void insideUiThread(Runnable processing) {
-        if (uiThreadHandler) {
-            uiThreadHandler.executeInsideUiThread(processing)
-        } else {
-            log.warning("please provide howToProcessInsideUI handler")
-            processing.run()
+        try {
+            if (uiThreadHandler) {
+                uiThreadHandler.executeInsideUiThread(processing)
+            } else {
+                log.warning("please provide howToProcessInsideUI handler")
+                processing.run()
+            }
+        } catch (e) {
+            exceptionHappened << e
+            throw e
         }
     }
 
