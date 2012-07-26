@@ -9,8 +9,12 @@ import java.util.Set;
 import com.canoo.dolphin.core.Attribute;
 import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.PresentationModel;
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler;
+import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler;
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand;
+import com.canoo.dolphin.core.comm.GetPresentationModelCommand;
 import com.canoo.dolphin.core.comm.SavePresentationModelCommand;
+import groovy.lang.Closure;
 
 public class ClientModelStore extends ModelStore {
 
@@ -51,6 +55,29 @@ public class ClientModelStore extends ModelStore {
 		attribute.setId(id);
 		addAttributeById(attribute);
 		attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
+	}
+
+	void withPresentationModel(String pmType, String selector, final WithPresentationModelHandler withPmHandler) {
+		final String requestedId = "$pmType-$selector";
+		ClientPresentationModel result = (ClientPresentationModel) findPresentationModelById(requestedId);
+		if (result != null) {
+			withPmHandler.onFinished(result);
+			return;
+		}
+
+		GetPresentationModelCommand cmd = new GetPresentationModelCommand();
+		cmd.setPmType(pmType);
+		cmd.setSelector(selector);
+
+		OnFinishedHandler callBack = new OnFinishedHandler() {
+			@Override
+			public void onFinished(List<ClientPresentationModel> presentationModels) {
+				ClientPresentationModel theOnlyOne = presentationModels.get(0);
+				assert theOnlyOne.getId().equals(requestedId); // sanity check
+				withPmHandler.onFinished(theOnlyOne);
+			}
+		};
+		Dolphin.getClientConnector().send(cmd, callBack);
 	}
 
 	public void onPresentationModelListChanged(String pmType, PresentationModelListChangedListener listener) {
@@ -99,10 +126,6 @@ public class ClientModelStore extends ModelStore {
 
 	}
 
-	private interface ListenerAction {
-		void doIt(PresentationModelListChangedListener listener);
-	}
-
     public void save(String modelId) {
         save(findPresentationModelById(modelId));
     }
@@ -114,4 +137,9 @@ public class ClientModelStore extends ModelStore {
         }
         Dolphin.getClientConnector().send(new SavePresentationModelCommand(model.getId()));
     }
+
+	private interface ListenerAction {
+		void doIt(PresentationModelListChangedListener listener);
+	}
+
 }

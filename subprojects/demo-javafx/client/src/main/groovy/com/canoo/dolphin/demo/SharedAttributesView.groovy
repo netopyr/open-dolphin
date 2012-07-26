@@ -18,6 +18,7 @@ import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import static com.canoo.dolphin.demo.VehicleProperties.*
 import static groovyx.javafx.GroovyFX.start
+import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler
 
 class SharedAttributesView {
 
@@ -118,7 +119,7 @@ class SharedAttributesView {
                         }
                     }
 
-                    communicator.withPresentationModel('vehicleDetail', selectedPmId) { ClientPresentationModel detailPm ->
+                    Dolphin.clientModelStore.withPresentationModel 'vehicleDetail', selectedPmId, { ClientPresentationModel detailPm ->
                         assert detailPm
 
                         bind COLOR of detailPm to 'text' of tab
@@ -133,7 +134,7 @@ class SharedAttributesView {
                         bind 'text' of sgb.width to WIDTH of detailPm
 
                         fadeTransition(1.s, node: grid, to: 1).playFromStart()
-                    }
+                    } as WithPresentationModelHandler
                     sgb.vehicles.tabs << tab
                 }
                 sgb.vehicles.selectionModel.select(tab)

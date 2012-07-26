@@ -6,5 +6,5 @@ class GetPresentationModelCommand extends Command {
     String selector
     String getPmId() { "$pmType-$selector" }
 
-    String toString() { super.toString() + " for view $pmType and discriminator $selector" }
+    String toString() { super.toString() + " for presentation model of type $pmType and selector $selector" }
 }

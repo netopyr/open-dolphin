@@ -231,17 +231,4 @@ abstract class ClientConnector implements PropertyChangeListener {
         model.id
     }
 
-    void withPresentationModel(String viewPmId, String selector, Closure onFinished) {
-		def requestedId = "$viewPmId-$selector"
-		PresentationModel result = Dolphin.clientModelStore.findPresentationModelById(requestedId)
-        if (result) {
-            onFinished result
-            return
-        }
-        send(new GetPresentationModelCommand(pmType: viewPmId, selector: selector), { pms ->
-            def theOnlyOne = pms[0]
-            assert theOnlyOne.id == requestedId // sanity check
-            onFinished theOnlyOne
-        } as OnFinishedHandler )
-    }
 }
