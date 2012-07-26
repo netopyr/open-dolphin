@@ -9,6 +9,7 @@ class InitializeAttributeCommand extends Command {
     String propertyName
     String qualifier
     def    newValue
+    String pmType
 
-    String toString() { super.toString() + " pm '$pmId' property '$propertyName' initial value '$newValue' qualifier $qualifier"}
+    String toString() { super.toString() + " pm '$pmId' pmType'$pmType' property '$propertyName' initial value '$newValue' qualifier $qualifier"}
 }

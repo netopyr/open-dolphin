@@ -210,9 +210,10 @@ abstract class ClientConnector implements PropertyChangeListener {
                 }
             }
         }
-
         if (!Dolphin.clientModelStore.containsPresentationModel(serverCommand.pmId)) {
-            Dolphin.clientModelStore.add(new ClientPresentationModel(serverCommand.pmId, [attribute]))
+            def pm = new ClientPresentationModel(serverCommand.pmId, [attribute])
+            pm.presentationModelType = serverCommand.pmType
+            Dolphin.clientModelStore.add(pm)
             return serverCommand.pmId
         }
         def pm = Dolphin.clientModelStore.findPresentationModelById(serverCommand.pmId)
