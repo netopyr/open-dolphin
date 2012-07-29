@@ -65,6 +65,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
         this.presentationModelType = presentationModelType;
     }
 
+    @Override
     public boolean isDirty() {
         return dirty;
     }

@@ -20,4 +20,6 @@ public interface PresentationModel extends Observable {
     String getPresentationModelType();
 
     void addAttribute(Attribute attribute);
+
+	boolean isDirty();
 }

@@ -95,7 +95,7 @@ class ClientOtherOfAble {
         def update = {
             target[targetPropName] = (convert != null) ? convert(attribute.value) : attribute.value
         }
-        attribute.addPropertyChangeListener({ update() } as PropertyChangeListener)
+        attribute.addPropertyChangeListener('value', { update() } as PropertyChangeListener)
         update() // set the initial value after the binding and trigger the first notification
     }
 }
