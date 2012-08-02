@@ -1,3 +1,9 @@
+
+println "sorry, disabled for the moment..."
+
+/*
+// currently disabled as GroovyFX is not available in this module
+
 package com.canoo.dolphin.logo
 
 import groovyx.javafx.GroovyFX
@@ -19,3 +25,4 @@ GroovyFX.start { app ->
 
     primaryStage.show()
 }
+*/
