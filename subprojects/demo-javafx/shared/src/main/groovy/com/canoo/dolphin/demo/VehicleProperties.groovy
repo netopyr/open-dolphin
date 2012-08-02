@@ -5,11 +5,11 @@ package com.canoo.dolphin.demo
  */
 class VehicleProperties {
 
-    static String X = "x"
-    static String Y = "y"
-    static String WIDTH  = "width"
-    static String HEIGHT = "height"
-    static String ROTATE = "rotate"
-    static String COLOR  = "fill"
+    static final String X = "x"
+    static final String Y = "y"
+    static final String WIDTH  = "width"
+    static final String HEIGHT = "height"
+    static final String ROTATE = "rotate"
+    static final String COLOR  = "fill"
 
 }

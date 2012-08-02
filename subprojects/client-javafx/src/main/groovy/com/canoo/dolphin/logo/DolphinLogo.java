@@ -33,8 +33,8 @@ public class DolphinLogo extends Control {
     }
 
     @Override public void setPrefSize(final double WIDTH, final double HEIGHT) {
-        double prefHeight = WIDTH < (HEIGHT * 1.556420233463035) ? (WIDTH * 0.6425) : HEIGHT;
-        double prefWidth = prefHeight * 1.556420233463035;
+        double prefHeight = WIDTH < (HEIGHT * 1.5603112840466926) ? (WIDTH * 0.6408977556109726) : HEIGHT;
+        double prefWidth = prefHeight * 1.5603112840466926;
 
         if (keepAspect) {
             super.setPrefSize(prefWidth, prefHeight);

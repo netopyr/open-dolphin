@@ -123,3 +123,6 @@ Design decisions
   value changes being synced to the SMS before a command is processed on the
   server that depends on these values.
 
+Todo
+-----
+- clarify whether qualifier should be immutable. if not, enhance ServerAttribute.changeValueCommand.

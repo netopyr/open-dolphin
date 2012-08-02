@@ -1,6 +1,5 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
@@ -30,7 +29,8 @@ class PushView {
 
         def longPoll
         longPoll = {
-            communicator.send(new NamedCommand(id: "longPoll"), longPoll as OnFinishedHandler)
+            communicator.send(new NamedCommand(id: "longPoll"),
+                longPoll as OnFinishedHandler)
         }
 
         def selectedVehicle = ClientPresentationModel.make('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
@@ -138,6 +138,10 @@ class PushView {
                 def to   = evt.newValue
                 if (from ) pmIdsToRect[from].strokeWidth = 0
                 pmIdsToRect[to].strokeWidth = 3
+            } as PropertyChangeListener)
+
+            selectedVehicle[COLOR].addPropertyChangeListener('value', { evt ->
+                def to   = evt.newValue
                 table.selectionModel.select Dolphin.clientModelStore.findPresentationModelById(to)
             } as PropertyChangeListener)
 
