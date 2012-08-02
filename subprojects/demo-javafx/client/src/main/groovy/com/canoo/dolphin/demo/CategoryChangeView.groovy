@@ -18,7 +18,8 @@ class CategoryChangeView {
                 ],
                 size : [
                         20      : 'blue',
-                        40      : 'green'
+                        40      : 'green',
+                      {it > 40} : 'black'
                 ]
         ]
 
@@ -57,8 +58,8 @@ class CategoryChangeView {
                 if (null == entry) return sgb.white
                 return sgb[entry.value]
             }
-            bind 'category' of select to 'fill' of first , { cat -> mapper(firstPm,  cat) }
-            bind 'category' of select to 'fill' of second, { cat -> mapper(secondPm, cat) }
+            bind 'category' of select to 'fill' of first , mapper.curry(firstPm)            // alternative 1
+            bind 'category' of select to 'fill' of second, { cat -> mapper(secondPm, cat) } // alternative 2
 
             bind 'size' of firstPm to 'width' of first, { size ->
                 if (select.category?.value == 'size') first.fill = mapper(firstPm,'size')
