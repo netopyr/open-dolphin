@@ -1,9 +1,4 @@
 
-println "sorry, disabled for the moment..."
-
-/*
-// currently disabled as GroovyFX is not available in this module
-
 package com.canoo.dolphin.logo
 
 import groovyx.javafx.GroovyFX
@@ -19,10 +14,7 @@ GroovyFX.start { app ->
         }
     }
 
-    println dolphinLogo.skin //.dolphin.children
-
     stack.children.add(dolphinLogo)
 
     primaryStage.show()
 }
-*/

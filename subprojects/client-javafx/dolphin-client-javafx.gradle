@@ -12,7 +12,9 @@ repositories {
 }
 
 dependencies {
-    compile ':jfxrt:', project(':client')
+    compile ':jfxrt:',
+        project(':client'),
+        'org.codehaus.groovyfx:groovyfx:0.2'
 }
 
 configure(install.repositories.mavenInstaller) {
