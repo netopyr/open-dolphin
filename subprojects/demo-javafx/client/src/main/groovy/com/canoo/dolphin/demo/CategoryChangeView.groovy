@@ -1,24 +1,10 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.ClientAttributeWrapper
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
-import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
-import javafx.beans.value.ChangeListener
-import javafx.collections.FXCollections
-import javafx.collections.ListChangeListener
-import javafx.collections.ObservableList
 import javafx.event.EventHandler
-import javafx.scene.shape.Rectangle
-import javafx.util.Callback
-
-import java.beans.PropertyChangeListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
-import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-import static com.canoo.dolphin.demo.VehicleProperties.*
 import static groovyx.javafx.GroovyFX.start
 
 class CategoryChangeView {
@@ -32,7 +18,8 @@ class CategoryChangeView {
                 ],
                 size : [
                         20      : 'blue',
-                        40      : 'green'
+                        40      : 'green',
+                      {it > 40} : 'black'
                 ]
         ]
 
@@ -41,6 +28,7 @@ class CategoryChangeView {
         def firstPm = ClientPresentationModel.make('firstPm', ['weight','size'])
         firstPm.weight.value = 3
         firstPm.size.value = 20
+
         def secondPm = ClientPresentationModel.make('secondPm', ['weight','size'])
         secondPm.weight.value = 10
         secondPm.size.value = 40
@@ -48,7 +36,7 @@ class CategoryChangeView {
         start { app ->
             SceneGraphBuilder sgb = delegate
             stage {
-                scene width: 700, height: 500, {
+                scene width: 400, height: 300, {
                     borderPane {
                         top margin:10, {
                             choiceBox id:'choice', items:['weight','size'], {
@@ -70,8 +58,8 @@ class CategoryChangeView {
                 if (null == entry) return sgb.white
                 return sgb[entry.value]
             }
-            bind 'category' of select to 'fill' of first , { cat -> mapper(firstPm,  cat) }
-            bind 'category' of select to 'fill' of second, { cat -> mapper(secondPm, cat) }
+            bind 'category' of select to 'fill' of first , mapper.curry(firstPm)            // alternative 1
+            bind 'category' of select to 'fill' of second, { cat -> mapper(secondPm, cat) } // alternative 2
 
             bind 'size' of firstPm to 'width' of first, { size ->
                 if (select.category?.value == 'size') first.fill = mapper(firstPm,'size')
