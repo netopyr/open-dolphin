@@ -63,15 +63,13 @@ class CustomAction implements ServerAction {
         }
 
         registry.register GetPresentationModelCommand, { GetPresentationModelCommand command, response ->
-            switch (command.pmType) {
-                case 'vehicleDetail':
-                    def pmId = command.pmId
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: WIDTH, newValue: rand(),)
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: X, qualifier: "vehicle-${command.selector}.x")
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: Y, qualifier: "vehicle-${command.selector}.y")
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: ROTATE, qualifier: "vehicle-${command.selector}.rotate")
-                    response << new InitializeAttributeCommand(pmId: pmId, propertyName: COLOR, qualifier: "vehicle-${command.selector}.color")
-                    break
+            if (command.pmId.startsWith('vehicleDetail')) {
+                String selector = command.pmId.split('-')[1]
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: WIDTH, newValue: rand(),)
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: X, qualifier: "vehicle-${selector}.x")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: Y, qualifier: "vehicle-${selector}.y")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ROTATE, qualifier: "vehicle-${selector}.rotate")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: COLOR, qualifier: "vehicle-${selector}.color")
             }
         }
     }

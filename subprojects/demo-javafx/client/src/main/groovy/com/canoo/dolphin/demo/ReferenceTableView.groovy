@@ -46,13 +46,13 @@ class ReferenceTableView {
 
 			style delegate
 
-			Dolphin.clientModelStore.withPresentationModel ReferenceTableDemoProperties.CURRENCY_REF_TABLE, "", {ClientPresentationModel pm ->
+			Dolphin.clientModelStore.withPresentationModel ReferenceTableDemoProperties.CURRENCY_REF_TABLE, {ClientPresentationModel pm ->
 				currencies = pm
 				currencyListView.items.addAll(pm.getAttributes())
 			} as WithPresentationModelHandler
 
 
-			Dolphin.clientModelStore.withPresentationModel PORTFOLIO_TYPE, "1",  {ClientPresentationModel portfolio ->
+			Dolphin.clientModelStore.withPresentationModel "${PORTFOLIO_TYPE}-1",  {ClientPresentationModel portfolio ->
 
 				bind CURRENCY of portfolio to TEXT of currencyInput, {it ->
 					if (currencies) {

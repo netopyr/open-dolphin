@@ -26,11 +26,12 @@ public class ReferenceTableDemoAction implements ServerAction {
 	public void registerIn(final ActionRegistry registry) {
 		registry.register(GetPresentationModelCommand.class, new Closure(this) {
 			public Object call(GetPresentationModelCommand cmd, List response) {
-				if (CURRENCY_REF_TABLE.equals(cmd.getPmType())) {
-					response.add(new CreatePresentationModelCommand(createCurrenciesPM(cmd.getPmId(), cmd.getPmType())));
+                String pmType = cmd.getPmId().split("-")[0];
+				if (CURRENCY_REF_TABLE.equals(pmType)) {
+					response.add(new CreatePresentationModelCommand(createCurrenciesPM(cmd.getPmId(), pmType)));
 				}
-				else if (PORTFOLIO_TYPE.equals(cmd.getPmType())) {
-					response.add(new CreatePresentationModelCommand(createPortfolioPM(cmd.getPmId(), cmd.getPmType())));
+				else if (PORTFOLIO_TYPE.equals(pmType)) {
+					response.add(new CreatePresentationModelCommand(createPortfolioPM(cmd.getPmId(), pmType)));
 
 				}
 				return response;

@@ -14,10 +14,8 @@ import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler;
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand;
 import com.canoo.dolphin.core.comm.GetPresentationModelCommand;
 import com.canoo.dolphin.core.comm.SavePresentationModelCommand;
-import groovy.lang.Closure;
 
 public class ClientModelStore extends ModelStore {
-
 	private final Map<String, Set<PresentationModelListChangedListener>> pmType2Listeners = new HashMap<String, Set<PresentationModelListChangedListener>>();
 
 	@Override
@@ -57,23 +55,21 @@ public class ClientModelStore extends ModelStore {
 		attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
 	}
 
-	void withPresentationModel(String pmType, String selector, final WithPresentationModelHandler withPmHandler) {
-		final String requestedId = "$pmType-$selector";
-		ClientPresentationModel result = (ClientPresentationModel) findPresentationModelById(requestedId);
+	public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {
+		ClientPresentationModel result = (ClientPresentationModel) findPresentationModelById(requestedPmId);
 		if (result != null) {
 			withPmHandler.onFinished(result);
 			return;
 		}
 
 		GetPresentationModelCommand cmd = new GetPresentationModelCommand();
-		cmd.setPmType(pmType);
-		cmd.setSelector(selector);
+		cmd.setPmId(requestedPmId);
 
 		OnFinishedHandler callBack = new OnFinishedHandler() {
 			@Override
 			public void onFinished(List<ClientPresentationModel> presentationModels) {
 				ClientPresentationModel theOnlyOne = presentationModels.get(0);
-				assert theOnlyOne.getId().equals(requestedId); // sanity check
+				assert theOnlyOne.getId().equals(requestedPmId); // sanity check
 				withPmHandler.onFinished(theOnlyOne);
 			}
 		};
@@ -141,5 +137,4 @@ public class ClientModelStore extends ModelStore {
 	private interface ListenerAction {
 		void doIt(PresentationModelListChangedListener listener);
 	}
-
 }

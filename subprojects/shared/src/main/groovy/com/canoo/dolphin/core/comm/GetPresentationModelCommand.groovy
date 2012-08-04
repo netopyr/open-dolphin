@@ -1,10 +1,7 @@
 package com.canoo.dolphin.core.comm
 
 class GetPresentationModelCommand extends Command {
+    String pmId
 
-    String pmType
-    String selector
-    String getPmId() { "$pmType-$selector" }
-
-    String toString() { super.toString() + " for presentation model of type $pmType and selector $selector" }
+    String toString() { super.toString() + " for presentation model for id $pmId" }
 }

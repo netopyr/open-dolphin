@@ -119,7 +119,7 @@ class SharedAttributesView {
                         }
                     }
 
-                    Dolphin.clientModelStore.withPresentationModel 'vehicleDetail', selectedPmId, { ClientPresentationModel detailPm ->
+                    Dolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
                         assert detailPm
 
                         bind COLOR of detailPm to 'text' of tab
