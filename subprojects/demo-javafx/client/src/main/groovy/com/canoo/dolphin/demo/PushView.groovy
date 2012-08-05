@@ -4,6 +4,7 @@ import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
+import com.canoo.dolphin.logo.DolphinLogo
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
@@ -64,9 +65,11 @@ class PushView {
                             }
                         }
                         stackPane {
+                            logo = new DolphinLogo(width:401, height: 257).addTo(delegate)
                             group id: 'parent', effect: dropShadow(offsetY: 2, offsetX: 2, radius: 3, input: lighting{distant(azimuth: -135.0)}), {
-                                rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0.5) // rigidArea
+                                rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0) // rigidArea
             }   }   }   }   }
+            logo.opacity = 0.1d
 
             table.items = observableListOfPms
 

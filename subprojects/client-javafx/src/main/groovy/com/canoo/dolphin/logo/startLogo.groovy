@@ -2,29 +2,16 @@
 package com.canoo.dolphin.logo
 
 import groovyx.javafx.GroovyFX
-import javafx.scene.shape.Path
 
 GroovyFX.start { app ->
 
-    List<Path> strokes = new DolphinLogoPaths(401, 257).paths()
+    def effect = dropShadow(offsetY: 2, offsetX: 2, radius: 3, color:grey, input: lighting{distant(azimuth: -135.0)})
+    logo = new DolphinLogo(width:401, height: 257, shuffle: true, effect: effect)
 
     stage title: "Tickle the Dolphin!", {
         scene width:441, height: 297, {
-            stackPane id:'stack', {
-                rectangle x: 0, y: 0, width: 441, height: 297, opacity: 0d
-                allAnimations = parallelTransition()
-                group id: 'logo',{
-                    for(stroke in strokes){
-                        path(stroke) {
-                            allAnimations.children <<
-                                rotateTransition(2.s, to: -360, onFinished: { it.source.targetNode.rotate = 0d} )
-                        }
-                    }
-                }
-                onMouseClicked { allAnimations.playFromStart() }
-            }
+            logo.addTo delegate
         }
     }
-
     primaryStage.show()
 }

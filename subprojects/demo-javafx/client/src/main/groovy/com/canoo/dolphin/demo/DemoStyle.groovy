@@ -1,5 +1,6 @@
 package com.canoo.dolphin.demo
 
+import com.canoo.dolphin.logo.DolphinLogo
 import groovyx.javafx.SceneGraphBuilder
 import javafx.scene.Scene
 import javafx.scene.layout.GridPane
