@@ -20,7 +20,8 @@ GroovyFX.start { app ->
                 }
             }
             onMouseClicked {
-                if (first) {first=false; return}
+                if (first) { first = false; return }
+                primaryStage.scene.lookup("#dolphinLogoStrokes").cache = true
                 pulse.opacity = 1
                 anim.play()
             }
