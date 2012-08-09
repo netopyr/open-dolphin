@@ -9,8 +9,7 @@ import javafx.event.EventHandler
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
 import static com.canoo.dolphin.demo.MyProps.TITLE
-import static com.canoo.dolphin.demo.MyProps.getTEXT
-import static com.canoo.dolphin.demo.MyProps.getTITLE
+import static com.canoo.dolphin.demo.MyProps.TEXT
 import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.RIGHT
 
