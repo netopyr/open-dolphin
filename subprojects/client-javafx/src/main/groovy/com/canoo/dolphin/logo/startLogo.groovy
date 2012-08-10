@@ -15,8 +15,11 @@ GroovyFX.start { app ->
 
     stage title: "Tickle the Dolphin!", {
         scene width:441, height: 297, {
-            stackPane {
-                rectangle width:441, height: 297, fill:radialGradient(radius: 0.95, center: [0.4, 0.2], stops: [[0, lightcyan], [0.8, groovyblue]])
+            stackPane cache:true, {
+                rectangle width:441, height: 297,
+                          fill:radialGradient(radius: 0.95, center: [0.4, 0.2], stops: [[0, lightcyan], [0.8, groovyblue]])
+                ellipse translateX: -40, translateY: 110, radiusX: 220, radiusY: 20, opacity: 0.2,
+                        fill: radialGradient(radius:1, center: [0.5, 0.5], stops: [[0, lightcyan], [0.3, transparent]])
             }
             logo.addTo delegate
             circle id:"pulse", fill:transparent, stroke:rgb(207, 0, 58), strokeWidth: 3, opacity:0, translateX:-100, translateY: -20, effect:boxBlur(), {
