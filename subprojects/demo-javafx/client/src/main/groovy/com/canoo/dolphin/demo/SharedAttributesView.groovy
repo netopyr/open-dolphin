@@ -3,7 +3,7 @@ package com.canoo.dolphin.demo
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
@@ -24,10 +24,10 @@ class SharedAttributesView {
 
     static show() {
 
-        def communicator = Dolphin.clientConnector
+        def communicator = ClientDolphin.clientConnector
 
         def selectedVehicle = new ClientPresentationModel('selectedVehicle', [new ClientAttribute('vehiclePmId')])
-        Dolphin.clientModelStore.add selectedVehicle
+        ClientDolphin.clientModelStore.add selectedVehicle
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfTasks = FXCollections.observableArrayList()
@@ -119,7 +119,7 @@ class SharedAttributesView {
                         }
                     }
 
-                    Dolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
+                    ClientDolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
                         assert detailPm
 
                         bind COLOR of detailPm to 'text' of tab

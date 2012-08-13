@@ -4,7 +4,7 @@ import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.client.comm.UiThreadHandler
@@ -29,8 +29,8 @@ class CommunicationTests extends GroovyTestCase {
         communicator.uiThreadHandler = { it() } as UiThreadHandler
 		communicator.receiver = receiver // inject receiver
         clientModelStore = new ClientModelStore()
-        Dolphin.setClientConnector(communicator)
-        Dolphin.setClientModelStore(clientModelStore)
+        ClientDolphin.setClientConnector(communicator)
+        ClientDolphin.setClientModelStore(clientModelStore)
 	}
 
 	void testSimpleAttributeChangeIsVisibleOnServer() {

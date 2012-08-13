@@ -3,7 +3,7 @@ package com.canoo.dolphin.demo
 import com.canoo.dolphin.binding.Binder
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
@@ -22,7 +22,7 @@ class MultipleAttributesView {
             def purposeAttr = new ClientAttribute(PURPOSE)
             purposeAttr.value = "Show the need for PMs"
             def pm = new ClientPresentationModel('demo',[titleAttr, purposeAttr])
-            Dolphin.clientModelStore.add pm
+            ClientDolphin.clientModelStore.add pm
 
             def updateTitle   = { pm.title.value = titleInput.text }
             def updatePurpose = { pm.purpose.value = purposeInput.text }

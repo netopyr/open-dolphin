@@ -1,7 +1,7 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.logo.DolphinLogo
@@ -26,7 +26,7 @@ class PushView {
 
     static show() {
 
-        def communicator = Dolphin.clientConnector
+        def communicator = ClientDolphin.clientConnector
 
         def longPoll
         longPoll = {
@@ -145,7 +145,7 @@ class PushView {
 
             selectedVehicle[COLOR].addPropertyChangeListener('value', { evt ->
                 def to   = evt.newValue
-                table.selectionModel.select Dolphin.clientModelStore.findPresentationModelById(to)
+                table.selectionModel.select ClientDolphin.clientModelStore.findPresentationModelById(to)
             } as PropertyChangeListener)
 
             primaryStage.show()

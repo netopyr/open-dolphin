@@ -1,8 +1,6 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
-import com.canoo.dolphin.core.client.PresentationModelListChangedListener
 import groovyx.javafx.SceneGraphBuilder
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener

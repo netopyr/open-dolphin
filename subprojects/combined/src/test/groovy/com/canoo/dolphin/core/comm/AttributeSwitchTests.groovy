@@ -3,7 +3,7 @@ package com.canoo.dolphin.core.comm
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 
 /**
@@ -18,8 +18,8 @@ class AttributeSwitchTests extends GroovyTestCase {
 
     protected void setUp() {
         clientModelStore = new ClientModelStore()
-        Dolphin.setClientConnector(InMemoryClientConnector.instance)
-        Dolphin.setClientModelStore(clientModelStore)
+        ClientDolphin.setClientConnector(InMemoryClientConnector.instance)
+        ClientDolphin.setClientModelStore(clientModelStore)
         switchPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid1')])
         sourcePm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid2')])
         clientModelStore.add switchPm

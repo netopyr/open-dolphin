@@ -2,7 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
 
@@ -21,7 +21,7 @@ class SingleAttributeMultipleBindingsView {
             style builder
 
             def pm = createPresentationModel()
-            Dolphin.clientModelStore.add pm
+            ClientDolphin.clientModelStore.add pm
             bindPmToViews pm, builder
             attachHandlers pm, builder
 

@@ -3,7 +3,7 @@ package com.canoo.dolphin.core.comm
 import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.client.ClientModelStore
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
@@ -21,8 +21,8 @@ class DefaultInMemoryConfig {
         LogConfig.logCommunication()
         connector.sleepMillis = 100
         connector.receiver = receiver
-        Dolphin.setClientConnector(connector)
-        Dolphin.setClientModelStore(new ClientModelStore())
+        ClientDolphin.setClientConnector(connector)
+        ClientDolphin.setClientModelStore(new ClientModelStore())
     }
 
     ClientConnector getConnector() { InMemoryClientConnector.instance }

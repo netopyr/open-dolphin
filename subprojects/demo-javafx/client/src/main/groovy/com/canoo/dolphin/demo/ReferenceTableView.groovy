@@ -2,7 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
@@ -46,13 +46,13 @@ class ReferenceTableView {
 
 			style delegate
 
-			Dolphin.clientModelStore.withPresentationModel ReferenceTableDemoProperties.CURRENCY_REF_TABLE, {ClientPresentationModel pm ->
+			ClientDolphin.clientModelStore.withPresentationModel ReferenceTableDemoProperties.CURRENCY_REF_TABLE, {ClientPresentationModel pm ->
 				currencies = pm
 				currencyListView.items.addAll(pm.getAttributes())
 			} as WithPresentationModelHandler
 
 
-			Dolphin.clientModelStore.withPresentationModel "${PORTFOLIO_TYPE}-1",  {ClientPresentationModel portfolio ->
+			ClientDolphin.clientModelStore.withPresentationModel "${PORTFOLIO_TYPE}-1",  {ClientPresentationModel portfolio ->
 
 				bind CURRENCY of portfolio to TEXT of currencyInput, {it ->
 					if (currencies) {

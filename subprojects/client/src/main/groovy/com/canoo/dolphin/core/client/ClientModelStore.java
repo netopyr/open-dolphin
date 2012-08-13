@@ -24,10 +24,10 @@ public class ClientModelStore extends ModelStore {
         if (success) {
             List<Attribute> attributes = model.getAttributes();
             for (Attribute attribute : attributes) {
-                attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
+                attribute.addPropertyChangeListener("value", ClientDolphin.getClientConnector());
             }
             notifyAdded((ClientPresentationModel) model);
-            Dolphin.getClientConnector().send(new CreatePresentationModelCommand(model));
+            ClientDolphin.getClientConnector().send(new CreatePresentationModelCommand(model));
         }
 
 		return success;
@@ -45,14 +45,14 @@ public class ClientModelStore extends ModelStore {
 	@Override
 	public void registerAttribute(Attribute attribute) {
 		super.registerAttribute(attribute);
-		attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
+		attribute.addPropertyChangeListener("value", ClientDolphin.getClientConnector());
 	}
 
 	public void updateAttributeId(Attribute attribute, long id) {
 		removeAttributeById(attribute);
 		attribute.setId(id);
 		addAttributeById(attribute);
-		attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
+		attribute.addPropertyChangeListener("value", ClientDolphin.getClientConnector());
 	}
 
 	public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {
@@ -73,7 +73,7 @@ public class ClientModelStore extends ModelStore {
 				withPmHandler.onFinished(theOnlyOne);
 			}
 		};
-		Dolphin.getClientConnector().send(cmd, callBack);
+		ClientDolphin.getClientConnector().send(cmd, callBack);
 	}
 
 	public void onPresentationModelListChanged(String pmType, PresentationModelListChangedListener listener) {
@@ -131,7 +131,7 @@ public class ClientModelStore extends ModelStore {
         if (!containsPresentationModel(model.getId())) {
             add(model);
         }
-        Dolphin.getClientConnector().send(new SavePresentationModelCommand(model.getId()));
+        ClientDolphin.getClientConnector().send(new SavePresentationModelCommand(model.getId()));
     }
 
 	private interface ListenerAction {

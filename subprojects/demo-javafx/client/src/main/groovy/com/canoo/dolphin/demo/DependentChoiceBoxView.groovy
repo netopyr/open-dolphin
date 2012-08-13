@@ -1,7 +1,7 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
@@ -32,18 +32,18 @@ class DependentChoiceBoxView {
 
             blueStyle(sgb)
 
-            Dolphin.clientConnector.send(new NamedCommand("fillFirst"), { pms ->
+            ClientDolphin.clientConnector.send(new NamedCommand("fillFirst"), { pms ->
                 sgb.first.items.clear()
                 pms.each {
                     sgb.first.items.add new PmWrapper(pm: it, displayProperty: 'value')
                 }
             } as OnFinishedHandler)
 
-            Dolphin.clientConnector.send(new NamedCommand("fillRelation"))
+            ClientDolphin.clientConnector.send(new NamedCommand("fillRelation"))
 
             selectedFirst.value.addPropertyChangeListener({evt->
                 def evenOdd = evt.source.value
-                def relations = Dolphin.getClientModelStore().findAllPresentationModelsByType("FirstSecondRelation")
+                def relations = ClientDolphin.getClientModelStore().findAllPresentationModelsByType("FirstSecondRelation")
 
                 def matches = relations.findAll { it.findAttributeByPropertyName("first").value == evenOdd }
 

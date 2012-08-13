@@ -2,7 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.comm.NamedCommand
 
@@ -71,7 +71,7 @@ class MultipleAttributeSwitchView {
         def pm = new ClientPresentationModel(id, attributes)
         pm.title.value   = id
         pm.purpose.value = purpose
-        Dolphin.clientModelStore.add pm
+        ClientDolphin.clientModelStore.add pm
         pm
     }
 }

@@ -1,7 +1,7 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
@@ -24,13 +24,13 @@ class BindListView {
 
     static show() {
 
-        def communicator = Dolphin.clientConnector
+        def communicator = ClientDolphin.clientConnector
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfSmallPms = FXCollections.observableArrayList()
 
-		Dolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { observableListOfPms << it }, removed: { observableListOfPms.remove(it)} ] as PresentationModelListChangedListener)
-		Dolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { if (it.id.startsWith('magenta')) observableListOfSmallPms << it } ] as PresentationModelListChangedListener)
+		ClientDolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { observableListOfPms << it }, removed: { observableListOfPms.remove(it)} ] as PresentationModelListChangedListener)
+		ClientDolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { if (it.id.startsWith('magenta')) observableListOfSmallPms << it } ] as PresentationModelListChangedListener)
         start { app ->
             SceneGraphBuilder sgb = delegate
             stage {
@@ -62,7 +62,7 @@ class BindListView {
 			add.onAction = {
 				ClientPresentationModel pm = new ClientPresentationModel("magenta_${System.currentTimeMillis()}", [new ClientAttribute('x', 0)])
 				pm.presentationModelType = 'vehicle'
-				Dolphin.clientModelStore.add(pm);
+				ClientDolphin.clientModelStore.add(pm);
 			} as EventHandler
 
 

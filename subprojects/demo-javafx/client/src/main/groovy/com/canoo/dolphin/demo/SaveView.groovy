@@ -2,7 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import javafx.scene.paint.Color
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
@@ -32,7 +32,7 @@ class SaveView {
                         textField id: 'lastnameInput', row: 2, column: 1
 
                         button id: 'saveButton', 'Save', row: 3, column: 1,
-                                onAction: { Dolphin.clientModelStore.save(model) }
+                                onAction: { ClientDolphin.clientModelStore.save(model) }
                     }
                 }
             }
@@ -57,7 +57,7 @@ class SaveView {
         def nameAttribute = new ClientAttribute(NAME, '')
         def lastnameAttribute = new ClientAttribute(LASTNAME, '')
         def model = new ClientPresentationModel('person', [nameAttribute, lastnameAttribute])
-        Dolphin.clientModelStore.add model
+        ClientDolphin.clientModelStore.add model
         model
     }
 }

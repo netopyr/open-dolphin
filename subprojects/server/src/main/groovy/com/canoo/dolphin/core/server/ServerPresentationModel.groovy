@@ -2,6 +2,8 @@ package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.BasePresentationModel
 
+
+@Mixin(DataMixin)
 class ServerPresentationModel extends BasePresentationModel {
 
     ServerPresentationModel(List<ServerAttribute> attributes) {
@@ -11,4 +13,5 @@ class ServerPresentationModel extends BasePresentationModel {
     ServerPresentationModel(String id, List<ServerAttribute> attributes) {
         super(id, attributes)
     }
+
 }

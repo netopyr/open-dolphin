@@ -1,7 +1,7 @@
 package com.canoo.dolphin.demo;
 
+import com.canoo.dolphin.core.client.ClientDolphin;
 import com.canoo.dolphin.core.client.ClientPresentationModel;
-import com.canoo.dolphin.core.client.Dolphin;
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler;
 import com.canoo.dolphin.core.comm.NamedCommand;
 
@@ -18,6 +18,6 @@ public class ConsoleView {
                 System.out.println("pm = " + pm);
             }
         };
-        Dolphin.getClientConnector().send(cmd, callback);
+        ClientDolphin.getClientConnector().send(cmd, callback);
     }
 }

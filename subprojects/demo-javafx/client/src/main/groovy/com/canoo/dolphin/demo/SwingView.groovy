@@ -2,11 +2,8 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import groovy.swing.SwingBuilder
-import javafx.event.EventHandler
-
-import java.awt.event.ActionListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.MyProps.TEXT
@@ -37,7 +34,7 @@ class SwingView {
         def titleAttr = new ClientAttribute(TITLE)
         titleAttr.value = "Some Text: <enter> or <submit>"
         def pm =  new ClientPresentationModel('demo', [titleAttr])
-        Dolphin.clientModelStore.add pm
+        ClientDolphin.clientModelStore.add pm
         return pm
     }
 

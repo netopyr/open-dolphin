@@ -2,7 +2,7 @@ package com.canoo.dolphin.core.comm
 
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
@@ -40,8 +40,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         context.send ( "fetchData", { List<ClientPresentationModel> pms ->
             assert pms.size() == 26
             assert pms.collect{it.id}.sort(false) == pms.collect{it.id}   // pmIds from a single action should come in sequence
-            assert 'a' == Dolphin.clientModelStore.findPresentationModelById('a').char.value
-            assert 'z' == Dolphin.clientModelStore.findPresentationModelById('z').char.value
+            assert 'a' == ClientDolphin.clientModelStore.findPresentationModelById('a').char.value
+            assert 'z' == ClientDolphin.clientModelStore.findPresentationModelById('z').char.value
             context.assertionsDone() // make sure the assertions are really executed
         } as OnFinishedHandler )
     }

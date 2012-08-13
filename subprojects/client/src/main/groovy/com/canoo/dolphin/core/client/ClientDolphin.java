@@ -2,7 +2,13 @@ package com.canoo.dolphin.core.client;
 
 import com.canoo.dolphin.core.client.comm.ClientConnector;
 
-public class Dolphin {
+/**
+ * The main Dolphin facade on the client side.
+ * Responsibility: single access point for dolphin capabilities.
+ * Collaborates with client model store and client connector.
+ * Threading model: confined to the UI handling thread.
+ */
+public class ClientDolphin {
     private static ClientModelStore clientModelStore;
 
     private static ClientConnector clientConnector;
@@ -12,7 +18,7 @@ public class Dolphin {
     }
 
     public static void setClientConnector(ClientConnector clientConnector) {
-        Dolphin.clientConnector = clientConnector;
+        ClientDolphin.clientConnector = clientConnector;
     }
 
     public static ClientModelStore getClientModelStore() {
@@ -20,6 +26,6 @@ public class Dolphin {
     }
 
     public static void setClientModelStore(ClientModelStore clientModelStore) {
-        Dolphin.clientModelStore = clientModelStore;
+        ClientDolphin.clientModelStore = clientModelStore;
     }
 }

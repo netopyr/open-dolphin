@@ -2,7 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import javafx.scene.paint.Color
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
@@ -56,7 +56,7 @@ class DirtyAttributeFlagView {
         def nameAttribute = new ClientAttribute(NAME, '')
         def lastnameAttribute = new ClientAttribute(LASTNAME, 'Smith')
         def model = new ClientPresentationModel('person', [nameAttribute, lastnameAttribute])
-        Dolphin.clientModelStore.add model
+        ClientDolphin.clientModelStore.add model
         model
     }
 }
