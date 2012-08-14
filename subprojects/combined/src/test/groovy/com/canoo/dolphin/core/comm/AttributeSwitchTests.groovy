@@ -17,9 +17,9 @@ class AttributeSwitchTests extends GroovyTestCase {
     ClientModelStore clientModelStore
 
     protected void setUp() {
-        clientModelStore = new ClientModelStore()
-        ClientDolphin.setClientConnector(InMemoryClientConnector.instance)
-        ClientDolphin.setClientModelStore(clientModelStore)
+        def config = new TestInMemoryConfig()
+        clientModelStore = config.clientDolphin.clientModelStore
+
         switchPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid1')])
         sourcePm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid2')])
         clientModelStore.add switchPm

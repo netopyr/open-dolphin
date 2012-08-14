@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ConsoleView {
 
-    public static void show() {
+    public static void show(ClientDolphin clientDolphin) {
         NamedCommand cmd = new NamedCommand();
         cmd.setId("javaAction");
         OnFinishedHandler callback = new OnFinishedHandler() {
@@ -18,6 +18,6 @@ public class ConsoleView {
                 System.out.println("pm = " + pm);
             }
         };
-        ClientDolphin.getClientConnector().send(cmd, callback);
+        clientDolphin.getClientConnector().send(cmd, callback);
     }
 }

@@ -13,14 +13,14 @@ class TestInMemoryConfig extends DefaultInMemoryConfig {
     CountDownLatch done = new CountDownLatch(1)
 
     TestInMemoryConfig() {
-        registerDefaultActions()
-        connector.sleepMillis = 0
-        connector.uiThreadHandler = { it() } as UiThreadHandler
+        serverDolphin.registerDefaultActions()
+        clientDolphin.clientConnector.sleepMillis = 0
+        clientDolphin.clientConnector.uiThreadHandler = { it() } as UiThreadHandler
     }
 
     /** convenience method to register a named action */
     ServerAction register(String name, Closure logic){
-        register new ServerAction() {
+        serverDolphin.serverConnector.register new ServerAction() {
             @Override
             void registerIn(ActionRegistry registry) {
                 registry.register name, logic
@@ -30,7 +30,7 @@ class TestInMemoryConfig extends DefaultInMemoryConfig {
 
     /** convenience method to send a named command */
     void send(String commandName, OnFinishedHandler onFinished = null) {
-        connector.send new NamedCommand(commandName), onFinished
+        clientDolphin.clientConnector.send new NamedCommand(commandName), onFinished
     }
 
     void assertionsDone() {

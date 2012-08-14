@@ -1,6 +1,12 @@
 package com.canoo.dolphin.core.server.comm
 
+import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.comm.Command
+import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
+import com.canoo.dolphin.core.server.action.ServerAction
+import com.canoo.dolphin.core.server.action.StoreAttributeAction
+import com.canoo.dolphin.core.server.action.StoreValueChangeAction
+import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
 import groovy.util.logging.Log
 
 @Log
@@ -22,6 +28,19 @@ class ServerConnector {
             action command, response
         }
         return response
+    }
+
+    void registerDefaultActions(ModelStore modelStore) {
+            [
+                    new StoreValueChangeAction(modelStore),
+                    new StoreAttributeAction(modelStore),
+                    new CreatePresentationModelAction(modelStore),
+                    new SwitchPresentationModelAction(modelStore),
+            ].each { register it }
+        }
+
+    void register(ServerAction action){
+        action.registerIn registry
     }
 
 }

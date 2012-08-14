@@ -1,6 +1,5 @@
 package com.canoo.dolphin.demo;
 
-import com.canoo.dolphin.core.client.ClientDolphin;
 import com.canoo.dolphin.core.client.comm.UiThreadHandler;
 import com.canoo.dolphin.core.comm.DefaultInMemoryConfig;
 
@@ -11,7 +10,7 @@ public class JavaDemo {
         final CountDownLatch latch = new CountDownLatch(1);
         DefaultInMemoryConfig inMemoryConfig = new DefaultInMemoryConfig();
 
-        ClientDolphin.getClientConnector().setUiThreadHandler(new UiThreadHandler() {
+        inMemoryConfig.getClientDolphin().getClientConnector().setUiThreadHandler(new UiThreadHandler() {
             @Override
             public void executeInsideUiThread(Runnable runnable) {
                 System.out.println("going inside ui");
@@ -21,9 +20,9 @@ public class JavaDemo {
             }
         });
         inMemoryConfig.registerDefaultActions();
-        inMemoryConfig.register(new JavaAction());
+        inMemoryConfig.getServerDolphin().getServerConnector().register(new JavaAction());
 
-        ConsoleView.show();
+        ConsoleView.show(inMemoryConfig.getClientDolphin());
         System.out.println("waiting to finish");
         try {
             latch.await();

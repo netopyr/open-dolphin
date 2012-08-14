@@ -2,6 +2,7 @@ package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.comm.Command
+import com.canoo.dolphin.core.server.comm.ServerConnector
 
 /**
  * The main Dolphin facade on the server side.
@@ -13,10 +14,23 @@ import com.canoo.dolphin.core.comm.Command
 class ServerDolphin {
 
     /** the server model store is unique per user session */
-    ModelStore serverModelStore
+    final ModelStore serverModelStore
 
-    /** the response, which is a list of commands, is unique per request-response cycle */
-    List<Command> response
+    /** the serverConnector is unique per user session */
+    final ServerConnector serverConnector
+
+    ServerDolphin(ModelStore serverModelStore, ServerConnector serverConnector) {
+        this.serverModelStore = serverModelStore
+        this.serverConnector = serverConnector
+    }
+
+    ServerDolphin() {
+        this(new ModelStore(), new ServerConnector())
+    }
+
+    void registerDefaultActions() {
+        serverConnector.registerDefaultActions(serverModelStore)
+    }
 
     /** store additional data, if present override and return the old one */
     def putData(ServerPresentationModel serverPresentationModel, String key, Object value) {

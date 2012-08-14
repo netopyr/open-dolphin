@@ -13,14 +13,14 @@ import java.util.List;
 public class ClientDolphin {
 
     // todo dk: the client model store should become a secret of the ClientDolphin
-    static ClientModelStore clientModelStore
+    ClientModelStore clientModelStore
 
-    static ClientConnector clientConnector
+    ClientConnector clientConnector
 
     /** Convenience method for a typical case of creating a ClientPresentationModel */
-    static ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
+    ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
         def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)} )
-        ClientDolphin.clientModelStore.add result
+        clientModelStore.add result
         return result
     }
 }

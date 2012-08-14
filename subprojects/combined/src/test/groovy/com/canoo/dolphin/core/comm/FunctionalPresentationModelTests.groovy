@@ -40,8 +40,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         context.send ( "fetchData", { List<ClientPresentationModel> pms ->
             assert pms.size() == 26
             assert pms.collect{it.id}.sort(false) == pms.collect{it.id}   // pmIds from a single action should come in sequence
-            assert 'a' == ClientDolphin.clientModelStore.findPresentationModelById('a').char.value
-            assert 'z' == ClientDolphin.clientModelStore.findPresentationModelById('z').char.value
+            assert 'a' == context.clientDolphin.clientModelStore.findPresentationModelById('a').char.value
+            assert 'z' == context.clientDolphin.clientModelStore.findPresentationModelById('z').char.value
             context.assertionsDone() // make sure the assertions are really executed
         } as OnFinishedHandler )
     }
@@ -49,13 +49,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testLoginUseCase() {
         // server part
         context.register "loginCmd", { cmd, response ->
-            def user = context.modelStore.findPresentationModelById('user')
+            def user = context.serverDolphin.serverModelStore.findPresentationModelById('user')
             if (user.name.value == 'Dierk' && user.password.value == 'Koenig') {
                 response << user.loggedIn.changeValueCommand('true')
             }
         }
         // client part
-        def user = ClientDolphin.presentationModel('user', ['name','password','loggedIn'])
+        def user = context.clientDolphin.presentationModel('user', ['name','password','loggedIn'])
         context.send ( "loginCmd", {
             assert ! user.loggedIn.value
 

@@ -8,8 +8,8 @@ import javax.swing.SwingUtilities
 class SwingInMemoryConfig extends DefaultInMemoryConfig {
 
     SwingInMemoryConfig() {
-        connector.uiThreadHandler = { todo -> SwingUtilities.invokeLater { todo() } } as UiThreadHandler
-        registerDefaultActions()
+        clientDolphin.clientConnector.uiThreadHandler = { todo -> SwingUtilities.invokeLater { todo() } } as UiThreadHandler
+        serverDolphin.registerDefaultActions()
     }
 
 }

@@ -3,6 +3,7 @@ package com.canoo.dolphin.core.client.comm
 import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
+import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import groovy.util.logging.Log
@@ -22,8 +23,10 @@ abstract class ClientConnector implements PropertyChangeListener {
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
     protected DataflowVariable<Throwable> exceptionHappened
+    protected ClientDolphin clientDolphin
 
-    ClientConnector() {
+    ClientConnector(ClientDolphin clientDolphin) {
+        this.clientDolphin = clientDolphin
         exceptionHappened = new DataflowVariable<Throwable>()
         exceptionHappened.whenBound {
             println Thread.currentThread()
@@ -31,16 +34,20 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
     }
 
+    protected getClientModelStore() {
+        clientDolphin.clientModelStore
+    }
+
     void propertyChange(PropertyChangeEvent evt) {
         if (evt.oldValue == evt.newValue) return
         send constructValueChangedCommand(evt)
-        List<Attribute> attributes = ClientDolphin.clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
+        List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
         attributes.each { it.value = evt.newValue }
     }
 
     void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
-        ClientDolphin.clientModelStore.add(cpm)
-        ClientDolphin.clientModelStore.registerAttribute(ca)
+        clientModelStore.add(cpm)
+        clientModelStore.registerAttribute(ca)
         send constructAttributeCreatedCommand(cpm.id, ca)
     }
 
@@ -86,7 +93,7 @@ abstract class ClientConnector implements PropertyChangeListener {
                 for (serverCommand in response) {
                     def pmId = handle serverCommand
                     if (pmId && pmId instanceof String) {
-                        pms << ClientDolphin.clientModelStore.findPresentationModelById(pmId)
+                        pms << clientModelStore.findPresentationModelById(pmId)
                     }
                 }
                 if (callback) callback.onFinished( pms.unique {it.id} )
@@ -127,8 +134,8 @@ abstract class ClientConnector implements PropertyChangeListener {
         // check if we already have serverCommand.pmId in our store
         // if true we simply update attribute ids and add any missing attributes
 
-        if (ClientDolphin.clientModelStore.containsPresentationModel(serverCommand.pmId)) {
-            ClientPresentationModel model = ClientDolphin.clientModelStore.findPresentationModelById(serverCommand.pmId)
+        if (clientModelStore.containsPresentationModel(serverCommand.pmId)) {
+            ClientPresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
             serverCommand.attributes.each { attr ->
                 ClientAttribute attribute = model.findAttributeByPropertyName(attr.propertyName)
                 if (null == attribute) {
@@ -137,9 +144,9 @@ abstract class ClientConnector implements PropertyChangeListener {
                     attribute.id = attr.id
                     attribute.qualifier = attr.qualifier
                     model.addAttribute(attribute)
-                    ClientDolphin.clientModelStore.registerAttribute(attribute)
+                    clientModelStore.registerAttribute(attribute)
                 } else {
-                    ClientDolphin.clientModelStore.updateAttributeId(attribute, attr.id)
+                    clientModelStore.updateAttributeId(attribute, attr.id)
                 }
             }
         } else {
@@ -153,13 +160,13 @@ abstract class ClientConnector implements PropertyChangeListener {
             }
             ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
             model.presentationModelType = serverCommand.pmType
-            ClientDolphin.clientModelStore.add(model)
+            clientModelStore.add(model)
         }
         serverCommand.pmId
     }
 
     String handle(ValueChangedCommand serverCommand) {
-        Attribute attribute = ClientDolphin.clientModelStore.findAttributeById(serverCommand.attributeId)
+        Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
             return null
@@ -168,7 +175,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
         attribute.value = serverCommand.newValue
 
-        List<Attribute> clientAttributes = ClientDolphin.clientModelStore.findAllAttributesByQualifier(attribute.qualifier)
+        List<Attribute> clientAttributes = clientModelStore.findAllAttributesByQualifier(attribute.qualifier)
         clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
             log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
             outdated.value = serverCommand.newValue
@@ -177,12 +184,12 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     String handle(SwitchPresentationModelCommand serverCommand) {
-        def switchPm = ClientDolphin.clientModelStore.findPresentationModelById(serverCommand.pmId)
+        def switchPm = clientModelStore.findPresentationModelById(serverCommand.pmId)
         if (!switchPm) {
             log.warning "C: switch pm with id '$serverCommand.pmId' not found, cannot switch"
             return
         }
-        def sourcePm = ClientDolphin.clientModelStore.findPresentationModelById(serverCommand.sourcePmId)
+        def sourcePm = clientModelStore.findPresentationModelById(serverCommand.sourcePmId)
         if (!sourcePm) {
             log.warning "C: source pm with id '$serverCommand.sourcePmId' not found, cannot switch"
             return
@@ -197,7 +204,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.qualifier) {
-            def copies = ClientDolphin.clientModelStore.findAllAttributesByQualifier(serverCommand.qualifier)
+            def copies = clientModelStore.findAllAttributesByQualifier(serverCommand.qualifier)
             if (copies) {
                 if (null == serverCommand.newValue) {
                     attribute.value = copies.first()?.value
@@ -209,19 +216,19 @@ abstract class ClientConnector implements PropertyChangeListener {
             }
         }
 
-        if (!ClientDolphin.clientModelStore.containsPresentationModel(serverCommand.pmId)) {
-            ClientDolphin.clientModelStore.add(new ClientPresentationModel(serverCommand.pmId, [attribute]))
+        if (!clientModelStore.containsPresentationModel(serverCommand.pmId)) {
+            clientModelStore.add(new ClientPresentationModel(serverCommand.pmId, [attribute]))
             return serverCommand.pmId
         }
-        def pm = ClientDolphin.clientModelStore.findPresentationModelById(serverCommand.pmId)
+        def pm = clientModelStore.findPresentationModelById(serverCommand.pmId)
         pm.addAttribute(attribute)
-        ClientDolphin.clientModelStore.registerAttribute(attribute)
+        clientModelStore.registerAttribute(attribute)
         return serverCommand.pmId // todo dk: check and test
     }
 
     String handle(PresentationModelSavedCommand serverCommand) {
         if (!serverCommand.pmId) return null
-        PresentationModel model = ClientDolphin.getClientModelStore().findPresentationModelById(serverCommand.pmId)
+        PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
         // save locally first
         model.attributes*.save()
         // inform server of changes

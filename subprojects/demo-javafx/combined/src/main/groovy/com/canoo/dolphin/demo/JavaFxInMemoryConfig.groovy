@@ -6,8 +6,8 @@ import com.canoo.dolphin.core.comm.DefaultInMemoryConfig
 class JavaFxInMemoryConfig extends DefaultInMemoryConfig {
 
     JavaFxInMemoryConfig() {
-        connector.uiThreadHandler = new JavaFXUiThreadHandler()
-        registerDefaultActions()
+        clientDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
+        serverDolphin.registerDefaultActions()
     }
 
 }
