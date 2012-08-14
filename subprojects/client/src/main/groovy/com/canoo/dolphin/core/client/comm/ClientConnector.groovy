@@ -22,14 +22,13 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
-    protected DataflowVariable<Throwable> exceptionHappened
+    DataflowVariable<Throwable> exceptionHappened
     protected ClientDolphin clientDolphin
 
     ClientConnector(ClientDolphin clientDolphin) {
         this.clientDolphin = clientDolphin
         exceptionHappened = new DataflowVariable<Throwable>()
         exceptionHappened.whenBound {
-            println Thread.currentThread()
             throw exceptionHappened.val
         }
     }
@@ -103,26 +102,27 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     void processAsync(Runnable processing) {
         group.task {
-            try {
-                processing.run()
-            } catch (e) {
-                exceptionHappened << e
-                throw e
-            }
+            doExceptionSafe processing
+        }
+    }
+
+    void doExceptionSafe(Runnable processing) {
+        try {
+            processing.run()
+        } catch (e) {
+            exceptionHappened << e
+            throw e
         }
     }
 
     void insideUiThread(Runnable processing) {
-        try {
+        doExceptionSafe {
             if (uiThreadHandler) {
                 uiThreadHandler.executeInsideUiThread(processing)
             } else {
                 log.warning("please provide howToProcessInsideUI handler")
                 processing.run()
             }
-        } catch (e) {
-            exceptionHappened << e
-            throw e
         }
     }
 

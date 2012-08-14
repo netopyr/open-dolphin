@@ -25,7 +25,7 @@ class InMemoryClientConnector extends ClientConnector {
 
     void processAsync(Runnable processing) {
         if (processAsync) super.processAsync(processing)
-        else processing.run()
+        else doExceptionSafe(processing)
     }
 
 }

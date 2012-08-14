@@ -92,15 +92,10 @@ class CommunicationTests extends GroovyTestCase {
 	}
 
 	void testRequestingSomeGeneralCommandExecution() {
-        println 1
 		boolean reached = false
-        println 2
 		serverConnector.registry.register "ButtonAction", { cmd, resp -> reached = true }
-        println 3
 		clientConnector.send(new NamedCommand(id: "ButtonAction"))
-        println 4
 		assert reached
-        println 5
 	}
 
 }
