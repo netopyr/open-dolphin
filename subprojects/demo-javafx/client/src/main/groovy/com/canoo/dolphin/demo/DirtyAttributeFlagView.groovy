@@ -14,9 +14,9 @@ import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.core.Attribute.DIRTY_PROPERTY
 
 class DirtyAttributeFlagView {
-    static show() {
+    static show(ClientDolphin clientDolphin) {
         start { app ->
-            def model = createPresentationModel()
+            def model = createPresentationModel(clientDolphin)
 
             stage {
                 scene {
@@ -52,11 +52,11 @@ class DirtyAttributeFlagView {
         }
     }
 
-    private static ClientPresentationModel createPresentationModel() {
+    private static ClientPresentationModel createPresentationModel(ClientDolphin clientDolphin) {
         def nameAttribute = new ClientAttribute(NAME, '')
         def lastnameAttribute = new ClientAttribute(LASTNAME, 'Smith')
         def model = new ClientPresentationModel('person', [nameAttribute, lastnameAttribute])
-        ClientDolphin.clientModelStore.add model
+        clientDolphin.clientModelStore.add model
         model
     }
 }

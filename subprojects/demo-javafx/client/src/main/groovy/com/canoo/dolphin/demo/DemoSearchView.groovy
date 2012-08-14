@@ -20,15 +20,15 @@ import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 class DemoSearchView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
-        def communicator = ClientDolphin.clientConnector
+        def communicator = clientDolphin.clientConnector
 
         def searchCriteria = new ClientPresentationModel(
                 SEARCH_CRITERIA,
                 [FIRST,SECOND,NAME].collect { new ClientAttribute(it) }
         )
-        ClientDolphin.clientModelStore.add searchCriteria
+        clientDolphin.clientModelStore.add searchCriteria
 
         ObservableList<ClientPresentationModel> observableListOfKoPms = FXCollections.observableArrayList()
 

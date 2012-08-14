@@ -8,7 +8,7 @@ import com.canoo.dolphin.core.server.action.ServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 def config = new JavaFxInMemoryConfig()
-config.register new ServerAction() {
+config.serverDolphin.serverConnector.register new ServerAction() {
     void registerIn(ActionRegistry registry) {
         registry.register("fillFirst") { cmd, response ->
             ServerPresentationModel pm1 = new ServerPresentationModel("First 1", [new ServerAttribute("value","even")])
@@ -38,4 +38,4 @@ config.register new ServerAction() {
     }
 }
 
-DependentChoiceBoxView.show()
+DependentChoiceBoxView.show(config.clientDolphin)

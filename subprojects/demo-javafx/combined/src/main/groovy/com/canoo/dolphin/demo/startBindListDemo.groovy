@@ -1,6 +1,6 @@
 package com.canoo.dolphin.demo
 
 def config = new JavaFxInMemoryConfig()
-config.register new CustomAction(config.modelStore)
+config.serverDolphin.serverConnector.register new CustomAction(config.serverDolphin.serverModelStore)
 
-BindListView.show()
+BindListView.show(config.clientDolphin)

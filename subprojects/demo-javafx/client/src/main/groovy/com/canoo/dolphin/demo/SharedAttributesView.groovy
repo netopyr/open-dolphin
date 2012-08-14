@@ -22,12 +22,12 @@ import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler
 
 class SharedAttributesView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
-        def communicator = ClientDolphin.clientConnector
+        def communicator = clientDolphin.clientConnector
 
         def selectedVehicle = new ClientPresentationModel('selectedVehicle', [new ClientAttribute('vehiclePmId')])
-        ClientDolphin.clientModelStore.add selectedVehicle
+        clientDolphin.clientModelStore.add selectedVehicle
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfTasks = FXCollections.observableArrayList()
@@ -119,7 +119,7 @@ class SharedAttributesView {
                         }
                     }
 
-                    ClientDolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
+                    clientDolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
                         assert detailPm
 
                         bind COLOR of detailPm to 'text' of tab

@@ -13,7 +13,7 @@ import static javafx.geometry.HPos.RIGHT
 
 class MultipleAttributesView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
         start { app ->
             // construct the PM
@@ -22,7 +22,7 @@ class MultipleAttributesView {
             def purposeAttr = new ClientAttribute(PURPOSE)
             purposeAttr.value = "Show the need for PMs"
             def pm = new ClientPresentationModel('demo',[titleAttr, purposeAttr])
-            ClientDolphin.clientModelStore.add pm
+            clientDolphin.clientModelStore.add pm
 
             def updateTitle   = { pm.title.value = titleInput.text }
             def updatePurpose = { pm.purpose.value = purposeInput.text }

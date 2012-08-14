@@ -14,14 +14,14 @@ import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.RIGHT
 
 class SingleAttributeMultipleBindingsView {
-    void show() {
+    void show(ClientDolphin clientDolphin) {
         start { app ->
             SceneGraphBuilder builder = delegate
             layoutFrame builder
             style builder
 
             def pm = createPresentationModel()
-            ClientDolphin.clientModelStore.add pm
+            clientDolphin.clientModelStore.add pm
             bindPmToViews pm, builder
             attachHandlers pm, builder
 

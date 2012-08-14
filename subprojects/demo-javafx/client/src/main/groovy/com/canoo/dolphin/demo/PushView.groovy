@@ -24,9 +24,9 @@ import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 class PushView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
-        def communicator = ClientDolphin.clientConnector
+        def communicator = clientDolphin.clientConnector
 
         def longPoll
         longPoll = {
@@ -34,7 +34,7 @@ class PushView {
                 longPoll as OnFinishedHandler)
         }
 
-        def selectedVehicle = ClientDolphin.presentationModel('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
+        def selectedVehicle = clientDolphin.presentationModel('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
@@ -145,7 +145,7 @@ class PushView {
 
             selectedVehicle[COLOR].addPropertyChangeListener('value', { evt ->
                 def to   = evt.newValue
-                table.selectionModel.select ClientDolphin.clientModelStore.findPresentationModelById(to)
+                table.selectionModel.select clientDolphin.clientModelStore.findPresentationModelById(to)
             } as PropertyChangeListener)
 
             primaryStage.show()

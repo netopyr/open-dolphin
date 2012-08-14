@@ -10,9 +10,9 @@ import static com.canoo.dolphin.demo.MyProps.TEXT
 import static com.canoo.dolphin.demo.MyProps.TITLE
 
 class SwingView {
-    void show() {
+    void show(ClientDolphin clientDolphin) {
 
-        def pm = createPresentationModel()
+        def pm = createPresentationModel(clientDolphin)
 
         SwingBuilder builder = new SwingBuilder()
         builder.build {
@@ -30,11 +30,11 @@ class SwingView {
         bindPmToViews pm, builder
     }
 
-    ClientPresentationModel createPresentationModel() {
+    ClientPresentationModel createPresentationModel(ClientDolphin clientDolphin) {
         def titleAttr = new ClientAttribute(TITLE)
         titleAttr.value = "Some Text: <enter> or <submit>"
         def pm =  new ClientPresentationModel('demo', [titleAttr])
-        ClientDolphin.clientModelStore.add pm
+        clientDolphin.clientModelStore.add pm
         return pm
     }
 

@@ -1,6 +1,6 @@
 package com.canoo.dolphin.demo
 
 def config = new JavaFxInMemoryConfig()
-config.register new ReferenceTableDemoAction(config.modelStore)
+config.serverDolphin.serverConnector.register new ReferenceTableDemoAction(config.serverDolphin.serverModelStore)
 
-new ReferenceTableView().show()
+new ReferenceTableView().show(config.clientDolphin)

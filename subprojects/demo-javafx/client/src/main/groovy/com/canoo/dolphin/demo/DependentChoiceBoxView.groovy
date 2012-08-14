@@ -13,9 +13,9 @@ import static groovyx.javafx.GroovyFX.start
 
 class DependentChoiceBoxView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
-        def selectedFirst = ClientDolphin.presentationModel('selectedFirst', ['value'])
+        def selectedFirst = clientDolphin.presentationModel('selectedFirst', ['value'])
 
         start { app ->
             SceneGraphBuilder sgb = delegate
@@ -32,18 +32,18 @@ class DependentChoiceBoxView {
 
             blueStyle(sgb)
 
-            ClientDolphin.clientConnector.send(new NamedCommand("fillFirst"), { pms ->
+            clientDolphin.clientConnector.send(new NamedCommand("fillFirst"), { pms ->
                 sgb.first.items.clear()
                 pms.each {
                     sgb.first.items.add new PmWrapper(pm: it, displayProperty: 'value')
                 }
             } as OnFinishedHandler)
 
-            ClientDolphin.clientConnector.send(new NamedCommand("fillRelation"))
+            clientDolphin.clientConnector.send(new NamedCommand("fillRelation"))
 
             selectedFirst.value.addPropertyChangeListener({evt->
                 def evenOdd = evt.source.value
-                def relations = ClientDolphin.getClientModelStore().findAllPresentationModelsByType("FirstSecondRelation")
+                def relations = clientDolphin.clientModelStore.findAllPresentationModelsByType("FirstSecondRelation")
 
                 def matches = relations.findAll { it.findAttributeByPropertyName("first").value == evenOdd }
 

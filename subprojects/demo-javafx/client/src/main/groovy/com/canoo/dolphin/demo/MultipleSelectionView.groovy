@@ -15,14 +15,14 @@ import static groovyx.javafx.GroovyFX.start
 
 class MultipleSelectionView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
         ObservableList<ClientPresentationModel> observableSelectionList = FXCollections.observableArrayList()
 
-        def firstPm = ClientDolphin.presentationModel('firstPm', ['selected'])
+        def firstPm = clientDolphin.presentationModel('firstPm', ['selected'])
         firstPm.selected.value = false
 
-        def secondPm = ClientDolphin.presentationModel('secondPm', ['selected'])
+        def secondPm = clientDolphin.presentationModel('secondPm', ['selected'])
         secondPm.selected.value = false
 
         start { app ->

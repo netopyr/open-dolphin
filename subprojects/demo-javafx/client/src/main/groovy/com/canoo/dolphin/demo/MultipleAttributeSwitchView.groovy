@@ -14,16 +14,16 @@ import static javafx.geometry.HPos.CENTER
 
 class MultipleAttributeSwitchView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
-        def communicator = InMemoryClientConnector.instance
+        def communicator = clientDolphin.clientConnector
 
         start { app ->
 
-            def pm1 = makePm 'pm1', 'First PM',  "Show a first pm"
-            def pm2 = makePm 'pm2', 'Second PM', "Show a second pm"
+            def pm1 = makePm 'pm1', 'First PM',  "Show a first pm", clientDolphin
+            def pm2 = makePm 'pm2', 'Second PM', "Show a second pm", clientDolphin
 
-            def actualPm = makePm 'pm', 'actualPm', null
+            def actualPm = makePm 'pm', 'actualPm', null, clientDolphin
             actualPm.syncWith pm1
 
             stage {
@@ -62,7 +62,7 @@ class MultipleAttributeSwitchView {
         }
     }
 
-    protected static ClientPresentationModel makePm(String idPrefix, String id, String purpose) {
+    protected static ClientPresentationModel makePm(String idPrefix, String id, String purpose, ClientDolphin clientDolphin) {
         def attributes = [TITLE, PURPOSE].collect { propName ->
             def attr = new ClientAttribute(propName)
             attr.qualifier = idPrefix + '.' + propName
@@ -71,7 +71,7 @@ class MultipleAttributeSwitchView {
         def pm = new ClientPresentationModel(id, attributes)
         pm.title.value   = id
         pm.purpose.value = purpose
-        ClientDolphin.clientModelStore.add pm
+        clientDolphin.clientModelStore.add pm
         pm
     }
 }

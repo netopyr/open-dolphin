@@ -20,7 +20,7 @@ import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler
 class ReferenceTableView {
 	private static final String TEXT = "text";
 
-	static show() {
+	static show(ClientDolphin clientDolphin) {
 		start { app ->
 			def currencies
 
@@ -46,13 +46,13 @@ class ReferenceTableView {
 
 			style delegate
 
-			ClientDolphin.clientModelStore.withPresentationModel ReferenceTableDemoProperties.CURRENCY_REF_TABLE, {ClientPresentationModel pm ->
+            clientDolphin.clientModelStore.withPresentationModel ReferenceTableDemoProperties.CURRENCY_REF_TABLE, {ClientPresentationModel pm ->
 				currencies = pm
 				currencyListView.items.addAll(pm.getAttributes())
 			} as WithPresentationModelHandler
 
 
-			ClientDolphin.clientModelStore.withPresentationModel "${PORTFOLIO_TYPE}-1",  {ClientPresentationModel portfolio ->
+            clientDolphin.clientModelStore.withPresentationModel "${PORTFOLIO_TYPE}-1",  {ClientPresentationModel portfolio ->
 
 				bind CURRENCY of portfolio to TEXT of currencyInput, {it ->
 					if (currencies) {

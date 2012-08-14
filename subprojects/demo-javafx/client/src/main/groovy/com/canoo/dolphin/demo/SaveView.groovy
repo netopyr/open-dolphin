@@ -14,9 +14,9 @@ import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.core.Attribute.DIRTY_PROPERTY
 
 class SaveView {
-    static show() {
+    static show(ClientDolphin clientDolphin) {
         start { app ->
-            def model = createPresentationModel()
+            def model = createPresentationModel(clientDolphin)
 
             stage {
                 scene {
@@ -32,7 +32,7 @@ class SaveView {
                         textField id: 'lastnameInput', row: 2, column: 1
 
                         button id: 'saveButton', 'Save', row: 3, column: 1,
-                                onAction: { ClientDolphin.clientModelStore.save(model) }
+                                onAction: { clientDolphin.clientModelStore.save(model) }
                     }
                 }
             }
@@ -53,11 +53,11 @@ class SaveView {
         }
     }
 
-    private static ClientPresentationModel createPresentationModel() {
+    private static ClientPresentationModel createPresentationModel(ClientDolphin clientDolphin) {
         def nameAttribute = new ClientAttribute(NAME, '')
         def lastnameAttribute = new ClientAttribute(LASTNAME, '')
         def model = new ClientPresentationModel('person', [nameAttribute, lastnameAttribute])
-        ClientDolphin.clientModelStore.add model
+        clientDolphin.clientModelStore.add model
         model
     }
 }
