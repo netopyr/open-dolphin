@@ -3,9 +3,11 @@ package com.canoo.dolphin.core.comm
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.ServerPresentationModel
+import com.canoo.dolphin.core.server.action.NamedCommandHandler
 /**
  * Showcase for how to test an application without the GUI by
  * issuing the respective commands and model changes against the
@@ -98,5 +100,22 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             fail "must not reach here"
         }
         context.assertionsDone()
+    }
+
+    void testActionAndSendJavaLike() {
+        boolean reached = false
+        serverDolphin.action("java", new NamedCommandHandler() {
+            @Override
+            void call(NamedCommand command, List<Command> response) {
+                reached = true
+            }
+        })
+        clientDolphin.send("java", new OnFinishedHandler() {
+            @Override
+            void onFinished(List<ClientPresentationModel> presentationModels) {
+                assert reached
+                context.assertionsDone()
+            }
+        })
     }
 }
