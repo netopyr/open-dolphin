@@ -1,7 +1,5 @@
 package com.canoo.dolphin.core.server
 
-import com.canoo.dolphin.core.ModelStore;
-
 public class ServerDolphinTest extends GroovyTestCase{
 
     ServerDolphin dolphin
