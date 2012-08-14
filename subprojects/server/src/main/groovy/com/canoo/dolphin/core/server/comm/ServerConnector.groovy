@@ -4,7 +4,7 @@ import com.canoo.dolphin.core.comm.Command
 import groovy.util.logging.Log
 
 @Log
-class Receiver {
+class ServerConnector {
 
     ActionRegistry registry = new ActionRegistry()
 

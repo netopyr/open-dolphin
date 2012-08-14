@@ -10,11 +10,11 @@ import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
-import com.canoo.dolphin.core.server.comm.Receiver
+import com.canoo.dolphin.core.server.comm.ServerConnector
 
 class DefaultInMemoryConfig {
 
-    Receiver receiver = new Receiver()
+    ServerConnector receiver = new ServerConnector()
     ModelStore modelStore = new ModelStore()
 
     DefaultInMemoryConfig() {

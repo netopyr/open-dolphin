@@ -8,7 +8,7 @@ import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.client.comm.UiThreadHandler
-import com.canoo.dolphin.core.server.comm.Receiver
+import com.canoo.dolphin.core.server.comm.ServerConnector
 
 /**
  * Tests for the sequence between client requests and server responses.
@@ -17,13 +17,13 @@ import com.canoo.dolphin.core.server.comm.Receiver
 
 class CommunicationTests extends GroovyTestCase {
 
-	Receiver receiver
+	ServerConnector receiver
 	ClientConnector communicator
     ClientModelStore clientModelStore
 
 	protected void setUp() {
 		LogConfig.logCommunication()
-		receiver = new Receiver() // no need to put the receiver behind a decoder since we are in-memory
+		receiver = new ServerConnector() // no need to put the receiver behind a decoder since we are in-memory
 		communicator = InMemoryClientConnector.instance
         communicator.processAsync = false
         communicator.uiThreadHandler = { it() } as UiThreadHandler
