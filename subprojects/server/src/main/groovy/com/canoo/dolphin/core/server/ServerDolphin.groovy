@@ -1,7 +1,11 @@
 package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.ModelStore
-import com.canoo.dolphin.core.comm.Command
+import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
+import com.canoo.dolphin.core.server.action.DolphinServerAction
+import com.canoo.dolphin.core.server.action.StoreAttributeAction
+import com.canoo.dolphin.core.server.action.StoreValueChangeAction
+import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
 import com.canoo.dolphin.core.server.comm.ServerConnector
 
 /**
@@ -29,7 +33,15 @@ class ServerDolphin {
     }
 
     void registerDefaultActions() {
-        serverConnector.registerDefaultActions(serverModelStore)
+        register new StoreValueChangeAction()
+        register new StoreAttributeAction()
+        register new CreatePresentationModelAction()
+        register new SwitchPresentationModelAction()
+    }
+
+    void register(DolphinServerAction action){
+        action.serverDolphin = this
+        serverConnector.register(action)
     }
 
     /** store additional data, if present override and return the old one */

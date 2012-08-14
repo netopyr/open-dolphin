@@ -1,18 +1,12 @@
 package com.canoo.dolphin.core.server.action
 
-import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
-class CreatePresentationModelAction implements ServerAction {
-    private final ModelStore modelStore
-
-    CreatePresentationModelAction(ModelStore modelStore) {
-        this.modelStore = modelStore
-    }
+class CreatePresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(CreatePresentationModelCommand) { CreatePresentationModelCommand command, response ->
@@ -26,7 +20,7 @@ class CreatePresentationModelAction implements ServerAction {
             }
             PresentationModel model = new ServerPresentationModel(command.pmId, attributes)
             model.presentationModelType = command.pmType
-            modelStore.add(model)
+            serverDolphin.serverModelStore.add(model)
         }
     }
 }
