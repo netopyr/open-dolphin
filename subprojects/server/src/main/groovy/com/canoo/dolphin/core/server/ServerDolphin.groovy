@@ -1,8 +1,11 @@
 package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.ModelStore
+import com.canoo.dolphin.core.server.action.ClosureServerAction
 import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 import com.canoo.dolphin.core.server.action.DolphinServerAction
+import com.canoo.dolphin.core.server.action.NamedCommandHandler
+import com.canoo.dolphin.core.server.action.NamedServerAction
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
@@ -42,6 +45,17 @@ class ServerDolphin {
     void register(DolphinServerAction action){
         action.serverDolphin = this
         serverConnector.register(action)
+    }
+
+    /** groovy-friendly convenience method to register a named action */
+    void action(String name, Closure logic){
+        def serverAction = new ClosureServerAction(name, logic)
+        register(serverAction)
+    }
+    /** java-friendly convenience method to register a named action */
+    void action(String name, NamedCommandHandler namedCommandHandler){
+        def serverAction = new NamedServerAction(name, namedCommandHandler)
+        register(serverAction)
     }
 
     /** store additional data, if present override and return the old one */

@@ -5,6 +5,7 @@ import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.comm.ClientConnector
+import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.comm.ServerConnector
 
 /**

@@ -2,6 +2,7 @@ package com.canoo.dolphin.core.comm
 
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.client.comm.UiThreadHandler
+import com.canoo.dolphin.core.server.action.ClosureServerAction
 import com.canoo.dolphin.core.server.action.ServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
@@ -16,16 +17,6 @@ class TestInMemoryConfig extends DefaultInMemoryConfig {
         serverDolphin.registerDefaultActions()
         clientDolphin.clientConnector.sleepMillis = 0
         clientDolphin.clientConnector.uiThreadHandler = { it() } as UiThreadHandler
-    }
-
-    /** convenience method to register a named action */
-    ServerAction register(String name, Closure logic){
-        serverDolphin.serverConnector.register new ServerAction() {
-            @Override
-            void registerIn(ActionRegistry registry) {
-                registry.register name, logic
-            }
-        }
     }
 
     /** convenience method to send a named command */

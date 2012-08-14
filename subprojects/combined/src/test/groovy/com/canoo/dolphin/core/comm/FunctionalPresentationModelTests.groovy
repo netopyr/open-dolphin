@@ -4,6 +4,7 @@ import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.server.ServerAttribute
+import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.ServerPresentationModel
 /**
  * Showcase for how to test an application without the GUI by
@@ -14,10 +15,12 @@ import com.canoo.dolphin.core.server.ServerPresentationModel
 class FunctionalPresentationModelTests extends GroovyTestCase {
 
     TestInMemoryConfig context
+    ServerDolphin serverDolphin
 
     @Override
     protected void setUp() {
         context = new TestInMemoryConfig()
+        serverDolphin = context.serverDolphin
     }
 
     @Override
@@ -27,7 +30,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testFetchingAnInitialListOfData() {
         // server part
-        context.register "fetchData", { cmd, response ->
+        serverDolphin.action "fetchData", { cmd, response ->
             ('a'..'z').each {
                 PresentationModel model = new ServerPresentationModel(it, [
                         new ServerAttribute('char', it)
@@ -47,7 +50,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testLoginUseCase() {
         // server part
-        context.register "loginCmd", { cmd, response ->
+        serverDolphin.action "loginCmd", { cmd, response ->
             def user = context.serverDolphin.serverModelStore.findPresentationModelById('user')
             if (user.name.value == 'Dierk' && user.password.value == 'Koenig') {
                 response << user.loggedIn.changeValueCommand('true')
@@ -70,7 +73,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testAsynchronousExceptionOnTheServer() {
         // server part
-        context.register "someCmd", { cmd, response ->
+        serverDolphin.action "someCmd", { cmd, response ->
             throw new RuntimeException("some arbitrary exception on the server")
         }
         context.send("someCmd", {
@@ -83,7 +86,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testAsynchronousExceptionInOnFinishedHandler() {
         // server part
-        context.register "someCmd", { cmd, response ->
+        serverDolphin.action "someCmd", { cmd, response ->
             // nothing to do
         }
         context.send("someCmd", {
@@ -92,6 +95,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         } as OnFinishedHandler)
 
         assert context.clientDolphin.clientConnector.exceptionHappened.val
+    }
 
+    void testUnregisteredCommand() {
+        // server part
+        context.send("no-such-action-registered", {
+            fail "must not reach here"
+        } as OnFinishedHandler)
+        context.assertionsDone()
     }
 }

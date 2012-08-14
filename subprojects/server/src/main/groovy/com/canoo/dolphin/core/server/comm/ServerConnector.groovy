@@ -26,7 +26,6 @@ class ServerConnector {
     }
 
     void register(ServerAction action){
-        log.warning("consider using serverDolphin.register(DolphinServerAction)")
         action.registerIn registry
     }
 
