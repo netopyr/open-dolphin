@@ -5,12 +5,12 @@ import groovy.transform.Canonical
 class DataMixin {
 
     @Lazy
-    protected LinkedList<Map.Entry> data
+    protected LinkedList<DataEntry> data
 
     Object putData(String key, Object value) {
         def oldEntry = data.find { it.key == key }
         if (oldEntry) data.remove(oldEntry)
-        data << new Entry(key,value)
+        data << new DataEntry(key,value)
         return oldEntry?.value
     }
 
@@ -19,7 +19,7 @@ class DataMixin {
     }
 }
 
-@Canonical class Entry{
+@Canonical class DataEntry {
     final String key
     final Object value
 }
