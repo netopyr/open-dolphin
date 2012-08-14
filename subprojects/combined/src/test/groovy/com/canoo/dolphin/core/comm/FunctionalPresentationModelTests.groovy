@@ -1,8 +1,8 @@
 package com.canoo.dolphin.core.comm
 
 import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.ServerPresentationModel
@@ -16,11 +16,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     TestInMemoryConfig context
     ServerDolphin serverDolphin
+    ClientDolphin clientDolphin
 
     @Override
     protected void setUp() {
         context = new TestInMemoryConfig()
         serverDolphin = context.serverDolphin
+        clientDolphin = context.clientDolphin
     }
 
     @Override
@@ -29,7 +31,6 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testFetchingAnInitialListOfData() {
-        // server part
         serverDolphin.action "fetchData", { cmd, response ->
             ('a'..'z').each {
                 PresentationModel model = new ServerPresentationModel(it, [
@@ -38,70 +39,64 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
                 response << new CreatePresentationModelCommand(model)
             }
         }
-        // client part
-        context.send("fetchData", { List<ClientPresentationModel> pms ->
+        clientDolphin.send "fetchData", { List<ClientPresentationModel> pms ->
             assert pms.size() == 26
             assert pms.collect { it.id }.sort(false) == pms.collect { it.id }   // pmIds from a single action should come in sequence
             assert 'a' == context.clientDolphin.clientModelStore.findPresentationModelById('a').char.value
             assert 'z' == context.clientDolphin.clientModelStore.findPresentationModelById('z').char.value
             context.assertionsDone() // make sure the assertions are really executed
-        } as OnFinishedHandler)
+        }
     }
 
     void testLoginUseCase() {
-        // server part
         serverDolphin.action "loginCmd", { cmd, response ->
             def user = context.serverDolphin.serverModelStore.findPresentationModelById('user')
             if (user.name.value == 'Dierk' && user.password.value == 'Koenig') {
                 response << user.loggedIn.changeValueCommand('true')
             }
         }
-        // client part
-        def user = context.clientDolphin.presentationModel('user', ['name', 'password', 'loggedIn'])
-        context.send("loginCmd", {
+        def user = clientDolphin.presentationModel('user', ['name', 'password', 'loggedIn'])
+        clientDolphin.send "loginCmd", {
             assert !user.loggedIn.value
 
             user.name.value = "Dierk"
             user.password.value = "Koenig"
 
-            context.send("loginCmd", {
+            clientDolphin.send "loginCmd", {
                 assert user.loggedIn.value
                 context.assertionsDone()
-            } as OnFinishedHandler)
-        } as OnFinishedHandler)
+            }
+        }
     }
 
     void testAsynchronousExceptionOnTheServer() {
-        // server part
         serverDolphin.action "someCmd", { cmd, response ->
             throw new RuntimeException("some arbitrary exception on the server")
         }
-        context.send("someCmd", {
+        clientDolphin.send "someCmd", {
             fail "the onFinished handler will not be reached in this case"
-        } as OnFinishedHandler)
+        }
 
         assert context.clientDolphin.clientConnector.exceptionHappened.val
         context.assertionsDone()
     }
 
     void testAsynchronousExceptionInOnFinishedHandler() {
-        // server part
         serverDolphin.action "someCmd", { cmd, response ->
             // nothing to do
         }
-        context.send("someCmd", {
+        clientDolphin.send "someCmd", {
             context.assertionsDone()
             throw new RuntimeException("some arbitrary exception in the onFinished handler")
-        } as OnFinishedHandler)
+        }
 
         assert context.clientDolphin.clientConnector.exceptionHappened.val
     }
 
     void testUnregisteredCommand() {
-        // server part
-        context.send("no-such-action-registered", {
+        clientDolphin.send "no-such-action-registered", {
             fail "must not reach here"
-        } as OnFinishedHandler)
+        }
         context.assertionsDone()
     }
 }

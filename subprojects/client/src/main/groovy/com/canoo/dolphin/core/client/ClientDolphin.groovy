@@ -1,6 +1,8 @@
 package com.canoo.dolphin.core.client;
 
-import com.canoo.dolphin.core.client.comm.ClientConnector;
+import com.canoo.dolphin.core.client.comm.ClientConnector
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler
+import com.canoo.dolphin.core.comm.NamedCommand;
 
 import java.util.List;
 
@@ -22,5 +24,15 @@ public class ClientDolphin {
         def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)} )
         clientModelStore.add result
         return result
+    }
+
+    /** java-friendly convenience method for sending a named command*/
+    void send(String commandName, OnFinishedHandler onFinished = null) {
+        clientConnector.send new NamedCommand(commandName), onFinished
+    }
+
+    /** groovy-friendly convenience method for sending a named command*/
+    void send(String commandName, Closure onFinished) {
+        clientConnector.send(new NamedCommand(commandName), onFinished as OnFinishedHandler)
     }
 }
