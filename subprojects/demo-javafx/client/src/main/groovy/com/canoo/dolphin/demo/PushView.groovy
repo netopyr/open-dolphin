@@ -34,7 +34,7 @@ class PushView {
                 longPoll as OnFinishedHandler)
         }
 
-        def selectedVehicle = ClientPresentationModel.make('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
+        def selectedVehicle = ClientDolphin.presentationModel('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle

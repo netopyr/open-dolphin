@@ -15,7 +15,7 @@ class DependentChoiceBoxView {
 
     static show() {
 
-        def selectedFirst = ClientPresentationModel.make('selectedFirst', ['value'])
+        def selectedFirst = ClientDolphin.presentationModel('selectedFirst', ['value'])
 
         start { app ->
             SceneGraphBuilder sgb = delegate

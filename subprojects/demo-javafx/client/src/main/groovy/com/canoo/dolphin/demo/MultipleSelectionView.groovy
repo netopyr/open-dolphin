@@ -1,5 +1,6 @@
 package com.canoo.dolphin.demo
 
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import groovyx.javafx.SceneGraphBuilder
 import javafx.collections.FXCollections
@@ -18,10 +19,10 @@ class MultipleSelectionView {
 
         ObservableList<ClientPresentationModel> observableSelectionList = FXCollections.observableArrayList()
 
-        def firstPm = ClientPresentationModel.make('firstPm', ['selected'])
+        def firstPm = ClientDolphin.presentationModel('firstPm', ['selected'])
         firstPm.selected.value = false
 
-        def secondPm = ClientPresentationModel.make('secondPm', ['selected'])
+        def secondPm = ClientDolphin.presentationModel('secondPm', ['selected'])
         secondPm.selected.value = false
 
         start { app ->

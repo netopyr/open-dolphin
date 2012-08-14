@@ -1,6 +1,6 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
 
@@ -23,13 +23,13 @@ class CategoryChangeView {
                 ]
         ]
 
-        def select  = ClientPresentationModel.make('select', ['category'])
+        def select  = ClientDolphin.presentationModel('select', ['category'])
 
-        def firstPm = ClientPresentationModel.make('firstPm', ['weight','size'])
+        def firstPm = ClientDolphin.presentationModel('firstPm', ['weight','size'])
         firstPm.weight.value = 3
         firstPm.size.value = 20
 
-        def secondPm = ClientPresentationModel.make('secondPm', ['weight','size'])
+        def secondPm = ClientDolphin.presentationModel('secondPm', ['weight','size'])
         secondPm.weight.value = 10
         secondPm.size.value = 40
 

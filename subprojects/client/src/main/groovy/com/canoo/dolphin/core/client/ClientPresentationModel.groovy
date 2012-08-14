@@ -14,10 +14,8 @@ class ClientPresentationModel extends BasePresentationModel {
         super(id, attributes)
     }
 
-    /** Convenience method for a typical case */
+    /** @deprecated use ClientDolphin.presentationModel */
     static ClientPresentationModel make(String id, List<String> attributeNames) {
-        def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)})
-        ClientDolphin.clientModelStore.add result
-        return result
+        return ClientDolphin.presentationModel(id, attributeNames)
     }
 }
