@@ -29,7 +29,7 @@ public class ClientDolphin {
     }
 
     /** groovy-friendly convenience method for a typical case of creating a ClientPresentationModel with initial values*/
-    ClientPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType) {
+    ClientPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
         def attributes = attributeNamesAndValues.collect {key, value -> new ClientAttribute(key, value) }
         def result = new ClientPresentationModel(id, attributes)
         result.presentationModelType = presentationModelType

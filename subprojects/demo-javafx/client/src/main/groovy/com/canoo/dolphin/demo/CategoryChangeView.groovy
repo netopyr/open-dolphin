@@ -9,7 +9,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class CategoryChangeView {
 
-    static show(ClientDolphin clientDolphin) {
+    static show(ClientDolphin dolphin) {
 
         def categories = [
                 weight : [
@@ -23,15 +23,10 @@ class CategoryChangeView {
                 ]
         ]
 
-        def select  = clientDolphin.presentationModel('select', ['category'])
+        def select   = dolphin.presentationModel 'select',   category: null
+        def firstPm  = dolphin.presentationModel 'firstPm',  weight: 3, size:20
+        def secondPm = dolphin.presentationModel 'secondPm', weight:10, size:40
 
-        def firstPm = clientDolphin.presentationModel('firstPm', ['weight','size'])
-        firstPm.weight.value = 3
-        firstPm.size.value = 20
-
-        def secondPm = clientDolphin.presentationModel('secondPm', ['weight','size'])
-        secondPm.weight.value = 10
-        secondPm.size.value = 40
 
         start { app ->
             SceneGraphBuilder sgb = delegate

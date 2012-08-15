@@ -57,7 +57,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
                 response << user.loggedIn.changeValueCommand('true')
             }
         }
-        def user = clientDolphin.presentationModel('user', ['name', 'password', 'loggedIn'])
+        def user = clientDolphin.presentationModel 'user', name:null, password:null, loggedIn:null
         clientDolphin.send "loginCmd", {
             assert !user.loggedIn.value
 
