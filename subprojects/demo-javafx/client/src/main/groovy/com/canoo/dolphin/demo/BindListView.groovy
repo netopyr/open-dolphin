@@ -2,8 +2,6 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
-import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
 
 import javafx.collections.FXCollections
@@ -11,26 +9,28 @@ import javafx.collections.ObservableList
 import javafx.util.Callback
 
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
+import static com.canoo.dolphin.demo.VehicleProperties.*
 
 import static groovyx.javafx.GroovyFX.start
 import javafx.event.EventHandler
 
-import com.canoo.dolphin.core.client.ClientAttribute
-import com.canoo.dolphin.core.client.PresentationModelListChangedListener
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 
 class BindListView {
 
-    static show(ClientDolphin clientDolphin) {
-
-        def communicator = clientDolphin.clientConnector
+    static show(ClientDolphin dolphin) {
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfSmallPms = FXCollections.observableArrayList()
 
-        clientDolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { observableListOfPms << it }, removed: { observableListOfPms.remove(it)} ] as PresentationModelListChangedListener)
-        clientDolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { if (it.id.startsWith('magenta')) observableListOfSmallPms << it } ] as PresentationModelListChangedListener)
+        dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
+           added:   { observableListOfPms << it },
+           removed: { observableListOfPms.remove(it) }
+
+        dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
+           added: { if (it.id.startsWith('magenta')) observableListOfSmallPms << it }
+
         start { app ->
             SceneGraphBuilder sgb = delegate
             stage {
@@ -56,31 +56,27 @@ class BindListView {
                 }
             }
 
+            blueStyle sgb
+
             table.items = observableListOfPms
             smallTable.items = observableListOfSmallPms
 
 			add.onAction = {
-				ClientPresentationModel pm = new ClientPresentationModel("magenta_${System.currentTimeMillis()}", [new ClientAttribute('x', 0)])
-				pm.presentationModelType = 'vehicle'
-                clientDolphin.clientModelStore.add(pm);
+                dolphin.presentationModel "magenta_${System.currentTimeMillis()}",
+                   PM_TYPE_VEHICLE,
+                   (ATT_X) : 0
 			} as EventHandler
 
-
             // auto-update the cell values
-            x1Col.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
-            x2Col.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
+            x1Col.cellValueFactory = { new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
+            x2Col.cellValueFactory = { new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
+
+            dolphin.send CMD_PULL, { pms ->
+                fadeTransition(1.s, node: table,      to: 1).playFromStart()
+                fadeTransition(1.s, node: smallTable, to: 1).playFromStart()
+            }
 
             // startup and main loop
-
-            communicator.send(new NamedCommand(id: 'pullVehicles'), { pms ->
-                fadeTransition(1.s, node: table, to: 1).playFromStart()
-                fadeTransition(1.s, node: smallTable, to: 1).playFromStart()
-            } as OnFinishedHandler )
-
-            blueStyle sgb
-
-            // all the bindings ...
-
             primaryStage.show()
         }
     }

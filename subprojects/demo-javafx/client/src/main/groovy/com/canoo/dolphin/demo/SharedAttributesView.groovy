@@ -63,12 +63,12 @@ class SharedAttributesView {
             taskTable.items = observableListOfTasks
 
             // auto-update the cell values
-            xCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
-            yCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.y) } as Callback
-            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.rotate) } as Callback
+            xCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
+            yCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_Y]) } as Callback
+            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_ROTATE]) } as Callback
 
-            vehicleFillCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.fill) } as Callback
-            vehicleXCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
+            vehicleFillCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_COLOR]) } as Callback
+            vehicleXCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
 
             // startup and main loop
 
@@ -122,16 +122,16 @@ class SharedAttributesView {
                     clientDolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
                         assert detailPm
 
-                        bind COLOR of detailPm to 'text' of tab
+                        bind ATT_COLOR of detailPm to 'text' of tab
 
-                        bind X of detailPm to 'text' of sgb.x
-                        bind 'text' of sgb.x to X of detailPm
+                        bind ATT_X of detailPm to 'text' of sgb.x
+                        bind 'text' of sgb.x to ATT_X of detailPm
 
-                        bind Y of detailPm to 'text' of sgb.y
-                        bind ROTATE of detailPm to 'text' of sgb.angle
+                        bind ATT_Y of detailPm to 'text' of sgb.y
+                        bind ATT_ROTATE of detailPm to 'text' of sgb.angle
 
-                        bind WIDTH of detailPm to 'text' of sgb.width
-                        bind 'text' of sgb.width to WIDTH of detailPm
+                        bind ATT_WIDTH of detailPm to 'text' of sgb.width
+                        bind 'text' of sgb.width to ATT_WIDTH of detailPm
 
                         fadeTransition(1.s, node: grid, to: 1).playFromStart()
                     } as WithPresentationModelHandler

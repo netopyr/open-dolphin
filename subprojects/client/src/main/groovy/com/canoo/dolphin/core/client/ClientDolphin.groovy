@@ -19,9 +19,20 @@ public class ClientDolphin {
 
     ClientConnector clientConnector
 
-    /** Convenience method for a typical case of creating a ClientPresentationModel */
+    /** Convenience method for a typical case of creating a ClientPresentationModel.
+     * @deprecated it is very unlikely that setting attributes without initial values makes any sense.
+     */
     ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
         def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)} )
+        clientModelStore.add result
+        return result
+    }
+
+    /** groovy-friendly convenience method for a typical case of creating a ClientPresentationModel with initial values*/
+    ClientPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType) {
+        def attributes = attributeNamesAndValues.collect {key, value -> new ClientAttribute(key, value) }
+        def result = new ClientPresentationModel(id, attributes)
+        result.presentationModelType = presentationModelType
         clientModelStore.add result
         return result
     }
@@ -34,5 +45,19 @@ public class ClientDolphin {
     /** groovy-friendly convenience method for sending a named command*/
     void send(String commandName, Closure onFinished) {
         clientConnector.send(new NamedCommand(commandName), onFinished as OnFinishedHandler)
+    }
+
+    /** java-friendly convenience method */
+    void onPresentationModelListChanged(String pmType, PresentationModelListChangedListener handler){
+        clientModelStore.onPresentationModelListChanged(pmType, handler)
+    }
+
+    /** groovy-friendly convenience method */
+    void onPresentationModelListChanged(String pmType, Map handler){
+        clientModelStore.onPresentationModelListChanged(pmType, handler as PresentationModelListChangedListener)
+    }
+    /** groovy-friendly convenience method for the invisible-map style */
+    void onPresentationModelListChanged(Map handler, String pmType){
+        clientModelStore.onPresentationModelListChanged(pmType, handler as PresentationModelListChangedListener)
     }
 }

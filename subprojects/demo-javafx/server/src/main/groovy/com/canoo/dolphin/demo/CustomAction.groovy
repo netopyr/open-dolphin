@@ -34,12 +34,12 @@ class CustomAction implements ServerAction {
         registry.register 'pullVehicles', { NamedCommand command, response ->
             vehicles.each { String pmId ->
                 PresentationModel model = new ServerPresentationModel(pmId, [
-                        newAttribute(propertyName: X,      value: rand(), qualifier: "vehicle-${pmId}.x"),
-                        newAttribute(propertyName: Y,      value: rand(), qualifier: "vehicle-${pmId}.y"),
-                        newAttribute(propertyName: WIDTH,  value: 80),
-                        newAttribute(propertyName: HEIGHT, value: 25),
-                        newAttribute(propertyName: ROTATE, value: rand(), qualifier: "vehicle-${pmId}.rotate"),
-                        newAttribute(propertyName: COLOR,  value: pmId,   qualifier: "vehicle-${pmId}.color")
+                        newAttribute(propertyName: ATT_X,      value: rand(), qualifier: "vehicle-${pmId}.x"),
+                        newAttribute(propertyName: ATT_Y,      value: rand(), qualifier: "vehicle-${pmId}.y"),
+                        newAttribute(propertyName: ATT_WIDTH,  value: 80),
+                        newAttribute(propertyName: ATT_HEIGHT, value: 25),
+                        newAttribute(propertyName: ATT_ROTATE, value: rand(), qualifier: "vehicle-${pmId}.rotate"),
+                        newAttribute(propertyName: ATT_COLOR,  value: pmId,   qualifier: "vehicle-${pmId}.color")
                 ])
 				model.setPresentationModelType('vehicle')
                 response << new CreatePresentationModelCommand(model)
@@ -49,9 +49,9 @@ class CustomAction implements ServerAction {
             sleep((Math.random() * 1000).toInteger()) // long-polling: server sleeps until new info is available
             Collections.shuffle(vehicles)
             def pm = modelStore.findPresentationModelById(vehicles.first())
-            response << pm[X].changeValueCommand(rand())
-            response << pm[Y].changeValueCommand(rand())
-            response << pm[ROTATE].changeValueCommand(rand())
+            response << pm[ATT_X].changeValueCommand(rand())
+            response << pm[ATT_Y].changeValueCommand(rand())
+            response << pm[ATT_ROTATE].changeValueCommand(rand())
 
         }
         registry.register 'pullTasks', { NamedCommand command, response ->
@@ -65,11 +65,11 @@ class CustomAction implements ServerAction {
         registry.register GetPresentationModelCommand, { GetPresentationModelCommand command, response ->
             if (command.pmId.startsWith('vehicleDetail')) {
                 String selector = command.pmId.split('-')[1]
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: WIDTH, newValue: rand(),)
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: X, qualifier: "vehicle-${selector}.x")
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: Y, qualifier: "vehicle-${selector}.y")
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ROTATE, qualifier: "vehicle-${selector}.rotate")
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: COLOR, qualifier: "vehicle-${selector}.color")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_WIDTH, newValue: rand(),)
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_X, qualifier: "vehicle-${selector}.x")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_Y, qualifier: "vehicle-${selector}.y")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_ROTATE, qualifier: "vehicle-${selector}.rotate")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_COLOR, qualifier: "vehicle-${selector}.color")
             }
         }
     }

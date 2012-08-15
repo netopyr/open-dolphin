@@ -34,7 +34,7 @@ class PushView {
                 longPoll as OnFinishedHandler)
         }
 
-        def selectedVehicle = clientDolphin.presentationModel('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
+        def selectedVehicle = clientDolphin.presentationModel('selectedVehicle', [ATT_X, ATT_Y, ATT_WIDTH, ATT_HEIGHT, ATT_ROTATE, ATT_COLOR])
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
@@ -74,8 +74,8 @@ class PushView {
             table.items = observableListOfPms
 
             // auto-update the cell values
-            xCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.x) } as Callback
-            yCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.y) } as Callback
+            xCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.ATT_X) } as Callback
+            yCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.ATT_Y) } as Callback
             rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.rotate) } as Callback
 
             // used as both, event handler and change listener
@@ -121,14 +121,14 @@ class PushView {
 
             // all the bindings ...
 
-            bind X      of selectedVehicle to 'text' of selX // simple binding + action
-            selX.onAction = { selectedVehicle.x.value = it.source.text.toInteger() } as EventHandler
+            bind ATT_X      of selectedVehicle to 'text' of selX // simple binding + action
+            selX.onAction = { selectedVehicle.ATT_X.value = it.source.text.toInteger() } as EventHandler
 
-            bind Y      of selectedVehicle to 'text' of selY // example of a "bidirectional" binding
-            bind 'text' of selY            to Y      of selectedVehicle, { it ? it.toInteger() : 0 }
+            bind ATT_Y      of selectedVehicle to 'text' of selY // example of a "bidirectional" binding
+            bind 'text' of selY            to ATT_Y      of selectedVehicle, { it ? it.toInteger() : 0 }
 
-            bind ROTATE of selectedVehicle to 'rotate' of selAngle, { (it ?: 0 ).toDouble() }
-            bind COLOR  of selectedVehicle to 'fill' of selRect,    { it ? sgb[it] : sgb.transparent }
+            bind ATT_ROTATE of selectedVehicle to 'rotate' of selAngle, { (it ?: 0 ).toDouble() }
+            bind ATT_COLOR  of selectedVehicle to 'fill' of selRect,    { it ? sgb[it] : sgb.transparent }
 
             // bind 'selectedItem' of table.selectionModel to { ... }
             table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->
@@ -136,14 +136,14 @@ class PushView {
             } as ChangeListener )
 
             // bind COLOR of selectedVehicle to { ... }
-            selectedVehicle[COLOR].addPropertyChangeListener('value', { evt ->
+            selectedVehicle[ATT_COLOR].addPropertyChangeListener('value', { evt ->
                 def from = evt.oldValue
                 def to   = evt.newValue
                 if (from ) pmIdsToRect[from].strokeWidth = 0
                 pmIdsToRect[to].strokeWidth = 3
             } as PropertyChangeListener)
 
-            selectedVehicle[COLOR].addPropertyChangeListener('value', { evt ->
+            selectedVehicle[ATT_COLOR].addPropertyChangeListener('value', { evt ->
                 def to   = evt.newValue
                 table.selectionModel.select clientDolphin.clientModelStore.findPresentationModelById(to)
             } as PropertyChangeListener)

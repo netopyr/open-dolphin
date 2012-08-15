@@ -3,6 +3,7 @@ package com.canoo.dolphin.core.comm
 import com.canoo.dolphin.core.PresentationModel
 
 // todo dk: review this design.
+// todo idea: when this command is added, add so-many InitializeAttributeCommands
 
 class CreatePresentationModelCommand extends Command {
     String pmId
