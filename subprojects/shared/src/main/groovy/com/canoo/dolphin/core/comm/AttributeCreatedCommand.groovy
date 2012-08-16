@@ -1,5 +1,7 @@
 package com.canoo.dolphin.core.comm
 
+// todo dk: rename to AttributeCreatedNotification
+
 class AttributeCreatedCommand extends Command {
 
     String  pmId
