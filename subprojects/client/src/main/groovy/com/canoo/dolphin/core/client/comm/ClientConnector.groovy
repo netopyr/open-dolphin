@@ -44,27 +44,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         attributes.each { it.value = evt.newValue }
     }
 
-    void registerAndSend(ClientPresentationModel cpm, ClientAttribute ca) {
-        clientModelStore.add(cpm)
-        clientModelStore.registerAttribute(ca)
-        send constructAttributeCreatedCommand(cpm.id, ca)
-    }
-
     ValueChangedCommand constructValueChangedCommand(PropertyChangeEvent evt) {
         new ValueChangedCommand(
                 attributeId: evt.source.id,
                 oldValue: evt.oldValue,
                 newValue: evt.newValue
-        )
-    }
-
-    AttributeCreatedCommand constructAttributeCreatedCommand(String pmId, ClientAttribute attribute) {
-        new AttributeCreatedCommand(
-                pmId: pmId,
-                attributeId: attribute.id,
-                propertyName: attribute.propertyName,
-                newValue: attribute.value,
-                qualifier: attribute.qualifier
         )
     }
 
