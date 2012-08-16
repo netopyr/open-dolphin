@@ -6,6 +6,7 @@ package com.canoo.dolphin.demo
 class VehicleProperties {
 
     static final String CMD_PULL = 'pullVehicles'
+    static final String CMD_UPDATE = 'longPoll'
 
     static final String PM_TYPE_VEHICLE = 'vehicle'
 

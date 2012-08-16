@@ -123,7 +123,7 @@ class JFXBindOfAble {
         return Binder.bind(sourcePropertyName).of(source)
     }
 
-    BindClientToAble of(ClientPresentationModel source) {
+    BindClientToAble    of(ClientPresentationModel source) {
         new BindClientToAble(source.findAttributeByPropertyName(sourcePropertyName))
     }
 

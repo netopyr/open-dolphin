@@ -13,16 +13,16 @@ import static javafx.geometry.HPos.CENTER
 
 class MultipleAttributeSwitchView {
 
-    static show(ClientDolphin clientDolphin) {
+    static show(ClientDolphin dolphin) {
 
-        def communicator = clientDolphin.clientConnector
+        def communicator = dolphin.clientConnector
 
         start { app ->
 
-            def pm1 = makePm 'pm1', 'First PM',  "Show a first pm", clientDolphin
-            def pm2 = makePm 'pm2', 'Second PM', "Show a second pm", clientDolphin
+            def pm1 = makePm 'pm1', 'First PM',  "Show a first pm", dolphin
+            def pm2 = makePm 'pm2', 'Second PM', "Show a second pm", dolphin
 
-            def actualPm = makePm 'pm', 'actualPm', null, clientDolphin
+            def actualPm = makePm 'pm', 'actualPm', null, dolphin
             actualPm.syncWith pm1
 
             stage {
@@ -39,22 +39,22 @@ class MultipleAttributeSwitchView {
 
                         hbox styleClass:"submit", row:3, column:1, {
                             button "Actual is one",
-                                   onAction: { communicator.switchPresentationModelAndSend(actualPm, pm1) }
+                                   onAction: { dolphin.apply pm1 to actualPm }
                             button "Actual is two",
-                                   onAction: { communicator.switchPresentationModelAndSend(actualPm, pm2) }
+                                   onAction: { dolphin.apply pm2 to actualPm }
                         }
                         hbox styleClass:"submit", row:4, column:1, {
                             button "Set title",
-                                   onAction: { communicator.send(new NamedCommand(id: "setTitle")) }
+                                   onAction: { dolphin.send "setTitle" }
                             button "Set purpose",
-                                   onAction: { communicator.send(new NamedCommand(id: "setPurpose")) }
+                                   onAction: { dolphin.send "setPurpose" }
             }   }   }   }
 
             style delegate
 
-            bind TITLE   of actualPm to TITLE of primaryStage
-            bind TITLE   of actualPm to TEXT  of header
-            bind TITLE   of actualPm to TEXT  of titleLabel
+            bind TITLE       of actualPm to TITLE of primaryStage
+            bind TITLE       of actualPm to TEXT  of header
+            bind TITLE       of actualPm to TEXT  of titleLabel
             bind ATT_PURPOSE of actualPm to TEXT  of purposeLabel
 
             primaryStage.show()

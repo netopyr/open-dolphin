@@ -52,11 +52,6 @@ abstract class ClientConnector implements PropertyChangeListener {
         )
     }
 
-    void switchPresentationModelAndSend(ClientPresentationModel switcher, ClientPresentationModel newSource) {
-        switcher.syncWith newSource
-        send new SwitchPresentationModelCommand(pmId: switcher.id, sourcePmId: newSource.id)
-    }
-
     abstract List<Command> transmit(Command command)
 
     abstract int getPoolSize()

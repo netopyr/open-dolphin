@@ -4,10 +4,8 @@ import com.canoo.dolphin.core.Dolphin
 import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
-import com.canoo.dolphin.core.comm.NamedCommand;
-
-import java.util.List;
-
+import com.canoo.dolphin.core.comm.NamedCommand
+import com.canoo.dolphin.core.comm.SwitchPresentationModelCommand
 /**
  * The main Dolphin facade on the client side.
  * Responsibility: single access point for dolphin capabilities.
@@ -66,5 +64,20 @@ public class ClientDolphin extends Dolphin {
     /** groovy-friendly convenience method for the invisible-map style */
     void onPresentationModelListChanged(Map handler, String pmType){
         clientModelStore.onPresentationModelListChanged(pmType, handler as PresentationModelListChangedListener)
+    }
+
+    /** start of a fluent api: apply source to target. Use for selection changes in master-detail views. */
+    ApplyToAble apply( ClientPresentationModel source) {
+        new ApplyToAble(dolphin: this, source: source)
+    }
+}
+
+class ApplyToAble {
+    ClientDolphin dolphin
+    ClientPresentationModel source
+
+    void to(ClientPresentationModel target) {
+        target.syncWith source
+        dolphin.clientConnector.send new SwitchPresentationModelCommand(pmId: target.id, sourcePmId: source.id)
     }
 }

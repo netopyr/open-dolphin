@@ -31,7 +31,7 @@ class CustomAction implements ServerAction {
         def rand = { (Math.random() * 350).toInteger() }
         registry.register 'setTitle', impl.curry('title')
         registry.register 'setPurpose', impl.curry('purpose')
-        registry.register 'pullVehicles', { NamedCommand command, response ->
+        registry.register CMD_PULL, { NamedCommand command, response ->
             vehicles.each { String pmId ->
                 PresentationModel model = new ServerPresentationModel(pmId, [
                         newAttribute(propertyName: ATT_X,      value: rand(), qualifier: "vehicle-${pmId}.x"),
@@ -41,11 +41,11 @@ class CustomAction implements ServerAction {
                         newAttribute(propertyName: ATT_ROTATE, value: rand(), qualifier: "vehicle-${pmId}.rotate"),
                         newAttribute(propertyName: ATT_COLOR,  value: pmId,   qualifier: "vehicle-${pmId}.color")
                 ])
-				model.setPresentationModelType('vehicle')
+				model.setPresentationModelType(PM_TYPE_VEHICLE)
                 response << new CreatePresentationModelCommand(model)
             }
         }
-        registry.register 'longPoll', { NamedCommand command, response ->
+        registry.register CMD_UPDATE, { NamedCommand command, response ->
             sleep((Math.random() * 1000).toInteger()) // long-polling: server sleeps until new info is available
             Collections.shuffle(vehicles)
             def pm = modelStore.findPresentationModelById(vehicles.first())
