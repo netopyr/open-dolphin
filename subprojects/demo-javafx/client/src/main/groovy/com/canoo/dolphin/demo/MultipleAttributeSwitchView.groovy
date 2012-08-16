@@ -3,7 +3,6 @@ package com.canoo.dolphin.demo
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import com.canoo.dolphin.core.comm.NamedCommand
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
@@ -56,14 +55,14 @@ class MultipleAttributeSwitchView {
             bind TITLE   of actualPm to TITLE of primaryStage
             bind TITLE   of actualPm to TEXT  of header
             bind TITLE   of actualPm to TEXT  of titleLabel
-            bind PURPOSE of actualPm to TEXT  of purposeLabel
+            bind ATT_PURPOSE of actualPm to TEXT  of purposeLabel
 
             primaryStage.show()
         }
     }
 
     protected static ClientPresentationModel makePm(String idPrefix, String id, String purpose, ClientDolphin clientDolphin) {
-        def attributes = [TITLE, PURPOSE].collect { propName ->
+        def attributes = [TITLE, ATT_PURPOSE].collect { propName ->
             def attr = new ClientAttribute(propName)
             attr.qualifier = idPrefix + '.' + propName
             attr

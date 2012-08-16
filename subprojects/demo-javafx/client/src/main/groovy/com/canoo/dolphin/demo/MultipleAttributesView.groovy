@@ -19,7 +19,7 @@ class MultipleAttributesView {
             // construct the PM
             def titleAttr = new ClientAttribute(TITLE)
             titleAttr.value = "A PM with multiple attributes"
-            def purposeAttr = new ClientAttribute(PURPOSE)
+            def purposeAttr = new ClientAttribute(ATT_PURPOSE)
             purposeAttr.value = "Show the need for PMs"
             def pm = new ClientPresentationModel('demo',[titleAttr, purposeAttr])
             clientDolphin.clientModelStore.add pm
@@ -57,8 +57,8 @@ class MultipleAttributesView {
             bind TITLE of pm to TEXT of titleLabel
             Binder.bind TITLE of pm to TEXT of titleInput
 
-            bind PURPOSE of pm to TEXT of purposeLabel
-            Binder.bind PURPOSE of pm to TEXT of purposeInput
+            bind ATT_PURPOSE of pm to TEXT of purposeLabel
+            Binder.bind ATT_PURPOSE of pm to TEXT of purposeInput
 
             primaryStage.show()
         }

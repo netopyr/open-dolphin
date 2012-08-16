@@ -1,10 +1,8 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.ClientAttribute
-import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
-import javafx.scene.paint.Color
 
+import static javafx.scene.paint.Color.*
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JFXBinder.bindInfo
 import static com.canoo.dolphin.demo.DemoStyle.style
@@ -13,10 +11,13 @@ import static groovyx.javafx.GroovyFX.start
 
 import static com.canoo.dolphin.core.Attribute.DIRTY_PROPERTY
 
+// todo dk: we should discuss the design around the save use case
+
 class SaveView {
-    static show(ClientDolphin clientDolphin) {
+    static show(ClientDolphin dolphin) {
         start { app ->
-            def model = createPresentationModel(clientDolphin)
+
+            def model = dolphin.presentationModel 'person', (ATT_NAME):'', (ATT_LASTNAME):'Smith'
 
             stage {
                 scene {
@@ -32,32 +33,24 @@ class SaveView {
                         textField id: 'lastnameInput', row: 2, column: 1
 
                         button id: 'saveButton', 'Save', row: 3, column: 1,
-                                onAction: { clientDolphin.clientModelStore.save(model) }
+                                onAction: { dolphin.clientModelStore.save(model) }
                     }
                 }
             }
 
             style delegate
 
-            bind NAME     of model         to TEXT     of nameInput
-            bind LASTNAME of model         to TEXT     of lastnameInput
-            bind TEXT     of nameInput     to NAME     of model
-            bind TEXT     of lastnameInput to LASTNAME of model
+            bind ATT_NAME     of model         to TEXT         of nameInput
+            bind ATT_LASTNAME of model         to TEXT         of lastnameInput
+            bind TEXT         of nameInput     to ATT_NAME     of model
+            bind TEXT         of lastnameInput to ATT_LASTNAME of model
 
-            bindInfo DIRTY_PROPERTY of model[NAME]     to TEXT_FILL  of nameLabel,     { it ? Color.RED: Color.WHITE }
-            bindInfo DIRTY_PROPERTY of model[LASTNAME] to TEXT_FILL  of lastnameLabel, { it ? Color.RED: Color.WHITE }
-            bindInfo DIRTY_PROPERTY of model           to TITLE      of primaryStage , { it ? '** Unsaved **': '' }
-            bindInfo DIRTY_PROPERTY of model           to DISABLED   of saveButton,    { !it }
+            bindInfo DIRTY_PROPERTY of model[ATT_NAME]     to TEXT_FILL  of nameLabel,     { it ? RED : WHITE }
+            bindInfo DIRTY_PROPERTY of model[ATT_LASTNAME] to TEXT_FILL  of lastnameLabel, { it ? RED : WHITE }
+            bindInfo DIRTY_PROPERTY of model               to TITLE      of primaryStage , { it ? '** Unsaved **': '' }
+            bindInfo DIRTY_PROPERTY of model               to DISABLED   of saveButton,    { !it }
 
             primaryStage.show()
         }
-    }
-
-    private static ClientPresentationModel createPresentationModel(ClientDolphin clientDolphin) {
-        def nameAttribute = new ClientAttribute(NAME, '')
-        def lastnameAttribute = new ClientAttribute(LASTNAME, '')
-        def model = new ClientPresentationModel('person', [nameAttribute, lastnameAttribute])
-        clientDolphin.clientModelStore.add model
-        model
     }
 }
