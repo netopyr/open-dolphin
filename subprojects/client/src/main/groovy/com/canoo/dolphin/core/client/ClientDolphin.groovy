@@ -1,5 +1,7 @@
-package com.canoo.dolphin.core.client;
+package com.canoo.dolphin.core.client
 
+import com.canoo.dolphin.core.Dolphin
+import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand;
@@ -12,12 +14,17 @@ import java.util.List;
  * Collaborates with client model store and client connector.
  * Threading model: confined to the UI handling thread.
  */
-public class ClientDolphin {
+public class ClientDolphin extends Dolphin {
 
     // todo dk: the client model store should become a secret of the ClientDolphin
     ClientModelStore clientModelStore
 
     ClientConnector clientConnector
+
+    @Override
+    ModelStore getModelStore() {
+        return clientModelStore
+    }
 
     /** Convenience method for a typical case of creating a ClientPresentationModel.
      * @deprecated it is very unlikely that setting attributes without initial values makes any sense.

@@ -1,5 +1,6 @@
 package com.canoo.dolphin.core.server
 
+import com.canoo.dolphin.core.Dolphin
 import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.server.action.ClosureServerAction
 import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
@@ -18,7 +19,7 @@ import com.canoo.dolphin.core.server.comm.ServerConnector
  * Threading model: confined to a single controller thread.
  */
 
-class ServerDolphin {
+class ServerDolphin extends Dolphin {
 
     /** the server model store is unique per user session */
     final ModelStore serverModelStore
@@ -33,6 +34,11 @@ class ServerDolphin {
 
     ServerDolphin() {
         this(new ModelStore(), new ServerConnector())
+    }
+
+    @Override
+    ModelStore getModelStore() {
+        serverModelStore
     }
 
     void registerDefaultActions() {

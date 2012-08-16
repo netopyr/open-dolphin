@@ -7,6 +7,13 @@ import javafx.event.EventHandler
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static groovyx.javafx.GroovyFX.start
 
+/**
+ * This demo show how to mark objects (applying a color) depending on a choice of categories (size or weight)
+ * without server roundtrip, i.e. the client knows about the possible categories and the value dependencies.
+ * The trick is to call the mapping logic in the conversion logic of the binding.
+ * How to use: select "size" as category, click on left rectangle to increase its size and observe the color change.
+ */
+
 class CategoryChangeView {
 
     static show(ClientDolphin dolphin) {

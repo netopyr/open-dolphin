@@ -16,20 +16,28 @@ import javafx.event.EventHandler
 
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
+/**
+ * This demos shows two list views on the same list of PresentationModels where one list view shows
+ * all models of a given type and the second view shows only a subset (the "magenta" ones).
+ * It also shows how to bind against a (changing) list of PresentationModels of a certain type and how
+ * to use an additional custom filter.
+ * How to use: initially, the right view should be empty (no magenta ones).
+ * Clicking the button adds magenta objects to the store and they should appear in both list views.
+ */
 
 class BindListView {
 
     static show(ClientDolphin dolphin) {
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
-        ObservableList<ClientPresentationModel> observableListOfSmallPms = FXCollections.observableArrayList()
+        ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
 
         dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
            added:   { observableListOfPms << it },
            removed: { observableListOfPms.remove(it) }
 
         dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
-           added: { if (it.id.startsWith('magenta')) observableListOfSmallPms << it }
+           added: { if (it.id.startsWith('magenta')) observableListOfMagentaPms << it }
 
         start { app ->
             SceneGraphBuilder sgb = delegate
@@ -59,7 +67,7 @@ class BindListView {
             blueStyle sgb
 
             table.items = observableListOfPms
-            smallTable.items = observableListOfSmallPms
+            smallTable.items = observableListOfMagentaPms
 
 			add.onAction = {
                 dolphin.presentationModel "magenta_${System.currentTimeMillis()}",
