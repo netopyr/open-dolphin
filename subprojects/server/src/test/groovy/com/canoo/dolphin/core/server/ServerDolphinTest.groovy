@@ -27,4 +27,25 @@ public class ServerDolphinTest extends GroovyTestCase{
         assert "otherValueForSameKey" == dolphin.findData(att, "key")
     }
 
+    void testListPresentationModels() {
+        assert dolphin.listPresentationModelIds().empty
+        assert dolphin.listPresentationModels().empty
+
+        def pm1 = new ServerPresentationModel("first", [])
+        dolphin.modelStore.add pm1
+
+        assert ['first'].toSet() == dolphin.listPresentationModelIds()
+        assert [pm1]             == dolphin.listPresentationModels().toList()
+
+        def pm2 = new ServerPresentationModel("second", [])
+        dolphin.modelStore.add pm2
+
+        assert 2 == dolphin.listPresentationModelIds().size()
+        assert 2 == dolphin.listPresentationModels().size()
+
+        for (id in dolphin.listPresentationModelIds()){
+            assert dolphin.findPresentationModelById(id) in dolphin.listPresentationModels()
+        }
+    }
+
 }
