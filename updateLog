@@ -1,0 +1,1 @@
+git log --pretty=format:"%ad %an %s" --date=short | grep -v Arvinder | grep -v Trygve | grep -v "Merge .* branch" > dist/gitlog.txt
