@@ -9,10 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A BasePresentationModel (PM) is an non-empty, unmodifiable collection of {@link BaseAttribute}s.
- * This allows to bind against PMs (i.e. their Attributes) without the need for GRASP-like
- * PresentationModelSwitches.
- * PMs are not meant to be extended for the normal use, i.e. you typically don't need something like
+ * A BasePresentationModel is a collection of {@link BaseAttribute}s.
+ * PresentationModels are not meant to be extended for the normal use, i.e. you typically don't need something like
  * a specialized "PersonPresentationModel" or so.
  */
 
