@@ -1,0 +1,13 @@
+/*
+   Dummy stylesheet allowing for some customisation without having to
+   copy and modify the other stylesheets.
+*/
+
+#canoologo {
+/*
+    background-image: url(../img/GroovyFX_logo_text.png);
+    background-repeat: no-repeat;
+    width: 384px;
+    height: 100px;
+*/
+}
