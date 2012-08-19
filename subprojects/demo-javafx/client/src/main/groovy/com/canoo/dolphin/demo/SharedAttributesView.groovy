@@ -3,7 +3,7 @@ package com.canoo.dolphin.demo
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
@@ -18,15 +18,16 @@ import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import static com.canoo.dolphin.demo.VehicleProperties.*
 import static groovyx.javafx.GroovyFX.start
+import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler
 
 class SharedAttributesView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
-        def communicator = Dolphin.clientConnector
+        def communicator = clientDolphin.clientConnector
 
         def selectedVehicle = new ClientPresentationModel('selectedVehicle', [new ClientAttribute('vehiclePmId')])
-        Dolphin.clientModelStore.add selectedVehicle
+        clientDolphin.clientModelStore.add selectedVehicle
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfTasks = FXCollections.observableArrayList()
@@ -62,12 +63,12 @@ class SharedAttributesView {
             taskTable.items = observableListOfTasks
 
             // auto-update the cell values
-            xCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
-            yCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.y) } as Callback
-            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.rotate) } as Callback
+            xCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
+            yCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_Y]) } as Callback
+            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_ROTATE]) } as Callback
 
-            vehicleFillCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.fill) } as Callback
-            vehicleXCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
+            vehicleFillCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_COLOR]) } as Callback
+            vehicleXCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
 
             // startup and main loop
 
@@ -118,22 +119,22 @@ class SharedAttributesView {
                         }
                     }
 
-                    communicator.withPresentationModel('vehicleDetail', selectedPmId) { ClientPresentationModel detailPm ->
+                    clientDolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
                         assert detailPm
 
-                        bind COLOR of detailPm to 'text' of tab
+                        bind ATT_COLOR of detailPm to 'text' of tab
 
-                        bind X of detailPm to 'text' of sgb.x
-                        bind 'text' of sgb.x to X of detailPm
+                        bind ATT_X of detailPm to 'text' of sgb.x
+                        bind 'text' of sgb.x to ATT_X of detailPm
 
-                        bind Y of detailPm to 'text' of sgb.y
-                        bind ROTATE of detailPm to 'text' of sgb.angle
+                        bind ATT_Y of detailPm to 'text' of sgb.y
+                        bind ATT_ROTATE of detailPm to 'text' of sgb.angle
 
-                        bind WIDTH of detailPm to 'text' of sgb.width
-                        bind 'text' of sgb.width to WIDTH of detailPm
+                        bind ATT_WIDTH of detailPm to 'text' of sgb.width
+                        bind 'text' of sgb.width to ATT_WIDTH of detailPm
 
                         fadeTransition(1.s, node: grid, to: 1).playFromStart()
-                    }
+                    } as WithPresentationModelHandler
                     sgb.vehicles.tabs << tab
                 }
                 sgb.vehicles.selectionModel.select(tab)

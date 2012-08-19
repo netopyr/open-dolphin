@@ -10,9 +10,10 @@ class ClientModelStoreSpec extends Specification {
 	def modelStore, pmType, pm, listener
 
 	def setup(){
-		modelStore = new ClientModelStore()
-		Dolphin.clientModelStore = modelStore
-		Dolphin.clientConnector = InMemoryClientConnector.instance
+        def clientDolphin = new ClientDolphin()
+		modelStore = new ClientModelStore(clientDolphin)
+        clientDolphin.clientModelStore = modelStore
+        clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin)
 
 		pmType = 'myType'
 		pm = new ClientPresentationModel('myId', [])

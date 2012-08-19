@@ -1,6 +1,8 @@
 package com.canoo.dolphin.demo
 
-def config = new JavaFxInMemoryConfig()
-config.register new CustomAction(config.modelStore)
+import static com.canoo.dolphin.demo.VehicleProperties.*
 
-BindListView.show()
+def config = new JavaFxInMemoryConfig()
+config.serverDolphin.action CMD_PULL, new PullVehiclesActionHandler()
+
+BindListView.show config.clientDolphin

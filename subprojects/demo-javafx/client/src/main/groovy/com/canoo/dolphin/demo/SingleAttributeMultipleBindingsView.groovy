@@ -2,27 +2,26 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
 import static com.canoo.dolphin.demo.MyProps.TITLE
-import static com.canoo.dolphin.demo.MyProps.getTEXT
-import static com.canoo.dolphin.demo.MyProps.getTITLE
+import static com.canoo.dolphin.demo.MyProps.TEXT
 import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.RIGHT
 
 class SingleAttributeMultipleBindingsView {
-    void show() {
+    void show(ClientDolphin clientDolphin) {
         start { app ->
             SceneGraphBuilder builder = delegate
             layoutFrame builder
             style builder
 
             def pm = createPresentationModel()
-            Dolphin.clientModelStore.add pm
+            clientDolphin.clientModelStore.add pm
             bindPmToViews pm, builder
             attachHandlers pm, builder
 

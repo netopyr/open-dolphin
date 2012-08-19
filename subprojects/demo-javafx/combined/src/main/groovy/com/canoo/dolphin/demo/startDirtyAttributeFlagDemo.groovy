@@ -1,5 +1,5 @@
 package com.canoo.dolphin.demo
 
-new JavaFxInMemoryConfig()
+def config = new JavaFxInMemoryConfig()
 
-new DirtyAttributeFlagView().show()
+new DirtyAttributeFlagView().show(config.clientDolphin)

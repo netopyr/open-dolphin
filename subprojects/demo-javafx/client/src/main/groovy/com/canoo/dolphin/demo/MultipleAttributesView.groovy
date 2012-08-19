@@ -3,7 +3,7 @@ package com.canoo.dolphin.demo
 import com.canoo.dolphin.binding.Binder
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
@@ -13,16 +13,16 @@ import static javafx.geometry.HPos.RIGHT
 
 class MultipleAttributesView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
         start { app ->
             // construct the PM
             def titleAttr = new ClientAttribute(TITLE)
             titleAttr.value = "A PM with multiple attributes"
-            def purposeAttr = new ClientAttribute(PURPOSE)
+            def purposeAttr = new ClientAttribute(ATT_PURPOSE)
             purposeAttr.value = "Show the need for PMs"
             def pm = new ClientPresentationModel('demo',[titleAttr, purposeAttr])
-            Dolphin.clientModelStore.add pm
+            clientDolphin.clientModelStore.add pm
 
             def updateTitle   = { pm.title.value = titleInput.text }
             def updatePurpose = { pm.purpose.value = purposeInput.text }
@@ -57,8 +57,8 @@ class MultipleAttributesView {
             bind TITLE of pm to TEXT of titleLabel
             Binder.bind TITLE of pm to TEXT of titleInput
 
-            bind PURPOSE of pm to TEXT of purposeLabel
-            Binder.bind PURPOSE of pm to TEXT of purposeInput
+            bind ATT_PURPOSE of pm to TEXT of purposeLabel
+            Binder.bind ATT_PURPOSE of pm to TEXT of purposeInput
 
             primaryStage.show()
         }

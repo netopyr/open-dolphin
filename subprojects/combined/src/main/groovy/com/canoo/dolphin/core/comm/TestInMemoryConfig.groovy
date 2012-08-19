@@ -1,9 +1,6 @@
 package com.canoo.dolphin.core.comm
 
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.client.comm.UiThreadHandler
-import com.canoo.dolphin.core.server.action.ServerAction
-import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 import java.util.concurrent.CountDownLatch
 
@@ -13,24 +10,9 @@ class TestInMemoryConfig extends DefaultInMemoryConfig {
     CountDownLatch done = new CountDownLatch(1)
 
     TestInMemoryConfig() {
-        registerDefaultActions()
-        connector.sleepMillis = 0
-        connector.uiThreadHandler = { it() } as UiThreadHandler
-    }
-
-    /** convenience method to register a named action */
-    ServerAction register(String name, Closure logic){
-        register new ServerAction() {
-            @Override
-            void registerIn(ActionRegistry registry) {
-                registry.register name, logic
-            }
-        }
-    }
-
-    /** convenience method to send a named command */
-    void send(String commandName, OnFinishedHandler onFinished = null) {
-        connector.send new NamedCommand(commandName), onFinished
+        serverDolphin.registerDefaultActions()
+        clientDolphin.clientConnector.sleepMillis = 0
+        clientDolphin.clientConnector.uiThreadHandler = { it() } as UiThreadHandler
     }
 
     void assertionsDone() {

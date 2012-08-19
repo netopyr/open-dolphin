@@ -1,9 +1,7 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
-import com.canoo.dolphin.core.comm.NamedCommand
+import com.canoo.dolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 
 import java.beans.PropertyChangeListener
@@ -11,11 +9,20 @@ import java.beans.PropertyChangeListener
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import static groovyx.javafx.GroovyFX.start
 
+/**
+ * This demos shows how to use dolphin when one selection (choicebox) determines the available options of
+ * a second selection (choicebox). In order to allow setting the options of the second selection
+ * without waiting for a server roundtrip, the full information about selection dependencies must
+ * be available on the server side.
+ * To this end, we use a presentation model that captures the relation between the two selections,
+ * much like a relation table in a relational datastore.
+ */
+
 class DependentChoiceBoxView {
 
-    static show() {
+    static show(ClientDolphin dolphin) {
 
-        def selectedFirst = ClientPresentationModel.make('selectedFirst', ['value'])
+        def selectedFirst = dolphin.presentationModel 'selectedFirst', value:null
 
         start { app ->
             SceneGraphBuilder sgb = delegate
@@ -32,18 +39,18 @@ class DependentChoiceBoxView {
 
             blueStyle(sgb)
 
-            Dolphin.clientConnector.send(new NamedCommand("fillFirst"), { pms ->
+            dolphin.send "fillFirst", { pms ->
                 sgb.first.items.clear()
                 pms.each {
                     sgb.first.items.add new PmWrapper(pm: it, displayProperty: 'value')
                 }
-            } as OnFinishedHandler)
+            }
 
-            Dolphin.clientConnector.send(new NamedCommand("fillRelation"))
+            dolphin.send "fillRelation"
 
             selectedFirst.value.addPropertyChangeListener({evt->
                 def evenOdd = evt.source.value
-                def relations = Dolphin.getClientModelStore().findAllPresentationModelsByType("FirstSecondRelation")
+                def relations = dolphin.findAllPresentationModelsByType("FirstSecondRelation")
 
                 def matches = relations.findAll { it.findAttributeByPropertyName("first").value == evenOdd }
 

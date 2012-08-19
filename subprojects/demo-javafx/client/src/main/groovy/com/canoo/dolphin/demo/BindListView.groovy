@@ -1,9 +1,7 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
-import com.canoo.dolphin.core.comm.NamedCommand
+import com.canoo.dolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 
 import javafx.collections.FXCollections
@@ -11,26 +9,36 @@ import javafx.collections.ObservableList
 import javafx.util.Callback
 
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
+import static com.canoo.dolphin.demo.VehicleProperties.*
 
 import static groovyx.javafx.GroovyFX.start
 import javafx.event.EventHandler
 
-import com.canoo.dolphin.core.client.ClientAttribute
-import com.canoo.dolphin.core.client.PresentationModelListChangedListener
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
+/**
+ * This demos shows two list views on the same list of PresentationModels where one list view shows
+ * all models of a given type and the second view shows only a subset (the "magenta" ones).
+ * It also shows how to bind against a (changing) list of PresentationModels of a certain type and how
+ * to use an additional custom filter.
+ * How to use: initially, the right view should be empty (no magenta ones).
+ * Clicking the button adds magenta objects to the store and they should appear in both list views.
+ */
 
 class BindListView {
 
-    static show() {
-
-        def communicator = Dolphin.clientConnector
+    static show(ClientDolphin dolphin) {
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
-        ObservableList<ClientPresentationModel> observableListOfSmallPms = FXCollections.observableArrayList()
+        ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
 
-		Dolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { observableListOfPms << it }, removed: { observableListOfPms.remove(it)} ] as PresentationModelListChangedListener)
-		Dolphin.clientModelStore.onPresentationModelListChanged('vehicle', [ added: { if (it.id.startsWith('magenta')) observableListOfSmallPms << it } ] as PresentationModelListChangedListener)
+        dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
+           added:   { observableListOfPms << it },
+           removed: { observableListOfPms.remove(it) }
+
+        dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
+           added: { if (it.id.startsWith('magenta')) observableListOfMagentaPms << it }
+
         start { app ->
             SceneGraphBuilder sgb = delegate
             stage {
@@ -56,31 +64,27 @@ class BindListView {
                 }
             }
 
-            table.items = observableListOfPms
-            smallTable.items = observableListOfSmallPms
-
-			add.onAction = {
-				ClientPresentationModel pm = new ClientPresentationModel("magenta_${System.currentTimeMillis()}", [new ClientAttribute('x', 0)])
-				pm.presentationModelType = 'vehicle'
-				Dolphin.clientModelStore.add(pm);
-			} as EventHandler
-
-
-            // auto-update the cell values
-            x1Col.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
-            x2Col.cellValueFactory = { return new ClientAttributeWrapper(it.value.x) } as Callback
-
-            // startup and main loop
-
-            communicator.send(new NamedCommand(id: 'pullVehicles'), { pms ->
-                fadeTransition(1.s, node: table, to: 1).playFromStart()
-                fadeTransition(1.s, node: smallTable, to: 1).playFromStart()
-            } as OnFinishedHandler )
-
             blueStyle sgb
 
-            // all the bindings ...
+            table.items = observableListOfPms
+            smallTable.items = observableListOfMagentaPms
 
+			add.onAction = {
+                dolphin.presentationModel "magenta_${System.currentTimeMillis()}",
+                   PM_TYPE_VEHICLE,
+                   (ATT_X) : 0
+			} as EventHandler
+
+            // auto-update the cell values
+            x1Col.cellValueFactory = { new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
+            x2Col.cellValueFactory = { new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
+
+            dolphin.send CMD_PULL, { pms ->
+                fadeTransition(1.s, node: table,      to: 1).playFromStart()
+                fadeTransition(1.s, node: smallTable, to: 1).playFromStart()
+            }
+
+            // startup and main loop
             primaryStage.show()
         }
     }

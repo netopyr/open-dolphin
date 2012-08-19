@@ -12,6 +12,9 @@ All generated jar files are copied to the dist directory.
 To zip all the demo sources into the dist directory:
  gradlew demoZip
 
+Update the logs for distribution
+ updateLog
+
 To run all tests including coverage analysis
 (report is in build/coverage):
  gradlew -Pcoverage=true cleanTest test
@@ -50,8 +53,7 @@ The multi-project build consists of these subprojects
 General approach
 ----------------
 PMs are used on both, client and server.
-PMs consists of Attributes that capture only one datatype,
-which is "String".
+PMs consist of Attributes that capture only simple data types.
 
 On the client side, the visualization code (JavaFX) binds
 against the PM, i.e. its Attributes.
@@ -65,10 +67,14 @@ For PM/attributes to be synchronized between client and server developers
 must make use of the respective ModelStore. Here's for example how to create
 a PM on the client side and sync it with it's server counterpart
 
+Old:
     def pm = new ClientPresentationModel('myPmId', [
         new ClientAttribute(propertyName: 'name', 'Dolphin')
     ])
     Dolphin.clientModelStore.add(pm)
+
+New since 17. Aug 2012: use the facade:
+    clientDolphin.presentationModel 'myPmId', name:'Dolphin'
 
 Unlike GRASP there is neither a PM- nor an AttributeSwitch.
 In contrast, switches are ordinary attributes that
@@ -77,6 +83,9 @@ to. They do *not* maintain a reference to the source attribute.
 
 When "switching" all attribute properties get updated for all attributes
 that share the same qualifier. The same is true when any value changes.
+
+Use
+ dolphin.apply sourcePm to targetPm
 
 == Dirty state ==
 
@@ -122,4 +131,3 @@ Design decisions
 - Commands are always sent in strict sequence such that we can rely on all
   value changes being synced to the SMS before a command is processed on the
   server that depends on these values.
-

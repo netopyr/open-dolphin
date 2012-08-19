@@ -2,13 +2,12 @@ package com.canoo.dolphin.core;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ModelStore {
+
+    // todo dk: this doesn't need to be ConcurrentHashMaps since we are thread-confined
     private final Map<String, PresentationModel> presentationModels = new ConcurrentHashMap<String, PresentationModel>();
     private final Map<String, List<PresentationModel>> modelsPerType = new ConcurrentHashMap<String, List<PresentationModel>>();
     private final Map<Long, Attribute> attributesPerId = new ConcurrentHashMap<Long, Attribute>();
@@ -25,6 +24,13 @@ public class ModelStore {
             if (null != newQualifier) addAttributeByQualifier(attribute);
         }
     };
+
+    public Set<String> listPresentationModelIds() {
+        return presentationModels.keySet();
+    }
+    public Collection<PresentationModel> listPresentationModels() {
+        return presentationModels.values();
+    }
 
     public boolean add(PresentationModel model) {
         if (null == model) return false;

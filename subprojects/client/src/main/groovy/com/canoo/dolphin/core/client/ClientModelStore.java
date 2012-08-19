@@ -9,23 +9,36 @@ import java.util.Set;
 import com.canoo.dolphin.core.Attribute;
 import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.PresentationModel;
+import com.canoo.dolphin.core.client.comm.ClientConnector;
+import com.canoo.dolphin.core.client.comm.OnFinishedHandler;
+import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler;
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand;
+import com.canoo.dolphin.core.comm.GetPresentationModelCommand;
 import com.canoo.dolphin.core.comm.SavePresentationModelCommand;
 
 public class ClientModelStore extends ModelStore {
-
 	private final Map<String, Set<PresentationModelListChangedListener>> pmType2Listeners = new HashMap<String, Set<PresentationModelListChangedListener>>();
 
-	@Override
+    private final ClientDolphin clientDolphin;
+
+    public ClientModelStore(ClientDolphin clientDolphin) {
+        this.clientDolphin = clientDolphin;
+    }
+
+    protected ClientConnector getClientConnector() {
+        return clientDolphin.getClientConnector();
+    }
+
+    @Override
 	public boolean add(PresentationModel model) {
         boolean success = super.add(model);
         if (success) {
             List<Attribute> attributes = model.getAttributes();
             for (Attribute attribute : attributes) {
-                attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
+                attribute.addPropertyChangeListener("value", getClientConnector());
             }
             notifyAdded((ClientPresentationModel) model);
-            Dolphin.getClientConnector().send(new CreatePresentationModelCommand(model));
+            getClientConnector().send(new CreatePresentationModelCommand(model));
         }
 
 		return success;
@@ -43,14 +56,35 @@ public class ClientModelStore extends ModelStore {
 	@Override
 	public void registerAttribute(Attribute attribute) {
 		super.registerAttribute(attribute);
-		attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
+		attribute.addPropertyChangeListener("value", getClientConnector());
 	}
 
 	public void updateAttributeId(Attribute attribute, long id) {
 		removeAttributeById(attribute);
 		attribute.setId(id);
 		addAttributeById(attribute);
-		attribute.addPropertyChangeListener("value", Dolphin.getClientConnector());
+		attribute.addPropertyChangeListener("value", getClientConnector());
+	}
+
+	public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {
+		ClientPresentationModel result = (ClientPresentationModel) findPresentationModelById(requestedPmId);
+		if (result != null) {
+			withPmHandler.onFinished(result);
+			return;
+		}
+
+		GetPresentationModelCommand cmd = new GetPresentationModelCommand();
+		cmd.setPmId(requestedPmId);
+
+		OnFinishedHandler callBack = new OnFinishedHandler() {
+			@Override
+			public void onFinished(List<ClientPresentationModel> presentationModels) {
+				ClientPresentationModel theOnlyOne = presentationModels.get(0);
+				assert theOnlyOne.getId().equals(requestedPmId); // sanity check
+				withPmHandler.onFinished(theOnlyOne);
+			}
+		};
+        getClientConnector().send(cmd, callBack);
 	}
 
 	public void onPresentationModelListChanged(String pmType, PresentationModelListChangedListener listener) {
@@ -99,10 +133,6 @@ public class ClientModelStore extends ModelStore {
 
 	}
 
-	private interface ListenerAction {
-		void doIt(PresentationModelListChangedListener listener);
-	}
-
     public void save(String modelId) {
         save(findPresentationModelById(modelId));
     }
@@ -112,6 +142,10 @@ public class ClientModelStore extends ModelStore {
         if (!containsPresentationModel(model.getId())) {
             add(model);
         }
-        Dolphin.getClientConnector().send(new SavePresentationModelCommand(model.getId()));
+        getClientConnector().send(new SavePresentationModelCommand(model.getId()));
     }
+
+	private interface ListenerAction {
+		void doIt(PresentationModelListChangedListener listener);
+	}
 }

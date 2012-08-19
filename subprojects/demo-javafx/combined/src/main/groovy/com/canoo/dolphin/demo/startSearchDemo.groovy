@@ -1,7 +1,6 @@
 package com.canoo.dolphin.demo
 
 def config = new JavaFxInMemoryConfig()
-//config.connector.sleepMillis = 500
-config.register(new DemoSearchAction(config.modelStore));
+config.serverDolphin.serverConnector.register(new DemoSearchAction(config.serverDolphin.serverModelStore));
 
-DemoSearchView.show()
+DemoSearchView.show(config.clientDolphin)

@@ -1,0 +1,107 @@
+.dolphinlogo {
+    -fx-skin: "com.canoo.dolphin.logo.DolphinLogoSkin";
+
+}
+
+.dolphin-mainbody {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip9 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip8 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip7 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip6 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip5 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip4 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip3 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip2 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-rip1 {
+    -fx-fill: rgba(207, 0, 58, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-lateralline {
+    -fx-fill: rgba(102, 153, 255, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-eye {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-sidefin1 {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-sidefin2 {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-belly {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-backfin2 {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-backfin1 {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-tailfinstart {
+    -fx-fill: rgba(102, 153, 255, 1);
+    -fx-stroke: transparent;
+}
+
+.dolphin-tailfin1 {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+.dolphin-tailfin2 {
+    -fx-fill: black;
+    -fx-stroke: transparent;
+}
+
+
+

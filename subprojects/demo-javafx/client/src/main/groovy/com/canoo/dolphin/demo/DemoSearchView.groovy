@@ -2,7 +2,7 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
@@ -20,15 +20,15 @@ import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 class DemoSearchView {
 
-    static show() {
+    static show(ClientDolphin clientDolphin) {
 
-        def communicator = Dolphin.clientConnector
+        def communicator = clientDolphin.clientConnector
 
         def searchCriteria = new ClientPresentationModel(
                 SEARCH_CRITERIA,
                 [FIRST,SECOND,NAME].collect { new ClientAttribute(it) }
         )
-        Dolphin.clientModelStore.add searchCriteria
+        clientDolphin.clientModelStore.add searchCriteria
 
         ObservableList<ClientPresentationModel> observableListOfKoPms = FXCollections.observableArrayList()
 

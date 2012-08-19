@@ -4,7 +4,7 @@ import com.canoo.dolphin.core.server.action.SavePresentationModelAction
 import com.canoo.dolphin.core.server.action.StoreInitialValueChangeAction
 
 def config = new JavaFxInMemoryConfig()
-config.register(new SavePresentationModelAction(config.modelStore))
-config.register(new StoreInitialValueChangeAction(config.modelStore))
+config.serverDolphin.serverConnector.register(new SavePresentationModelAction(  config.serverDolphin.serverModelStore))
+config.serverDolphin.serverConnector.register(new StoreInitialValueChangeAction(config.serverDolphin.serverModelStore))
 
-new SaveView().show()
+new SaveView().show(config.clientDolphin)

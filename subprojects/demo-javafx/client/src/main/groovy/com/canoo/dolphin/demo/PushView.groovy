@@ -1,10 +1,8 @@
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
-import com.canoo.dolphin.core.comm.NamedCommand
+import com.canoo.dolphin.core.client.ClientDolphin
+import com.canoo.dolphin.logo.DolphinLogo
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
@@ -24,16 +22,19 @@ import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 class PushView {
 
-    static show() {
+    static show(ClientDolphin dolphin) {
 
-        def communicator = Dolphin.clientConnector
+        def longPoll = null
+        longPoll = { dolphin.send CMD_UPDATE, longPoll }
 
-        def longPoll
-        longPoll = {
-            communicator.send(new NamedCommand(id: "longPoll"), longPoll as OnFinishedHandler)
-        }
-
-        def selectedVehicle = ClientPresentationModel.make('selectedVehicle', [X, Y, WIDTH, HEIGHT, ROTATE, COLOR])
+        ClientPresentationModel selectedVehicle = dolphin.presentationModel('selectedVehicle',
+                (ATT_X     )  :null,
+                (ATT_Y     )  :null,
+                (ATT_WIDTH )  :null,
+                (ATT_HEIGHT)  :null,
+                (ATT_ROTATE)  :null,
+                (ATT_COLOR )  :null,
+        )
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
@@ -64,21 +65,23 @@ class PushView {
                             }
                         }
                         stackPane {
+                            logo = new DolphinLogo(width:401, height: 257).addTo(delegate)
                             group id: 'parent', effect: dropShadow(offsetY: 2, offsetX: 2, radius: 3, input: lighting{distant(azimuth: -135.0)}), {
-                                rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0.5) // rigidArea
+                                rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0) // rigidArea
             }   }   }   }   }
+            logo.opacity = 0.1d
 
             table.items = observableListOfPms
 
             // auto-update the cell values
-            xCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.x) } as Callback
-            yCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value.y) } as Callback
-            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value.rotate) } as Callback
+            xCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
+            yCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value[ATT_Y]) } as Callback
+            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_ROTATE]) } as Callback
 
             // used as both, event handler and change listener
             def changeSelectionHandler = { pm ->
                 return {
-                    communicator.switchPresentationModelAndSend selectedVehicle, pm
+                    dolphin.apply pm to selectedVehicle
                 }
             }
 
@@ -107,25 +110,26 @@ class PushView {
 
             // startup and main loop
 
-            communicator.send(new NamedCommand(id: 'pullVehicles'), { pms ->
+            dolphin.send CMD_PULL, { pms ->
                 for (pm in pms) {
                     observableListOfPms << pm
                 }
                 fadeTransition(1.s, node:table, to:1).playFromStart()
                 longPoll()
-            } as OnFinishedHandler )
+            }
+
             blueStyle sgb
 
             // all the bindings ...
 
-            bind X      of selectedVehicle to 'text' of selX // simple binding + action
-            selX.onAction = { selectedVehicle.x.value = it.source.text.toInteger() } as EventHandler
+            bind ATT_X      of selectedVehicle to 'text' of selX // simple binding + action
+            selX.onAction = { selectedVehicle[ATT_X].value = it.source.text.toInteger() } as EventHandler
 
-            bind Y      of selectedVehicle to 'text' of selY // example of a "bidirectional" binding
-            bind 'text' of selY            to Y      of selectedVehicle, { it ? it.toInteger() : 0 }
+            bind ATT_Y      of selectedVehicle to 'text' of selY // example of a "bidirectional" binding
+            bind 'text'     of selY            to ATT_Y  of selectedVehicle, { it ? it.toInteger() : 0 }
 
-            bind ROTATE of selectedVehicle to 'rotate' of selAngle, { (it ?: 0 ).toDouble() }
-            bind COLOR  of selectedVehicle to 'fill' of selRect,    { it ? sgb[it] : sgb.transparent }
+            bind ATT_ROTATE of selectedVehicle to 'rotate' of selAngle, { (it ?: 0 ).toDouble() }
+            bind ATT_COLOR  of selectedVehicle to 'fill'   of selRect,  { it ? sgb[it] : sgb.transparent }
 
             // bind 'selectedItem' of table.selectionModel to { ... }
             table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->
@@ -133,12 +137,16 @@ class PushView {
             } as ChangeListener )
 
             // bind COLOR of selectedVehicle to { ... }
-            selectedVehicle[COLOR].addPropertyChangeListener('value', { evt ->
+            selectedVehicle[ATT_COLOR].addPropertyChangeListener('value', { evt ->
                 def from = evt.oldValue
                 def to   = evt.newValue
                 if (from ) pmIdsToRect[from].strokeWidth = 0
                 pmIdsToRect[to].strokeWidth = 3
-                table.selectionModel.select Dolphin.clientModelStore.findPresentationModelById(to)
+            } as PropertyChangeListener)
+
+            selectedVehicle[ATT_COLOR].addPropertyChangeListener('value', { evt ->
+                def to   = evt.newValue
+                table.selectionModel.select dolphin.findPresentationModelById(to)
             } as PropertyChangeListener)
 
             primaryStage.show()

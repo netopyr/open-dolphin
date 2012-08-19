@@ -4,11 +4,9 @@ import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.Dolphin
 import com.canoo.dolphin.core.client.comm.ClientConnector
-import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
-import com.canoo.dolphin.core.client.comm.UiThreadHandler
-import com.canoo.dolphin.core.server.comm.Receiver
+import com.canoo.dolphin.core.server.ServerDolphin
+import com.canoo.dolphin.core.server.comm.ServerConnector
 
 /**
  * Tests for the sequence between client requests and server responses.
@@ -17,20 +15,18 @@ import com.canoo.dolphin.core.server.comm.Receiver
 
 class CommunicationTests extends GroovyTestCase {
 
-	Receiver receiver
-	ClientConnector communicator
+	ServerConnector serverConnector
+	ClientConnector clientConnector
     ClientModelStore clientModelStore
 
 	protected void setUp() {
 		LogConfig.logCommunication()
-		receiver = new Receiver() // no need to put the receiver behind a decoder since we are in-memory
-		communicator = InMemoryClientConnector.instance
-        communicator.processAsync = false
-        communicator.uiThreadHandler = { it() } as UiThreadHandler
-		communicator.receiver = receiver // inject receiver
-        clientModelStore = new ClientModelStore()
-        Dolphin.setClientConnector(communicator)
-        Dolphin.setClientModelStore(clientModelStore)
+		def config = new TestInMemoryConfig()
+        config.clientDolphin.clientConnector.processAsync = false
+        serverConnector = config.serverDolphin.serverConnector
+        clientConnector = config.clientDolphin.clientConnector
+        clientModelStore = config.clientDolphin.clientModelStore
+
 	}
 
 	void testSimpleAttributeChangeIsVisibleOnServer() {
@@ -42,10 +38,11 @@ class CommunicationTests extends GroovyTestCase {
 		def testServerAction = { ValueChangedCommand command, response ->
 			receivedCommand = command
 		}
-		receiver.registry.register ValueChangedCommand, testServerAction
+		serverConnector.registry.register ValueChangedCommand, testServerAction
 
 		ca.value = 'initial'
 
+        assert receivedCommand
 		assert receivedCommand.id == 'ValueChanged'
 		assert receivedCommand in ValueChangedCommand
 		assert receivedCommand.oldValue == null
@@ -59,7 +56,7 @@ class CommunicationTests extends GroovyTestCase {
 		def testServerAction = { CreatePresentationModelCommand command, response ->
 			receivedCommand = command
 		}
-		receiver.registry.register CreatePresentationModelCommand, testServerAction
+		serverConnector.registry.register CreatePresentationModelCommand, testServerAction
 
 		clientModelStore.add new ClientPresentationModel('testPm', [ca]) // todo dk: this should be automatic!
 
@@ -79,13 +76,13 @@ class CommunicationTests extends GroovyTestCase {
 					oldValue: null
 			)
 		}
-		receiver.registry.register CreatePresentationModelCommand, setValueAction
+		serverConnector.registry.register CreatePresentationModelCommand, setValueAction
 
 		Command receivedCommand = null
 		def valueChangedAction = { ValueChangedCommand command, response ->
 			receivedCommand = command
 		}
-		receiver.registry.register ValueChangedCommand, valueChangedAction
+		serverConnector.registry.register ValueChangedCommand, valueChangedAction
 
         clientModelStore.add new ClientPresentationModel('testPm', [ca]) // trigger the whole cycle
 
@@ -97,9 +94,8 @@ class CommunicationTests extends GroovyTestCase {
 
 	void testRequestingSomeGeneralCommandExecution() {
 		boolean reached = false
-		receiver.registry.register "ButtonAction", { cmd, resp -> reached = true }
-
-		communicator.send(new NamedCommand(id: "ButtonAction"))
+		serverConnector.registry.register "ButtonAction", { cmd, resp -> reached = true }
+		clientConnector.send(new NamedCommand(id: "ButtonAction"))
 		assert reached
 	}
 

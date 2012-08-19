@@ -1,5 +1,5 @@
 package com.canoo.dolphin.demo
 
-new JavaFxInMemoryConfig()
+def config = new JavaFxInMemoryConfig()
 
-MultipleAttributesView.show()
+MultipleAttributesView.show(config.clientDolphin)
