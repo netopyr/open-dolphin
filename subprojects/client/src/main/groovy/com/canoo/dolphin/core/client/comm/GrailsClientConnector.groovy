@@ -1,5 +1,6 @@
 package com.canoo.dolphin.core.client.comm
 
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.comm.Command
 import groovy.util.logging.Log
 import groovy.json.JsonSlurper
@@ -10,6 +11,11 @@ class GrailsClientConnector extends ClientConnector {
     String baseUrl = "http://localhost:8080/dolphin-grails"
 
     int getPoolSize() { 1 }
+
+    GrailsClientConnector(ClientDolphin clientDolphin, String baseUrl) {
+        super(clientDolphin)
+        this.baseUrl = baseUrl
+    }
 
     List<Command> transmit(Command command) {
         def result = new LinkedList<Command>()
