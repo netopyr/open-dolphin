@@ -1,16 +1,16 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.LogConfig
+import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientModelStore
-import com.canoo.dolphin.core.client.Dolphin
-import com.canoo.dolphin.core.client.comm.GrailsClientConnector
+import com.canoo.dolphin.core.client.comm.HttpClientConnector
 import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
 
-
 LogConfig.logCommunication()
-def connector = new GrailsClientConnector()
+def dolphin = new ClientDolphin()
+dolphin.setClientModelStore(new ClientModelStore(dolphin))
+def connector = new HttpClientConnector(dolphin, "http://localhost:8080/dolphin-grails")
 connector.uiThreadHandler = new JavaFXUiThreadHandler()
-Dolphin.setClientConnector(connector)
-Dolphin.setClientModelStore(new ClientModelStore())
+dolphin.setClientConnector(connector)
 
-PushView.show()
+PushView.show(dolphin)

@@ -12,11 +12,14 @@ grails.project.dependency.resolution = {
         // uncomment to disable ehcache
         // excludes 'ehcache'
     }
-    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
+
+        mavenLocal()
+
         grailsPlugins()
         grailsHome()
         grailsCentral()
@@ -25,7 +28,6 @@ grails.project.dependency.resolution = {
         // uncomment these to enable remote dependency resolution from public Maven repositories
         //mavenCentral()
 
-        mavenLocal()
 
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
@@ -33,14 +35,16 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
-        //compile 'com.canoo.dolphin:shared:0.1-SNAPSHOT'
-        //compile 'com.canoo.dolphin:server:0.1-SNAPSHOT'
+        // compile 'com.canoo.dolphin:dolphin-shared:0.1-SNAPSHOT'
+        // compile 'com.canoo.dolphin:dolphin-server:0.1-SNAPSHOT'
+        // compile 'com.canoo.dolphin:dolphin-demo-javafx-server:0.1-SNAPSHOT'
+        // compile 'com.canoo.dolphin:dolphin-demo-javafx-shared:0.1-SNAPSHOT'
     }
 
     plugins {
         runtime ":hibernate:$grailsVersion"
-        runtime ":jquery:1.7.1"
-        runtime ":resources:1.1.6"
+        // runtime ":jquery:1.7.1"
+        // runtime ":resources:1.1.6"
 
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"

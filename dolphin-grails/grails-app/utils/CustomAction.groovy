@@ -46,10 +46,21 @@ class CustomAction implements ServerAction {
             sleep((Math.random() * 1000).toInteger()) // long-polling: server sleeps until new info is available
             Collections.shuffle(vehicles)
             def pm = modelStore.findPresentationModelById(vehicles.first())
+
+            println "pm is $pm"
+
             if (!pm) return
-            response << pm[X].changeValueCommand(rand())
-            response << pm[Y].changeValueCommand(rand())
-            response << pm[ROTATE].changeValueCommand(rand())
+
+            try {
+                response << pm[X].changeValueCommand(rand())
+                response << pm[Y].changeValueCommand(rand())
+                response << pm[ROTATE].changeValueCommand(rand())
+            }
+            catch (e) {
+                println pm.attributes*.propertyName
+                println pm.id
+                println modelStore
+            }
 
         }
         registry.register 'pullTasks', { NamedCommand command, response ->

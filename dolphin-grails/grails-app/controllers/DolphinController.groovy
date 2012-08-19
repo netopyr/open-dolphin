@@ -1,10 +1,25 @@
+import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.comm.*
+import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
+import com.canoo.dolphin.core.server.comm.ServerConnector
 import grails.converters.JSON
 
-class CommandController {
+class DolphinController {
 
-    ReceiverService receiverService
+    // todo dk: a case for a OpenSessionInViewInterceptor (?)
+
+    ServerDolphin checkDolphinInSession() {
+        def dolphin = session.dolphin
+        if ( ! dolphin){
+            println "new in session"
+            dolphin = new ServerDolphin(new ModelStore(), new ServerConnector())
+            dolphin.registerDefaultActions()
+            dolphin.serverConnector.register(new CustomAction(dolphin.modelStore)) // todo dk: make application dependent later
+            session.dolphin = dolphin
+        }
+        return dolphin
+    }
 
     // *** Standard actions
 
@@ -37,7 +52,7 @@ class CommandController {
         }
         log.debug(command)
 
-        def result = receiverService.receive(command)
+        def result = checkDolphinInSession().serverConnector.receive(command)
         result as JSON
     }
 }

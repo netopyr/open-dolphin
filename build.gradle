@@ -43,7 +43,9 @@ def mavenizedProjects() {
             project(':client'),
             project(':client-javafx'),
             project(':shared'),
-            project(':server')
+            project(':server'),
+            project(':demo-javafx-server'), // for testing with dolphin-grails
+            project(':demo-javafx-shared'), // for testing with dolphin-grails
     ]
 }
 
@@ -53,12 +55,19 @@ configure(mavenizedProjects()) {
 }
 
 def distDir = new File(rootDir, 'dist')
+def grailsLibDir = new File(rootDir, 'dolphin-grails/lib')
 subprojects.each { proj ->
     evaluationDependsOn proj.path
     proj.jar.doLast { jarTask ->
         copy {
             from jarTask.archivePath
             into distDir
+        }
+        if (proj.name.contains('server') || proj.name.contains('shared')) {
+            copy {
+                from jarTask.archivePath
+                into grailsLibDir
+            }
         }
     }
     if (proj.name.startsWith('demo-')){
