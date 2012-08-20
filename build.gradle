@@ -70,13 +70,13 @@ subprojects.each { proj ->
             }
         }
     }
-    if (proj.name.startsWith('demo-')){
+    //if (proj.name.startsWith('demo-')){  // for the moment, zip all sources, not only the demos
         proj.tasks.add(name: 'demoZip', type: Zip) {
             classifier = 'src'
             destinationDir = distDir
             from proj.sourceSets*.allSource
         }
-    }
+    //}
 }
 
 task wrapper(type:Wrapper, description:"create a gradlew") {
