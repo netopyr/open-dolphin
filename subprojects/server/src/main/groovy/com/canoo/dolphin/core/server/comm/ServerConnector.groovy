@@ -1,11 +1,14 @@
 package com.canoo.dolphin.core.server.comm
 
+import com.canoo.dolphin.core.comm.Codec
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.server.action.*
 import groovy.util.logging.Log
 
 @Log
 class ServerConnector {
+
+    Codec codec
 
     ActionRegistry registry = new ActionRegistry()
 

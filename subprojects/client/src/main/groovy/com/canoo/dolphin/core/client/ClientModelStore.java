@@ -38,7 +38,7 @@ public class ClientModelStore extends ModelStore {
                 attribute.addPropertyChangeListener("value", getClientConnector());
             }
             notifyAdded((ClientPresentationModel) model);
-            getClientConnector().send(new CreatePresentationModelCommand(model));
+            getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
         }
 
 		return success;

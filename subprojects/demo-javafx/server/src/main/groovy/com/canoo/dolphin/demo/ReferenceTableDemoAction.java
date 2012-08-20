@@ -28,10 +28,10 @@ public class ReferenceTableDemoAction implements ServerAction {
 			public Object call(GetPresentationModelCommand cmd, List response) {
                 String pmType = cmd.getPmId().split("-")[0];
 				if (CURRENCY_REF_TABLE.equals(pmType)) {
-					response.add(new CreatePresentationModelCommand(createCurrenciesPM(cmd.getPmId(), pmType)));
+					response.add(CreatePresentationModelCommand.makeFrom(createCurrenciesPM(cmd.getPmId(), pmType)));
 				}
 				else if (PORTFOLIO_TYPE.equals(pmType)) {
-					response.add(new CreatePresentationModelCommand(createPortfolioPM(cmd.getPmId(), pmType)));
+					response.add(CreatePresentationModelCommand.makeFrom(createPortfolioPM(cmd.getPmId(), pmType)));
 
 				}
 				return response;

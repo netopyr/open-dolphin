@@ -1,5 +1,6 @@
 package com.canoo.dolphin.core.comm
 
+//todo dk: this should be removed
 class SwitchAttributeIdCommand extends Command {
 
     String pmId

@@ -194,14 +194,21 @@ abstract class ClientConnector implements PropertyChangeListener {
                 }
             }
         }
-
-        if (!clientModelStore.containsPresentationModel(serverCommand.pmId)) {
-            clientModelStore.add(new ClientPresentationModel(serverCommand.pmId, [attribute]))
-            return serverCommand.pmId
+        def presentationModel = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        if (!presentationModel) {
+            presentationModel = new ClientPresentationModel(serverCommand.pmId, [])
+            presentationModel.setPresentationModelType(serverCommand.pmType)
+            clientModelStore.add(presentationModel)
         }
-        def pm = clientModelStore.findPresentationModelById(serverCommand.pmId)
-        pm.addAttribute(attribute)
+        presentationModel.addAttribute(attribute)
         clientModelStore.registerAttribute(attribute)
+        send new AttributeCreatedCommand(
+           pmId          : presentationModel.id,
+           attributeId   : attribute.id,
+           propertyName  : attribute.propertyName,
+           newValue      : attribute.value,
+           qualifier     : attribute.qualifier
+        )
         return serverCommand.pmId // todo dk: check and test
     }
 

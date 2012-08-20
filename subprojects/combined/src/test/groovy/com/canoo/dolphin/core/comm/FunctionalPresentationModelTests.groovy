@@ -38,7 +38,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
                 PresentationModel model = new ServerPresentationModel(it, [
                         new ServerAttribute('char', it)
                 ])
-                response << new CreatePresentationModelCommand(model)
+                response << CreatePresentationModelCommand.makeFrom(model)
             }
         }
         clientDolphin.send "fetchData", { List<ClientPresentationModel> pms ->

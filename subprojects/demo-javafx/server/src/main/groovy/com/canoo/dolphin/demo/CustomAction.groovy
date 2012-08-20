@@ -42,7 +42,7 @@ class CustomAction implements ServerAction {
                         newAttribute(propertyName: ATT_COLOR,  value: pmId,   qualifier: "vehicle-${pmId}.color")
                 ])
 				model.setPresentationModelType(PM_TYPE_VEHICLE)
-                response << new CreatePresentationModelCommand(model)
+                response << CreatePresentationModelCommand.makeFrom(model)
             }
         }
         registry.register CMD_UPDATE, { NamedCommand command, response ->
