@@ -1,58 +1,43 @@
 import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.comm.*
 import com.canoo.dolphin.core.server.ServerDolphin
-import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
 import com.canoo.dolphin.core.server.comm.ServerConnector
-import grails.converters.JSON
+import com.canoo.dolphin.demo.CustomAction
 
 class DolphinController {
 
-    // todo dk: a case for a OpenSessionInViewInterceptor (?)
+    static allowedMethods = ['POST']
+
+    def index() {
+        def dolphin = checkDolphinInSession()
+        def requestJson = request.inputStream.text
+        log.debug "received json: $requestJson"
+        def commands = dolphin.serverConnector.codec.decode(requestJson)
+        def results = new LinkedList()
+        commands.each {
+            log.debug "processing $it"
+            results.addAll dolphin.serverConnector.receive(it)
+        }
+        def jsonResponse = dolphin.serverConnector.codec.encode(results)
+        log.debug "sending json response: $jsonResponse"
+        render text: jsonResponse
+    }
+
+    // todo dk: a case for a OpenSessionInViewInterceptor or a spring bean in session context
 
     ServerDolphin checkDolphinInSession() {
         def dolphin = session.dolphin
         if ( ! dolphin){
-            println "new in session"
-            dolphin = new ServerDolphin(new ModelStore(), new ServerConnector())
+            log.info "creating new dolphin for session $session.id"
+            dolphin = new ServerDolphin(new ModelStore(), new ServerConnector(codec:new JsonCodec()))
             dolphin.registerDefaultActions()
-            dolphin.serverConnector.register(new CustomAction(dolphin.modelStore)) // todo dk: make application dependent later
+            registerApplicationActions(dolphin)
             session.dolphin = dolphin
         }
         return dolphin
     }
 
-    // *** Standard actions
-
-    def attributeCreated() {
-        render text: populateAndExecute(new AttributeCreatedCommand())
-    }
-    def valueChanged() {
-        render text: populateAndExecute(new ValueChangedCommand())
-    }
-    def switchPm() {
-        populateAndExecute(new SwitchPresentationModelCommand())
-        render text: ([] as JSON)
-    }
-
-    // *** Custom actions
-
-    def pullVehicles() {
-        render text: populateAndExecute(new NamedCommand(id:'pullVehicles'))
-    }
-
-    def longPoll() {
-        render text: populateAndExecute(new NamedCommand(id:'longPoll'))
-    }
-
-    protected String populateAndExecute(command) {
-        params.each {key, value ->
-            if (key in 'action controller'.tokenize()) return
-            if (key == 'attributeId') { value = value.toLong() }
-            command[key] = value
-        }
-        log.debug(command)
-
-        def result = checkDolphinInSession().serverConnector.receive(command)
-        result as JSON
+    def void registerApplicationActions(ServerDolphin dolphin) {
+        dolphin.serverConnector.register(new CustomAction(dolphin.modelStore))
     }
 }

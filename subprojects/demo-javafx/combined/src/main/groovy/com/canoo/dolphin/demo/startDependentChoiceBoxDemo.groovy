@@ -12,9 +12,9 @@ def config = new JavaFxInMemoryConfig()
 
 config.serverDolphin.action "fillFirst", { cmd, response ->
     ServerPresentationModel pm1 = new ServerPresentationModel("First 1", [new ServerAttribute("value","even")])
-    response << new CreatePresentationModelCommand(pm1)
+    response << CreatePresentationModelCommand.makeFrom(pm1)
     ServerPresentationModel pm2 = new ServerPresentationModel("First 2", [new ServerAttribute("value","odd")])
-    response << new CreatePresentationModelCommand(pm2)
+    response << CreatePresentationModelCommand.makeFrom(pm2)
 }
 
 config.serverDolphin.action "fillRelation", { cmd, response ->
@@ -24,7 +24,7 @@ config.serverDolphin.action "fillRelation", { cmd, response ->
             new ServerAttribute("second", "Second $it" )
         ])
         pm.presentationModelType = "FirstSecondRelation"
-        response << new CreatePresentationModelCommand(pm)
+        response << CreatePresentationModelCommand.makeFrom(pm)
     }
     [1,3,5,7,9].each {
         ServerPresentationModel pm = new ServerPresentationModel([
@@ -32,7 +32,7 @@ config.serverDolphin.action "fillRelation", { cmd, response ->
             new ServerAttribute("second", "Second $it" )
         ])
         pm.presentationModelType = "FirstSecondRelation"
-        response << new CreatePresentationModelCommand(pm)
+        response << CreatePresentationModelCommand.makeFrom(pm)
     }
 }
 

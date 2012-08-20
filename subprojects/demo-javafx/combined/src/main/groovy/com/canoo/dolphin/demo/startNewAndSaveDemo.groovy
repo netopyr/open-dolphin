@@ -17,7 +17,7 @@ dolphin.action "saveNewSelectedPerson", { cmd, List<Command> response ->
     def newAttributes = selectedPerson.attributes.collect {
         new ServerAttribute(propertyName: it.propertyName, initialValue: it.value, qualifier: "${pmId}.${it.propertyName}")
     }
-    response << new CreatePresentationModelCommand(new ServerPresentationModel(pmId, newAttributes))
+    response << CreatePresentationModelCommand.makeFrom(new ServerPresentationModel(pmId, newAttributes))
 }
 
 new NewAndSaveView().show(config.clientDolphin)

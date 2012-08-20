@@ -10,6 +10,8 @@ import groovy.json.JsonSlurper
 import org.apache.http.client.HttpClient
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpGet
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.BasicResponseHandler
 import org.apache.http.impl.client.DefaultHttpClient
 
@@ -28,43 +30,24 @@ class HttpClientConnector extends ClientConnector {
         this.baseUrl = baseUrl
     }
 
-    List<Command> transmit(CreatePresentationModelCommand command) {
-        def result = new LinkedList()
-        for(att in command.attributes) {
-            result.addAll transmit(new AttributeCreatedCommand(
-                pmId:           command.pmId,
-                attributeId:    att.id,
-                propertyName:   att.propertyName,
-                newValue:       att.value,
-                qualifier:      att.qualifier
-                ))
-        }
-        return result
-    }
-
     List<Command> transmit(Command command) {
         def result = new LinkedList<Command>()
         try {
-            def url = "$baseUrl/dolphin/${command.id}?"
-            def props = command.properties.keySet() - ['id', 'class', 'metaClass']
-            url += props.collect { "$it=${command[it]}" }.join('&') // needs URLEncode for the general case
+            def url = "$baseUrl/dolphin/"
 
-            HttpGet httpGet = new HttpGet(url)
+            def content = codec.encode([command])  // for the moment, there is only one command in the list
 
-            def response = httpClient.execute(httpGet,responseHandler)
+
+            HttpPost httpPost = new HttpPost(url)
+            StringEntity entity = new StringEntity(content)
+            httpPost.setEntity(entity)
+
+
+            def response = httpClient.execute(httpPost,responseHandler)
 
             println response
 
-            def got = new JsonSlurper().parseText(response)
-            got.each { cmd ->
-                Command responseCommand = Class.forName(cmd['class']).newInstance()
-                cmd.each { key, value ->
-                    if (key in ['id','class']) return
-                    if (key == 'attributeId') value = value.toLong()
-                    responseCommand[key] = value
-                }
-                result << responseCommand
-            }
+            result = codec.decode(response)
         }
         catch (ex) {
             log.severe("cannot transmit")

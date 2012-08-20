@@ -26,7 +26,7 @@ class PullVehiclesActionHandler implements NamedCommandHandler {
                 new ServerAttribute(propertyName: ATT_COLOR,    initialValue: pmId,    qualifier: "vehicle-${ pmId }.color")
             ])
             model.setPresentationModelType(PM_TYPE_VEHICLE)
-            response << new CreatePresentationModelCommand(model)
+            response << CreatePresentationModelCommand.makeFrom(model)
         }
     }
 }
