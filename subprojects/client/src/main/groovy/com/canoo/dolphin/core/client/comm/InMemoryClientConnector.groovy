@@ -3,6 +3,7 @@ package com.canoo.dolphin.core.client.comm
 import com.canoo.dolphin.core.comm.Command
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Log
+import com.canoo.dolphin.core.client.ClientDolphin
 
 @Log @InheritConstructors
 class InMemoryClientConnector extends ClientConnector {
@@ -12,6 +13,10 @@ class InMemoryClientConnector extends ClientConnector {
     def serverConnector // must be injected since the class is only available in a "combined" context
 
     int getPoolSize() { 1 } // we want to be asynchronous but with one thread only
+
+    InMemoryClientConnector(ClientDolphin clientDolphin) {
+        super(clientDolphin)
+    }
 
     @Override
     List<Command> transmit(Command command) {

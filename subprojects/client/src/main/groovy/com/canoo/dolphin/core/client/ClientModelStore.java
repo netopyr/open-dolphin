@@ -13,6 +13,7 @@ import com.canoo.dolphin.core.client.comm.ClientConnector;
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler;
 import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler;
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand;
+import com.canoo.dolphin.core.comm.DeletePresentationModelCommand;
 import com.canoo.dolphin.core.comm.GetPresentationModelCommand;
 import com.canoo.dolphin.core.comm.SavePresentationModelCommand;
 
@@ -145,7 +146,19 @@ public class ClientModelStore extends ModelStore {
         getClientConnector().send(new SavePresentationModelCommand(model.getId()));
     }
 
-	private interface ListenerAction {
+    public void delete(String modelId) {
+        delete(findPresentationModelById(modelId));
+    }
+
+    public void delete(PresentationModel model) {
+        if (model == null) return;
+        if (containsPresentationModel(model.getId())) {
+            remove(model);
+            getClientConnector().send(new DeletePresentationModelCommand(model.getId()));
+        }
+    }
+
+    private interface ListenerAction {
 		void doIt(PresentationModelListChangedListener listener);
 	}
 }

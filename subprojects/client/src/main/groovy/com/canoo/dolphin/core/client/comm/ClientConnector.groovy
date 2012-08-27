@@ -3,7 +3,7 @@ package com.canoo.dolphin.core.client.comm
 import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
-import com.canoo.dolphin.core.client.ClientModelStore
+
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import groovy.util.logging.Log
@@ -222,4 +222,14 @@ abstract class ClientConnector implements PropertyChangeListener {
         model.id
     }
 
+    String handle(PresentationModelDeletedCommand serverCommand) {
+        if (!serverCommand.pmId) return null
+        PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        if (!model) return null
+        // remove from store
+        clientModelStore.remove(model)
+        // inform server of changes
+        send(new RemovePresentationModelCommand(pmId: model.id))
+        model.id
+    }
 }
