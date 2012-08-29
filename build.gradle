@@ -8,12 +8,24 @@ subprojects {
     apply plugin: 'groovy'
     apply plugin: 'idea'
 
-    sourceCompatibility = '1.5'
-    targetCompatibility = '1.5'
+    sourceCompatibility = '1.6'
+    targetCompatibility = '1.6'
     archivesBaseName = "dolphin-${project.name}"
     // version = dolphinVersion
 
+    ext {
+        javaFxHome = System.env['JAVAFX_HOME']
+        javaHome   = System.env['JAVA_HOME']
+        jdk7       = System.getProperty('java.version')[0..2].toDouble() >= 1.7
+    }
+
+    if (!jdk7 && !javaFxHome) {
+        println "please set JAVAFX_HOME to the dir that contains the rt/lib/jfxrt.jar"
+        System.exit 1
+    }
+
     repositories {
+        flatDir name: 'javafx', dirs: jdk7? ["$javaHome/jre/lib/"] : ["$javaFxHome/rt/lib/"]
         mavenCentral()
     }
 

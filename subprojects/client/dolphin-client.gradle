@@ -1,8 +1,3 @@
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compile project(':shared'),
             'org.codehaus.gpars:gpars:0.12',
