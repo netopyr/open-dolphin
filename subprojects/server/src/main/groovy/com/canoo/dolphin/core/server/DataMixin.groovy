@@ -17,6 +17,18 @@ class DataMixin {
     Object findData(String key) {
         data.find { it.key == key }?.value
     }
+
+    Object removeData(String key) {
+        def oldEntry = data.find { it.key == key }
+        if (oldEntry) data.remove(oldEntry)
+        return oldEntry?.value
+    }
+
+    List<String> getDataKeys() {
+        List<String> keys = []
+        keys.addAll(data.key)
+        keys
+    }
 }
 
 @Canonical class DataEntry {

@@ -74,6 +74,15 @@ class ServerDolphin extends Dolphin {
         serverPresentationModel.findData key
     }
 
+    /** @return removes the additional data if present returning the associated value or null if not present */
+    def removeData(ServerPresentationModel serverPresentationModel, String key) {
+        serverPresentationModel.removeData key
+    }
+
+    List<String> getDataKeys(ServerPresentationModel serverPresentationModel) {
+        serverPresentationModel.getDataKeys()
+    }
+
     /** store additional data, if present override and return the old one */
     def putData(ServerAttribute serverAttribute, String key, Object value) {
         serverAttribute.putData key, value
@@ -82,5 +91,14 @@ class ServerDolphin extends Dolphin {
     /** @return the additional data or null if not present */
     def findData(ServerAttribute serverAttribute, String key) {
         serverAttribute.findData key
+    }
+
+    /** @return removes the additional data if present returning the associated value or null if not present */
+    def removeData(ServerAttribute serverAttribute, String key) {
+        serverAttribute.removeData key
+    }
+
+    List<String> getDataKeys(ServerAttribute serverAttribute) {
+        serverAttribute.getDataKeys()
     }
 }
