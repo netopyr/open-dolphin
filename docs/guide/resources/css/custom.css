@@ -3,11 +3,14 @@
    copy and modify the other stylesheets.
 */
 
-#canoologo {
-/*
-    background-image: url(../img/GroovyFX_logo_text.png);
+#dolphinlogo {
+	background-image: url(../img/dolphin.png);
     background-repeat: no-repeat;
-    width: 384px;
-    height: 100px;
-*/
+    background-size: contain;
+	width:150px;
+	height:100px;
+	position:absolute;
+	right:280px;
+	top:60px;
+
 }
