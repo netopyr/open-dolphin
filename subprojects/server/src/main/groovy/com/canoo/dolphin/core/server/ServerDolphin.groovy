@@ -11,6 +11,10 @@ import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
 import com.canoo.dolphin.core.server.action.SwitchPresentationModelAction
 import com.canoo.dolphin.core.server.comm.ServerConnector
+import com.canoo.dolphin.core.comm.Command
+import com.canoo.dolphin.core.server.action.CreatePresentationModelHandler
+import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
+import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 /**
  * The main Dolphin facade on the server side.
@@ -100,5 +104,40 @@ class ServerDolphin extends Dolphin {
 
     List<String> getDataKeys(ServerAttribute serverAttribute) {
         serverAttribute.getDataKeys()
+    }
+
+    void createPresentationModel(List<Command> response, Map<String, Object> modelDescriptor, Closure handler) {
+        createPresentationModel(response, modelDescriptor,new CreatePresentationModelHandler(){
+            @Override
+            void call(List<Command> callbackResponse, ServerPresentationModel presentationModel) {
+                handler(callbackResponse, presentationModel)
+            }
+        })
+    }
+
+    void createPresentationModel(List<Command> response, Map<String, Object> modelDescriptor, CreatePresentationModelHandler handler) {
+        String id = modelDescriptor.remove('id')
+        assert id
+        ServerPresentationModel model = presentationModel(modelDescriptor, id, modelDescriptor.remove('presentationModelType'))
+        register(new DolphinServerAction(){
+            void registerIn(ActionRegistry registry) {
+                Closure commandHandler = null
+                commandHandler = { CreatePresentationModelCommand command, List<Command> callbackResponse ->
+                    if(command.pmId != id) return
+                    handler.call(callbackResponse, serverModelStore.findPresentationModelById(id))
+                    registry.unregister(CreatePresentationModelCommand, commandHandler)
+                }
+
+                registry.register(CreatePresentationModelCommand, commandHandler)
+            }
+        })
+        response << CreatePresentationModelCommand.makeFrom(model)
+    }
+
+    ServerPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
+        List attributes = attributeNamesAndValues.collect {key, value -> new ServerAttribute(key, value) }
+        ServerPresentationModel result = new ServerPresentationModel(id, attributes)
+        result.presentationModelType = presentationModelType
+        result
     }
 }

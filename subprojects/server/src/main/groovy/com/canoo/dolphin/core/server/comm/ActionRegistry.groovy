@@ -10,6 +10,7 @@ class ActionRegistry {
     void register(String commandId, Closure serverCommand) {
         actions.get(commandId, []) << serverCommand
     }
+
     void register(Class commandClass, Closure serverCommand) {
         register Command.idFor(commandClass), serverCommand
     }
@@ -18,5 +19,12 @@ class ActionRegistry {
         actions.get commandId
     }
 
+    void unregister(String commandId, Closure serverCommand) {
+        List commandList = actions.get(commandId, [])
+        commandList.remove serverCommand
+    }
 
+    void unregister(Class commandClass, Closure serverCommand) {
+        unregister Command.idFor(commandClass), serverCommand
+    }
 }
