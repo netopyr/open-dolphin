@@ -1,12 +1,12 @@
 package com.canoo.dolphin.core.server.action
 
 import com.canoo.dolphin.core.comm.AttributeCreatedCommand
+import com.canoo.dolphin.core.comm.ChangeAttributeMetadataCommand
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 class StoreAttributeAction extends DolphinServerAction {
-
     void registerIn(ActionRegistry registry) {
         registry.register(AttributeCreatedCommand) { AttributeCreatedCommand command, response ->
             def attribute = new ServerAttribute(command.propertyName, command.newValue)
@@ -21,6 +21,12 @@ class StoreAttributeAction extends DolphinServerAction {
             }
             pm.addAttribute(attribute)
             modelStore.registerAttribute(attribute)
+        }
+
+        registry.register(ChangeAttributeMetadataCommand) { ChangeAttributeMetadataCommand command, response ->
+            def attribute = serverDolphin.serverModelStore.findAttributeById(command.attributeId)
+            if (!attribute) return
+            attribute[command.metadataName] = command.value
         }
     }
 }

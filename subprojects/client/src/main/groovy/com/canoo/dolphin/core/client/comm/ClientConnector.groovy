@@ -38,17 +38,30 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     void propertyChange(PropertyChangeEvent evt) {
-        if (evt.oldValue == evt.newValue) return
-        send constructValueChangedCommand(evt)
-        List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
-        attributes.each { it.value = evt.newValue }
+        // we listen for either value or metadata changes on attributes
+        if (evt.propertyName == 'value') {
+            if (evt.oldValue == evt.newValue) return
+            send constructValueChangedCommand(evt)
+            List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
+            attributes.each { it.value = evt.newValue }
+        } else { //if(evt.propertyName == 'qualifier') {
+            send constructChangeAttributeMetadataCommand(evt)
+        }
     }
 
-    ValueChangedCommand constructValueChangedCommand(PropertyChangeEvent evt) {
+    private ValueChangedCommand constructValueChangedCommand(PropertyChangeEvent evt) {
         new ValueChangedCommand(
                 attributeId: evt.source.id,
                 oldValue: evt.oldValue,
                 newValue: evt.newValue
+        )
+    }
+
+    private ChangeAttributeMetadataCommand constructChangeAttributeMetadataCommand(PropertyChangeEvent evt) {
+        new ChangeAttributeMetadataCommand(
+                attributeId: evt.source.id,
+                metadataName: evt.propertyName,
+                value: evt.newValue
         )
     }
 
@@ -231,5 +244,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         // inform server of changes
         send(new RemovePresentationModelCommand(pmId: model.id))
         model.id
+    }
+    String handle(AttributeMetadataChangedCommand serverCommand) {
+        ClientAttribute attribute =  clientModelStore.findAttributeById(serverCommand.attributeId)
+        if(!attribute) return null
+        attribute[serverCommand.metadataName] = serverCommand.value
+        return null
     }
 }

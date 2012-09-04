@@ -22,7 +22,11 @@ class ServerConnector {
                         "known commands are ${registry.actions.keySet()}"
             return response
         }
-        for (action in actions) {
+        // copying the list of actions allow an Action to unregister itself
+        // avoiding ConcurrentModificationException to be thrown by the loop
+        List actionsCopy = []
+        actionsCopy.addAll actions
+        for (action in actionsCopy) {
             action command, response
         }
         return response
@@ -31,5 +35,4 @@ class ServerConnector {
     void register(ServerAction action){
         action.registerIn registry
     }
-
 }

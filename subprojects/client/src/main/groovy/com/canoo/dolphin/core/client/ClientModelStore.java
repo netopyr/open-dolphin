@@ -37,6 +37,7 @@ public class ClientModelStore extends ModelStore {
             List<Attribute> attributes = model.getAttributes();
             for (Attribute attribute : attributes) {
                 attribute.addPropertyChangeListener("value", getClientConnector());
+                attribute.addPropertyChangeListener("qualifier", getClientConnector());
             }
             notifyAdded((ClientPresentationModel) model);
             getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
@@ -48,6 +49,10 @@ public class ClientModelStore extends ModelStore {
 	@Override
 	public boolean remove(PresentationModel model) {
 		boolean success = super.remove(model);
+        for (Attribute attribute : model.getAttributes()) {
+            attribute.removePropertyChangeListener("value", getClientConnector());
+            attribute.removePropertyChangeListener("qualifier", getClientConnector());
+        }
 		if (success){
 			notifyRemoved((ClientPresentationModel)model);
 		}
@@ -58,6 +63,7 @@ public class ClientModelStore extends ModelStore {
 	public void registerAttribute(Attribute attribute) {
 		super.registerAttribute(attribute);
 		attribute.addPropertyChangeListener("value", getClientConnector());
+        attribute.addPropertyChangeListener("qualifier", getClientConnector());
 	}
 
 	public void updateAttributeId(Attribute attribute, long id) {
@@ -65,6 +71,7 @@ public class ClientModelStore extends ModelStore {
 		attribute.setId(id);
 		addAttributeById(attribute);
 		attribute.addPropertyChangeListener("value", getClientConnector());
+        attribute.addPropertyChangeListener("qualifier", getClientConnector());
 	}
 
 	public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {
@@ -116,7 +123,6 @@ public class ClientModelStore extends ModelStore {
                 listener.removed(model);
             }
         });
-
 	}
 
 	private void notifyChanged(ClientPresentationModel model, ListenerAction doIt) {
@@ -131,7 +137,6 @@ public class ClientModelStore extends ModelStore {
 		for (PresentationModelListChangedListener listener : set) {
 			doIt.doIt(listener);
 		}
-
 	}
 
     public void save(String modelId) {
