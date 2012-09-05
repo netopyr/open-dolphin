@@ -1,3 +1,20 @@
 introduction :
   title : Introduction
+  changes : Latest Changes
   credits : Credits
+concepts:
+  title : Concepts and Rules
+  concepts_presentation_model: Why you want to have a presentation model
+  concepts_attributes: The purpose of attributes
+  concepts_remoting: Distribution between client and server
+  concepts_commands: Communicating via Commands
+demos:
+  title : Use Cases and Demos
+  demo_binding: Binding against Presentation Models
+config:
+  title: Configuration and Setup
+  config_standalone: Standalone in-memory usage
+  config_remote: Remote setup
+devzone:
+  title : Developer Zone
+  devzone_build: How to build
