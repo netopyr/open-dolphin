@@ -25,7 +25,7 @@ subprojects {
     }
 
     repositories {
-        flatDir name: 'javafx', dirs: jdk7? ["$javaHome/jre/lib/"] : ["$javaFxHome/rt/lib/"]
+        flatDir name: 'javafx', dirs: javaFxHome? ["$javaFxHome/rt/lib/"] : ["$javaHome/jre/lib/"]
         mavenCentral()
     }
 
