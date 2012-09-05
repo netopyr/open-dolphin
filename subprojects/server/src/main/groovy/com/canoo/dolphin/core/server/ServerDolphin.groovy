@@ -106,8 +106,8 @@ class ServerDolphin extends Dolphin {
         serverAttribute.getDataKeys()
     }
 
-    void createPresentationModel(List<Command> response, Map<String, Object> modelDescriptor, Closure handler) {
-        createPresentationModel(response, modelDescriptor,new CreatePresentationModelHandler(){
+    void createPresentationModel(List<Command> response, ServerPresentationModel transientModel, Closure handler) {
+        createPresentationModel(response, transientModel,new CreatePresentationModelHandler(){
             @Override
             void call(List<Command> callbackResponse, ServerPresentationModel presentationModel) {
                 handler(callbackResponse, presentationModel)
@@ -115,23 +115,28 @@ class ServerDolphin extends Dolphin {
         })
     }
 
-    void createPresentationModel(List<Command> response, Map<String, Object> modelDescriptor, CreatePresentationModelHandler handler) {
-        String id = modelDescriptor.remove('id')
-        assert id
-        ServerPresentationModel model = presentationModel(modelDescriptor, id, modelDescriptor.remove('presentationModelType'))
-        register(new DolphinServerAction(){
+    void createPresentationModel(List<Command> response, ServerPresentationModel transientModel, CreatePresentationModelHandler handler) {
+        register(new DolphinServerAction() {
             void registerIn(ActionRegistry registry) {
                 Closure commandHandler = null
                 commandHandler = { CreatePresentationModelCommand command, List<Command> callbackResponse ->
-                    if(command.pmId != id) return
-                    handler.call(callbackResponse, serverModelStore.findPresentationModelById(id))
+                    if (command.pmId != transientModel.id) return
+                    ServerPresentationModel realizedPresentationModel = serverModelStore.findPresentationModelById(transientModel.id)
+                    for (dataKey in transientModel.dataKeys) realizedPresentationModel.putData(dataKey, transientModel.findData(dataKey))
+                    for (transientAttribute in transientModel.attributes) {
+                        ServerAttribute realizedAttribute = realizedPresentationModel.findAttributeByPropertyName(transientAttribute.propertyName)
+                        if (!realizedAttribute) continue
+                        for (dataKey in transientAttribute.dataKeys) realizedAttribute.putData(dataKey, transientAttribute.findData(dataKey))
+                        realizedAttribute.qualifier = transientAttribute.qualifier
+                    }
+                    handler.call(callbackResponse, realizedPresentationModel)
                     registry.unregister(CreatePresentationModelCommand, commandHandler)
                 }
 
                 registry.register(CreatePresentationModelCommand, commandHandler)
             }
         })
-        response << CreatePresentationModelCommand.makeFrom(model)
+        response << CreatePresentationModelCommand.makeFrom(transientModel)
     }
 
     ServerPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
