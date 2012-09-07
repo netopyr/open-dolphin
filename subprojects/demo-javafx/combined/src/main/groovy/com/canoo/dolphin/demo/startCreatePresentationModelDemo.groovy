@@ -21,7 +21,7 @@ config.serverDolphin.action('createNewPresentationModel') { cmd, response ->
             name: "Name-${counter}",
             lastname: "Lastname-${counter}",
     ], "pm-${counter}", 'person')
-    model.putData('entitityId', counter++)
+    model.putData('entityId', counter++)
     config.serverDolphin.createPresentationModel(response, model) { callbackResponse, pm ->
         dumpPm(pm)
     }

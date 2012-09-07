@@ -8,6 +8,11 @@ import static com.canoo.dolphin.demo.DemoStyle.style
 import static groovyx.javafx.GroovyFX.start
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
+/**
+ * This demo shows how to handle the case of presentation models created on the server
+ * side as result of a client request
+ */
+
 class CreatePresentationModelView {
 	static show(ClientDolphin clientDolphin) {
 		start { app ->
