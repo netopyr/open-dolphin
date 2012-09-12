@@ -5,7 +5,7 @@ import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.server.action.ClosureServerAction
 import com.canoo.dolphin.core.server.action.CreatePresentationModelAction
 import com.canoo.dolphin.core.server.action.DolphinServerAction
-import com.canoo.dolphin.core.server.action.NamedCommandHandler
+import com.canoo.dolphin.core.server.comm.NamedCommandHandler
 import com.canoo.dolphin.core.server.action.NamedServerAction
 import com.canoo.dolphin.core.server.action.StoreAttributeAction
 import com.canoo.dolphin.core.server.action.StoreValueChangeAction
