@@ -18,7 +18,7 @@ class Command {
     String getId() { idFor this.class }
 
     // todo dk: also remove "Notification"
-    static idFor(Class commandClass) {
+    static String idFor(Class commandClass) {
         commandClass.name - commandClass.package.name - "." - "Command"
     }
 

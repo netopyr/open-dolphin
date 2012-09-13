@@ -4,3 +4,5 @@ build
 *.iws
 *.iml
 .gradle
+dist
+out

@@ -4,6 +4,6 @@ import com.canoo.dolphin.core.comm.Command;
 
 import java.util.List;
 
-public interface CommandHandler<T> {
+public interface CommandHandler<T extends Command> {
     public void handleCommand(T command, List<Command> response);
 }
