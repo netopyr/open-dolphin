@@ -16,12 +16,13 @@
 
 package com.canoo.dolphin.core.comm
 
+import groovy.transform.TupleConstructor
+
+@TupleConstructor
 class ValueChangedCommand extends Command {
-
     long attributeId
-
-    def  oldValue
-    def  newValue
+    Object  oldValue
+    Object  newValue
 
     String toString() { super.toString() + " attr:$attributeId, $oldValue -> $newValue"}
 }
