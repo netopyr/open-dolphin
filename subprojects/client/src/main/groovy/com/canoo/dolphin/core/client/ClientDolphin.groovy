@@ -50,6 +50,11 @@ public class ClientDolphin extends Dolphin {
     }
 
     /** groovy-friendly convenience method for a typical case of creating a ClientPresentationModel with initial values*/
+    ClientPresentationModel presentationModel(String id, String presentationModelType = null, Map<String, Object> attributeNamesAndValues) {
+        presentationModel(attributeNamesAndValues, id, presentationModelType)
+    }
+
+    /** groovy-friendly convenience method for a typical case of creating a ClientPresentationModel with initial values*/
     ClientPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
         def attributes = attributeNamesAndValues.collect {key, value -> new ClientAttribute(key, value) }
         def result = new ClientPresentationModel(id, attributes)
