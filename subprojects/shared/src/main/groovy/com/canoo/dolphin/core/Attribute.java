@@ -23,6 +23,8 @@ public interface Attribute extends Observable {
 
     String INITIAL_VALUE = "initialValue";
 
+    String VALUE = "value";
+
     Object getValue();
 
     void setValue(Object value);
