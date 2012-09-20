@@ -31,6 +31,7 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
 import com.canoo.dolphin.core.comm.*
+import org.codehaus.groovy.runtime.StackTraceUtils
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -118,6 +119,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         try {
             processing.run()
         } catch (e) {
+            StackTraceUtils.deepSanitize(e)
             exceptionHappened << e
             throw e
         }

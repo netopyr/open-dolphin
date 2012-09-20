@@ -20,6 +20,8 @@ import com.canoo.dolphin.core.comm.Codec
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.server.action.*
 import groovy.util.logging.Log
+import org.codehaus.groovy.runtime.StackTraceUtils
+import java.util.logging.Level
 
 @Log
 class ServerConnector {
@@ -41,8 +43,14 @@ class ServerConnector {
         // avoiding ConcurrentModificationException to be thrown by the loop
         List<CommandHandler> actionsCopy = []
         actionsCopy.addAll actions
-        for (CommandHandler action: actionsCopy) {
-            action.handleCommand command, response
+        try {
+            for (CommandHandler action : actionsCopy) {
+                action.handleCommand command, response
+            }
+        } catch (exception) {
+            StackTraceUtils.deepSanitize(exception)
+            log.log Level.SEVERE, "S: an error ocurred while processing $command", exception
+            throw exception
         }
         return response
     }
