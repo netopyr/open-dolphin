@@ -16,6 +16,9 @@
 
 package com.canoo.dolphin.core.comm
 
+import groovy.transform.TupleConstructor
+
+@TupleConstructor
 class InitialValueChangedCommand extends Command {
     long attributeId
 

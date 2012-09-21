@@ -55,13 +55,20 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     void propertyChange(PropertyChangeEvent evt) {
-        // we listen for either value or metadata changes on attributes
-        if (evt.propertyName == 'value') {
+        if (evt.propertyName == Attribute.DIRTY_PROPERTY) {
+            // ignore
+        } else if (evt.propertyName == Attribute.VALUE) {
             if (evt.oldValue == evt.newValue) return
             send constructValueChangedCommand(evt)
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
             attributes.each { it.value = evt.newValue }
-        } else { //if(evt.propertyName == 'qualifier') {
+        } else if (evt.propertyName == Attribute.INITIAL_VALUE) {
+            if (evt.oldValue == evt.newValue) return
+            send constructInitialValueChangedCommand(evt)
+            List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
+            attributes.each { it.initialValue = evt.newValue }
+        } else {
+            // we assume the change is on a metadata property such as qualifier
             send constructChangeAttributeMetadataCommand(evt)
         }
     }
@@ -71,6 +78,12 @@ abstract class ClientConnector implements PropertyChangeListener {
                 attributeId: evt.source.id,
                 oldValue: evt.oldValue,
                 newValue: evt.newValue
+        )
+    }
+
+    private InitialValueChangedCommand constructInitialValueChangedCommand(PropertyChangeEvent evt) {
+        new InitialValueChangedCommand(
+                attributeId: evt.source.id
         )
     }
 
@@ -185,11 +198,25 @@ abstract class ClientConnector implements PropertyChangeListener {
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
         attribute.value = serverCommand.newValue
 
+        /*
         List<Attribute> clientAttributes = clientModelStore.findAllAttributesByQualifier(attribute.qualifier)
         clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
             log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
             outdated.value = serverCommand.newValue
         }
+        */
+        return null
+    }
+
+    String handle(InitialValueChangedCommand serverCommand) {
+        Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
+        if (!attribute) {
+            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
+            return null
+        }
+
+        log.info "C: updating id '$serverCommand.attributeId' setting initialValue to '$attribute.value'"
+        attribute.save()
         return null
     }
 

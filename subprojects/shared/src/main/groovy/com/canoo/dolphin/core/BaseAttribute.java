@@ -52,8 +52,8 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     public void setValue(Object value) {
-        firePropertyChange("value", this.value, this.value = value);
         setDirty(initialValue == null ? value != null : !initialValue.equals(value));
+        firePropertyChange(VALUE, this.value, this.value = value);
     }
 
     private void setDirty(boolean dirty) {
@@ -61,6 +61,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     private void setInitialValue(Object initialValue) {
+        setDirty(initialValue == null ? value != null : !initialValue.equals(value));
         firePropertyChange(INITIAL_VALUE, this.initialValue, this.initialValue = initialValue);
     }
 

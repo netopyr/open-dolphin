@@ -52,8 +52,7 @@ public class ClientModelStore extends ModelStore {
         if (success) {
             List<Attribute> attributes = model.getAttributes();
             for (Attribute attribute : attributes) {
-                attribute.addPropertyChangeListener("value", getClientConnector());
-                attribute.addPropertyChangeListener("qualifier", getClientConnector());
+                attribute.addPropertyChangeListener(getClientConnector());
             }
             notifyAdded((ClientPresentationModel) model);
             getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
@@ -66,8 +65,7 @@ public class ClientModelStore extends ModelStore {
 	public boolean remove(PresentationModel model) {
 		boolean success = super.remove(model);
         for (Attribute attribute : model.getAttributes()) {
-            attribute.removePropertyChangeListener("value", getClientConnector());
-            attribute.removePropertyChangeListener("qualifier", getClientConnector());
+            attribute.removePropertyChangeListener(getClientConnector());
         }
 		if (success){
 			notifyRemoved((ClientPresentationModel)model);
@@ -78,16 +76,14 @@ public class ClientModelStore extends ModelStore {
 	@Override
 	public void registerAttribute(Attribute attribute) {
 		super.registerAttribute(attribute);
-		attribute.addPropertyChangeListener("value", getClientConnector());
-        attribute.addPropertyChangeListener("qualifier", getClientConnector());
+		attribute.addPropertyChangeListener(getClientConnector());
 	}
 
 	public void updateAttributeId(Attribute attribute, long id) {
 		removeAttributeById(attribute);
 		attribute.setId(id);
 		addAttributeById(attribute);
-		attribute.addPropertyChangeListener("value", getClientConnector());
-        attribute.addPropertyChangeListener("qualifier", getClientConnector());
+		attribute.addPropertyChangeListener(getClientConnector());
 	}
 
 	public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {
