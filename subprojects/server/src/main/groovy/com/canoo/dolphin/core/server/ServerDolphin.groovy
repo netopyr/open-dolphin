@@ -31,6 +31,7 @@ import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.server.action.CreatePresentationModelHandler
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import com.canoo.dolphin.core.server.action.StoreInitialValueChangeAction
 
 /**
  * The main Dolphin facade on the server side.
@@ -66,6 +67,7 @@ class ServerDolphin extends Dolphin {
         register new StoreAttributeAction()
         register new CreatePresentationModelAction()
         register new SwitchPresentationModelAction()
+        register new StoreInitialValueChangeAction()
     }
 
     void register(DolphinServerAction action){

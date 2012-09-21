@@ -21,6 +21,6 @@ import com.canoo.dolphin.core.server.action.StoreInitialValueChangeAction
 
 def config = new JavaFxInMemoryConfig()
 config.serverDolphin.serverConnector.register(new SavePresentationModelAction(  config.serverDolphin.serverModelStore))
-config.serverDolphin.serverConnector.register(new StoreInitialValueChangeAction(config.serverDolphin.serverModelStore))
+config.serverDolphin.serverConnector.register(new StoreInitialValueChangeAction())
 
 new SaveView().show(config.clientDolphin)

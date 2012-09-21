@@ -66,7 +66,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             if (evt.oldValue == evt.newValue) return
             send constructInitialValueChangedCommand(evt)
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
-            attributes.each { it.initialValue = evt.newValue }
+            attributes.each { it.value = evt.newValue; it.save() }
         } else {
             // we assume the change is on a metadata property such as qualifier
             send constructChangeAttributeMetadataCommand(evt)

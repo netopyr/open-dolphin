@@ -21,15 +21,10 @@ import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.comm.InitialValueChangedCommand
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
-class StoreInitialValueChangeAction implements ServerAction {
-    private final ModelStore modelStore
-
-    StoreInitialValueChangeAction(ModelStore modelStore) {
-        this.modelStore = modelStore
-    }
-
+class StoreInitialValueChangeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(InitialValueChangedCommand) { InitialValueChangedCommand command, response ->
+            def modelStore = serverDolphin.serverModelStore
             Attribute attribute = modelStore.findAttributeById(command.attributeId)
             /*
                attribute should exist in the store before this type of command comes
