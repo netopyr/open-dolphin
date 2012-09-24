@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package com.canoo.dolphin.demo
+package com.canoo.dolphin.core.comm
 
-import com.canoo.dolphin.core.server.action.SavePresentationModelAction
-import com.canoo.dolphin.core.server.action.StoreInitialValueChangeAction
+import groovy.transform.TupleConstructor
 
-def config = new JavaFxInMemoryConfig()
-config.serverDolphin.serverConnector.register(new SavePresentationModelAction(config.serverDolphin.serverModelStore))
+@TupleConstructor
+class RemovePresentationModelLinkCommand extends Command {
+    String startId
+    String endId
+    String type
 
-new SaveView().show(config.clientDolphin)
+    String toString() { super.toString() + " start:$startId end:$endId tpye:$type"}
+}

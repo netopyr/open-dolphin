@@ -207,16 +207,34 @@ public class ModelStore {
         return link;
     }
 
-    public void unlink(Link link) {
-        if (null != link &&
-                containsPresentationModel(link.getStart()) &&
-                containsPresentationModel(link.getEnd())) {
-            linkStore.remove(link);
+    public boolean unlink(PresentationModel a, PresentationModel b, String type) {
+        if (null == type || !containsPresentationModel(a) || !containsPresentationModel(b)) {
+            return false;
         }
+        return linkStore.remove(new BaseLink(a, b, type));
     }
 
-    private void unlink(PresentationModel model) {
-        if (containsPresentationModel(model)) linkStore.removeAllLinks(model);
+    public boolean unlink(Link link) {
+        return null != link &&
+                containsPresentationModel(link.getStart()) &&
+                containsPresentationModel(link.getEnd()) &&
+                linkStore.remove(link);
+    }
+
+    protected boolean unlink(PresentationModel model) {
+        if (containsPresentationModel(model) && !linkStore.findAllLinksByModel(model).isEmpty()) {
+            linkStore.removeAllLinks(model);
+            return true;
+        }
+        return false;
+    }
+
+    public Link findLink(PresentationModel a, PresentationModel b, String type) {
+        if (null == type || !containsPresentationModel(a) || !containsPresentationModel(b)) {
+            return null;
+        }
+        BaseLink link = new BaseLink(a, b, type);
+        return linkStore.findLinkByExample(link);
     }
 
     public List<Link> findAllLinksByModelAndType(PresentationModel model, String type) {

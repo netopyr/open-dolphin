@@ -19,19 +19,18 @@ package com.canoo.dolphin.core.client.comm
 import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
-
-import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
+import com.canoo.dolphin.core.client.ClientPresentationModel
 import groovy.util.logging.Log
 import groovyx.gpars.dataflow.DataflowVariable
 import groovyx.gpars.group.DefaultPGroup
 import groovyx.gpars.group.PGroup
+import org.codehaus.groovy.runtime.StackTraceUtils
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
 import com.canoo.dolphin.core.comm.*
-import org.codehaus.groovy.runtime.StackTraceUtils
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -117,7 +116,7 @@ abstract class ClientConnector implements PropertyChangeListener {
                         pms << clientModelStore.findPresentationModelById(pmId)
                     }
                 }
-                if (callback) callback.onFinished( pms.unique {it.id} )
+                if (callback) callback.onFinished(pms.unique {it.id})
             }
         }
     }
@@ -261,11 +260,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         presentationModel.addAttribute(attribute)
         clientModelStore.registerAttribute(attribute)
         send new AttributeCreatedCommand(
-           pmId          : presentationModel.id,
-           attributeId   : attribute.id,
-           propertyName  : attribute.propertyName,
-           newValue      : attribute.value,
-           qualifier     : attribute.qualifier
+                pmId: presentationModel.id,
+                attributeId: attribute.id,
+                propertyName: attribute.propertyName,
+                newValue: attribute.value,
+                qualifier: attribute.qualifier
         )
         return serverCommand.pmId // todo dk: check and test
     }
@@ -290,10 +289,27 @@ abstract class ClientConnector implements PropertyChangeListener {
         send(new RemovePresentationModelCommand(pmId: model.id))
         model.id
     }
+
     String handle(AttributeMetadataChangedCommand serverCommand) {
-        ClientAttribute attribute =  clientModelStore.findAttributeById(serverCommand.attributeId)
-        if(!attribute) return null
+        ClientAttribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
+        if (!attribute) return null
         attribute[serverCommand.metadataName] = serverCommand.value
+        return null
+    }
+
+    String handle(PresentationModelLinkAddedCommand serverCommand) {
+        PresentationModel a = clientModelStore.findPresentationModelById(serverCommand.startId)
+        PresentationModel b = clientModelStore.findPresentationModelById(serverCommand.endId)
+        if (null == a || null == b || null == serverCommand.type) return null
+        clientModelStore.link(a, b, serverCommand.type)
+        return null
+    }
+
+    String handle(PresentationModelLinkRemovedCommand serverCommand) {
+        PresentationModel a = clientModelStore.findPresentationModelById(serverCommand.startId)
+        PresentationModel b = clientModelStore.findPresentationModelById(serverCommand.endId)
+        if (null == a || null == b || null == serverCommand.type) return null
+        clientModelStore.unlink(a, b, serverCommand.type)
         return null
     }
 }
