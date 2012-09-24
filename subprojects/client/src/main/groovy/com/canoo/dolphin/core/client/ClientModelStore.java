@@ -172,26 +172,26 @@ public class ClientModelStore extends ModelStore {
     }
 
     @Override
-    public Link link(PresentationModel a, PresentationModel b, String type) {
-        if (null == type || !containsPresentationModel(a) || !containsPresentationModel(b)) {
+    public Link link(PresentationModel start, PresentationModel end, String type) {
+        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
             return null;
         }
 
         Link link = null;
-        if (!linkExists(a, b, type)) {
-            link = super.link(a, b, type);
-            getClientConnector().send(new AddPresentationModelLinkCommand(a.getId(), b.getId(), type));
+        if (!linkExists(start, end, type)) {
+            link = super.link(start, end, type);
+            getClientConnector().send(new AddPresentationModelLinkCommand(start.getId(), end.getId(), type));
         } else {
-            link = findLink(a, b, type);
+            link = findLink(start, end, type);
         }
         return link;
     }
 
     @Override
-    public boolean unlink(PresentationModel a, PresentationModel b, String type) {
-        boolean linkWasRemoved = super.unlink(a, b, type);
+    public boolean unlink(PresentationModel start, PresentationModel end, String type) {
+        boolean linkWasRemoved = super.unlink(start, end, type);
         if (linkWasRemoved) {
-            getClientConnector().send(new RemovePresentationModelLinkCommand(a.getId(), b.getId(), type));
+            getClientConnector().send(new RemovePresentationModelLinkCommand(start.getId(), end.getId(), type));
         }
         return linkWasRemoved;
     }

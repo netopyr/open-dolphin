@@ -42,14 +42,34 @@ public class ModelStore {
         }
     };
 
+    /**
+     * Returns a {@code Set} of all known presentation model ids.<br/>
+     * Never returns null. The returned {@code Set} is immutable.
+     *
+     * @return a {@code} Set of all ids of all presentation models contained in this store.
+     */
     public Set<String> listPresentationModelIds() {
         return Collections.unmodifiableSet(presentationModels.keySet());
     }
 
+    /**
+     * Returns a {@code Collection} of all presentation models found in this store.<br/>
+     * Never returns empty. The returned {@code Collection} is immutable.
+     *
+     * @return a {@code Collection} of all presentation models found in this store.
+     */
     public Collection<PresentationModel> listPresentationModels() {
         return Collections.unmodifiableCollection(presentationModels.values());
     }
 
+    /**
+     * Adds a presentation model to this store.<br/>
+     * Presentation model ids should be unique. This method guarantees this condition by disallowing
+     * models with duplicate ids to be added.
+     *
+     * @param model the model to be added.
+     * @return if the add operation was successful or not.
+     */
     public boolean add(PresentationModel model) {
         if (null == model) return false;
 
@@ -70,6 +90,13 @@ public class ModelStore {
         return added;
     }
 
+    /**
+     * Removes a presentation model from this store.<br/>
+     * This method will also unlink the model from every relationship it may belong to.
+     *
+     * @param model the model to be removed from the store.
+     * @return if the remove operation was successful or not.
+     */
     public boolean remove(PresentationModel model) {
         if (null == model) return false;
         boolean removed = false;
@@ -148,27 +175,66 @@ public class ModelStore {
         list.remove(attribute);
     }
 
+    /**
+     * Find a presentation model by the given id.<br/>
+     * <strong>WARNING:</strong> this method may return {@code null} if no match is found.
+     *
+     * @param id the id to search
+     * @return a presentation model instance of there's an id match, {@code null} otherwise.
+     */
     public PresentationModel findPresentationModelById(String id) {
         return presentationModels.get(id);
     }
 
+    /**
+     * Finds all presentation models that share the same type.<br/>
+     * The returned {@code List} is never null and immutable.
+     *
+     * @param type the tpye to search for
+     * @return a {@code List} of all presentation models for which there was a match in their type.
+     */
     public List<PresentationModel> findAllPresentationModelsByType(String type) {
         if (isBlank(type) || !modelsPerType.containsKey(type)) return Collections.emptyList();
         return Collections.unmodifiableList(modelsPerType.get(type));
     }
 
+    /**
+     * Finds out if a model is contained in this store.
+     *
+     * @param model the model to search in the store.
+     * @return true if the model is found in this store, false otherwise.
+     */
     public boolean containsPresentationModel(PresentationModel model) {
         return model != null && presentationModels.containsKey(model.getId());
     }
 
+    /**
+     * Finds out if a model is contained in this store, based on its id.
+     *
+     * @param id the id to search in the store.
+     * @return true if the model is found in this store, false otherwise.
+     */
     public boolean containsPresentationModel(String id) {
         return presentationModels.containsKey(id);
     }
 
+    /**
+     * Finds an attribute by its id.<br/>
+     * <strong>WARNING:</strong> this method may return {@code null} if no match is found.
+     *
+     * @param id the id to search for.
+     * @return an attribute whose id matches the parameter, {@code null} otherwise.
+     */
     public Attribute findAttributeById(long id) {
         return attributesPerId.get(id);
     }
 
+    /**
+     * Returns a {@code List} of all attributes that share the same qualifier.<br/>
+     * Never returns empty. The returned {@code List} is immutable.
+     *
+     * @return a {@code List} of all attributes fo which their qualifier was a match.
+     */
     public List<Attribute> findAllAttributesByQualifier(String qualifier) {
         if (isBlank(qualifier) || !attributesPerQualifier.containsKey(qualifier)) return Collections.emptyList();
         return Collections.unmodifiableList(attributesPerQualifier.get(qualifier));
@@ -196,24 +262,48 @@ public class ModelStore {
         return null == str || str.trim().length() == 0;
     }
 
-    public Link link(PresentationModel a, PresentationModel b, String type) {
-        if (null == type || !containsPresentationModel(a) || !containsPresentationModel(b)) {
+    /**
+     * Establishes a link between two presentation models.<br/>
+     * <strong>WARNING:</strong> this method may return {@code null} if any argument is {@code null}
+     * or if any of the models are not contained in the store.<br/>
+     *
+     * @param start the starting model
+     * @param end   the ending model
+     * @param type  the type of relationship, i.e, "PARENT_CHILD".
+     * @return a link between both models.
+     */
+    public Link link(PresentationModel start, PresentationModel end, String type) {
+        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
             return null;
         }
-        BaseLink link = new BaseLink(a, b, type);
+        BaseLink link = new BaseLink(start, end, type);
         Link existingLink = linkStore.findLinkByExample(link);
         if (null != existingLink) return existingLink;
         linkStore.add(link);
         return link;
     }
 
-    public boolean unlink(PresentationModel a, PresentationModel b, String type) {
-        if (null == type || !containsPresentationModel(a) || !containsPresentationModel(b)) {
+    /**
+     * Severs the link between two presentation models as long as the link exists with the given arguments.<br/>
+     *
+     * @param start the starting model
+     * @param end   the ending model
+     * @param type  the type of relationship, i.e, "PARENT_CHILD".
+     * @return true if such a link existed and was removed successfully, false otherwise.
+     */
+    public boolean unlink(PresentationModel start, PresentationModel end, String type) {
+        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
             return false;
         }
-        return linkStore.remove(new BaseLink(a, b, type));
+        return linkStore.remove(new BaseLink(start, end, type));
     }
 
+    /**
+     * Severs the link between two presentation models as long as the link exists with the given arguments.<br/>
+     *
+     * @param link the link to removed.
+     * @return true if such a link existed and was removed successfully, false otherwise.
+     */
     public boolean unlink(Link link) {
         return null != link &&
                 containsPresentationModel(link.getStart()) &&
@@ -229,29 +319,70 @@ public class ModelStore {
         return false;
     }
 
-    public Link findLink(PresentationModel a, PresentationModel b, String type) {
-        if (null == type || !containsPresentationModel(a) || !containsPresentationModel(b)) {
+    /**
+     * Finds out of there's a link of the given type between two presentation models.<br/>
+     * <strong>WARNING:</strong> this method may return {@code null} if any argument is {@code null}
+     * or if any of the models are not contained in the store.<br/>
+     *
+     * @param start the starting model
+     * @param end   the ending model
+     * @param type  the type of relationship, i.e, "PARENT_CHILD".
+     * @return a link that matches the passed-in parameters, {@code null} otherwise.
+     */
+    public Link findLink(PresentationModel start, PresentationModel end, String type) {
+        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
             return null;
         }
-        BaseLink link = new BaseLink(a, b, type);
+        BaseLink link = new BaseLink(start, end, type);
         return linkStore.findLinkByExample(link);
     }
 
+    /**
+     * Finds all links of the given type where the model participates.<br/>
+     * The model may be either a starting or ending model.<br/>
+     * The returned {@code List} is never null and immutable.
+     *
+     * @param model a starting or ending model.
+     * @param type  the type of link to search for.
+     * @return a {@code List} of all links where the model and type are found.
+     */
     public List<Link> findAllLinksByModelAndType(PresentationModel model, String type) {
         return null != type || containsPresentationModel(model) ? linkStore.findLinksByType(model, type) : Collections.<Link>emptyList();
     }
 
+    /**
+     * Finds all links (not caring for a particular type) where the given model participates.<br/>
+     * The model may be either a starting or ending model.<br/>
+     * The returned {@code List} is never null and immutable.
+     *
+     * @param model a starting or ending model.
+     * @return a {@code List} of all links where the model is found.
+     */
     public List<Link> findAllLinksByModel(PresentationModel model) {
         return containsPresentationModel(model) ? linkStore.findAllLinksByModel(model) : Collections.<Link>emptyList();
     }
 
-    public boolean linkExists(PresentationModel a, PresentationModel b, String type) {
+    /**
+     * Finds ouf if a link of the given type exists between two presentation models.<br/>
+     *
+     * @param start the starting model
+     * @param end   the ending model
+     * @param type  the type of relationship, i.e, "PARENT_CHILD".
+     * @return true if such a link exists, false otherwise.
+     */
+    public boolean linkExists(PresentationModel start, PresentationModel end, String type) {
         return null != type &&
-                containsPresentationModel(a) &&
-                containsPresentationModel(b) &&
-                null != linkStore.findLinkByExample(new BaseLink(a, b, type));
+                containsPresentationModel(start) &&
+                containsPresentationModel(end) &&
+                null != linkStore.findLinkByExample(new BaseLink(start, end, type));
     }
 
+    /**
+     * Finds ouf if a link of the given type exists between two presentation models.<br/>
+     *
+     * @param link the link to search for.
+     * @return true if such a link exists, false otherwise.
+     */
     public boolean linkExists(Link link) {
         return null != link &&
                 containsPresentationModel(link.getStart()) &&

@@ -17,6 +17,10 @@
 package com.canoo.dolphin.core;
 
 public interface Link {
+    enum Direction {
+        OUTGOING, INCOMING, BOTH
+    }
+
     String getType();
 
     PresentationModel getStart();
