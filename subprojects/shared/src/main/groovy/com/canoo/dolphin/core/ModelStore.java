@@ -312,7 +312,7 @@ public class ModelStore {
     }
 
     protected boolean unlink(PresentationModel model) {
-        if (containsPresentationModel(model) && !linkStore.findAllLinksByModel(model).isEmpty()) {
+        if (containsPresentationModel(model) && !linkStore.findAllLinksByModel(model, Link.Direction.OUTGOING).isEmpty()) {
             linkStore.removeAllLinks(model);
             return true;
         }
@@ -347,7 +347,21 @@ public class ModelStore {
      * @return a {@code List} of all links where the model and type are found.
      */
     public List<Link> findAllLinksByModelAndType(PresentationModel model, String type) {
-        return null != type || containsPresentationModel(model) ? linkStore.findLinksByType(model, type) : Collections.<Link>emptyList();
+        return findAllLinksByModelAndType(model, type, Link.Direction.BOTH);
+    }
+
+    /**
+     * Finds all links of the given type where the model participates.<br/>
+     * The model should be found at a specific position in the link, given by the specified direction.<br/>
+     * The returned {@code List} is never null and immutable.
+     *
+     * @param model     a starting or ending model given a specific direction.
+     * @param type      the type of link to search for.
+     * @param direction the direction of the link. {@code Link.Direction.BOTH} will be used if the argument is null.
+     * @return a {@code List} of all links where the model and type are found.
+     */
+    public List<Link> findAllLinksByModelAndType(PresentationModel model, String type, Link.Direction direction) {
+        return null != type || containsPresentationModel(model) ? linkStore.findLinksByType(model, type, direction) : Collections.<Link>emptyList();
     }
 
     /**
@@ -359,7 +373,20 @@ public class ModelStore {
      * @return a {@code List} of all links where the model is found.
      */
     public List<Link> findAllLinksByModel(PresentationModel model) {
-        return containsPresentationModel(model) ? linkStore.findAllLinksByModel(model) : Collections.<Link>emptyList();
+        return findAllLinksByModel(model, Link.Direction.BOTH);
+    }
+
+    /**
+     * Finds all links (not caring for a particular type) where the given model participates.<br/>
+     * The model should be found at a specific position in the link, given by the specified direction.<br/>
+     * The returned {@code List} is never null and immutable.
+     *
+     * @param model     a starting or ending model.
+     * @param direction the direction of the link. {@code Link.Direction.BOTH} will be used if the argument is null.
+     * @return a {@code List} of all links where the model is found.
+     */
+    public List<Link> findAllLinksByModel(PresentationModel model, Link.Direction direction) {
+        return containsPresentationModel(model) ? linkStore.findAllLinksByModel(model, direction) : Collections.<Link>emptyList();
     }
 
     /**
@@ -391,59 +418,71 @@ public class ModelStore {
     }
 
     private static class LinkStore {
-        private final Map<PresentationModel, List<Link>> links = new ConcurrentHashMap<PresentationModel, List<Link>>();
+        private class LinkBox {
+            private final List<Link> incoming = new ArrayList<Link>();
+            private final List<Link> outgoing = new ArrayList<Link>();
+
+            private List<Link> all() {
+                List<Link> all = new ArrayList<Link>();
+                all.addAll(outgoing);
+                for (Link link : incoming) {
+                    if (!all.contains(link)) all.add(link);
+                }
+                return all;
+            }
+        }
+
+        private final Map<PresentationModel, LinkBox> LINKS = new ConcurrentHashMap<PresentationModel, LinkBox>();
 
         public boolean add(Link link) {
-            List<Link> startList = links.get(link.getStart());
+            LinkBox links = LINKS.get(link.getStart());
 
-            if (null == startList) {
-                startList = new ArrayList<Link>();
-                links.put(link.getStart(), startList);
+            if (null == links) {
+                links = new LinkBox();
+                LINKS.put(link.getStart(), links);
             }
 
-            if (startList.contains(link)) return false;
-            startList.add(link);
+            if (links.outgoing.contains(link)) return false;
+            links.outgoing.add(link);
 
-            // a link could point to the same node, if so just add this link once
-            if (link.getStart().equals(link.getEnd())) return true;
-
-            List<Link> endList = links.get(link.getEnd());
-
-            if (null == endList) {
-                endList = new ArrayList<Link>();
-                links.put(link.getEnd(), endList);
+            links = LINKS.get(link.getEnd());
+            if (null == links) {
+                links = new LinkBox();
+                LINKS.put(link.getEnd(), links);
             }
 
-            endList.add(link);
+            if (links.incoming.contains(link)) return false;
+            links.incoming.add(link);
 
             return true;
         }
 
         public boolean remove(Link link) {
-            List<Link> startList = links.get(link.getStart());
+            boolean removed = false;
+            LinkBox links = LINKS.get(link.getStart());
 
-            if (null == startList || !startList.contains(link)) return false;
-            startList.remove(link);
-
-            if (link.getStart().equals(link.getEnd())) return true;
-
-            // a link could point to the same node, if so just remove this link once
-            List<Link> endList = links.get(link.getEnd());
-
-            if (null != endList) {
-                endList.remove(link);
+            if (null != links && links.outgoing.contains(link)) {
+                links.outgoing.remove(link);
+                removed = true;
             }
 
-            return true;
+            links = LINKS.get(link.getEnd());
+
+            if (null != links && links.incoming.contains(link)) {
+                links.incoming.remove(link);
+                removed = true;
+            }
+
+            return removed;
         }
 
         public Link findLinkByExample(Link example) {
             PresentationModel start = example.getStart();
 
-            List<Link> list = links.get(start);
-            if (null == list || list.isEmpty()) return null;
+            LinkBox links = LINKS.get(start);
+            if (null == links) return null;
 
-            for (Link link : list) {
+            for (Link link : links.outgoing) {
                 if (linkTypesAreEqual(link, example) &&
                         link.getEnd().equals(example.getEnd())) {
                     return link;
@@ -453,22 +492,40 @@ public class ModelStore {
             return null;
         }
 
-        public List<Link> findLinksByType(PresentationModel model, String type) {
-            List<Link> list = links.get(model);
-            if (null == list) return Collections.emptyList();
+        public List<Link> findLinksByType(PresentationModel model, String type, Link.Direction direction) {
+            LinkBox links = LINKS.get(model);
+            if (null == links) return Collections.emptyList();
             List<Link> linksByType = new ArrayList<Link>();
-            for (Link link : list) {
-                if (linkTypesAreEqual(link.getType(), type)) {
-                    linksByType.add(link);
+            if (null == direction || direction == Link.Direction.BOTH || direction == Link.Direction.OUTGOING) {
+                for (Link link : links.outgoing) {
+                    if (linkTypesAreEqual(link.getType(), type)) {
+                        linksByType.add(link);
+                    }
+                }
+            }
+            if (null == direction || direction == Link.Direction.BOTH || direction == Link.Direction.INCOMING) {
+
+                for (Link link : links.incoming) {
+                    if (linkTypesAreEqual(link.getType(), type) && !links.incoming.contains(link)) {
+                        linksByType.add(link);
+                    }
                 }
             }
             return Collections.unmodifiableList(linksByType);
         }
 
-        public List<Link> findAllLinksByModel(PresentationModel model) {
-            List<Link> list = links.get(model);
-            if (null == list) return Collections.emptyList();
-            return Collections.unmodifiableList(list);
+        public List<Link> findAllLinksByModel(PresentationModel model, Link.Direction direction) {
+            LinkBox links = LINKS.get(model);
+            if (null == links) return Collections.emptyList();
+            switch (direction) {
+                case INCOMING:
+                    return Collections.unmodifiableList(links.incoming);
+                case OUTGOING:
+                    return Collections.unmodifiableList(links.outgoing);
+                case BOTH:
+                default:
+                    return Collections.unmodifiableList(links.all());
+            }
         }
 
         private boolean linkTypesAreEqual(Link a, Link b) {
@@ -480,12 +537,17 @@ public class ModelStore {
         }
 
         public void removeAllLinks(PresentationModel model) {
-            List<Link> list = links.get(model);
-            if (null == list) return;
-            for (Link link : list) {
-                List<Link> otherList = links.get(link.getEnd());
-                if (null == otherList) continue;
-                otherList.remove(link);
+            LinkBox links = LINKS.remove(model);
+            if (null == links) return;
+            for (Link link : links.outgoing) {
+                LinkBox otherLinks = LINKS.get(link.getEnd());
+                if (null == otherLinks) continue;
+                otherLinks.incoming.remove(link);
+            }
+            for (Link link : links.incoming) {
+                LinkBox otherLinks = LINKS.get(link.getStart());
+                if (null == otherLinks) continue;
+                otherLinks.outgoing.remove(link);
             }
         }
     }

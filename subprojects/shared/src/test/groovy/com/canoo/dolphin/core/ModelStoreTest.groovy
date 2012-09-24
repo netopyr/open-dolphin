@@ -38,15 +38,20 @@ class ModelStoreTest extends GroovyTestCase {
         Link link2 = modelStore.link(parent, child2, PmLinkTypes.PARENT_CHILD.name())
         Link link3 = modelStore.link(parent, child3, PmLinkTypes.PARENT_CHILD.name())
         Link link4 = modelStore.link(parent, parent, PmLinkTypes.SELF_REFERENCE.name())
+        Link link5 = modelStore.link(child1, child2, PmLinkTypes.SIBLING.name())
 
         assert link1
         assert link2
         assert !link3  // this link should not exists as child3 is not found in the store
         assert link4
+        assert link5
 
         assert modelStore.linkExists(parent, child1, PmLinkTypes.PARENT_CHILD.name())
         assert modelStore.linkExists(parent, child2, PmLinkTypes.PARENT_CHILD.name())
         assert !modelStore.linkExists(parent, child3, PmLinkTypes.PARENT_CHILD.name())
+        assert modelStore.linkExists(parent, parent, PmLinkTypes.SELF_REFERENCE.name())
+        assert modelStore.linkExists(child1, child2, PmLinkTypes.SIBLING.name())
+        assert !modelStore.linkExists(child1, child2, "<unknown>")
 
         List children = modelStore.findAllLinksByModelAndType(parent, PmLinkTypes.PARENT_CHILD.name())
         assert 2 == children.size()
@@ -64,6 +69,19 @@ class ModelStoreTest extends GroovyTestCase {
         assert link2 in links
         assert link4 in links
 
+        List outgoing = modelStore.findAllLinksByModel(child1, Link.Direction.OUTGOING)
+        assert 1 == outgoing.size()
+        assert child1 == outgoing[0].start
+        assert child2 == outgoing[0].end
+
+        List incoming = modelStore.findAllLinksByModel(child1, Link.Direction.INCOMING)
+        assert 1 == incoming.size()
+        assert parent == incoming[0].start
+        assert child1 == incoming[0].end
+
+        List all = modelStore.findAllLinksByModel(child1)
+        assert 2 == all.size()
+
         modelStore.unlink(link1)
         assert !modelStore.linkExists(parent, child1, PmLinkTypes.PARENT_CHILD.name())
         assert !modelStore.linkExists(link1)
@@ -71,6 +89,7 @@ class ModelStoreTest extends GroovyTestCase {
         modelStore.unlink(link2)
         modelStore.unlink(link3)
         modelStore.unlink(link4)
+        modelStore.unlink(link5)
 
         assert !modelStore.findAllLinksByModel(parent)
         assert !modelStore.findAllLinksByModelAndType(parent, PmLinkTypes.SELF_REFERENCE.name())
@@ -79,5 +98,5 @@ class ModelStoreTest extends GroovyTestCase {
 }
 
 enum PmLinkTypes {
-    PARENT_CHILD, SELF_REFERENCE
+    PARENT_CHILD, SELF_REFERENCE, SIBLING
 }

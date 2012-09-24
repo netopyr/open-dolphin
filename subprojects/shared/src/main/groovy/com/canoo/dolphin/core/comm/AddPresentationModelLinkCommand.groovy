@@ -24,5 +24,5 @@ class AddPresentationModelLinkCommand extends Command {
     String endId
     String type
 
-    String toString() { super.toString() + " start:$startId end:$endId tpye:$type"}
+    String toString() { super.toString() + " start:$startId end:$endId type:$type"}
 }
