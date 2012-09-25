@@ -30,6 +30,8 @@ public class ModelStore {
     private final Map<String, List<Attribute>> attributesPerQualifier = new ConcurrentHashMap<String, List<Attribute>>();
     private final LinkStore linkStore = new LinkStore();
 
+    private final Set<ModelStoreListenerWrapper> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper>();
+
     private final PropertyChangeListener ATTRIBUTE_WORKER = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent event) {
@@ -85,6 +87,7 @@ public class ModelStore {
                 attribute.addPropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
                 if (!isBlank(attribute.getQualifier())) addAttributeByQualifier(attribute);
             }
+            fireModelStoreChangedEvent(model, ModelStoreEvent.EventType.ADDED);
             added = true;
         }
         return added;
@@ -109,6 +112,7 @@ public class ModelStore {
                 attribute.removePropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
                 if (!isBlank(attribute.getQualifier())) removeAttributeByQualifier(attribute);
             }
+            fireModelStoreChangedEvent(model, ModelStoreEvent.EventType.REMOVED);
             removed = true;
         }
         return removed;
@@ -258,7 +262,8 @@ public class ModelStore {
         addAttributeById(attribute);
     }
 
-    private boolean isBlank(String str) {
+    // todo: move to an utility class
+    private static boolean isBlank(String str) {
         return null == str || str.trim().length() == 0;
     }
 
@@ -417,6 +422,162 @@ public class ModelStore {
                 null != linkStore.findLinkByExample(link);
     }
 
+    public void addModelStoreListener(ModelStoreListener listener) {
+        addModelStoreListener(null, listener);
+    }
+
+    public void addModelStoreListener(String presentationModelType, ModelStoreListener listener) {
+        if (null == listener) return;
+        ModelStoreListenerWrapper wrapper = new ModelStoreListenerWrapper(presentationModelType, listener);
+        if (!modelStoreListeners.contains(wrapper)) modelStoreListeners.add(wrapper);
+    }
+
+    public void removeModelStoreListener(ModelStoreListener listener) {
+        removeModelStoreListener(null, listener);
+    }
+
+    public void removeModelStoreListener(String presentationModelType, ModelStoreListener listener) {
+        if (null == listener) return;
+        modelStoreListeners.remove(new ModelStoreListenerWrapper(presentationModelType, listener));
+    }
+
+    public boolean hasModelStoreListener(ModelStoreListener listener) {
+        return hasModelStoreListener(null, listener);
+    }
+
+    public boolean hasModelStoreListener(String presentationModelType, ModelStoreListener listener) {
+        return null != listener &&
+                modelStoreListeners.contains(new ModelStoreListenerWrapper(presentationModelType, listener));
+    }
+
+    protected void fireModelStoreChangedEvent(PresentationModel model, ModelStoreEvent.EventType eventType) {
+        ModelStoreEvent event = new ModelStoreEvent(
+                eventType,
+                model
+        );
+        for (ModelStoreListener listener : modelStoreListeners) {
+            listener.modelStoreChanged(event);
+        }
+    }
+
+    public void addModelStoreLinkListener(ModelStoreLinkListener listener) {
+        addModelStoreLinkListener(null, listener);
+    }
+
+    public void addModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
+        linkStore.addModelStoreLinkListener(linkType, listener);
+    }
+
+    public void removeModelStoreLinkListener(ModelStoreLinkListener listener) {
+        removeModelStoreLinkListener(null, listener);
+    }
+
+    public void removeModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
+        linkStore.removeModelStoreLinkListener(linkType, listener);
+    }
+
+    public boolean hasModelStoreLinkListener(ModelStoreLinkListener listener) {
+        return hasModelStoreLinkListener(null, listener);
+    }
+
+    public boolean hasModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
+        return linkStore.hasModelStoreLinkListener(linkType, listener);
+    }
+
+    private static class ModelStoreListenerWrapper implements ModelStoreListener {
+        private static final String ANY_PRESENTATION_MODEL_TYPE = "*";
+        private final String presentationModelType;
+        private final ModelStoreListener delegate;
+
+        private ModelStoreListenerWrapper(ModelStoreListener delegate) {
+            this(ANY_PRESENTATION_MODEL_TYPE, delegate);
+        }
+
+        private ModelStoreListenerWrapper(String presentationModelType, ModelStoreListener delegate) {
+            this.presentationModelType = !isBlank(presentationModelType) ? presentationModelType : ANY_PRESENTATION_MODEL_TYPE;
+            this.delegate = delegate;
+        }
+
+        private boolean presentationModelTypeMatches(String presentationModelType) {
+            return ANY_PRESENTATION_MODEL_TYPE.equals(this.presentationModelType) || this.presentationModelType.equals(presentationModelType);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (null == o) return false;
+
+            if (o instanceof ModelStoreListenerWrapper) {
+                ModelStoreListenerWrapper that = (ModelStoreListenerWrapper) o;
+                return delegate.equals(that.delegate) && presentationModelType.equals(that.presentationModelType);
+            }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = presentationModelType.hashCode();
+            result = 31 * result + delegate.hashCode();
+            return result;
+        }
+
+        @Override
+        public void modelStoreChanged(ModelStoreEvent event) {
+            String pmType = event.getPresentationModel().getPresentationModelType();
+            if (presentationModelTypeMatches(pmType)) {
+                delegate.modelStoreChanged(event);
+            }
+        }
+    }
+
+    private static class ModelStoreLinkListenerWrapper implements ModelStoreLinkListener {
+        private static final String ANY_LINK_TYPE = "*";
+        private final String linkType;
+        private final ModelStoreLinkListener delegate;
+
+        private ModelStoreLinkListenerWrapper(ModelStoreLinkListener delegate) {
+            this(ANY_LINK_TYPE, delegate);
+        }
+
+        private ModelStoreLinkListenerWrapper(String linkType, ModelStoreLinkListener delegate) {
+            this.linkType = !isBlank(linkType) ? linkType : ANY_LINK_TYPE;
+            this.delegate = delegate;
+        }
+
+        private boolean linkTypeMatches(String linkType) {
+            return ANY_LINK_TYPE.equals(this.linkType) || this.linkType.equals(linkType);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (null == o) return false;
+
+            if (o instanceof ModelStoreLinkListenerWrapper) {
+                ModelStoreLinkListenerWrapper that = (ModelStoreLinkListenerWrapper) o;
+                return delegate.equals(that.delegate) && linkType.equals(that.linkType);
+            }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = linkType.hashCode();
+            result = 31 * result + delegate.hashCode();
+            return result;
+        }
+
+        @Override
+        public void modelStoreLinkChanged(ModelStoreLinkEvent event) {
+            String type = event.getLinkType();
+            if (linkTypeMatches(type)) {
+                delegate.modelStoreLinkChanged(event);
+            }
+        }
+    }
+
     private static class LinkStore {
         private class LinkBox {
             private final List<Link> incoming = new ArrayList<Link>();
@@ -433,8 +594,37 @@ public class ModelStore {
         }
 
         private final Map<PresentationModel, LinkBox> LINKS = new ConcurrentHashMap<PresentationModel, LinkBox>();
+        private final Set<ModelStoreLinkListenerWrapper> modelStoreLinkListeners = new LinkedHashSet<ModelStoreLinkListenerWrapper>();
 
-        public boolean add(Link link) {
+        private void addModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
+            if (null == listener) return;
+            ModelStoreLinkListenerWrapper wrapper = new ModelStoreLinkListenerWrapper(linkType, listener);
+            if (!modelStoreLinkListeners.contains(wrapper)) modelStoreLinkListeners.add(wrapper);
+        }
+
+        private void removeModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
+            if (null == listener) return;
+            modelStoreLinkListeners.remove(new ModelStoreLinkListenerWrapper(linkType, listener));
+        }
+
+        private boolean hasModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
+            return null != listener &&
+                    modelStoreLinkListeners.contains(new ModelStoreLinkListenerWrapper(linkType, listener));
+        }
+
+        private void fireModelStoreLinkChangedEvent(Link link, ModelStoreLinkEvent.EventType eventType) {
+            ModelStoreLinkEvent event = new ModelStoreLinkEvent(
+                    eventType,
+                    link.getStart(),
+                    link.getEnd(),
+                    link.getType()
+            );
+            for (ModelStoreLinkListener listener : modelStoreLinkListeners) {
+                listener.modelStoreLinkChanged(event);
+            }
+        }
+
+        private boolean add(Link link) {
             LinkBox links = LINKS.get(link.getStart());
 
             if (null == links) {
@@ -454,10 +644,12 @@ public class ModelStore {
             if (links.incoming.contains(link)) return false;
             links.incoming.add(link);
 
+            fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.EventType.ADDED);
+
             return true;
         }
 
-        public boolean remove(Link link) {
+        private boolean remove(Link link) {
             boolean removed = false;
             LinkBox links = LINKS.get(link.getStart());
 
@@ -473,10 +665,12 @@ public class ModelStore {
                 removed = true;
             }
 
+            if (removed) fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.EventType.REMOVED);
+
             return removed;
         }
 
-        public Link findLinkByExample(Link example) {
+        private Link findLinkByExample(Link example) {
             PresentationModel start = example.getStart();
 
             LinkBox links = LINKS.get(start);
@@ -492,7 +686,7 @@ public class ModelStore {
             return null;
         }
 
-        public List<Link> findLinksByType(PresentationModel model, String type, Link.Direction direction) {
+        private List<Link> findLinksByType(PresentationModel model, String type, Link.Direction direction) {
             LinkBox links = LINKS.get(model);
             if (null == links) return Collections.emptyList();
             List<Link> linksByType = new ArrayList<Link>();
@@ -514,7 +708,7 @@ public class ModelStore {
             return Collections.unmodifiableList(linksByType);
         }
 
-        public List<Link> findAllLinksByModel(PresentationModel model, Link.Direction direction) {
+        private List<Link> findAllLinksByModel(PresentationModel model, Link.Direction direction) {
             LinkBox links = LINKS.get(model);
             if (null == links) return Collections.emptyList();
             switch (direction) {
@@ -536,7 +730,7 @@ public class ModelStore {
             return a.equals(b);
         }
 
-        public void removeAllLinks(PresentationModel model) {
+        private void removeAllLinks(PresentationModel model) {
             LinkBox links = LINKS.remove(model);
             if (null == links) return;
             for (Link link : links.outgoing) {
