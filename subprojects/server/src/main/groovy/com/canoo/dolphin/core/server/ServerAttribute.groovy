@@ -19,9 +19,7 @@ package com.canoo.dolphin.core.server
 import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.comm.ValueChangedCommand
 
-@Mixin(DataMixin)
 class ServerAttribute extends BaseAttribute {
-
     ServerAttribute(String propertyName) {
         this(propertyName, null)
     }
@@ -39,8 +37,7 @@ class ServerAttribute extends BaseAttribute {
      * Instead, a value change request is sent to the client.
      * See the readme for the reasoning behind this design.
      */
-    ValueChangedCommand changeValueCommand(newValue){
+    ValueChangedCommand changeValueCommand(newValue) {
         new ValueChangedCommand(attributeId: id, newValue: newValue, oldValue: value)
     }
-
 }

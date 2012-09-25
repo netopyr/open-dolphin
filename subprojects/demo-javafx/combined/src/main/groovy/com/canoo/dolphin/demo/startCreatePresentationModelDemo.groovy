@@ -23,11 +23,7 @@ dumpPm = { pm ->
         map[attr.propertyName] = attr.value
         map
     }
-    Map metadata = pm.dataKeys.inject([:]) { map, key ->
-        map[key] = pm.findData(key)
-        map
-    }
-    println "${pm.id}:${pm.presentationModelType} ${attrs}; ${metadata}"
+    println "${pm.id}:${pm.presentationModelType} ${attrs}"
 }
 
 counter = 0i
@@ -36,8 +32,7 @@ config.serverDolphin.action('createNewPresentationModel') { cmd, response ->
     ServerPresentationModel model = config.serverDolphin.presentationModel([
             name: "Name-${counter}",
             lastname: "Lastname-${counter}",
-    ], "pm-${counter}", 'person')
-    model.putData('entityId', counter++)
+    ], "pm-${counter++}", 'person')
     config.serverDolphin.createPresentationModel(response, model) { callbackResponse, pm ->
         dumpPm(pm)
     }
