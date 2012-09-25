@@ -24,6 +24,8 @@ import static com.canoo.dolphin.demo.DemoStyle.style
 import static groovyx.javafx.GroovyFX.start
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
+import com.canoo.dolphin.core.ModelStoreEvent
+
 /**
  * This demo shows how to handle the case of presentation models created on the server
  * side as result of a client request
@@ -34,9 +36,16 @@ class CreatePresentationModelView {
 		start { app ->
 
             def tableModel = FXCollections.observableArrayList()
-            clientDolphin.onPresentationModelListChanged 'person',
-                    added:   { tableModel << it },
-                    removed: { tableModel.remove(it) }
+
+            clientDolphin.addModelStoreListener 'person', { evt ->
+                switch(evt.eventType) {
+                    case ModelStoreEvent.EventType.ADDED:
+                        tableModel << evt.presentationModel
+                        break
+                    case ModelStoreEvent.EventType.REMOVED:
+                        tableModel.remove(evt.presentationModel)
+                }
+            }
 
 			stage {
 				scene {

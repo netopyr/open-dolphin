@@ -25,11 +25,9 @@ import com.canoo.dolphin.core.client.comm.OnFinishedHandler;
 import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler;
 import com.canoo.dolphin.core.comm.*;
 
-import java.util.*;
+import java.util.List;
 
 public class ClientModelStore extends ModelStore {
-    private final Map<String, Set<PresentationModelListChangedListener>> pmType2Listeners = new HashMap<String, Set<PresentationModelListChangedListener>>();
-
     private final ClientDolphin clientDolphin;
 
     public ClientModelStore(ClientDolphin clientDolphin) {
@@ -48,7 +46,6 @@ public class ClientModelStore extends ModelStore {
             for (Attribute attribute : attributes) {
                 attribute.addPropertyChangeListener(getClientConnector());
             }
-            notifyAdded((ClientPresentationModel) model);
             getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
         }
 
@@ -60,9 +57,6 @@ public class ClientModelStore extends ModelStore {
         boolean success = super.remove(model);
         for (Attribute attribute : model.getAttributes()) {
             attribute.removePropertyChangeListener(getClientConnector());
-        }
-        if (success) {
-            notifyRemoved((ClientPresentationModel) model);
         }
         return success;
     }
@@ -101,48 +95,6 @@ public class ClientModelStore extends ModelStore {
         getClientConnector().send(cmd, callBack);
     }
 
-    public void onPresentationModelListChanged(String pmType, PresentationModelListChangedListener listener) {
-        Set<PresentationModelListChangedListener> set = pmType2Listeners.get(pmType);
-        if (set == null) {
-            set = new HashSet<PresentationModelListChangedListener>();
-            pmType2Listeners.put(pmType, set);
-        }
-        set.add(listener);
-    }
-
-    protected void notifyAdded(final ClientPresentationModel model) {
-        notifyChanged(model, new ListenerAction() {
-            @Override
-            public void doIt(PresentationModelListChangedListener listener) {
-                listener.added(model);
-            }
-        });
-
-    }
-
-    protected void notifyRemoved(final ClientPresentationModel model) {
-        notifyChanged(model, new ListenerAction() {
-            @Override
-            public void doIt(PresentationModelListChangedListener listener) {
-                listener.removed(model);
-            }
-        });
-    }
-
-    private void notifyChanged(ClientPresentationModel model, ListenerAction doIt) {
-        final String type = model.getPresentationModelType();
-        if (type == null) {
-            return;
-        }
-        Set<PresentationModelListChangedListener> set = pmType2Listeners.get(type);
-        if (set == null) {
-            return;
-        }
-        for (PresentationModelListChangedListener listener : set) {
-            doIt.doIt(listener);
-        }
-    }
-
     public void save(String modelId) {
         save(findPresentationModelById(modelId));
     }
@@ -165,10 +117,6 @@ public class ClientModelStore extends ModelStore {
             remove(model);
             getClientConnector().send(new DeletePresentationModelCommand(model.getId()));
         }
-    }
-
-    private interface ListenerAction {
-        void doIt(PresentationModelListChangedListener listener);
     }
 
     @Override

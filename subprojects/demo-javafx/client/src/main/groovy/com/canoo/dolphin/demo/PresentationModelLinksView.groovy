@@ -25,6 +25,7 @@ import static com.canoo.dolphin.demo.DemoStyle.style
 import static groovyx.javafx.GroovyFX.start
 import static com.canoo.dolphin.demo.ReferenceTableDemoProperties.CURRENCY
 import javafx.beans.value.ChangeListener
+import com.canoo.dolphin.core.ModelStoreEvent
 
 /**
  * Demonstrates link support between presentation models.
@@ -40,9 +41,16 @@ class PresentationModelLinksView {
 
             def parentTableModel = FXCollections.observableArrayList()
             def childrenTableModel = FXCollections.observableArrayList()
-            clientDolphin.onPresentationModelListChanged 'parent',
-                    added: { parentTableModel << it },
-                    removed: { parentTableModel.remove(it) }
+
+            clientDolphin.addModelStoreListener 'parent', { evt ->
+                switch(evt.eventType) {
+                    case ModelStoreEvent.EventType.ADDED:
+                        parentTableModel << evt.presentationModel
+                        break
+                    case ModelStoreEvent.EventType.REMOVED:
+                        parentTableModel.remove(evt.presentationModel)
+                }
+            }
 
             stage {
                 scene {

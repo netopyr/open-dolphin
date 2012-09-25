@@ -31,6 +31,7 @@ import static groovyx.javafx.GroovyFX.start
 import javafx.event.EventHandler
 
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
+import com.canoo.dolphin.core.ModelStoreEvent
 
 /**
  * This demos shows two list views on the same list of PresentationModels where one list view shows
@@ -48,12 +49,29 @@ class BindListView {
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
 
-        dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
-           added:   { observableListOfPms << it },
-           removed: { observableListOfPms.remove(it) }
+        dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
+            switch(evt.eventType) {
+                case ModelStoreEvent.EventType.ADDED:
+                    observableListOfPms << evt.presentationModel
+                    break
+                case ModelStoreEvent.EventType.REMOVED:
+                    observableListOfPms.remove(evt.presentationModel)
+            }
+        }
 
-        dolphin.onPresentationModelListChanged PM_TYPE_VEHICLE,
-           added: { if (it.id.startsWith('magenta')) observableListOfMagentaPms << it }
+        dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
+            switch(evt.eventType) {
+                case ModelStoreEvent.EventType.ADDED:
+                    observableListOfPms << evt.presentationModel
+                    break
+                case ModelStoreEvent.EventType.REMOVED:
+                    observableListOfPms.remove(evt.presentationModel)
+            }
+            if(evt.eventType == ModelStoreEvent.EventType.ADDED &&
+               evt.presentationModel.id.startsWith('magenta')) {
+                observableListOfMagentaPms << evt.presentationModel
+            }
+        }
 
         start { app ->
             SceneGraphBuilder sgb = delegate

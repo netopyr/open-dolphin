@@ -18,6 +18,8 @@ package com.canoo.dolphin.core.client
 
 import spock.lang.Specification
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import com.canoo.dolphin.core.ModelStoreListener
+import com.canoo.dolphin.core.ModelStoreEvent
 
 /**
  * @author Dieter Holz
@@ -35,8 +37,8 @@ class ClientModelStoreSpec extends Specification {
 		pm = new ClientPresentationModel('myId', [])
 		pm.setPresentationModelType(pmType)
 
-		listener = Mock(PresentationModelListChangedListener)
-		modelStore.onPresentationModelListChanged(pmType, listener)
+		listener = Mock(ModelStoreListener)
+		modelStore.addModelStoreListener(pmType, listener)
 	}
 
 	void "listeners are notified if PM is added to the clientModelStore"() {
@@ -44,8 +46,8 @@ class ClientModelStoreSpec extends Specification {
 		modelStore.add(pm)
 
 		then:
-		1 * listener.added(pm)
-		0 * listener.removed(_)
+		1 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.ADDED, pm))
+		0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.REMOVED, pm))
 	}
 
 	void "listeners are notified if PM is removed from clientModelStore"() {
@@ -56,8 +58,8 @@ class ClientModelStoreSpec extends Specification {
 		modelStore.remove(pm)
 
 		then:
-		0 * listener.added(pm)
-		1 * listener.removed(pm)
+        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.ADDED, pm))
+        1 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.REMOVED, pm))
 	}
 
 	void "listeners are not notified for different pmTypes"() {
@@ -70,8 +72,7 @@ class ClientModelStoreSpec extends Specification {
 		modelStore.remove(otherPm)
 
 		then:
-		0 * listener.added(pm)
-		0 * listener.removed(pm)
+        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.ADDED, pm))
+        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.REMOVED, pm))
 	}
-
 }

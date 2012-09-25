@@ -17,11 +17,12 @@
 package com.canoo.dolphin.core.client
 
 import com.canoo.dolphin.core.Dolphin
-import com.canoo.dolphin.core.ModelStore;
+import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.comm.SwitchPresentationModelCommand
+
 /**
  * The main Dolphin facade on the client side.
  * Responsibility: single access point for dolphin capabilities.
@@ -44,7 +45,7 @@ public class ClientDolphin extends Dolphin {
      * @deprecated it is very unlikely that setting attributes without initial values makes any sense.
      */
     ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
-        def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)} )
+        def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)})
         clientModelStore.add result
         return result
     }
@@ -73,22 +74,8 @@ public class ClientDolphin extends Dolphin {
         clientConnector.send(new NamedCommand(commandName), onFinished as OnFinishedHandler)
     }
 
-    /** java-friendly convenience method */
-    void onPresentationModelListChanged(String pmType, PresentationModelListChangedListener handler){
-        clientModelStore.onPresentationModelListChanged(pmType, handler)
-    }
-
-    /** groovy-friendly convenience method */
-    void onPresentationModelListChanged(String pmType, Map handler){
-        clientModelStore.onPresentationModelListChanged(pmType, handler as PresentationModelListChangedListener)
-    }
-    /** groovy-friendly convenience method for the invisible-map style */
-    void onPresentationModelListChanged(Map handler, String pmType){
-        clientModelStore.onPresentationModelListChanged(pmType, handler as PresentationModelListChangedListener)
-    }
-
     /** start of a fluent api: apply source to target. Use for selection changes in master-detail views. */
-    ApplyToAble apply( ClientPresentationModel source) {
+    ApplyToAble apply(ClientPresentationModel source) {
         new ApplyToAble(dolphin: this, source: source)
     }
 }
