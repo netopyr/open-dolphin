@@ -23,32 +23,25 @@ def config = new JavaFxInMemoryConfig()
 config.serverDolphin.action('loadPms') { cmd, response ->
     response << CreatePresentationModelCommand.makeFrom(
             config.serverDolphin.presentationModel('parent0', 'parent',
-                    column0: 'P00', column1: 'P01')
-    )
+                    column0: 'P00', column1: 'P01'))
     response << CreatePresentationModelCommand.makeFrom(
             config.serverDolphin.presentationModel('parent1', 'parent',
-                    column0: 'P10', column1: 'P11')
-    )
+                    column0: 'P10', column1: 'P11'))
     response << CreatePresentationModelCommand.makeFrom(
             config.serverDolphin.presentationModel('parent2', 'parent',
-                    column0: 'P02', column1: 'P22')
-    )
+                    column0: 'P02', column1: 'P22'))
     response << CreatePresentationModelCommand.makeFrom(
             config.serverDolphin.presentationModel('child00',
-                    column0: 'C000', column1: 'C001', column2: 'C002')
-    )
+                    column0: 'C000', column1: 'C001', column2: 'C002'))
     response << CreatePresentationModelCommand.makeFrom(
             config.serverDolphin.presentationModel('child01',
-                    column0: 'C010', column1: 'C011', column2: 'C012')
-    )
+                    column0: 'C010', column1: 'C011', column2: 'C012'))
     response << CreatePresentationModelCommand.makeFrom(
             config.serverDolphin.presentationModel('child10',
-                    column0: 'C100', column1: 'C101', column2: 'C102')
-    )
+                    column0: 'C100', column1: 'C101', column2: 'C102'))
     response << CreatePresentationModelCommand.makeFrom(
             config.serverDolphin.presentationModel('child11',
-                    column0: 'C110', column1: 'C111', column2: 'C112')
-    )
+                    column0: 'C110', column1: 'C111', column2: 'C112'))
 }
 config.serverDolphin.action('linkPms') { cmd, response ->
     response << new PresentationModelLinkAddedCommand(startId: 'parent0', endId: 'child00', type: 'PARENT_CHILD')
