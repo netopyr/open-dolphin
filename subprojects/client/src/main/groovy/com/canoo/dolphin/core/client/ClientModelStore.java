@@ -120,19 +120,17 @@ public class ClientModelStore extends ModelStore {
     }
 
     @Override
-    public Link link(PresentationModel start, PresentationModel end, String type) {
+    public boolean link(PresentationModel start, PresentationModel end, String type) {
         if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
-            return null;
+            return false;
         }
 
-        Link link = null;
+        boolean linkWasAdded = false;
         if (!linkExists(start, end, type)) {
-            link = super.link(start, end, type);
+            linkWasAdded = super.link(start, end, type);
             getClientConnector().send(new AddPresentationModelLinkCommand(start.getId(), end.getId(), type));
-        } else {
-            link = findLink(start, end, type);
         }
-        return link;
+        return linkWasAdded;
     }
 
     @Override
