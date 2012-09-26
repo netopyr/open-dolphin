@@ -158,6 +158,40 @@ class BaseAttributeSpec extends Specification {
         attribute.initialValue == 'foo'
         attribute.value == 'foo'
     }
+
+    def "resetting an attribute updates dirty flag and value"() {
+        given:
+
+        def attribute = new MyAttribute("name", 'bar')
+        def dirtyChecker = Mock(PropertyChangeListener)
+        def valueChecker = Mock(PropertyChangeListener)
+        attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, dirtyChecker)
+        attribute.addPropertyChangeListener(Attribute.VALUE, valueChecker)
+
+        when:
+
+        attribute.value = 'foo'
+
+        then:
+
+        1 * dirtyChecker.propertyChange(_)
+        1 * valueChecker.propertyChange(_)
+        attribute.dirty
+        attribute.initialValue == 'bar'
+        attribute.value == 'foo'
+
+        when:
+
+        attribute.reset()
+
+        then:
+
+        1 * dirtyChecker.propertyChange(_)
+        1 * valueChecker.propertyChange(_)
+        !attribute.dirty
+        attribute.initialValue == 'bar'
+        attribute.value == 'bar'
+    }
 }
 
 class MyAttribute extends BaseAttribute {

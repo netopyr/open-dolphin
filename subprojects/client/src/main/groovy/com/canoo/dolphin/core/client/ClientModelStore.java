@@ -107,6 +107,18 @@ public class ClientModelStore extends ModelStore {
         getClientConnector().send(new SavePresentationModelCommand(model.getId()));
     }
 
+    public void reset(String modelId) {
+        reset(findPresentationModelById(modelId));
+    }
+
+    public void reset(PresentationModel model) {
+        if (model == null) return;
+        if (!containsPresentationModel(model.getId())) {
+            add(model);
+        }
+        getClientConnector().send(new ResetPresentationModelCommand(model.getId()));
+    }
+
     public void delete(String modelId) {
         delete(findPresentationModelById(modelId));
     }

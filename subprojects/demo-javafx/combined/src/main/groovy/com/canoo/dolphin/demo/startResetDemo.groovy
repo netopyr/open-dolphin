@@ -14,36 +14,11 @@
  * limitations under the License.
  */
 
-package com.canoo.dolphin.core;
+package com.canoo.dolphin.demo
 
-public interface Attribute extends Observable {
-    String QUALIFIER_PROPERTY = "qualifier";
+import com.canoo.dolphin.core.server.action.ResetPresentationModelAction
 
-    String DIRTY_PROPERTY = "dirty";
+def config = new JavaFxInMemoryConfig()
+config.serverDolphin.serverConnector.register(new ResetPresentationModelAction(config.serverDolphin.serverModelStore))
 
-    String INITIAL_VALUE = "initialValue";
-
-    String VALUE = "value";
-
-    Object getValue();
-
-    void setValue(Object value);
-
-    String getPropertyName();
-
-    String getQualifier();
-
-    long getId();
-
-    void setId(long id);
-
-    void syncWith(Attribute source);
-
-    boolean isDirty();
-
-    Object getInitialValue();
-
-    void save();
-
-    void reset();
-}
+new ResetView().show(config.clientDolphin)

@@ -279,6 +279,16 @@ abstract class ClientConnector implements PropertyChangeListener {
         model.id
     }
 
+    String handle(PresentationModelResetedCommand serverCommand) {
+        if (!serverCommand.pmId) return null
+        PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        // save locally first
+        model.attributes*.reset()
+        // inform server of changes
+        model.attributes.each { attribute -> send(new ValueChangedCommand(attributeId: attribute.id)) }
+        model.id
+    }
+
     String handle(PresentationModelDeletedCommand serverCommand) {
         if (!serverCommand.pmId) return null
         PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)

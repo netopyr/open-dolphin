@@ -70,6 +70,11 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         setDirty(false);
     }
 
+    public void reset() {
+        setValue(getInitialValue());
+        setDirty(false);
+    }
+
     public String toString() {
         return new StringBuilder()
                 .append(id)

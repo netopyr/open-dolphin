@@ -14,36 +14,13 @@
  * limitations under the License.
  */
 
-package com.canoo.dolphin.core;
+package com.canoo.dolphin.core.comm
 
-public interface Attribute extends Observable {
-    String QUALIFIER_PROPERTY = "qualifier";
+import groovy.transform.Canonical
 
-    String DIRTY_PROPERTY = "dirty";
+@Canonical
+class ResetPresentationModelCommand extends Command {
+    String pmId
 
-    String INITIAL_VALUE = "initialValue";
-
-    String VALUE = "value";
-
-    Object getValue();
-
-    void setValue(Object value);
-
-    String getPropertyName();
-
-    String getQualifier();
-
-    long getId();
-
-    void setId(long id);
-
-    void syncWith(Attribute source);
-
-    boolean isDirty();
-
-    Object getInitialValue();
-
-    void save();
-
-    void reset();
+    String toString() {super.toString() + " pmId $pmId"}
 }
