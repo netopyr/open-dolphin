@@ -17,17 +17,17 @@
 package com.canoo.dolphin.core;
 
 public class ModelStoreLinkEvent {
-    public enum EventType {
+    public enum Type {
         ADDED, REMOVED
     }
 
-    private final EventType eventType;
+    private final Type type;
     private final PresentationModel start;
     private final PresentationModel end;
     private final String linkType;
 
-    public ModelStoreLinkEvent(EventType eventType, PresentationModel start, PresentationModel end, String linkType) {
-        this.eventType = eventType;
+    public ModelStoreLinkEvent(Type eventType, PresentationModel start, PresentationModel end, String linkType) {
+        this.type = eventType;
         this.start = start;
         this.end = end;
         this.linkType = linkType;
@@ -45,14 +45,14 @@ public class ModelStoreLinkEvent {
         return linkType;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public Type getType() {
+        return type;
     }
 
     public String toString() {
         return new StringBuilder()
                 .append("LINK ")
-                .append(eventType == EventType.ADDED ? "ADDED" : "REMOVED")
+                .append(type == Type.ADDED ? "ADDED" : "REMOVED")
                 .append(" start:")
                 .append(start.getId())
                 .append(" end:")
@@ -70,7 +70,7 @@ public class ModelStoreLinkEvent {
         ModelStoreLinkEvent linkEvent = (ModelStoreLinkEvent) o;
 
         if (end != null ? !end.equals(linkEvent.end) : linkEvent.end != null) return false;
-        if (eventType != linkEvent.eventType) return false;
+        if (type != linkEvent.type) return false;
         if (linkType != null ? !linkType.equals(linkEvent.linkType) : linkEvent.linkType != null) return false;
         if (start != null ? !start.equals(linkEvent.start) : linkEvent.start != null) return false;
 
@@ -82,7 +82,7 @@ public class ModelStoreLinkEvent {
         int result = start != null ? start.hashCode() : 0;
         result = 31 * result + (end != null ? end.hashCode() : 0);
         result = 31 * result + (linkType != null ? linkType.hashCode() : 0);
-        result = 31 * result + (eventType != null ? eventType.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 }

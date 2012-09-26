@@ -147,7 +147,7 @@ public abstract class Dolphin {
         getModelStore().removeModelStoreLinkListener(linkType, listener);
     }
 
-    public Link link(PresentationModel start, PresentationModel end, String type) {
+    public boolean link(PresentationModel start, PresentationModel end, String type) {
         return getModelStore().link(start, end, type);
     }
 }

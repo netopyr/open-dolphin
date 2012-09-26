@@ -38,11 +38,11 @@ class CreatePresentationModelView {
             def tableModel = FXCollections.observableArrayList()
 
             clientDolphin.addModelStoreListener 'person', { evt ->
-                switch(evt.eventType) {
-                    case ModelStoreEvent.EventType.ADDED:
+                switch(evt.type) {
+                    case ModelStoreEvent.Type.ADDED:
                         tableModel << evt.presentationModel
                         break
-                    case ModelStoreEvent.EventType.REMOVED:
+                    case ModelStoreEvent.Type.REMOVED:
                         tableModel.remove(evt.presentationModel)
                 }
             }

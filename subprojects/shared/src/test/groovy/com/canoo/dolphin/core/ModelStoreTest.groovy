@@ -39,10 +39,10 @@ class ModelStoreTest extends GroovyTestCase {
 
         assert storeListener.event
         assert storeListener.event.presentationModel == parent
-        assert storeListener.event.eventType == ModelStoreEvent.EventType.ADDED
+        assert storeListener.event.type == ModelStoreEvent.Type.ADDED
         assert parentStoreListener.event
         assert parentStoreListener.event.presentationModel == parent
-        assert parentStoreListener.event.eventType == ModelStoreEvent.EventType.ADDED
+        assert parentStoreListener.event.type == ModelStoreEvent.Type.ADDED
 
         storeListener.event = null
         parentStoreListener.event = null
@@ -51,7 +51,7 @@ class ModelStoreTest extends GroovyTestCase {
 
         assert storeListener.event
         assert storeListener.event.presentationModel == child1
-        assert storeListener.event.eventType == ModelStoreEvent.EventType.ADDED
+        assert storeListener.event.type == ModelStoreEvent.Type.ADDED
         assert !parentStoreListener.event
 
         modelStore.add(child2)
@@ -64,37 +64,31 @@ class ModelStoreTest extends GroovyTestCase {
         assert !linkListener.event
         assert !selfReferenceLinkListener.event
 
-        Link link1 = modelStore.link(parent, child1, PmLinkTypes.PARENT_CHILD.name())
+        assert modelStore.link(parent, child1, PmLinkTypes.PARENT_CHILD.name())
 
         assert linkListener.event
         assert !selfReferenceLinkListener.event
-        assert linkListener.event.eventType == ModelStoreLinkEvent.EventType.ADDED
-        assert linkListener.event.start == link1.start
-        assert linkListener.event.end == link1.end
-        assert linkListener.event.linkType == link1.type
+        assert linkListener.event.type == ModelStoreLinkEvent.Type.ADDED
+        assert linkListener.event.start == parent
+        assert linkListener.event.end == child1
+        assert linkListener.event.linkType == PmLinkTypes.PARENT_CHILD.name()
 
-        Link link2 = modelStore.link(parent, child2, PmLinkTypes.PARENT_CHILD.name())
-        Link link3 = modelStore.link(parent, child3, PmLinkTypes.PARENT_CHILD.name())
-        Link link4 = modelStore.link(parent, parent, PmLinkTypes.SELF_REFERENCE.name())
+        assert modelStore.link(parent, child2, PmLinkTypes.PARENT_CHILD.name())
+        assert !modelStore.link(parent, child3, PmLinkTypes.PARENT_CHILD.name())
+        assert modelStore.link(parent, parent, PmLinkTypes.SELF_REFERENCE.name())
 
         assert linkListener.event
         assert selfReferenceLinkListener.event
-        assert linkListener.event.eventType == ModelStoreLinkEvent.EventType.ADDED
-        assert linkListener.event.start == link4.start
-        assert linkListener.event.end == link4.end
-        assert linkListener.event.linkType == link4.type
-        assert selfReferenceLinkListener.event.eventType == ModelStoreLinkEvent.EventType.ADDED
+        assert linkListener.event.type == ModelStoreLinkEvent.Type.ADDED
+        assert linkListener.event.start == parent
+        assert linkListener.event.end == parent
+        assert linkListener.event.linkType == PmLinkTypes.SELF_REFERENCE.name()
+        assert selfReferenceLinkListener.event.type == ModelStoreLinkEvent.Type.ADDED
         assert selfReferenceLinkListener.event.start == parent
         assert selfReferenceLinkListener.event.end == parent
         assert selfReferenceLinkListener.event.linkType == PmLinkTypes.SELF_REFERENCE.name()
 
-        Link link5 = modelStore.link(child1, child2, PmLinkTypes.SIBLING.name())
-
-        assert link1
-        assert link2
-        assert !link3  // this link should not exists as child3 is not found in the store
-        assert link4
-        assert link5
+        assert modelStore.link(child1, child2, PmLinkTypes.SIBLING.name())
 
         assert modelStore.linkExists(parent, child1, PmLinkTypes.PARENT_CHILD.name())
         assert modelStore.linkExists(parent, child2, PmLinkTypes.PARENT_CHILD.name())
@@ -102,6 +96,18 @@ class ModelStoreTest extends GroovyTestCase {
         assert modelStore.linkExists(parent, parent, PmLinkTypes.SELF_REFERENCE.name())
         assert modelStore.linkExists(child1, child2, PmLinkTypes.SIBLING.name())
         assert !modelStore.linkExists(child1, child2, "<unknown>")
+
+        Link link1 = modelStore.findLink(parent, child1, PmLinkTypes.PARENT_CHILD.name())
+        Link link2 = modelStore.findLink(parent, child2, PmLinkTypes.PARENT_CHILD.name())
+        Link link3 = modelStore.findLink(parent, child3, PmLinkTypes.PARENT_CHILD.name())
+        Link link4 = modelStore.findLink(parent, parent, PmLinkTypes.SELF_REFERENCE.name())
+        Link link5 = modelStore.findLink(child1, child2, PmLinkTypes.SIBLING.name())
+
+        assert link1
+        assert link2
+        assert !link3
+        assert link4
+        assert link5
 
         List children = modelStore.findAllLinksByModelAndType(parent, PmLinkTypes.PARENT_CHILD.name())
         assert 2 == children.size()
@@ -137,7 +143,7 @@ class ModelStoreTest extends GroovyTestCase {
         modelStore.unlink(link1)
         assert !modelStore.linkExists(parent, child1, PmLinkTypes.PARENT_CHILD.name())
         assert !modelStore.linkExists(link1)
-        assert linkListener.event.eventType == ModelStoreLinkEvent.EventType.REMOVED
+        assert linkListener.event.type == ModelStoreLinkEvent.Type.REMOVED
         assert linkListener.event.start == link1.start
         assert linkListener.event.end == link1.end
         assert linkListener.event.linkType == link1.type

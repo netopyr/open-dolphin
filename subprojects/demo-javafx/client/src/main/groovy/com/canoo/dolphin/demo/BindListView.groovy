@@ -50,24 +50,24 @@ class BindListView {
         ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
 
         dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
-            switch(evt.eventType) {
-                case ModelStoreEvent.EventType.ADDED:
+            switch(evt.type) {
+                case ModelStoreEvent.Type.ADDED:
                     observableListOfPms << evt.presentationModel
                     break
-                case ModelStoreEvent.EventType.REMOVED:
+                case ModelStoreEvent.Type.REMOVED:
                     observableListOfPms.remove(evt.presentationModel)
             }
         }
 
         dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
-            switch(evt.eventType) {
-                case ModelStoreEvent.EventType.ADDED:
+            switch(evt.type) {
+                case ModelStoreEvent.Type.ADDED:
                     observableListOfPms << evt.presentationModel
                     break
-                case ModelStoreEvent.EventType.REMOVED:
+                case ModelStoreEvent.Type.REMOVED:
                     observableListOfPms.remove(evt.presentationModel)
             }
-            if(evt.eventType == ModelStoreEvent.EventType.ADDED &&
+            if(evt.type == ModelStoreEvent.Type.ADDED &&
                evt.presentationModel.id.startsWith('magenta')) {
                 observableListOfMagentaPms << evt.presentationModel
             }

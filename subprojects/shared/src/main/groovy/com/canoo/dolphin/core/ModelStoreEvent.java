@@ -17,20 +17,20 @@
 package com.canoo.dolphin.core;
 
 public class ModelStoreEvent {
-    public enum EventType {
+    public enum Type {
         ADDED, REMOVED
     }
 
-    private final EventType eventType;
+    private final Type type;
     private final PresentationModel presentationModel;
 
-    public ModelStoreEvent(EventType eventType, PresentationModel presentationModel) {
-        this.eventType = eventType;
+    public ModelStoreEvent(Type eventType, PresentationModel presentationModel) {
+        this.type = eventType;
         this.presentationModel = presentationModel;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public Type getType() {
+        return type;
     }
 
     public PresentationModel getPresentationModel() {
@@ -40,7 +40,7 @@ public class ModelStoreEvent {
     public String toString() {
         return new StringBuilder()
                 .append("PresentationModel ")
-                .append(eventType == EventType.ADDED ? "ADDED" : "REMOVED")
+                .append(type == Type.ADDED ? "ADDED" : "REMOVED")
                 .append(" ")
                 .append(presentationModel.getId())
                 .toString();
@@ -53,7 +53,7 @@ public class ModelStoreEvent {
 
         ModelStoreEvent that = (ModelStoreEvent) o;
 
-        if (eventType != that.eventType) return false;
+        if (type != that.type) return false;
         if (presentationModel != null ? !presentationModel.equals(that.presentationModel) : that.presentationModel != null)
             return false;
 
@@ -62,7 +62,7 @@ public class ModelStoreEvent {
 
     @Override
     public int hashCode() {
-        int result = eventType != null ? eventType.hashCode() : 0;
+        int result = type != null ? type.hashCode() : 0;
         result = 31 * result + (presentationModel != null ? presentationModel.hashCode() : 0);
         return result;
     }

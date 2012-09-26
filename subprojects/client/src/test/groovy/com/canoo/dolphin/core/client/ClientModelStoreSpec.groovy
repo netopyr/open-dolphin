@@ -46,8 +46,8 @@ class ClientModelStoreSpec extends Specification {
 		modelStore.add(pm)
 
 		then:
-		1 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.ADDED, pm))
-		0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.REMOVED, pm))
+		1 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.ADDED, pm))
+		0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.REMOVED, pm))
 	}
 
 	void "listeners are notified if PM is removed from clientModelStore"() {
@@ -58,8 +58,8 @@ class ClientModelStoreSpec extends Specification {
 		modelStore.remove(pm)
 
 		then:
-        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.ADDED, pm))
-        1 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.REMOVED, pm))
+        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.ADDED, pm))
+        1 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.REMOVED, pm))
 	}
 
 	void "listeners are not notified for different pmTypes"() {
@@ -72,7 +72,7 @@ class ClientModelStoreSpec extends Specification {
 		modelStore.remove(otherPm)
 
 		then:
-        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.ADDED, pm))
-        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.EventType.REMOVED, pm))
+        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.ADDED, pm))
+        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.REMOVED, pm))
 	}
 }

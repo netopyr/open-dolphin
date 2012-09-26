@@ -87,7 +87,7 @@ public class ModelStore {
                 attribute.addPropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
                 if (!isBlank(attribute.getQualifier())) addAttributeByQualifier(attribute);
             }
-            fireModelStoreChangedEvent(model, ModelStoreEvent.EventType.ADDED);
+            fireModelStoreChangedEvent(model, ModelStoreEvent.Type.ADDED);
             added = true;
         }
         return added;
@@ -112,7 +112,7 @@ public class ModelStore {
                 attribute.removePropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
                 if (!isBlank(attribute.getQualifier())) removeAttributeByQualifier(attribute);
             }
-            fireModelStoreChangedEvent(model, ModelStoreEvent.EventType.REMOVED);
+            fireModelStoreChangedEvent(model, ModelStoreEvent.Type.REMOVED);
             removed = true;
         }
         return removed;
@@ -277,15 +277,15 @@ public class ModelStore {
      * @param type  the type of relationship, i.e, "PARENT_CHILD".
      * @return a link between both models.
      */
-    public Link link(PresentationModel start, PresentationModel end, String type) {
+    public boolean link(PresentationModel start, PresentationModel end, String type) {
         if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
-            return null;
+            return false;
         }
         BaseLink link = new BaseLink(start, end, type);
         Link existingLink = linkStore.findLinkByExample(link);
-        if (null != existingLink) return existingLink;
+        if (null != existingLink) return false;
         linkStore.add(link);
-        return link;
+        return true;
     }
 
     /**
@@ -450,7 +450,7 @@ public class ModelStore {
                 modelStoreListeners.contains(new ModelStoreListenerWrapper(presentationModelType, listener));
     }
 
-    protected void fireModelStoreChangedEvent(PresentationModel model, ModelStoreEvent.EventType eventType) {
+    protected void fireModelStoreChangedEvent(PresentationModel model, ModelStoreEvent.Type eventType) {
         ModelStoreEvent event = new ModelStoreEvent(
                 eventType,
                 model
@@ -488,10 +488,6 @@ public class ModelStore {
         private static final String ANY_PRESENTATION_MODEL_TYPE = "*";
         private final String presentationModelType;
         private final ModelStoreListener delegate;
-
-        private ModelStoreListenerWrapper(ModelStoreListener delegate) {
-            this(ANY_PRESENTATION_MODEL_TYPE, delegate);
-        }
 
         private ModelStoreListenerWrapper(String presentationModelType, ModelStoreListener delegate) {
             this.presentationModelType = !isBlank(presentationModelType) ? presentationModelType : ANY_PRESENTATION_MODEL_TYPE;
@@ -535,10 +531,6 @@ public class ModelStore {
         private static final String ANY_LINK_TYPE = "*";
         private final String linkType;
         private final ModelStoreLinkListener delegate;
-
-        private ModelStoreLinkListenerWrapper(ModelStoreLinkListener delegate) {
-            this(ANY_LINK_TYPE, delegate);
-        }
 
         private ModelStoreLinkListenerWrapper(String linkType, ModelStoreLinkListener delegate) {
             this.linkType = !isBlank(linkType) ? linkType : ANY_LINK_TYPE;
@@ -612,7 +604,7 @@ public class ModelStore {
                     modelStoreLinkListeners.contains(new ModelStoreLinkListenerWrapper(linkType, listener));
         }
 
-        private void fireModelStoreLinkChangedEvent(Link link, ModelStoreLinkEvent.EventType eventType) {
+        private void fireModelStoreLinkChangedEvent(Link link, ModelStoreLinkEvent.Type eventType) {
             ModelStoreLinkEvent event = new ModelStoreLinkEvent(
                     eventType,
                     link.getStart(),
@@ -644,7 +636,7 @@ public class ModelStore {
             if (links.incoming.contains(link)) return false;
             links.incoming.add(link);
 
-            fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.EventType.ADDED);
+            fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.Type.ADDED);
 
             return true;
         }
@@ -665,7 +657,7 @@ public class ModelStore {
                 removed = true;
             }
 
-            if (removed) fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.EventType.REMOVED);
+            if (removed) fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.Type.REMOVED);
 
             return removed;
         }

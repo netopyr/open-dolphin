@@ -23,7 +23,7 @@ import javafx.util.Callback
 
 import static com.canoo.dolphin.demo.DemoStyle.style
 import static groovyx.javafx.GroovyFX.start
-import static com.canoo.dolphin.demo.ReferenceTableDemoProperties.CURRENCY
+
 import javafx.beans.value.ChangeListener
 import com.canoo.dolphin.core.ModelStoreEvent
 
@@ -43,11 +43,11 @@ class PresentationModelLinksView {
             def childrenTableModel = FXCollections.observableArrayList()
 
             clientDolphin.addModelStoreListener 'parent', { evt ->
-                switch(evt.eventType) {
-                    case ModelStoreEvent.EventType.ADDED:
+                switch(evt.type) {
+                    case ModelStoreEvent.Type.ADDED:
                         parentTableModel << evt.presentationModel
                         break
-                    case ModelStoreEvent.EventType.REMOVED:
+                    case ModelStoreEvent.Type.REMOVED:
                         parentTableModel.remove(evt.presentationModel)
                 }
             }
