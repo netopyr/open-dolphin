@@ -3,7 +3,7 @@ The Dolphin Project
 
 Team: Dieter Holz, Andres Almiray, Dierk Koenig
 
-Mailinglist: dolphin@lists.canoo.com
+Mailinglist: dolphin@lists.canoo.com, please subscribe at http://lists.canoo.com/mailman/listinfo/dolphin .
 
 How to build
 ------------
