@@ -3,6 +3,8 @@ The Dolphin Project
 
 Team: Dieter Holz, Andres Almiray, Dierk Koenig
 
+Mailinglist: dolphin@lists.canoo.com
+
 How to build
 ------------
 > gradlew clean install
