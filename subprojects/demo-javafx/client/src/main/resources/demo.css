@@ -17,3 +17,10 @@
     -fx-hgap: 5;  /* doesn't work */
     -fx-vgap: 10; /* doesn't work */
 }
+
+.tab-pane *.tab-header-background {
+    -fx-background-color: linear-gradient( to bottom,
+        transparent       30%,
+        rgba(0,0,0,0.15) 100%
+    );
+}

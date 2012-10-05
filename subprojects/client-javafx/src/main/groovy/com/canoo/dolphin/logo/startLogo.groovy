@@ -26,7 +26,7 @@ GroovyFX.start { app ->
     logo = new DolphinLogo(width:401, height: 257, shuffle: true, effect: effect)
 
     AudioClip sonar = new AudioClip(this.class.getResource("pulse.mp3").toString());
-    sonar.cycleCount = 3
+    sonar.cycleCount = 1
 
     stage title: "Tickle the Dolphin!", {
         scene width:441, height: 297, {

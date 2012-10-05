@@ -17,6 +17,9 @@
 package com.canoo.dolphin.demo
 
 def config = new JavaFxInMemoryConfig()
-config.serverDolphin.serverConnector.register new CustomAction(config.serverDolphin.serverModelStore)
+def serverDolphin = config.serverDolphin
+def clientDolphin = config.clientDolphin
 
-PushView.show(config.clientDolphin)
+serverDolphin.serverConnector.register new CustomAction(serverDolphin.serverModelStore)
+
+PushView.show clientDolphin
