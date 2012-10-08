@@ -42,6 +42,15 @@ Bridging the world of Java Enterprise and Java Desktop.
 A video introduction is at http://people.canoo.com/mittie/dolphin.mov.
 The API has meanwhile improved and the privacy disclaimer is no longer applicable.
 
+Dolphin introduction in the 2012 JavaOne strategy keynote (around minute 18):
+http://medianetwork.oracle.com/video/player/1871687106001
+
+Dolphin technical session at JavaOne 2012 by Arvinder Brar (Navis), Jasper Potts (Oracle) and Dierk Koenig (Canoo):
+https://oracleus.activeevents.com/connect/sessionDetail.ww?SESSION_ID=4853 (slides and screencast capture)
+
+Upcoming Dolphin technical session at W-JAX 2012, Munich, Nov 6th:
+http://entwickler.com/konferenzen/ext_scripts/v2/php/sessions-popup.php?module=wjax2012&id=24020 (German)
+
 Project layout
 --------------
 The multi-project build consists of these subprojects
@@ -57,7 +66,7 @@ Demos
 A good place to start are the demos.
 See https://github.com/canoo/open-dolphin/tree/master/subprojects/demo-javafx
 where "combined" contains starter and configuration. From there have a look
-into the references client and server classes.
+into the referenced client and server classes.
 
 General approach
 ----------------
