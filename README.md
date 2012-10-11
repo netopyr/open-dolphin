@@ -19,7 +19,7 @@ Update the logs for distribution
 
 To run all tests including coverage analysis
 (report is in build/coverage):
-> gradlew -Pcoverage=true cleanTest test
+> gradlew -PwithCobertura=true cleanTest test
 
 Running the push demo with the grails server integration
 - gradlew build
@@ -27,9 +27,12 @@ Running the push demo with the grails server integration
 - grails run-app
 - // startGrailsClientDemo.groovy e.g. from inside idea
 
+You can create an IDEA project for the full dolphin code by running
+- gradlew idea
+
 Prerequisites
 -------------
-JAVAFX_HOME must be set to a 2.1.0 version
+JAVAFX_HOME must be set to a 2.1.0 version. (Version 2.2 also works fine.)
 
 Purpose
 -------
