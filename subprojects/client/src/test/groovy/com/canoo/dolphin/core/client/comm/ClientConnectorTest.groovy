@@ -45,6 +45,9 @@ class ClientConnectorTest extends GroovyTestCase {
 
 }
 
+import groovy.util.logging.Log
+
+@Log
 class TestClientConnector extends ClientConnector {
     TestClientConnector(ClientDolphin clientDolphin) {
         super(clientDolphin)
