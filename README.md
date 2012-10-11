@@ -5,6 +5,10 @@ Team: Dieter Holz, Andres Almiray, Dierk Koenig
 
 Mailinglist: dolphin@lists.canoo.com, please subscribe at http://lists.canoo.com/mailman/listinfo/dolphin .
 
+JIRA: https://wiki.canoo.com/snipsnap/space/Dolphin
+
+Twitter: @OpenDolphin
+
 How to build
 ------------
 > gradlew clean install
