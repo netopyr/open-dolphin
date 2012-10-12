@@ -60,13 +60,6 @@ class BindListView {
         }
 
         dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
-            switch(evt.type) {
-                case ModelStoreEvent.Type.ADDED:
-                    observableListOfPms << evt.presentationModel
-                    break
-                case ModelStoreEvent.Type.REMOVED:
-                    observableListOfPms.remove(evt.presentationModel)
-            }
             if(evt.type == ModelStoreEvent.Type.ADDED &&
                evt.presentationModel.id.startsWith('magenta')) {
                 observableListOfMagentaPms << evt.presentationModel
