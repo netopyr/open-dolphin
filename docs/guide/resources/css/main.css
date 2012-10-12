@@ -92,7 +92,7 @@ strong {
 }
 
 #main.reference h1 {
-    color: #67B3FE;
+    color: #d10e41;
 }
 
 .local {
@@ -190,7 +190,7 @@ strong {
 
 #table-of-content a:hover {
     text-decoration: none;
-    border-right: 2px solid #67B3FE;
+    border-right: 2px solid #d10e41;
 }
 
 /*

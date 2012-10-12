@@ -13,7 +13,7 @@ body, .wiki-table th strong {
 a, a:hover, a:focus, a:active, a:hover, #main .project strong, #table-of-content a:hover strong,
     #table-of-content a strong, .menu .menu-block h1, .menu a:hover, .local .local-title .toggle a,
     #navigation #nav-summary-childs a:hover, #main h1, #main h2 {
-    color: #75A9BD;
+    color: #d10e41;
 }
 
 #main .project h1, #table-of-content h2 {
@@ -100,7 +100,7 @@ a, a:hover, a:focus, a:active, a:hover, #main .project strong, #table-of-content
 }
 
 .wiki-table th, #navigation {
-    background: #7cc8e2 url(../img/linear-gradient-blue.png) repeat-x 0 0;
+    background: #d10e41 ;
 }
 
 #navigation .separator {
