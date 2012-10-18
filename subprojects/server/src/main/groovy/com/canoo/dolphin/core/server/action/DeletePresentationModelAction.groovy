@@ -28,6 +28,9 @@ class DeletePresentationModelAction extends DolphinServerAction {
             PresentationModel model = serverDolphin.modelStore.findPresentationModelById(command.pmId)
             // todo: trigger application specific persistence
             // todo: deal with potential persistence errors
+
+            serverDolphin.modelStore.remove(model)  // todo: make consistent with remove/delete handling on client
+
             response << doWithPresentationModel(model)
         }
     }

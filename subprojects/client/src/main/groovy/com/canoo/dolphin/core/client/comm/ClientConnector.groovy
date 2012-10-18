@@ -62,10 +62,11 @@ abstract class ClientConnector implements PropertyChangeListener {
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
             attributes.each { it.value = evt.newValue }
         } else if (evt.propertyName == Attribute.INITIAL_VALUE) {
+            // todo dk: is this ever called?
             if (evt.oldValue == evt.newValue) return
             send constructInitialValueChangedCommand(evt)
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
-            attributes.each { it.value = evt.newValue; it.save() }
+            attributes.each { it.value = evt.newValue; it.save() } // todo dk: should set the attribute.initialValue, not the attribute.vallue andres tse,tse,tse,...
         } else {
             // we assume the change is on a metadata property such as qualifier
             send constructChangeAttributeMetadataCommand(evt)
