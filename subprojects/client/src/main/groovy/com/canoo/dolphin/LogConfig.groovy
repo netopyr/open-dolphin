@@ -16,29 +16,34 @@
 
 package com.canoo.dolphin
 
-import com.canoo.dolphin.core.client.comm.ClientConnector
 
-import java.util.logging.*
+import com.canoo.dolphin.core.client.comm.ClientConnector
 
 /** Keep logging details in one place **/
 // todo dk: provide a consistent counterpart for the server
 class LogConfig {
 
-    private static final Logger ROOT_LOGGER = LogManager.logManager.getLogger('')
+    private static final Logger ROOT_LOGGER = Logger.getLogger("")
 
     static {
         ROOT_LOGGER.handlers.grep(ConsoleHandler).each { it.formatter = new ShortFormatter() }
     }
 
     static noLogs() {
-        ROOT_LOGGER.level = Level.OFF
+        logOnLevel(Level.OFF)
     }
 
     static logCommunication() {
-        ClientConnector.log.level = Level.INFO
+        logOnLevel(Level.INFO)
     }
 
+    static logOnLevel(Level level) {
+        ROOT_LOGGER.level = level
+        ClientConnector.log.level = level
+    }
 }
+
+import java.util.logging.*
 
 class ShortFormatter extends SimpleFormatter {
     synchronized String format(LogRecord record) {

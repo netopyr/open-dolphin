@@ -202,7 +202,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
         attribute.value = serverCommand.newValue
 
-        /*
+        /* // todo dk: what is up here?
         List<Attribute> clientAttributes = clientModelStore.findAllAttributesByQualifier(attribute.qualifier)
         clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
             log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
