@@ -148,7 +148,7 @@ class BaseAttributeSpec extends Specification {
 
         when:
 
-        attribute.save()
+        attribute.rebase()
 
         then:
 

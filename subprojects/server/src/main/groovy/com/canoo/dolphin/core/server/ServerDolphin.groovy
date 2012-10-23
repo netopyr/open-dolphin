@@ -62,6 +62,7 @@ class ServerDolphin extends Dolphin {
         register new StoreInitialValueChangeAction()
         register new PresentationModelLinkAction()
         register new DeletePresentationModelAction()
+        register new SavePresentationModelAction()
     }
 
     void register(DolphinServerAction action) {

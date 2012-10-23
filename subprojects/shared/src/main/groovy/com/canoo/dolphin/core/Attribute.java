@@ -43,7 +43,9 @@ public interface Attribute extends Observable {
 
     Object getInitialValue();
 
-    void save();
+    /** setting the initialValue to the current value, effectively providing a new base for "dirty" calculations */
+    void rebase();
 
+    /** setting the current value back to the last known base, which is the initialValue */
     void reset();
 }

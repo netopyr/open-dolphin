@@ -62,11 +62,10 @@ abstract class ClientConnector implements PropertyChangeListener {
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
             attributes.each { it.value = evt.newValue }
         } else if (evt.propertyName == Attribute.INITIAL_VALUE) {
-            // todo dk: is this ever called?
             if (evt.oldValue == evt.newValue) return
             send constructInitialValueChangedCommand(evt)
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
-            attributes.each { it.value = evt.newValue; it.save() } // todo dk: should set the attribute.initialValue, not the attribute.vallue andres tse,tse,tse,...
+            attributes.each { it.rebase() }
         } else {
             // we assume the change is on a metadata property such as qualifier
             send constructChangeAttributeMetadataCommand(evt)
@@ -216,7 +215,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
 
         log.info "C: updating id '$serverCommand.attributeId' setting initialValue to '$attribute.value'"
-        attribute.save()
+        attribute.rebase()
         return null
     }
 
@@ -270,20 +269,17 @@ abstract class ClientConnector implements PropertyChangeListener {
         return serverCommand.pmId // todo dk: check and test
     }
 
-    String handle(PresentationModelSavedCommand serverCommand) {
+    String handle(SavedPresentationModelNotification serverCommand) {
         if (!serverCommand.pmId) return null
         PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
-        // save locally first
-        model.attributes*.save()
-        // inform server of changes
-        model.attributes.each { attribute -> send(new InitialValueChangedCommand(attributeId: attribute.id)) }
+        model.attributes*.rebase() // rebase sends update command if needed through PCL
         model.id
     }
 
     String handle(PresentationModelResetedCommand serverCommand) {
         if (!serverCommand.pmId) return null
         PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
-        // save locally first
+        // rebase locally first
         model.attributes*.reset()
         // inform server of changes
         model.attributes.each { attribute -> send(new ValueChangedCommand(attributeId: attribute.id)) }

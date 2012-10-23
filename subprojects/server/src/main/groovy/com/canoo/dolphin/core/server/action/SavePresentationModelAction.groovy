@@ -16,30 +16,26 @@
 
 package com.canoo.dolphin.core.server.action
 
-import com.canoo.dolphin.core.ModelStore
-import com.canoo.dolphin.core.PresentationModel
-import com.canoo.dolphin.core.comm.Command
-import com.canoo.dolphin.core.comm.PresentationModelSavedCommand
 import com.canoo.dolphin.core.comm.SavePresentationModelCommand
+import com.canoo.dolphin.core.comm.SavedPresentationModelNotification
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import groovy.util.logging.Log
 
-class SavePresentationModelAction implements ServerAction {
-    private final ModelStore modelStore
+/**
+ * A common superclass rsp. a role model for server-side "save" actions.
+ * Please note that such an action should add a
+ * PresentationModelSavedCommand
+ * to the response in order to rebase the initialValues on the client.
+ */
 
-    SavePresentationModelAction(ModelStore modelStore) {
-        this.modelStore = modelStore
-    }
+@Log
+class SavePresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(SavePresentationModelCommand) { SavePresentationModelCommand command, response ->
-            PresentationModel model = modelStore.findPresentationModelById(command.pmId)
-            // todo: trigger application specific persistence
-            // todo: deal with potential persistence errors
-            response << doWithPresentationModel(model)
+            // subclasses may have application specific logic here
+            log.finest "S: Saving presentation model '$command.pmId'"
+            response << new SavedPresentationModelNotification(pmId: command.pmId)
         }
-    }
-
-    List<Command> doWithPresentationModel(PresentationModel model) {
-        [new PresentationModelSavedCommand(pmId: model.id)]
     }
 }
