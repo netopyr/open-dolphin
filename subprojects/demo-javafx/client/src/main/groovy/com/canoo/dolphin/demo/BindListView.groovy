@@ -28,7 +28,6 @@ import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import static com.canoo.dolphin.demo.VehicleProperties.*
 
 import static groovyx.javafx.GroovyFX.start
-import javafx.event.EventHandler
 
 import com.canoo.dolphin.core.client.ClientAttributeWrapper
 import com.canoo.dolphin.core.ModelStoreEvent
@@ -39,7 +38,8 @@ import com.canoo.dolphin.core.ModelStoreEvent
  * It also shows how to bind against a (changing) list of PresentationModels of a certain type and how
  * to use an additional custom filter.
  * How to use: initially, the right view should be empty (no magenta ones).
- * Clicking the button adds magenta objects to the store and they should appear in both list views.
+ * Clicking the add button adds magenta objects to the store and they should appear in both list views.
+ * Clicking the clear button should empty both lists.
  */
 
 class BindListView {
@@ -50,20 +50,12 @@ class BindListView {
         ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
 
         dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
-            switch(evt.type) {
-                case ModelStoreEvent.Type.ADDED:
-                    observableListOfPms << evt.presentationModel
-                    break
-                case ModelStoreEvent.Type.REMOVED:
-                    observableListOfPms.remove(evt.presentationModel)
-            }
+            syncList(observableListOfPms, evt)
         }
 
         dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
-            if(evt.type == ModelStoreEvent.Type.ADDED &&
-               evt.presentationModel.id.startsWith('magenta')) {
-                observableListOfMagentaPms << evt.presentationModel
-            }
+            if (! evt.presentationModel.id.startsWith('magenta')) return
+            syncList(observableListOfMagentaPms, evt)
         }
 
         start { app ->
@@ -85,7 +77,10 @@ class BindListView {
                         }
 
                         right margin: 10, {
-                            button id:'add', text:'Add'
+                            vbox {
+                                button id:'add', text:'Add'
+                                button id:'clear', text:'Clear'
+                            }
                         }
                     }
                 }
@@ -96,11 +91,15 @@ class BindListView {
             table.items = observableListOfPms
             smallTable.items = observableListOfMagentaPms
 
-			add.onAction = {
+			add.onAction {
                 dolphin.presentationModel "magenta_${System.currentTimeMillis()}",
                    PM_TYPE_VEHICLE,
                    (ATT_X) : 0
-			} as EventHandler
+			}
+
+            clear.onAction {
+                dolphin.send CMD_CLEAR
+			}
 
             // auto-update the cell values
             x1Col.cellValueFactory = { new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
@@ -113,6 +112,16 @@ class BindListView {
 
             // startup and main loop
             primaryStage.show()
+        }
+    }
+
+    def static void syncList(ObservableList<ClientPresentationModel> list, ModelStoreEvent evt) {
+        switch (evt.type) {
+            case ModelStoreEvent.Type.ADDED:
+                list << evt.presentationModel
+                break
+            case ModelStoreEvent.Type.REMOVED:
+                list.remove(evt.presentationModel)
         }
     }
 }

@@ -16,9 +16,16 @@
 
 package com.canoo.dolphin.demo
 
+import com.canoo.dolphin.core.comm.DeletePresentationModelCommand
+
 import static com.canoo.dolphin.demo.VehicleProperties.*
 
 def config = new JavaFxInMemoryConfig()
 config.serverDolphin.action CMD_PULL, new PullVehiclesActionHandler()
+config.serverDolphin.action CMD_CLEAR, { cmd, response ->
+    for(pm in config.serverDolphin.findAllPresentationModelsByType(PM_TYPE_VEHICLE)) {
+        response << new DeletePresentationModelCommand(pm.id)
+    }
+}
 
 BindListView.show config.clientDolphin

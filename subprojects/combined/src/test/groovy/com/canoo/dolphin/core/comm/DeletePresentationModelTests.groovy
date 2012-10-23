@@ -20,7 +20,6 @@ import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.action.DeletePresentationModelAction
-import com.canoo.dolphin.core.server.action.RemovePresentationModelAction
 
 class DeletePresentationModelTests extends GroovyTestCase {
 
@@ -35,7 +34,6 @@ class DeletePresentationModelTests extends GroovyTestCase {
         clientDolphin = context.clientDolphin
 
         serverDolphin.register(new DeletePresentationModelAction(serverDolphin: serverDolphin))
-        serverDolphin.register(new RemovePresentationModelAction(serverDolphin: serverDolphin))
     }
 
     @Override

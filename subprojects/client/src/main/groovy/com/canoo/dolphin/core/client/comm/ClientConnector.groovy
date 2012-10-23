@@ -152,6 +152,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         log.warning "C: cannot handle $serverCommand"
     }
 
+    String handle(DeletePresentationModelCommand serverCommand){
+        clientModelStore.delete(serverCommand.pmId)
+        return null // it makes no sense to return the id since pms of that id will no longer be found
+    }
+
     String handle(CreatePresentationModelCommand serverCommand) {
         // check if we already have serverCommand.pmId in our store
         // if true we simply update attribute ids and add any missing attributes
@@ -282,18 +287,8 @@ abstract class ClientConnector implements PropertyChangeListener {
         // rebase locally first
         model.attributes*.reset()
         // inform server of changes
+        // todo dk: this should already have been sent by the PCL
         model.attributes.each { attribute -> send(new ValueChangedCommand(attributeId: attribute.id)) }
-        model.id
-    }
-
-    String handle(PresentationModelDeletedCommand serverCommand) {
-        if (!serverCommand.pmId) return null
-        PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
-        if (!model) return null
-        // remove from store
-        clientModelStore.remove(model)
-        // inform server of changes
-        send(new RemovePresentationModelCommand(pmId: model.id))
         model.id
     }
 

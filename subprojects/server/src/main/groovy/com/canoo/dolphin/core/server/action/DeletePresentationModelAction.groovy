@@ -19,23 +19,25 @@ package com.canoo.dolphin.core.server.action
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.comm.DeletePresentationModelCommand
-import com.canoo.dolphin.core.comm.PresentationModelDeletedCommand
+import com.canoo.dolphin.core.comm.DeletedPresentationModelNotification
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 class DeletePresentationModelAction extends DolphinServerAction {
+
     void registerIn(ActionRegistry registry) {
         registry.register(DeletePresentationModelCommand) { DeletePresentationModelCommand command, response ->
-            PresentationModel model = serverDolphin.modelStore.findPresentationModelById(command.pmId)
-            // todo: trigger application specific persistence
-            // todo: deal with potential persistence errors
+            handleCommand(command)
+            response << new DeletedPresentationModelNotification(pmId: model.id)
+        }
 
-            serverDolphin.modelStore.remove(model)  // todo: make consistent with remove/delete handling on client
-
-            response << doWithPresentationModel(model)
+        registry.register(DeletedPresentationModelNotification) { DeletedPresentationModelNotification command, response ->
+            handleCommand(command)
         }
     }
 
-    List<Command> doWithPresentationModel(PresentationModel model) {
-        [new PresentationModelDeletedCommand(pmId: model.id)]
+    def void handleCommand(Command command) {
+        PresentationModel model = serverDolphin.modelStore.findPresentationModelById(command.pmId)
+        // application specific logic could be here (e.g. in a subclass)
+        serverDolphin.modelStore.remove(model)
     }
 }

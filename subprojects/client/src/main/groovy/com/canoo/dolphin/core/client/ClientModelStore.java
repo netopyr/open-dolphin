@@ -127,7 +127,7 @@ public class ClientModelStore extends ModelStore {
         if (model == null) return;
         if (containsPresentationModel(model.getId())) {
             remove(model);
-            getClientConnector().send(new DeletePresentationModelCommand(model.getId()));
+            getClientConnector().send(new DeletedPresentationModelNotification(model.getId()));
         }
     }
 

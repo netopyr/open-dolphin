@@ -19,7 +19,7 @@ package com.canoo.dolphin.core.comm
 import groovy.transform.Canonical
 
 @Canonical
-class RemovePresentationModelCommand extends Command {
+class DeletedPresentationModelNotification extends Command {
     String pmId
 
     String toString() {super.toString() + " pmId $pmId"}
