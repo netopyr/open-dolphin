@@ -33,15 +33,13 @@ class JsonCodec implements Codec {
             entry.className = cmd.class.name
             entry.each { key, value ->              // prepare against invalid entries
                 if (value instanceof List) {        // some commands may have collective values
-                    for (Map entryMap in value){
+                    for (Map entryMap in value) {
                         entryMap.each { entryKey, entryValue ->
                             entryMap[entryKey] = BaseAttribute.checkValue(entryValue)
-                        }
-                    }
+                    }   }
                 } else {
                     entry[key] = BaseAttribute.checkValue(value)
-                }
-            }
+            }   }
             entry
         }
         JsonBuilder builder = new JsonBuilder(content)

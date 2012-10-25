@@ -67,6 +67,38 @@ public class JsonCodecTest extends GroovyTestCase {
         assert commands.toString().toList().sort() == decoded.toString().toList().sort() // ;-)
     }
 
+    void testCodingCommands() {
+        assertCodingCommand(new AddPresentationModelLinkCommand())
+        assertCodingCommand(new AttributeCreatedCommand())
+        assertCodingCommand(new AttributeMetadataChangedCommand())
+        assertCodingCommand(new CreatePresentationModelCommand())
+        assertCodingCommand(new ChangeAttributeMetadataCommand())
+        assertCodingCommand(new GetPresentationModelCommand())
+        assertCodingCommand(new DeletedPresentationModelNotification())
+        assertCodingCommand(new DeletePresentationModelCommand())
+        assertCodingCommand(new InitializeAttributeCommand())
+        assertCodingCommand(new InitialValueChangedCommand())
+        assertCodingCommand(new NamedCommand())
+        assertCodingCommand(new PresentationModelLinkAddedCommand())
+        assertCodingCommand(new PresentationModelLinkRemovedCommand())
+        assertCodingCommand(new PresentationModelResetedCommand())
+        assertCodingCommand(new ResetPresentationModelCommand())
+        assertCodingCommand(new RemovePresentationModelLinkCommand())
+        assertCodingCommand(new SavePresentationModelCommand())
+        assertCodingCommand(new SavedPresentationModelNotification())
+        assertCodingCommand(new SwitchAttributeIdCommand())
+        assertCodingCommand(new SwitchPresentationModelCommand())
+        assertCodingCommand(new ValueChangedCommand())
+    }
+
+    void assertCodingCommand(Command command) {
+        def codec = new JsonCodec()
+        def commands = [command]
+        def coded = codec.encode(commands)
+        def decoded = codec.decode(coded)
+        assert commands.toString().toList().sort() == decoded.toString().toList().sort()
+    }
+
 
 
 }
