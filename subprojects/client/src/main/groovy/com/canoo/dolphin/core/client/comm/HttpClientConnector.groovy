@@ -58,10 +58,9 @@ class HttpClientConnector extends ClientConnector {
             StringEntity entity = new StringEntity(content)
             httpPost.setEntity(entity)
 
-
             def response = httpClient.execute(httpPost,responseHandler)
 
-            println response
+            log.finest response
 
             result = codec.decode(response)
         }
