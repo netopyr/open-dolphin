@@ -16,11 +16,21 @@
 
 package com.canoo.dolphin.core;
 
+import groovy.lang.GString;
+
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * The value may be null as long as the BaseAttribute is used as a "placeholder".
  */
 
 public abstract class BaseAttribute extends AbstractObservable implements Attribute {
+
+    static final public Class[] SUPPORTED_VALUE_TYPES = { Character.class, String.class, Number.class, Boolean.class, Date.class };
+    static final private Logger log = Logger.getLogger(BaseAttribute.class.getName());
+
     private final String propertyName;
     private Object value;
     private Object initialValue;
@@ -51,7 +61,28 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         return value;
     }
 
+    /** Check whether value is of allowed type and convert to an allowed type if possible. */
+    static Object checkValue(Object value) {
+        if (null == value) return null;
+        Object result = value;
+        if (value instanceof GString) value = value.toString();
+        if (value instanceof BaseAttribute) {
+            if (log.isLoggable(Level.WARNING)) log.warning("An Attribute may not itself contain an attribute as a value. Assuming you forgot to call getValue().");
+            result = checkValue((((BaseAttribute) value).getValue()));
+        }
+        boolean ok = false;
+        for (Class type : SUPPORTED_VALUE_TYPES ) {
+            if (type.isAssignableFrom(result.getClass())) { ok = true; break; }
+        }
+        if (!ok) {
+            throw new IllegalArgumentException("Attribute values of this type are not allowed: " + result.getClass().getSimpleName());
+        }
+        return result;
+    }
+
+    // todo dk: think about specific method versions for each allowed type
     public void setValue(Object value) {
+        value = checkValue(value);
         setDirty(initialValue == null ? value != null : !initialValue.equals(value));
         firePropertyChange(VALUE, this.value, this.value = value);
     }

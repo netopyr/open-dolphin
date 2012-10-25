@@ -192,6 +192,17 @@ class BaseAttributeSpec extends Specification {
         attribute.initialValue == 'bar'
         attribute.value == 'bar'
     }
+
+    def "checkValue() auto-maps values"() {
+        given:
+        def valueAttribute = new MyAttribute("ValueAttribute", "value")
+        def mainAttribute = new MyAttribute("MainAttribute", null)
+        when:
+        mainAttribute.value = valueAttribute
+        then:
+        mainAttribute.getValue() == "value"
+    }
+
 }
 
 class MyAttribute extends BaseAttribute {

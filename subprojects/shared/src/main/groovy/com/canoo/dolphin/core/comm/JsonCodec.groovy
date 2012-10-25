@@ -16,17 +16,32 @@
 
 package com.canoo.dolphin.core.comm
 
+import com.canoo.dolphin.core.BaseAttribute
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
+import groovy.util.logging.Log
 
+@Log
 class JsonCodec implements Codec {
 
     @Override
     String encode(List<Command> commands) {
         def content = commands.collect { Command cmd ->
+            log.finest "encoding command $cmd"
             def entry = cmd.properties
             ['class','metaClass'].each { entry.remove it }
             entry.className = cmd.class.name
+            entry.each { key, value ->              // prepare against invalid entries
+                if (value instanceof List) {        // some commands may have collective values
+                    for (Map entryMap in value){
+                        entryMap.each { entryKey, entryValue ->
+                            entryMap[entryKey] = BaseAttribute.checkValue(entryValue)
+                        }
+                    }
+                } else {
+                    entry[key] = BaseAttribute.checkValue(value)
+                }
+            }
             entry
         }
         JsonBuilder builder = new JsonBuilder(content)
@@ -45,6 +60,8 @@ class JsonCodec implements Codec {
                 if (key == 'attributeId') value = value.toLong()
                 responseCommand[key] = value
             }
+            println responseCommand
+            log.finest "decoded command $responseCommand"
             result << responseCommand
         }
         return result
