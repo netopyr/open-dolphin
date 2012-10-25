@@ -24,7 +24,7 @@ import groovy.util.logging.Log
 /**
  * A common superclass rsp. a role model for server-side "save" actions.
  * Please note that such an action should add a
- * PresentationModelSavedCommand
+ * SavedPresentationModelNotification
  * to the response in order to rebase the initialValues on the client.
  */
 

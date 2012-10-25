@@ -33,9 +33,8 @@ class Command {
 
     String getId() { idFor this.class }
 
-    // todo dk: also remove "Notification"
     static String idFor(Class commandClass) {
-        commandClass.name - commandClass.package.name - "." - "Command"
+        commandClass.name - commandClass.package.name - "." - "Command" - "Notification"
     }
 
     String toString() { "Command: $id" }
