@@ -40,14 +40,32 @@ public class JsonCodecTest extends GroovyTestCase {
         def decoded = codec.decode(coded)
         assert commands.toString() == decoded.toString()
     }
+    void testCodingCreatePresentationModelCommandWithDisallowedSelfReflectiveMapEntry() {
+        def map = [ propertyName: 'x', qualifier: null ]
+        map.value = map
+        shouldFail {
+            assertCodingCreatePresentationModel(map)
+        }
+    }
+    void testCodingCreatePresentationModelWithStructuredEntry() {
+        def map = [ propertyName: 'x', qualifier: null ]
+        map.value = "ok"
+        assertCodingCreatePresentationModel(map)
+    }
 
-    void testCreatedPmCommand() {
+    void testCodingCreatePresentationModelWithEmptyAttributes() {
+        assertCodingCreatePresentationModel([:])
+    }
+
+    void assertCodingCreatePresentationModel(Map attributes) {
         def codec = new JsonCodec()
-        def commands = [new CreatePresentationModelCommand(pmId: 1, pmType: null, attributes: [] )]
+        def commands = []
+        commands << new CreatePresentationModelCommand(pmId: "bla", attributes: [attributes])
         def coded = codec.encode(commands)
         def decoded = codec.decode(coded)
-        assert commands.toString() == decoded.toString()
+        assert commands.toString().toList().sort() == decoded.toString().toList().sort() // ;-)
     }
+
 
 
 }
