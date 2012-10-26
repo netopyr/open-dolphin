@@ -65,8 +65,8 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     static Object checkValue(Object value) {
         if (null == value) return null;
         Object result = value;
-        if (value instanceof GString) value = value.toString();
-        if (value instanceof BaseAttribute) {
+        if (result instanceof GString) result = value.toString();
+        if (result instanceof BaseAttribute) {
             if (log.isLoggable(Level.WARNING)) log.warning("An Attribute may not itself contain an attribute as a value. Assuming you forgot to call getValue().");
             result = checkValue((((BaseAttribute) value).getValue()));
         }

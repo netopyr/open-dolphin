@@ -58,7 +58,6 @@ class JsonCodec implements Codec {
                 if (key == 'attributeId') value = value.toLong()
                 responseCommand[key] = value
             }
-            println responseCommand
             log.finest "decoded command $responseCommand"
             result << responseCommand
         }
