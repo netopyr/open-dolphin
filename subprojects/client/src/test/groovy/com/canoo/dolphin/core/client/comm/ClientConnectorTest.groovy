@@ -39,7 +39,7 @@ class ClientConnectorTest extends GroovyTestCase {
         CreatePresentationModelCommand command = new CreatePresentationModelCommand()
         command.pmId = myPmId
         def result = clientConnector.handle(command)
-        assert myPmId == result
+        assert myPmId == result.id
         assert dolphin.findPresentationModelById(myPmId)
     }
 
