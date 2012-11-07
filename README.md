@@ -21,10 +21,15 @@ There is a known issue with calling the build on Windows platforms
 where the build sequence is not reliable. We are working on the issue but
 until then you can execute the following sequence:
 > gradlew clean
+
 > gradlew shared:build
+
 > gradlew server:build
+
 > gradlew client:build
+
 > gradlew combined:build
+
 After having done this once, all further builds should run fine.
 
 Server integration
