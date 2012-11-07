@@ -13,20 +13,22 @@ Twitter: @OpenDolphin
 
 How to build
 ------------
-> gradlew clean install
+> gradlew clean build
 
-All generated jar files are copied to the dist directory.
+Troubleshooting:
 
-To zip all the demo sources into the dist directory:
-> gradlew demoZip
+There is a known issue with calling the build on Windows platforms
+where the build sequence is not reliable. We are working on the issue but
+until then you can execute the following sequence:
+> gradlew clean
+> gradlew shared:build
+> gradlew server:build
+> gradlew client:build
+> gradlew combined:build
+After having done this once, all further builds should run fine.
 
-Update the logs for distribution
-> updateLog
-
-To run all tests including coverage analysis
-(report is in build/coverage):
-> gradlew -PwithCobertura=true cleanTest test
-
+Server integration
+------------------
 Running the push demo with the grails server integration
 - gradlew build
 - cd dolphin-grails
