@@ -78,6 +78,13 @@ public class ClientDolphin extends Dolphin {
     ApplyToAble apply(ClientPresentationModel source) {
         new ApplyToAble(dolphin: this, source: source)
     }
+
+    /** Removes the modelToDelete from the client model store,
+     * detaches all model store listeners,
+     * and notifies the server if successful */
+    public void delete(ClientPresentationModel modelToDelete) {
+        clientModelStore.delete(modelToDelete)
+    }
 }
 
 class ApplyToAble {
