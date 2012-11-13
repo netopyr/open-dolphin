@@ -22,6 +22,7 @@ import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.PresentationModel;
 import com.canoo.dolphin.core.client.comm.ClientConnector;
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler;
+import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter;
 import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler;
 import com.canoo.dolphin.core.comm.*;
 
@@ -84,7 +85,7 @@ public class ClientModelStore extends ModelStore {
         GetPresentationModelCommand cmd = new GetPresentationModelCommand();
         cmd.setPmId(requestedPmId);
 
-        OnFinishedHandler callBack = new OnFinishedHandler() {
+        OnFinishedHandler callBack = new OnFinishedHandlerAdapter() {
             @Override
             public void onFinished(List<ClientPresentationModel> presentationModels) {
                 ClientPresentationModel theOnlyOne = presentationModels.get(0);

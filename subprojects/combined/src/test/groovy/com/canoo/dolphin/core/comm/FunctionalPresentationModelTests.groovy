@@ -20,6 +20,7 @@ import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
+import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.ServerPresentationModel
@@ -126,7 +127,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
                 reached = true
             }
         })
-        clientDolphin.send("java", new OnFinishedHandler() {
+        clientDolphin.send("java", new OnFinishedHandlerAdapter() {
             @Override
             void onFinished(List<ClientPresentationModel> presentationModels) {
                 assert reached

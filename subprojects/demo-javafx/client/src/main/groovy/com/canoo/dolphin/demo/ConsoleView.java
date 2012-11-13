@@ -19,16 +19,18 @@ package com.canoo.dolphin.demo;
 import com.canoo.dolphin.core.client.ClientDolphin;
 import com.canoo.dolphin.core.client.ClientPresentationModel;
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler;
+import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter;
 import com.canoo.dolphin.core.comm.NamedCommand;
 
 import java.util.List;
+import java.util.Map;
 
 public class ConsoleView {
 
     public static void show(ClientDolphin clientDolphin) {
         NamedCommand cmd = new NamedCommand();
         cmd.setId("javaAction");
-        OnFinishedHandler callback = new OnFinishedHandler() {
+        OnFinishedHandler callback = new OnFinishedHandlerAdapter() {
             public void onFinished(List<ClientPresentationModel> pms) {
                 ClientPresentationModel pm = pms.iterator().next();
                 System.out.println("pm = " + pm);

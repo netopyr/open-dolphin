@@ -110,13 +110,19 @@ abstract class ClientConnector implements PropertyChangeListener {
                 log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
 
                 List<ClientPresentationModel> pms = []
+                List<Map> maps = []
                 for (serverCommand in response) {
                     def pm = handle serverCommand
                     if (pm && pm instanceof ClientPresentationModel) {
                         pms << pm
+                    } else if (pm && pm instanceof Map) {
+                        maps << pm
                     }
                 }
-                if (callback) callback.onFinished(pms.unique {it.id})
+                if (callback) {
+                    callback.onFinished(pms.unique {it.id})
+                    callback.onFinishedData(maps)
+                }
             }
         }
     }
@@ -150,6 +156,10 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     def handle(Command serverCommand, Set pmIds) {
         log.warning "C: cannot handle $serverCommand"
+    }
+
+    Map handle(DataCommand serverCommand){
+        return serverCommand.data
     }
 
     ClientPresentationModel handle(DeletePresentationModelCommand serverCommand){

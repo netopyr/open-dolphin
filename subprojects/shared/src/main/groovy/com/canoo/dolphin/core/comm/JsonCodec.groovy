@@ -37,6 +37,10 @@ class JsonCodec implements Codec {
                         entryMap.each { entryKey, entryValue ->
                             entryMap[entryKey] = BaseAttribute.checkValue(entryValue)
                     }   }
+                } else if (value instanceof Map) {  // DataCommand has map content
+                    value.each { entryKey, entryValue ->
+                        value[entryKey] = BaseAttribute.checkValue(entryValue)
+                    }
                 } else {
                     entry[key] = BaseAttribute.checkValue(value)
             }   }
