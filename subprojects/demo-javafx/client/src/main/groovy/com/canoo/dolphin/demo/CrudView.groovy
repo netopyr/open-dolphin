@@ -109,10 +109,9 @@ class CrudView {
             }
 
             minus.onAction {
-                // todo dk: "delete" should be in the facade
                 def position = positions.selectionModel.selectedItem
                 if (! position) return
-                clientDolphin.modelStore.delete(position)
+                clientDolphin.delete(position)
                 positions.selectionModel.clearSelection() // this may become a server decision
                 clientDolphin.send 'updateTotal'
             }
