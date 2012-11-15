@@ -46,7 +46,7 @@ subprojects {
     }
 
     dependencies {
-        groovy  'org.codehaus.groovy:groovy-all:1.8.6'
+        groovy  'org.codehaus.groovy:groovy-all:1.8.8'
         testCompile 'org.spockframework:spock-core:0.6-groovy-1.8', {
             exclude group:'org.codehaus.groovy', module: 'groovy-all'
         }
@@ -108,7 +108,7 @@ subprojects.each { proj ->
 }
 
 task wrapper(type:Wrapper, description:"create a gradlew") {
-    gradleVersion = '1.0'
+    gradleVersion = '1.2'
 }
 
 apply {
