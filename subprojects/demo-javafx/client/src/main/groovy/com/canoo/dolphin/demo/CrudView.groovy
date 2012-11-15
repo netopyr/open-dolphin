@@ -17,20 +17,18 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.ModelStoreEvent
-import com.canoo.dolphin.core.ModelStoreListener
-import com.canoo.dolphin.core.client.ClientAttributeWrapper
+import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
-import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
-import javafx.collections.WeakListChangeListener
-import javafx.util.Callback
+import javafx.scene.chart.PieChart
 
 import java.beans.PropertyChangeListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
+import static com.canoo.dolphin.binding.JavaFxUtil.value
+import static com.canoo.dolphin.binding.JavaFxUtil.cellEdit
 import static groovyx.javafx.GroovyFX.start
 
 class CrudView {
@@ -45,26 +43,26 @@ class CrudView {
 
         start { app ->
             stage {
-                scene width: 500, height: 300, {
+                scene width: 1000, height: 600, stylesheets:"CrudDemo.css", {
                     tabPane {
                         tab id:'tab', {
                             gridPane hgap:10, vgap:12, padding: 20, {
                                 label       "Portfolio",    row: 0, column: 0
-                                textField   id:'nameField', row: 0, column: 1
+                                textField   id:'nameField', row: 0, column: 1, minHeight:32
                                 label       "Positions",    row: 1, column: 0
                                 vbox        id:'tableBox',  row: 1, column: 1, {
                                     tableView id:'positions', selectionMode:"single", editable:true, {
-                                        instrumentCol = tableColumn(text: 'Instrument',   prefWidth: 100, editable:true )
-                                        weightCol     = tableColumn(text: 'Weight',       prefWidth:  60, editable:true,
-                                            onEditCommit: { event ->
-                                                def positionPm = event.tableView.items.get(event.tablePosition.row)
-                                                positionPm.weight.value = event.newValue.toInteger()
-                                            })
+                                        value 'instrument', tableColumn('Instrument', prefWidth: 100, editable:true,
+                                              onEditCommit: cellEdit('instrument', { it.toString() } ) )
+                                        value 'weight'    , tableColumn('Weight',     prefWidth:  60, editable:true,
+                                              onEditCommit: cellEdit('weight',     { it.toInteger() } ) )
                                     }
                                     hbox {
-                                        button id:'plus', '+'; button id: 'minus', '-'
+                                        button id:'plus',  '+'
+                                        button id:'minus', '-'
                                     }
                                 }
+                                pieChart(id:'chart', row:1, column:2, animated: true)
                                 label       'Total',        row: 2, column: 0
                                 text        id:'totalField',row: 2, column: 1
                                 label       'Fixed',        row: 3, column: 0
@@ -75,10 +73,7 @@ class CrudView {
                 }
             }
             positions.items = observableListOfPositions
-
-            // auto-update the cell values // todo dk: put behind a convenience method
-            instrumentCol.cellValueFactory = { new ClientAttributeWrapper(it.value['instrument']) } as Callback
-            weightCol.cellValueFactory     = { new ClientAttributeWrapper(it.value['weight']) }     as Callback
+            ObservableList<PieChart.Data> chartData = chart.data
 
             bind 'name'     of selectedPortfolio to 'text'      of tab
 
@@ -91,14 +86,21 @@ class CrudView {
             bind 'total'    of selectedPortfolio to 'text'      of totalField
 
             clientDolphin.addModelStoreListener 'Position', { ModelStoreEvent event ->
-                if (event.presentationModel.portfolioId.value != selectedPortfolio.domainId.value) return
+                PresentationModel pm = event.presentationModel
+                if (pm.portfolioId.value != selectedPortfolio.domainId.value) return
                 switch (event.type){
                     case ModelStoreEvent.Type.ADDED:
-                        observableListOfPositions << event.presentationModel
-                        event.presentationModel.weight.addPropertyChangeListener('value', { clientDolphin.send 'updateTotal' } as PropertyChangeListener)
+                        observableListOfPositions << pm
+                        pm.weight.addPropertyChangeListener('value', { clientDolphin.send 'updateTotal' } as PropertyChangeListener)
+                        def pieDataPoint = new PieChart.Data("",0)
+                        bind 'instrument' of pm to 'name'     of pieDataPoint
+                        bind 'weight'     of pm to 'pieValue' of pieDataPoint, { it.toDouble() }
+                        chartData << pieDataPoint
                         break
                     case ModelStoreEvent.Type.REMOVED:
-                        observableListOfPositions.remove event.presentationModel
+                        observableListOfPositions.remove pm
+                        def dataPoint = chartData.find { it.name == pm.instrument.value }
+                        chartData.remove dataPoint
                         break
                 }
             }
