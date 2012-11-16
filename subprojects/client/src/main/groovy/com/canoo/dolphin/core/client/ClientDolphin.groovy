@@ -20,6 +20,7 @@ import com.canoo.dolphin.core.Dolphin
 import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
+import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.comm.SwitchPresentationModelCommand
 
@@ -69,9 +70,22 @@ public class ClientDolphin extends Dolphin {
         clientConnector.send new NamedCommand(commandName), onFinished
     }
 
-    /** groovy-friendly convenience method for sending a named command*/
+    /** groovy-friendly convenience method for sending a named command that expects only PM responses */
     void send(String commandName, Closure onFinished) {
-        clientConnector.send(new NamedCommand(commandName), onFinished as OnFinishedHandler)
+        clientConnector.send(new NamedCommand(commandName), new OnFinishedHandlerAdapter(){
+            void onFinished(List<ClientPresentationModel> presentationModels) {
+                onFinished(presentationModels)
+            }
+        })
+    }
+
+    /** groovy-friendly convenience method for sending a named command that expects only data responses*/
+    void data(String commandName, Closure onFinished) {
+        clientConnector.send(new NamedCommand(commandName), new OnFinishedHandlerAdapter(){
+            void onFinishedData(List<Map> data) {
+                onFinished(data)
+            }
+        })
     }
 
     /** start of a fluent api: apply source to target. Use for selection changes in master-detail views. */

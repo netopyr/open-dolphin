@@ -19,7 +19,9 @@ package com.canoo.dolphin.core.client.comm;
 import com.canoo.dolphin.core.client.ClientPresentationModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OnFinishedHandler {
     public void onFinished(List<ClientPresentationModel> presentationModels);
+    public void onFinishedData(List<Map> data);
 }

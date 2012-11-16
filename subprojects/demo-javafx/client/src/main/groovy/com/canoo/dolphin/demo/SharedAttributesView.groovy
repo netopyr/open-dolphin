@@ -88,19 +88,19 @@ class SharedAttributesView {
 
             // startup and main loop
 
-            communicator.send(new NamedCommand(id: 'pullVehicles'), { pms ->
+            communicator.send(new NamedCommand(id: 'pullVehicles'), [onFinished: { pms ->
                 for (pm in pms) {
                     observableListOfPms << pm
                 }
                 fadeTransition(1.s, node: table, to: 1).playFromStart()
-            } as OnFinishedHandler )
+            }] as OnFinishedHandler )
 
-            communicator.send(new NamedCommand(id: 'pullTasks'), { pms ->
+            communicator.send(new NamedCommand(id: 'pullTasks'), [onFinished: { pms ->
                 for (pm in pms) {
                     observableListOfTasks << pm
                 }
                 fadeTransition(1.s, node: taskTable, to: 1).playFromStart()
-            } as OnFinishedHandler )
+            }] as OnFinishedHandler )
 
             blueStyle sgb
 
