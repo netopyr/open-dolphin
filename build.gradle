@@ -16,9 +16,9 @@
 
 apply plugin: 'idea'
 
-/*ext {
-    dolphinVersion = '0.1-SNAPSHOT'
-}*/
+ext {
+    jfxLibDir = locateJfxLibDir()
+}
 
 subprojects {
     apply plugin: 'groovy'
@@ -27,21 +27,9 @@ subprojects {
     sourceCompatibility = '1.6'
     targetCompatibility = '1.6'
     archivesBaseName = "dolphin-${project.name}"
-    // version = dolphinVersion
-
-    ext {
-        javaFxHome = System.env['JAVAFX_HOME']
-        javaHome   = System.env['JAVA_HOME']
-        jdk7       = System.getProperty('java.version')[0..2].toDouble() >= 1.7
-    }
-
-    if (!jdk7 && !javaFxHome) {
-        println "please set JAVAFX_HOME to the dir that contains the rt/lib/jfxrt.jar"
-        System.exit 1
-    }
 
     repositories {
-        flatDir name: 'javafx', dirs: javaFxHome? ["$javaFxHome/rt/lib/"] : ["$javaHome/jre/lib/"]
+        flatDir name: 'javafx', dirs: [jfxLibDir]
         mavenCentral()
     }
 
@@ -64,6 +52,38 @@ subprojects {
     if ( ! project.hasProperty('coverage')) return
     if ( project.name.startsWith('demo-'))  return
     apply from: "${rootDir}/gradle/coverage.gradle"
+}
+
+String locateJfxLibDir() {
+    def javaFxHome = System.env['JAVAFX_HOME'] ?: ''
+    def javaHome   = System.env['JAVA_HOME']   ?: ''
+    def jdk7       = System.getProperty('java.version')[0..2].toDouble() >= 1.7
+    def jdk7Home   = System.properties.'java.home' ?: ''
+
+    def result = "$javaFxHome/rt/lib"
+    if (new File("$result/jfxrt.jar").exists()) {
+        println "using javafx from explicit JAVAFX_HOME: $result"
+        return result
+    }
+    result = "$jdk7Home/lib/"
+    if (jdk7 && new File("$result/jfxrt.jar").exists()) {s
+        println "using javafx from current java 7: $result"
+        return result
+    }
+    result = "$javaHome/jre/lib/"
+    if (new File("$result/jfxrt.jar").exists()) {
+        println "using javafx from explicit JAVA_HOME: $result"
+        return result
+    }
+    result = "$javaHome/lib/"
+    if (new File("$result/jfxrt.jar").exists()) {
+        println "using javafx from explicit JAVA_HOME: $result"
+        return result
+    }
+    println "please use a Java Version 7_06+"
+    println " or set JAVA_HOME   to a dir that contains the jre/lib/jfxrt.jar"
+    println " or set JAVAFX_HOME to a dir that contains the rt/lib/jfxrt.jar"
+    System.exit 1
 }
 
 def mavenizedProjects() {
