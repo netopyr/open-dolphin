@@ -23,6 +23,7 @@ import com.canoo.dolphin.core.client.ClientPresentationModel
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.chart.PieChart
+import javafx.scene.layout.GridPane
 
 import java.beans.PropertyChangeListener
 
@@ -30,6 +31,7 @@ import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JavaFxUtil.value
 import static com.canoo.dolphin.binding.JavaFxUtil.cellEdit
 import static groovyx.javafx.GroovyFX.start
+import static javafx.scene.layout.GridPane.*
 
 class CrudView {
 
@@ -40,39 +42,49 @@ class CrudView {
                  domainId:1, name:'Portfolio One', total:"n/a", fixed:false)
 
         ObservableList<ClientPresentationModel> observableListOfPositions = FXCollections.observableArrayList()
+        ObservableList<ClientPresentationModel> observableListOfPortfolios = FXCollections.observableArrayList()
 
         start { app ->
             stage {
                 scene width: 1000, height: 600, stylesheets:"CrudDemo.css", {
-                    tabPane {
-                        tab id:'tab', {
-                            gridPane hgap:10, vgap:12, padding: 20, {
-                                label       "Portfolio",    row: 0, column: 0
-                                textField   id:'nameField', row: 0, column: 1, minHeight:32
-                                label       "Positions",    row: 1, column: 0
-                                vbox        id:'tableBox',  row: 1, column: 1, {
-                                    tableView id:'positions', selectionMode:"single", editable:true, {
-                                        value 'instrument', tableColumn('Instrument', prefWidth: 100, editable:true,
-                                              onEditCommit: cellEdit('instrument', { it.toString() } ) )
-                                        value 'weight'    , tableColumn('Weight',     prefWidth:  60, editable:true,
-                                              onEditCommit: cellEdit('weight',     { it.toInteger() } ) )
+                    splitPane  {
+                        dividerPosition(index: 0, position: 0.2)
+                        tableView id:'portfolios', selectionMode:"single", {
+                            value 'name',  tableColumn('Portfolio', prefWidth: 100 )
+                            value 'total', tableColumn('Total',     prefWidth: 40 )
+                            value 'fixed', tableColumn('Fixed',     prefWidth: 40 )
+                        }
+                        tabPane id:'tabs', {
+                            tab id:'tab', {
+                                gridPane hgap:10, vgap:12, padding: 20, {
+                                    label       "Portfolio",    row: 0, column: 0
+                                    textField   id:'nameField', row: 0, column: 1, minHeight:32
+                                    label       "Positions",    row: 1, column: 0
+                                    vbox        id:'tableBox',  row: 1, column: 1, {
+                                        tableView id:'positions', selectionMode:"single", editable:true, {
+                                            value 'instrument', tableColumn('Instrument', prefWidth: 100, editable:true,
+                                                                            onEditCommit: cellEdit('instrument', { it.toString() } ) )
+                                            value 'weight'    , tableColumn('Weight',     prefWidth:  60, editable:true,
+                                                                            onEditCommit: cellEdit('weight',     { it.toInteger() } ) )
+                                        }
+                                        hbox {
+                                            button id:'plus',  '+'
+                                            button id:'minus', '-'
+                                        }
                                     }
-                                    hbox {
-                                        button id:'plus',  '+'
-                                        button id:'minus', '-'
-                                    }
+                                    pieChart(id:'chart', row:0, column:2, rowSpan:REMAINING, animated: true)
+                                    label       'Total',        row: 2, column: 0
+                                    text        id:'totalField',row: 2, column: 1
+                                    label       'Fixed',        row: 3, column: 0
+                                    checkBox    id:'fixedField',row: 3, column: 1
                                 }
-                                pieChart(id:'chart', row:1, column:2, animated: true)
-                                label       'Total',        row: 2, column: 0
-                                text        id:'totalField',row: 2, column: 1
-                                label       'Fixed',        row: 3, column: 0
-                                checkBox    id:'fixedField',row: 3, column: 1
                             }
                         }
                     }
                 }
             }
-            positions.items = observableListOfPositions
+            positions.items  = observableListOfPositions
+            portfolios.items = observableListOfPortfolios
             ObservableList<PieChart.Data> chartData = chart.data
 
             bind 'name'     of selectedPortfolio to 'text'      of tab
@@ -121,6 +133,13 @@ class CrudView {
             // startup and main loop
             clientDolphin.send 'pullPositions', { positions ->
                 clientDolphin.send 'updateTotal'
+            }
+
+            clientDolphin.send 'pullPortfolios', { portfolios ->
+                for (pm in portfolios) {
+                    observableListOfPortfolios << pm
+                }
+                fadeTransition(1.s, node: portfolios, to: 1).playFromStart()
             }
 
             primaryStage.show()

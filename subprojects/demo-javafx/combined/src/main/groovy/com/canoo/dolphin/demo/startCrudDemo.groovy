@@ -21,6 +21,19 @@ import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 def config = new JavaFxInMemoryConfig()
 def serverDolphin = config.serverDolphin
 
+serverDolphin.action 'pullPortfolios', { cmd, response ->
+    def portfolios = [
+            [name:'Balanced',total:100,fixed:false],
+            [name:'Growth',  total: 40,fixed:false],
+            [name:'Risky',   total: 30,fixed:false],
+            [name:'Insane',  total: 20,fixed:false],
+    ]
+    portfolios.eachWithIndex{ portfolio, index ->
+        def pm = serverDolphin.presentationModel(portfolio, "Portfolio-$index", 'Portfolio')
+        response << CreatePresentationModelCommand.makeFrom(pm)
+    }
+}
+
 serverDolphin.action 'pullPositions', { cmd, response ->
     def selectedPortfolio = serverDolphin.findPresentationModelById('selectedPortfolio')
     def positions = [
