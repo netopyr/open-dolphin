@@ -11,26 +11,25 @@ JIRA: http://www.canoo.com/jira/browse/DOL
 
 Twitter: @OpenDolphin
 
+Prerequisites
+-------------
+If you use Java 7u6 or later, you are all set.
+Otherwise, JAVAFX_HOME must be set to a 2.1.0 version. (Version 2.2 also works fine.)
+
+Running an initial demo
+-----------------------
+> gradlew demo-javafx-combined:run
+
+To see a choice of demos use the .bat or .sh script
+> startDemo
+
+Use
+> startDemo 1
+to start the first demo.
+
 How to build
 ------------
 > gradlew clean build
-
-Troubleshooting:
-
-There is a known issue with calling the build on Windows platforms
-where the build sequence is not reliable. We are working on the issue but
-until then you can execute the following sequence:
-> gradlew clean
-
-> gradlew shared:build
-
-> gradlew server:build
-
-> gradlew client:build
-
-> gradlew combined:build
-
-After having done this once, all further builds should run fine.
 
 Server integration
 ------------------
@@ -38,14 +37,11 @@ Running the push demo with the grails server integration
 - gradlew build
 - cd dolphin-grails
 - grails run-app
-- // startGrailsClientDemo.groovy e.g. from inside idea
+- // start the "GrailsClient" demo
 
 You can create an IDEA project for the full dolphin code by running
 - gradlew idea
 
-Prerequisites
--------------
-JAVAFX_HOME must be set to a 2.1.0 version. (Version 2.2 also works fine.)
 
 Purpose
 -------
@@ -64,7 +60,7 @@ http://medianetwork.oracle.com/video/player/1871687106001
 Dolphin technical session at JavaOne 2012 by Arvinder Brar (Navis), Jasper Potts (Oracle) and Dierk Koenig (Canoo):
 https://oracleus.activeevents.com/connect/sessionDetail.ww?SESSION_ID=4853 (slides and screencast capture)
 
-Upcoming Dolphin technical session at W-JAX 2012, Munich, Nov 6th:
+Dolphin technical session at W-JAX 2012, Munich, Nov 6th:
 http://entwickler.com/konferenzen/ext_scripts/v2/php/sessions-popup.php?module=wjax2012&id=24020 (German)
 
 Project layout
