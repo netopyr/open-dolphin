@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.canoo.dolphin.core.ModelStore;
+import com.canoo.dolphin.core.comm.Command;
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand;
 import com.canoo.dolphin.core.comm.GetPresentationModelCommand;
 import com.canoo.dolphin.core.server.ServerAttribute;
 import com.canoo.dolphin.core.server.ServerPresentationModel;
 import com.canoo.dolphin.core.server.action.ServerAction;
 import com.canoo.dolphin.core.server.comm.ActionRegistry;
+import com.canoo.dolphin.core.server.comm.CommandHandler;
 import groovy.lang.Closure;
 
 import static com.canoo.dolphin.demo.ReferenceTableDemoProperties.CURRENCY;
@@ -40,8 +42,9 @@ public class ReferenceTableDemoAction implements ServerAction {
 	}
 
 	public void registerIn(final ActionRegistry registry) {
-		registry.register(GetPresentationModelCommand.class, new Closure(this) {
-			public Object call(GetPresentationModelCommand cmd, List response) {
+		registry.register(GetPresentationModelCommand.class, new CommandHandler<GetPresentationModelCommand>() {
+            @Override
+            public void handleCommand(GetPresentationModelCommand cmd, List response) {
                 String pmType = cmd.getPmId().split("-")[0];
 				if (CURRENCY_REF_TABLE.equals(pmType)) {
 					response.add(CreatePresentationModelCommand.makeFrom(createCurrenciesPM(cmd.getPmId(), pmType)));
@@ -50,7 +53,6 @@ public class ReferenceTableDemoAction implements ServerAction {
 					response.add(CreatePresentationModelCommand.makeFrom(createPortfolioPM(cmd.getPmId(), pmType)));
 
 				}
-				return response;
 			}
 		});
 	}
