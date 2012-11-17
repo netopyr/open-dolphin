@@ -66,7 +66,7 @@ String locateJfxLibDir() {
         return result
     }
     result = "$jdk7Home/lib/"
-    if (jdk7 && new File("$result/jfxrt.jar").exists()) {s
+    if (jdk7 && new File("$result/jfxrt.jar").exists()) {
         println "using javafx from current java 7: $result"
         return result
     }
