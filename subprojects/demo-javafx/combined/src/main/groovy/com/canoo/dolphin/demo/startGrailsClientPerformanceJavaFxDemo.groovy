@@ -16,27 +16,14 @@
 
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.LogConfig
-import com.canoo.dolphin.core.client.ClientDolphin
-import com.canoo.dolphin.core.client.ClientModelStore
-import com.canoo.dolphin.core.client.comm.HttpClientConnector
 import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
-import com.canoo.dolphin.core.comm.JsonCodec
 
 /*
 start standalone via
 gradlew demo-javafx-combined:run --stacktrace -PappProp=GrailsClientPerformance
 */
 
-LogConfig.logCommunication()
-def dolphin = new ClientDolphin()
-dolphin.setClientModelStore(new ClientModelStore(dolphin))
-def url = System.env.remote ?: "http://localhost:8080/dolphin-grails"
-println "connecting to $url"
-println "use -Dremote=... to override"
-def connector = new HttpClientConnector(dolphin, url)
-connector.codec = new JsonCodec()
-connector.uiThreadHandler = new JavaFXUiThreadHandler()
-dolphin.setClientConnector(connector)
+def dolphin = StarterUtil.setupForRemote()
+dolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
 
 PerformanceView.show(dolphin)
