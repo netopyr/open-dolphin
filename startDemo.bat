@@ -8,6 +8,7 @@ set crud=Crud
 set dependent_choice_box=DependentChoiceBox
 set dirty_attribute_flag=DirtyAttributeFlag
 set grails_client=GrailsClient
+set grails_client_performance=GrailsClientPerformance
 set multiple_attributes=MultipleAttributes
 set multiple_attributes_switch=MultipleAttributesSwitch
 set multiple_selection=MultipleSelection
@@ -45,9 +46,10 @@ IF "%1"=="17" set app_prop=%search%
 IF "%1"=="18" set app_prop=%shared_attributes%
 IF "%1"=="19" set app_prop=%single_attribute_multiple_bindings%
 IF "%1"=="20" set app_prop=%swing%
+IF "%1"=="21" set app_prop=%grails_client_performance%
 
 IF %1 leq 0 GOTO END
-IF %1 geq 21 GOTO END
+IF %1 geq 22 GOTO END
 ECHO Starting demo: %app_prop%
 gradlew demo-javafx-combined:run --stacktrace -PappProp=%app_prop%
 GOTO END
@@ -73,5 +75,6 @@ GOTO END
     ECHO [18] : %shared_attributes%
     ECHO [19] : %single_attribute_multiple_bindings%
     ECHO [20] : %swing%
+    ECHO [21] : %grails_client_performance%
     GOTO END
 :END

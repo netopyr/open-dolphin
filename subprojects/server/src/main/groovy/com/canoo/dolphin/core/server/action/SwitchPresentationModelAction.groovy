@@ -18,6 +18,7 @@ package com.canoo.dolphin.core.server.action
 
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 import com.canoo.dolphin.core.comm.SwitchPresentationModelCommand
+import groovy.util.logging.Log
 
 /**
  * When receiving the instruction to switch presentation models, this switch
@@ -27,12 +28,22 @@ import com.canoo.dolphin.core.comm.SwitchPresentationModelCommand
  * When a switch originates on the server, though, the server may still send
  * SwitchPmCommands to the client.
  */
+@Log
 class SwitchPresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register SwitchPresentationModelCommand, { SwitchPresentationModelCommand command, response ->
             def actualPm = serverDolphin.serverModelStore.findPresentationModelById(command.pmId)
             def sourcePm = serverDolphin.serverModelStore.findPresentationModelById(command.sourcePmId)
+
+            if (! actualPm || ! sourcePm) {
+                log.warning "trying to switch but cannot find target pm with id $command.pmId"
+                return
+            }
+            if (! sourcePm) {
+                log.warning "trying to switch but cannot find source pm with id $command.sourcePmId"
+                return
+            }
 
             actualPm.syncWith sourcePm
         }
