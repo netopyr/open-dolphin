@@ -33,8 +33,8 @@ class SwitchPresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register SwitchPresentationModelCommand, { SwitchPresentationModelCommand command, response ->
-            def actualPm = serverDolphin.serverModelStore.findPresentationModelById(command.pmId)
-            def sourcePm = serverDolphin.serverModelStore.findPresentationModelById(command.sourcePmId)
+            def actualPm = serverDolphin.findPresentationModelById(command.pmId)
+            def sourcePm = serverDolphin.findPresentationModelById(command.sourcePmId)
 
             if (! actualPm || ! sourcePm) {
                 log.warning "trying to switch but cannot find target pm with id $command.pmId"
