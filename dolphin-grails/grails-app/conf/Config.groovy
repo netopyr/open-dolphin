@@ -91,5 +91,5 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    debug "grails.app.controllers.DolphinController"
+    error "grails.app.controllers.DolphinController"
 }

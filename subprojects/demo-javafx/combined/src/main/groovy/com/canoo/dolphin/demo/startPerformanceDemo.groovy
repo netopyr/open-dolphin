@@ -16,19 +16,9 @@
 
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
-
 def config = new JavaFxInMemoryConfig()
 config.clientDolphin.clientConnector.sleepMillis = 0
 
-config.serverDolphin.action "sync", {cmd, response -> /* do nothing */ }
-config.serverDolphin.action "stressTest", { cmd, response ->
-    for (pm in config.serverDolphin.findPresentationModelById("input")) {
-        int count = pm.count.value.toInteger()
-        count.times {
-            response << new CreatePresentationModelCommand(pmType: 'all')
-        }
-    }
-}
+config.serverDolphin.register(new PerformanceAction(serverDolphin: config.serverDolphin))
 
 PerformanceView.show config.clientDolphin

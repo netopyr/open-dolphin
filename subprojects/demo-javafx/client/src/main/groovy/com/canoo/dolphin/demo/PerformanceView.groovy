@@ -17,13 +17,10 @@
 package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.LogConfig
-import com.canoo.dolphin.core.ModelStoreEvent
 import com.canoo.dolphin.core.client.ClientDolphin
-import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
-import javafx.collections.ObservableList
-import javafx.event.EventHandler
 
 import static com.canoo.dolphin.binding.Binder.bind
 import static com.canoo.dolphin.core.ModelStoreEvent.Type.ADDED
@@ -40,30 +37,37 @@ class PerformanceView {
 
     static show(ClientDolphin dolphin) {
 
-        def input = dolphin.presentationModel "input", count:0, time:0
+        def input = dolphin.presentationModel "input", count:0, attCount:0, time:0
 
         start { app ->
             SceneGraphBuilder sgb = delegate
             stage title: 'Measure Dolphin Response Times', {
-                scene width: 350, height: 250, {
+                scene width: 400, height: 250, {
                     gridPane padding: 20, vgap:10, hgap:10, {
                         label "Number of PMs", row:0, column:0
                         textField id:'number', row:0, column:1, text:'1'
-                        hbox row:1, column:1, spacing:10, {
+
+                        label "Number of Attributes", row:1, column:0
+                        textField id:'attCount', row:1, column:1, text:'1'
+
+                        hbox row:2, column:1, spacing:10, {
                             button 'Request',id:'request'
                             button 'Clear',  id:'clear'
                         }
 
-                        label "Last request (ms)", row:2, column:0
-                        textField id:'time',       row:2, column:1
+                        label "Last request (ms)", row:3, column:0
+                        textField id:'time',       row:3, column:1
 
-                        checkBox 'Show logs', id:'doLog', selected:true, row:3, column:1
+                        checkBox 'Show logs', id:'doLog', selected:true, row:4, column:1
 
-                        label "Connector sleep (ms)", row:4, column:0
-                        textField id:'conSleep',      row:4, column:1, text:dolphin.clientConnector.sleepMillis
+                        label "Connector sleep (ms)", row:5, column:0
+                        textField id:'conSleep',      row:5, column:1, text:getSleepMillis(dolphin)
 
-                        label "PMs in store", row:5, column:0
-                        label id:'store',     row:5, column:1, text:0
+                        label "PMs in store", row:6, column:0
+                        label id:'store',     row:6, column:1, text:0
+
+                        label "Memory (MB)", row:7, column:0
+                        label id:'mem',      row:7, column:1, text: memString
 
                     }
                 }
@@ -76,6 +80,7 @@ class PerformanceView {
             dolphin.addModelStoreListener { event ->
                 if (event.type == ADDED)   store.text = store.text.toInteger() + 1
                 if (event.type == REMOVED) store.text = store.text.toInteger() - 1
+                mem.text = memString
             }
 
             doLog.onAction {
@@ -86,13 +91,13 @@ class PerformanceView {
                 }
             }
             conSleep.text().addListener ({ obj, old, newVal ->
-                dolphin.clientConnector.sleepMillis = conSleep.text.toInteger()
-                println dolphin.clientConnector.sleepMillis
+                if (dolphin.clientConnector instanceof InMemoryClientConnector) dolphin.clientConnector.sleepMillis = conSleep.text.toInteger()
             } as ChangeListener)
 
 			request.onAction {
                 request.disable = true
                 input.count.value = number.text
+                input.attCount.value = attCount.text
                 long start = System.nanoTime()
                 dolphin.send "stressTest", { pms ->
                     long end = System.nanoTime()
@@ -117,6 +122,14 @@ class PerformanceView {
 			}
             primaryStage.show()
         }
+    }
+    static String getSleepMillis(ClientDolphin dolphin) {
+        if ( ! (dolphin.clientConnector instanceof InMemoryClientConnector)) return
+        dolphin.clientConnector.sleepMillis
+    }
+
+    static String getMemString() {
+        (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()).intdiv(1000000).toString()
     }
 
 }

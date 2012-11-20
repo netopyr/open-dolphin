@@ -3,6 +3,7 @@ import com.canoo.dolphin.core.comm.*
 import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.comm.ServerConnector
 import com.canoo.dolphin.demo.CustomAction
+import com.canoo.dolphin.demo.PerformanceAction
 
 class DolphinController {
 
@@ -39,5 +40,6 @@ class DolphinController {
 
     def void registerApplicationActions(ServerDolphin dolphin) {
         dolphin.serverConnector.register(new CustomAction(dolphin.modelStore))
+		dolphin.serverConnector.register(new PerformanceAction(serverDolphin: dolphin))
     }
 }
