@@ -16,27 +16,26 @@
 
 package com.canoo.dolphin.demo;
 
+import com.canoo.dolphin.core.comm.Command;
 import com.canoo.dolphin.core.comm.InitializeAttributeCommand;
-import com.canoo.dolphin.core.comm.NamedCommand;
 import com.canoo.dolphin.core.server.action.ServerAction;
 import com.canoo.dolphin.core.server.comm.ActionRegistry;
-import groovy.lang.Closure;
+import com.canoo.dolphin.core.server.comm.CommandHandler;
 
 import java.util.List;
 
 public class JavaAction implements ServerAction {
     public void registerIn(ActionRegistry registry) {
 
-        registry.register("javaAction", new Closure(this) {
-            public Object call(NamedCommand cmd, List response) {
-
+        registry.register("javaAction", new CommandHandler<Command>() {
+            @Override
+            public void handleCommand(Command command, List<Command> response) {
                 InitializeAttributeCommand initializeAttributeCommand = new InitializeAttributeCommand();
                 initializeAttributeCommand.setPmId("JAVA");
                 initializeAttributeCommand.setPropertyName("purpose");
                 initializeAttributeCommand.setNewValue("works without JavaFX");
 
                 response.add(initializeAttributeCommand);
-                return response;
             }
         });
     }
