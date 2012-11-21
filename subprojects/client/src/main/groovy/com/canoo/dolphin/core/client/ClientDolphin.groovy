@@ -107,6 +107,7 @@ class ApplyToAble {
 
     void to(ClientPresentationModel target) {
         target.syncWith source
-        dolphin.clientConnector.send new SwitchPresentationModelCommand(pmId: target.id, sourcePmId: source.id)
+        // at this point, all notifications about value and meta-inf changes
+        // have been sent and that way the server is synchronized
     }
 }
