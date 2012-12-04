@@ -1,4 +1,3 @@
-h4. Changes since ...
+h4. Notable Changes since 0.3
 
-# first change
-# second change
+# removed createPresentationModel from ServerDolphin, see https://www.canoo.com/jira/browse/DOL-31

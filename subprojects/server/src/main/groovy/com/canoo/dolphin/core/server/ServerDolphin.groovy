@@ -81,53 +81,6 @@ class ServerDolphin extends Dolphin {
         register(serverAction)
     }
 
-    /**
-     * Creates a presentation model on the client side.<br/>
-     * Automatically syncs any additional data on model/attributes
-     *
-     * @param response list of commands to be sent back to the client
-     * @param transientModel the model that should be created on the client side
-     * @param handler optional callback called after the model has been added to the serverModelStore
-     */
-    void createPresentationModel(List<Command> response, ServerPresentationModel transientModel, Closure handler) {
-        createPresentationModel(response, transientModel, new CreatePresentationModelHandler() {
-            @Override
-            void call(List<Command> callbackResponse, ServerPresentationModel presentationModel) {
-                handler(callbackResponse, presentationModel)
-            }
-        })
-    }
-
-    /**
-     * Creates a presentation model on the client side.<br/>
-     * Automatically syncs any additional data on model/attributes
-     *
-     * @param response list of commands to be sent back to the client
-     * @param transientModel the model that should be created on the client side
-     * @param handler optional callback called after the model has been added to the serverModelStore
-     */
-    void createPresentationModel(List<Command> response, ServerPresentationModel transientModel, CreatePresentationModelHandler handler) {
-        register(new DolphinServerAction() {
-            void registerIn(ActionRegistry registry) {
-                Closure commandHandler = null
-                commandHandler = { CreatePresentationModelCommand command, List<Command> callbackResponse ->
-                    if (command.pmId != transientModel.id) return
-                    ServerPresentationModel realizedPresentationModel = serverModelStore.findPresentationModelById(transientModel.id)
-                    for (transientAttribute in transientModel.attributes) {
-                        ServerAttribute realizedAttribute = realizedPresentationModel.findAttributeByPropertyName(transientAttribute.propertyName)
-                        if (!realizedAttribute) continue
-                        realizedAttribute.qualifier = transientAttribute.qualifier
-                    }
-                    handler.call(callbackResponse, realizedPresentationModel)
-                    registry.unregister(CreatePresentationModelCommand, commandHandler)
-                }
-
-                registry.register(CreatePresentationModelCommand, commandHandler)
-            }
-        })
-        response << CreatePresentationModelCommand.makeFrom(transientModel)
-    }
-
     /** groovy-friendly convenience method for a typical case of creating a ServerPresentationModel with initial values*/
     ServerPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
         List attributes = attributeNamesAndValues.collect {key, value -> new ServerAttribute(key, value) }
