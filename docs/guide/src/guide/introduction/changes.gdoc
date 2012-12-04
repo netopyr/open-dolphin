@@ -1,3 +1,4 @@
 h4. Notable Changes since 0.3
 
 # removed createPresentationModel from ServerDolphin, see https://www.canoo.com/jira/browse/DOL-31
+# removed the linking feature, see https://www.canoo.com/jira/browse/DOL-32
