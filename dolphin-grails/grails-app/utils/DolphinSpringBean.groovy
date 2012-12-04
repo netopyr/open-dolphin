@@ -12,7 +12,7 @@ class DolphinSpringBean {
     ServerDolphin dolphin
 
     DolphinSpringBean() {
-        log.info "creating new dolphin for session"
+        log.info "creating new dolphin session"
         dolphin = new ServerDolphin(new ModelStore(), new ServerConnector(codec:new JsonCodec()))
         dolphin.registerDefaultActions()
         registerApplicationActions()
