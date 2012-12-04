@@ -1,0 +1,25 @@
+
+Dolphin consists of three parts:
+# the shared module
+# the client module
+# the server module
+
+Both, client and server depend on the shared module.
+
+There is an additional fourth module called "combined".
+
+It depends on all three modules above and allows combining them in one single
+Java virtual machine for automatic testing, debugging, profiling and demo purposes.
+
+All modules live in their own subproject and the Gradle build system is
+used to build them according to their dependency structure.
+
+Each project that uses Dolphin will most likely resemble this structure
+where the shared module may be empty (in case they is no shared knowledge
+between client and server).
+
+There is an example project that uses Dolphin under the name "demo-javafx".
+
+While the structural part of the Dolphin architecture is rather
+obvious and straight-forward, the concepts and rules that stand behind
+its inception require a bit of explanation, which is the topic of the next section.

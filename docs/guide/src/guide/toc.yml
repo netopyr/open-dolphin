@@ -2,9 +2,10 @@ introduction :
   title : Introduction
   changes : Latest Changes
   credits : Credits
-concepts:
-  title : Concepts and Rules
-  concepts_presentation_model: Why you want to have a presentation model
+architecture:
+  title : Architecture
+  architecture_structure: The Dolphin structure
+  concepts_presentation_model: The concept of presentation models
   concepts_attributes: The purpose of attributes
   concepts_remoting: Distribution between client and server
   concepts_commands: Communicating via Commands
