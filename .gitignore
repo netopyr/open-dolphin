@@ -1,5 +1,6 @@
 build
 .idea
+dolphin-grails/.idea
 *.ipr
 *.iws
 *.iml
