@@ -28,6 +28,7 @@ class TestInMemoryConfig extends DefaultInMemoryConfig {
     TestInMemoryConfig() {
         serverDolphin.registerDefaultActions()
         clientDolphin.clientConnector.sleepMillis = 0
+        // todo dk: this is probably not quite right, since it doesn't force the callback to be handled in the main test thread
         clientDolphin.clientConnector.uiThreadHandler = { it() } as UiThreadHandler
     }
 

@@ -28,7 +28,6 @@ public class ModelStore {
     private final Map<String, List<PresentationModel>> modelsPerType = new ConcurrentHashMap<String, List<PresentationModel>>();
     private final Map<Long, Attribute> attributesPerId = new ConcurrentHashMap<Long, Attribute>();
     private final Map<String, List<Attribute>> attributesPerQualifier = new ConcurrentHashMap<String, List<Attribute>>();
-    private final LinkStore linkStore = new LinkStore();
 
     private final Set<ModelStoreListenerWrapper> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper>();
 
@@ -95,7 +94,6 @@ public class ModelStore {
 
     /**
      * Removes a presentation model from this store.<br/>
-     * This method will also unlink the model from every relationship it may belong to.
      *
      * @param model the model to be removed from the store.
      * @return if the remove operation was successful or not.
@@ -104,7 +102,6 @@ public class ModelStore {
         if (null == model) return false;
         boolean removed = false;
         if (presentationModels.containsValue(model)) {
-            unlink(model);
             removePresentationModelByType(model);
             presentationModels.remove(model.getId());
             for (Attribute attribute : model.getAttributes()) {
@@ -194,7 +191,7 @@ public class ModelStore {
      * Finds all presentation models that share the same type.<br/>
      * The returned {@code List} is never null and immutable.
      *
-     * @param type the tpye to search for
+     * @param type the type to search for
      * @return a {@code List} of all presentation models for which there was a match in their type.
      */
     public List<PresentationModel> findAllPresentationModelsByType(String type) {
@@ -267,160 +264,6 @@ public class ModelStore {
         return null == str || str.trim().length() == 0;
     }
 
-    /**
-     * Establishes a link between two presentation models.<br/>
-     * <strong>WARNING:</strong> this method may return {@code null} if any argument is {@code null}
-     * or if any of the models are not contained in the store.<br/>
-     *
-     * @param start the starting model
-     * @param end   the ending model
-     * @param type  the type of relationship, i.e, "PARENT_CHILD".
-     * @return a link between both models.
-     */
-    public boolean link(PresentationModel start, PresentationModel end, String type) {
-        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
-            return false;
-        }
-        BaseLink link = new BaseLink(start, end, type);
-        Link existingLink = linkStore.findLinkByExample(link);
-        if (null != existingLink) return false;
-        linkStore.add(link);
-        return true;
-    }
-
-    /**
-     * Severs the link between two presentation models as long as the link exists with the given arguments.<br/>
-     *
-     * @param start the starting model
-     * @param end   the ending model
-     * @param type  the type of relationship, i.e, "PARENT_CHILD".
-     * @return true if such a link existed and was removed successfully, false otherwise.
-     */
-    public boolean unlink(PresentationModel start, PresentationModel end, String type) {
-        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
-            return false;
-        }
-        return linkStore.remove(new BaseLink(start, end, type));
-    }
-
-    /**
-     * Severs the link between two presentation models as long as the link exists with the given arguments.<br/>
-     *
-     * @param link the link to removed.
-     * @return true if such a link existed and was removed successfully, false otherwise.
-     */
-    public boolean unlink(Link link) {
-        return null != link &&
-                containsPresentationModel(link.getStart()) &&
-                containsPresentationModel(link.getEnd()) &&
-                linkStore.remove(link);
-    }
-
-    protected boolean unlink(PresentationModel model) {
-        if (containsPresentationModel(model) && !linkStore.findAllLinksByModel(model, Link.Direction.OUTGOING).isEmpty()) {
-            linkStore.removeAllLinks(model);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Finds out of there's a link of the given type between two presentation models.<br/>
-     * <strong>WARNING:</strong> this method may return {@code null} if any argument is {@code null}
-     * or if any of the models are not contained in the store.<br/>
-     *
-     * @param start the starting model
-     * @param end   the ending model
-     * @param type  the type of relationship, i.e, "PARENT_CHILD".
-     * @return a link that matches the passed-in parameters, {@code null} otherwise.
-     */
-    public Link findLink(PresentationModel start, PresentationModel end, String type) {
-        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
-            return null;
-        }
-        BaseLink link = new BaseLink(start, end, type);
-        return linkStore.findLinkByExample(link);
-    }
-
-    /**
-     * Finds all links of the given type where the model participates.<br/>
-     * The model may be either a starting or ending model.<br/>
-     * The returned {@code List} is never null and immutable.
-     *
-     * @param model a starting or ending model.
-     * @param type  the type of link to search for.
-     * @return a {@code List} of all links where the model and type are found.
-     */
-    public List<Link> findAllLinksByModelAndType(PresentationModel model, String type) {
-        return findAllLinksByModelAndType(model, type, Link.Direction.BOTH);
-    }
-
-    /**
-     * Finds all links of the given type where the model participates.<br/>
-     * The model should be found at a specific position in the link, given by the specified direction.<br/>
-     * The returned {@code List} is never null and immutable.
-     *
-     * @param model     a starting or ending model given a specific direction.
-     * @param type      the type of link to search for.
-     * @param direction the direction of the link. {@code Link.Direction.BOTH} will be used if the argument is null.
-     * @return a {@code List} of all links where the model and type are found.
-     */
-    public List<Link> findAllLinksByModelAndType(PresentationModel model, String type, Link.Direction direction) {
-        return null != type || containsPresentationModel(model) ? linkStore.findLinksByType(model, type, direction) : Collections.<Link>emptyList();
-    }
-
-    /**
-     * Finds all links (not caring for a particular type) where the given model participates.<br/>
-     * The model may be either a starting or ending model.<br/>
-     * The returned {@code List} is never null and immutable.
-     *
-     * @param model a starting or ending model.
-     * @return a {@code List} of all links where the model is found.
-     */
-    public List<Link> findAllLinksByModel(PresentationModel model) {
-        return findAllLinksByModel(model, Link.Direction.BOTH);
-    }
-
-    /**
-     * Finds all links (not caring for a particular type) where the given model participates.<br/>
-     * The model should be found at a specific position in the link, given by the specified direction.<br/>
-     * The returned {@code List} is never null and immutable.
-     *
-     * @param model     a starting or ending model.
-     * @param direction the direction of the link. {@code Link.Direction.BOTH} will be used if the argument is null.
-     * @return a {@code List} of all links where the model is found.
-     */
-    public List<Link> findAllLinksByModel(PresentationModel model, Link.Direction direction) {
-        return containsPresentationModel(model) ? linkStore.findAllLinksByModel(model, direction) : Collections.<Link>emptyList();
-    }
-
-    /**
-     * Finds ouf if a link of the given type exists between two presentation models.<br/>
-     *
-     * @param start the starting model
-     * @param end   the ending model
-     * @param type  the type of relationship, i.e, "PARENT_CHILD".
-     * @return true if such a link exists, false otherwise.
-     */
-    public boolean linkExists(PresentationModel start, PresentationModel end, String type) {
-        return null != type &&
-                containsPresentationModel(start) &&
-                containsPresentationModel(end) &&
-                null != linkStore.findLinkByExample(new BaseLink(start, end, type));
-    }
-
-    /**
-     * Finds ouf if a link of the given type exists between two presentation models.<br/>
-     *
-     * @param link the link to search for.
-     * @return true if such a link exists, false otherwise.
-     */
-    public boolean linkExists(Link link) {
-        return null != link &&
-                containsPresentationModel(link.getStart()) &&
-                containsPresentationModel(link.getEnd()) &&
-                null != linkStore.findLinkByExample(link);
-    }
 
     public void addModelStoreListener(ModelStoreListener listener) {
         addModelStoreListener(null, listener);
@@ -460,30 +303,6 @@ public class ModelStore {
         }
     }
 
-    public void addModelStoreLinkListener(ModelStoreLinkListener listener) {
-        addModelStoreLinkListener(null, listener);
-    }
-
-    public void addModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
-        linkStore.addModelStoreLinkListener(linkType, listener);
-    }
-
-    public void removeModelStoreLinkListener(ModelStoreLinkListener listener) {
-        removeModelStoreLinkListener(null, listener);
-    }
-
-    public void removeModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
-        linkStore.removeModelStoreLinkListener(linkType, listener);
-    }
-
-    public boolean hasModelStoreLinkListener(ModelStoreLinkListener listener) {
-        return hasModelStoreLinkListener(null, listener);
-    }
-
-    public boolean hasModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
-        return linkStore.hasModelStoreLinkListener(linkType, listener);
-    }
-
     private static class ModelStoreListenerWrapper implements ModelStoreListener {
         private static final String ANY_PRESENTATION_MODEL_TYPE = "*";
         private final String presentationModelType;
@@ -507,7 +326,6 @@ public class ModelStore {
                 ModelStoreListenerWrapper that = (ModelStoreListenerWrapper) o;
                 return delegate.equals(that.delegate) && presentationModelType.equals(that.presentationModelType);
             }
-
             return false;
         }
 
@@ -527,214 +345,4 @@ public class ModelStore {
         }
     }
 
-    private static class ModelStoreLinkListenerWrapper implements ModelStoreLinkListener {
-        private static final String ANY_LINK_TYPE = "*";
-        private final String linkType;
-        private final ModelStoreLinkListener delegate;
-
-        private ModelStoreLinkListenerWrapper(String linkType, ModelStoreLinkListener delegate) {
-            this.linkType = !isBlank(linkType) ? linkType : ANY_LINK_TYPE;
-            this.delegate = delegate;
-        }
-
-        private boolean linkTypeMatches(String linkType) {
-            return ANY_LINK_TYPE.equals(this.linkType) || this.linkType.equals(linkType);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (null == o) return false;
-
-            if (o instanceof ModelStoreLinkListenerWrapper) {
-                ModelStoreLinkListenerWrapper that = (ModelStoreLinkListenerWrapper) o;
-                return delegate.equals(that.delegate) && linkType.equals(that.linkType);
-            }
-
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = linkType.hashCode();
-            result = 31 * result + delegate.hashCode();
-            return result;
-        }
-
-        @Override
-        public void modelStoreLinkChanged(ModelStoreLinkEvent event) {
-            String type = event.getLinkType();
-            if (linkTypeMatches(type)) {
-                delegate.modelStoreLinkChanged(event);
-            }
-        }
-    }
-
-    private static class LinkStore {
-        private class LinkBox {
-            private final List<Link> incoming = new ArrayList<Link>();
-            private final List<Link> outgoing = new ArrayList<Link>();
-
-            private List<Link> all() {
-                List<Link> all = new ArrayList<Link>();
-                all.addAll(outgoing);
-                for (Link link : incoming) {
-                    if (!all.contains(link)) all.add(link);
-                }
-                return all;
-            }
-        }
-
-        private final Map<PresentationModel, LinkBox> LINKS = new ConcurrentHashMap<PresentationModel, LinkBox>();
-        private final Set<ModelStoreLinkListenerWrapper> modelStoreLinkListeners = new LinkedHashSet<ModelStoreLinkListenerWrapper>();
-
-        private void addModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
-            if (null == listener) return;
-            ModelStoreLinkListenerWrapper wrapper = new ModelStoreLinkListenerWrapper(linkType, listener);
-            if (!modelStoreLinkListeners.contains(wrapper)) modelStoreLinkListeners.add(wrapper);
-        }
-
-        private void removeModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
-            if (null == listener) return;
-            modelStoreLinkListeners.remove(new ModelStoreLinkListenerWrapper(linkType, listener));
-        }
-
-        private boolean hasModelStoreLinkListener(String linkType, ModelStoreLinkListener listener) {
-            return null != listener &&
-                    modelStoreLinkListeners.contains(new ModelStoreLinkListenerWrapper(linkType, listener));
-        }
-
-        private void fireModelStoreLinkChangedEvent(Link link, ModelStoreLinkEvent.Type eventType) {
-            ModelStoreLinkEvent event = new ModelStoreLinkEvent(
-                    eventType,
-                    link.getStart(),
-                    link.getEnd(),
-                    link.getType()
-            );
-            for (ModelStoreLinkListener listener : modelStoreLinkListeners) {
-                listener.modelStoreLinkChanged(event);
-            }
-        }
-
-        private boolean add(Link link) {
-            LinkBox links = LINKS.get(link.getStart());
-
-            if (null == links) {
-                links = new LinkBox();
-                LINKS.put(link.getStart(), links);
-            }
-
-            if (links.outgoing.contains(link)) return false;
-            links.outgoing.add(link);
-
-            links = LINKS.get(link.getEnd());
-            if (null == links) {
-                links = new LinkBox();
-                LINKS.put(link.getEnd(), links);
-            }
-
-            if (links.incoming.contains(link)) return false;
-            links.incoming.add(link);
-
-            fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.Type.ADDED);
-
-            return true;
-        }
-
-        private boolean remove(Link link) {
-            boolean removed = false;
-            LinkBox links = LINKS.get(link.getStart());
-
-            if (null != links && links.outgoing.contains(link)) {
-                links.outgoing.remove(link);
-                removed = true;
-            }
-
-            links = LINKS.get(link.getEnd());
-
-            if (null != links && links.incoming.contains(link)) {
-                links.incoming.remove(link);
-                removed = true;
-            }
-
-            if (removed) fireModelStoreLinkChangedEvent(link, ModelStoreLinkEvent.Type.REMOVED);
-
-            return removed;
-        }
-
-        private Link findLinkByExample(Link example) {
-            PresentationModel start = example.getStart();
-
-            LinkBox links = LINKS.get(start);
-            if (null == links) return null;
-
-            for (Link link : links.outgoing) {
-                if (linkTypesAreEqual(link, example) &&
-                        link.getEnd().equals(example.getEnd())) {
-                    return link;
-                }
-            }
-
-            return null;
-        }
-
-        private List<Link> findLinksByType(PresentationModel model, String type, Link.Direction direction) {
-            LinkBox links = LINKS.get(model);
-            if (null == links) return Collections.emptyList();
-            List<Link> linksByType = new ArrayList<Link>();
-            if (null == direction || direction == Link.Direction.BOTH || direction == Link.Direction.OUTGOING) {
-                for (Link link : links.outgoing) {
-                    if (linkTypesAreEqual(link.getType(), type)) {
-                        linksByType.add(link);
-                    }
-                }
-            }
-            if (null == direction || direction == Link.Direction.BOTH || direction == Link.Direction.INCOMING) {
-
-                for (Link link : links.incoming) {
-                    if (linkTypesAreEqual(link.getType(), type) && !links.incoming.contains(link)) {
-                        linksByType.add(link);
-                    }
-                }
-            }
-            return Collections.unmodifiableList(linksByType);
-        }
-
-        private List<Link> findAllLinksByModel(PresentationModel model, Link.Direction direction) {
-            LinkBox links = LINKS.get(model);
-            if (null == links) return Collections.emptyList();
-            switch (direction) {
-                case INCOMING:
-                    return Collections.unmodifiableList(links.incoming);
-                case OUTGOING:
-                    return Collections.unmodifiableList(links.outgoing);
-                case BOTH:
-                default:
-                    return Collections.unmodifiableList(links.all());
-            }
-        }
-
-        private boolean linkTypesAreEqual(Link a, Link b) {
-            return linkTypesAreEqual(a.getType(), b.getType());
-        }
-
-        private boolean linkTypesAreEqual(String a, String b) {
-            return a.equals(b);
-        }
-
-        private void removeAllLinks(PresentationModel model) {
-            LinkBox links = LINKS.remove(model);
-            if (null == links) return;
-            for (Link link : links.outgoing) {
-                LinkBox otherLinks = LINKS.get(link.getEnd());
-                if (null == otherLinks) continue;
-                otherLinks.incoming.remove(link);
-            }
-            for (Link link : links.incoming) {
-                LinkBox otherLinks = LINKS.get(link.getStart());
-                if (null == otherLinks) continue;
-                otherLinks.outgoing.remove(link);
-            }
-        }
-    }
 }

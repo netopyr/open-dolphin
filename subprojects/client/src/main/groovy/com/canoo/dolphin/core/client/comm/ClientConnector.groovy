@@ -313,19 +313,4 @@ abstract class ClientConnector implements PropertyChangeListener {
         return null
     }
 
-    ClientPresentationModel handle(PresentationModelLinkAddedCommand serverCommand) {
-        PresentationModel a = clientModelStore.findPresentationModelById(serverCommand.startId)
-        PresentationModel b = clientModelStore.findPresentationModelById(serverCommand.endId)
-        if (null == a || null == b || null == serverCommand.type) return null
-        clientModelStore.link(a, b, serverCommand.type)
-        return null
-    }
-
-    ClientPresentationModel handle(PresentationModelLinkRemovedCommand serverCommand) {
-        PresentationModel a = clientModelStore.findPresentationModelById(serverCommand.startId)
-        PresentationModel b = clientModelStore.findPresentationModelById(serverCommand.endId)
-        if (null == a || null == b || null == serverCommand.type) return null
-        clientModelStore.unlink(a, b, serverCommand.type)
-        return null
-    }
 }

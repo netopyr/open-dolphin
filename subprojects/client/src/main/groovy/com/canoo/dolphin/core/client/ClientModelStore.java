@@ -17,7 +17,6 @@
 package com.canoo.dolphin.core.client;
 
 import com.canoo.dolphin.core.Attribute;
-import com.canoo.dolphin.core.Link;
 import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.PresentationModel;
 import com.canoo.dolphin.core.client.comm.ClientConnector;
@@ -132,44 +131,4 @@ public class ClientModelStore extends ModelStore {
         }
     }
 
-    @Override
-    public boolean link(PresentationModel start, PresentationModel end, String type) {
-        if (null == type || !containsPresentationModel(start) || !containsPresentationModel(end)) {
-            return false;
-        }
-
-        boolean linkWasAdded = false;
-        if (!linkExists(start, end, type)) {
-            linkWasAdded = super.link(start, end, type);
-            getClientConnector().send(new AddPresentationModelLinkCommand(start.getId(), end.getId(), type));
-        }
-        return linkWasAdded;
-    }
-
-    @Override
-    public boolean unlink(PresentationModel start, PresentationModel end, String type) {
-        boolean linkWasRemoved = super.unlink(start, end, type);
-        if (linkWasRemoved) {
-            getClientConnector().send(new RemovePresentationModelLinkCommand(start.getId(), end.getId(), type));
-        }
-        return linkWasRemoved;
-    }
-
-    @Override
-    public boolean unlink(Link link) {
-        boolean linkWasRemoved = super.unlink(link);
-        if (linkWasRemoved) {
-            getClientConnector().send(new RemovePresentationModelLinkCommand(link.getStart().getId(), link.getEnd().getId(), link.getType()));
-        }
-        return linkWasRemoved;
-    }
-
-    @Override
-    protected boolean unlink(PresentationModel model) {
-        List<Link> links = findAllLinksByModel(model);
-        for (Link link : links) {
-            getClientConnector().send(new RemovePresentationModelLinkCommand(link.getStart().getId(), link.getEnd().getId(), link.getType()));
-        }
-        return super.unlink(model);
-    }
 }

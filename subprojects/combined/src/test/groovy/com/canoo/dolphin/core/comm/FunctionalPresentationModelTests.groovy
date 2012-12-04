@@ -114,7 +114,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testUnregisteredCommand() {
         clientDolphin.send "no-such-action-registered", {
-            fail "must not reach here"
+            // unknown actions are silently ignored and logged as warnings on the server side.
         }
         context.assertionsDone()
     }
