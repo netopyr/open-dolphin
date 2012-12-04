@@ -129,8 +129,8 @@ subprojects.each { proj ->
     //}
 }
 
-task wrapper(type:Wrapper, description:"create a gradlew") {
-    gradleVersion = '1.2'
+task wrap(type:Wrapper, description:"create a gradlew") {
+    gradleVersion = '1.3'
 }
 
 apply {
