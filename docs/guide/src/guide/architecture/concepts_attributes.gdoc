@@ -1,0 +1,25 @@
+Each presentation model can refer to many attributes.
+
+Attributes maintain no back-reference.
+Technically, they can be shared between presentation models.
+
+Attributes are _generic_. You never need implement your own attribute type.
+
+Each attribute has a unique @id@ and a @propertyName@ that is unique per presentation model.
+
+Attributes encapsulate a primitive value and allow listeners to be notified about value changes.
+Technically, this is done via the standard Java @PropertyChangeListener@ type.
+In other words, Attributes are @Observable@.
+
+In addition to the value, attributes provide additional information, e.g.
+whether the value is _dirty_ (i.e. it differs from the _base value_).
+
+The ability to capture more additional information is an open feature request
+([DOL-33|https://www.canoo.com/jira/browse/DOL-33]).
+
+Attributes have a _qualifier_ property.
+
+Whenever the value of an Attribute changes, all other attributes with the same qualifier
+are automatically updated.
+
+See also [Usage|Attribute].

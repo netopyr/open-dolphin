@@ -1,5 +1,5 @@
 Presentation models are probably best known because of
-[the presentation model design pattern by Martin Fowler|http://martinfowler.com/eaaDev/PresentationModel.html].
+[design pattern|http://martinfowler.com/eaaDev/PresentationModel.html] by Martin Fowler.
 
 They also come under different names like _Application Model_ or _View Model_.
 
@@ -12,13 +12,14 @@ Dolphin doesn't claim to have "the best" implementation of this pattern in any s
 
 {note}
 In fact, we do not even claim to implement the "presentation model *design pattern*" at all!
-{note}
-
+\\
+\\
 _We would like to avoid any discussion about whether we meet all requirements of_
 _any pattern or structure as proposed by any authority._
 _We are happy to give them all due credit, though, since we are building on their work._
+{note}
 
-It just happens that what Dolphin is doing has a lot of similarities with the patterns
+It just happens that the Dolphin approach has a lot of similarities with the patterns
 above, which led us to calling our abstraction a presentation model.
 
 h4. What is common
@@ -38,12 +39,15 @@ h4. What is special
 
 - Dolphin presentation models are _generic_. You never implement a new class for a new type of presentation model.
 - They do not contain any custom behavior (only what's provided by Dolphin for binding and remoting).
-- They allow _stable bindings_ (xxx-forward-reference).
-- They are _flat_. Their attributes contain no object references, only primitive values. There is no object graph.
+- They allow [stable bindings|guide:concepts_binding].
+- They are _flat._ Their attributes contain no object references, only primitive values. There is no object graph.
 - In particular, they do not maintain an object reference to a domain model (but maybe a key).
 - They are _shared_ between a client and a server. Dolphin cares for consistent synchronization.
 - They live in a managed object space. All instances are known and can be retrieved by their characteristics.
-- They have a unique id.
+- They have a unique _id_, which either the application programmer provides or is automatically assigned otherwise.
+- They optionally have a _type_ parameter for logical grouping.
+
+See also: [Usage|PresentationModel].
 
 h4. Where the logic goes
 
@@ -51,4 +55,4 @@ When there is the least bit of business logic, it goes into an action.
 Actions live in controller classes of the server module.
 
 There is a small fraction of logic that resides on the client, which is
-_view_ logic like e.g. the logic by which alternating colors are chosen for table rows (zebra look).
+_view_ logic like e.g. for calculating component bounds when layouting.
