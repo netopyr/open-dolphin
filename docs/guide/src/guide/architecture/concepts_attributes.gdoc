@@ -27,4 +27,4 @@ are automatically updated.
 
 Qualifiers are a prerequisite for [stable bindings|guide:concepts_binding].
 
-See also [Usage|Attribute].
+See also [Usage|Attribute] and [API doc|api:com.canoo.dolphin.core.Attribute].
