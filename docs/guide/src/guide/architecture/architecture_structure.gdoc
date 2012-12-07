@@ -33,6 +33,12 @@ layering that spans across all modules. In consists of:
 
 The layering is visible through the respective package structure.
 
+{note}
+The application programmer should only use the facade layer.
+{note}
+
+The figure below summarizes the vertical and horizontal structuring.\\
+!../img/dolphin_pics/dolphin.025.png!
 
 While the structural part of the Dolphin architecture is rather
 obvious and straight-forward, the concepts and rules that stand behind

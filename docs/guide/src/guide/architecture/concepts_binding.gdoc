@@ -22,13 +22,17 @@ for use cases where a selection changes the to-be-displayed information, commonl
 known as master-detail views.
 
 Master-detail views come in many flavors:
-- a list selection with an associated form for the row info
-- a map or chart selection with details per selected item
-- a tabbed paned with the individual tabs
+- a list or table row selection with an associated detail view (often forms) for the row info
+- a map or chart item selection with details per selected item
+- a tabbed pane with the individual details (often forms) per tab
 
 OpenDolphin allows to bind the detail view against a stable _placeholder_
 presentation model that is automatically synchronized (both read and write)
 with the selection.
+
+{note}
+The detail view *never* has to change its binding!
+{note}
 
 In fact, this feature goes beyond master-detail views and applies to all
 referential structures, which otherwise are a very difficult to handle

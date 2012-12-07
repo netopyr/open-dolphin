@@ -1,4 +1,4 @@
-Presentation models are probably best known because of
+Presentation models are probably best known because of the presentation model
 [design pattern|http://martinfowler.com/eaaDev/PresentationModel.html] by Martin Fowler.
 
 They also come under different names like _Application Model_ or _View Model_.

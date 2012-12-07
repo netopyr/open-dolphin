@@ -8,10 +8,14 @@ architecture:
   concepts_presentation_model: The concept of presentation models
   concepts_attributes: The purpose of attributes
   concepts_binding: Stable bindings
-  concepts_remoting: Distribution between client and server
+  concepts_model_store: Collections of presentation models and the model store
+  concepts_remoting: Understanding the client-server split and threading model
   concepts_commands: Communicating via Commands
+  concepts_discussion: Discussion
 demos:
   title : Use Cases and Demos
+  demo_yard: The container yard monitoring application
+  demo_login: The general approach of OpenDolphin with a Login dialog
   demo_binding: Binding against Presentation Models
 config:
   title: Configuration and Setup
