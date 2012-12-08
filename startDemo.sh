@@ -2,7 +2,7 @@
 app_prop[1]=BindList
 app_prop[2]=CategoryChange
 app_prop[3]=ComposedDirty
-app_prop[4]=CreatePresentationModel
+app_prop[4]=Swing
 app_prop[5]=Crud
 app_prop[6]=DependentChoiceBox
 app_prop[7]=DirtyAttributeFlag
@@ -19,7 +19,6 @@ app_prop[17]=Save
 app_prop[18]=Search
 app_prop[19]=SharedAttributes
 app_prop[20]=SingleAttributeMultipleBindings
-app_prop[21]=Swing
 if [ "$#" -eq 0 ];
 then
 echo No start parameter provided. Provide start parameter 1-20 to start one of the following demos:

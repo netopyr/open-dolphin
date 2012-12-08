@@ -3,7 +3,6 @@
 set bind_list=BindList
 set category_change=CategoryChange
 set composed_dirty=ComposedDirty
-set create_presentation_model=CreatePresentationModel
 set crud=Crud
 set dependent_choice_box=DependentChoiceBox
 set dirty_attribute_flag=DirtyAttributeFlag
@@ -29,7 +28,7 @@ IF "%1"=="" GOTO DEFAULT
 IF "%1"=="1" set app_prop=%bind_list%
 IF "%1"=="2" set app_prop=%category_change%
 IF "%1"=="3" set app_prop=%composed_dirty%
-IF "%1"=="4" set app_prop=%create_presentation_model%
+IF "%1"=="4" set app_prop=%grails_client_performance%
 IF "%1"=="5" set app_prop=%crud%
 IF "%1"=="6" set app_prop=%dependent_choice_box%
 IF "%1"=="7" set app_prop=%dirty_attribute_flag%
@@ -46,10 +45,9 @@ IF "%1"=="17" set app_prop=%search%
 IF "%1"=="18" set app_prop=%shared_attributes%
 IF "%1"=="19" set app_prop=%single_attribute_multiple_bindings%
 IF "%1"=="20" set app_prop=%swing%
-IF "%1"=="21" set app_prop=%grails_client_performance%
 
 IF %1 leq 0 GOTO END
-IF %1 geq 22 GOTO END
+IF %1 geq 21 GOTO END
 ECHO Starting demo: %app_prop%
 gradlew demo-javafx-combined:run --stacktrace -PappProp=%app_prop%
 GOTO END
@@ -58,7 +56,7 @@ GOTO END
     ECHO [1] : %bind_list%
     ECHO [2] : %category_change%
     ECHO [3] : %composed_dirty%
-    ECHO [4] : %create_presentation_model%
+    ECHO [4] : %grails_client_performance%
     ECHO [5] : %crud%
     ECHO [6] : %dependent_choice_box%
     ECHO [7] : %dirty_attribute_flag%
@@ -75,6 +73,5 @@ GOTO END
     ECHO [18] : %shared_attributes%
     ECHO [19] : %single_attribute_multiple_bindings%
     ECHO [20] : %swing%
-    ECHO [21] : %grails_client_performance%
     GOTO END
 :END
