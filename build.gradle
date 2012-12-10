@@ -156,3 +156,19 @@ task apidoc(type: Groovydoc) {
     link("http://docs.oracle.com/javafx/2/api/", "javafx.")
     link("http://groovy.codehaus.org/api", "groovy.", "org.codehaus.groovy.")
 }
+
+def demos = new File(rootDir,'subprojects/demo-javafx/combined/src/main/groovy/com/canoo/dolphin/demo')
+    .list()
+    .findAll {it.startsWith('start') && it.endsWith('Demo.groovy')}
+    .collect { it - 'start' - 'Demo.groovy' }
+
+task listDemos(description:"List all available demos") << { demos.sort().each { println "gradlew ${it}Demo" } }
+
+demos.each { demo ->
+    task "${demo}DemoPreparation"(description:"internal") << {
+        project(':demo-javafx-combined').ext.set('demoApplicationName' , demo)
+    }
+    task "${demo}Demo"(dependsOn:["${demo}DemoPreparation", ':demo-javafx-combined:run'],
+                       description:"start the ${demo} demo"){}
+}
+

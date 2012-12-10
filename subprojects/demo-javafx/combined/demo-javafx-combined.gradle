@@ -19,8 +19,11 @@ apply plugin: 'application'
 def mainClassPackage = "com.canoo.dolphin.demo."
 mainClassName = mainClassPackage+"startPushDemo"
 
-if (project.hasProperty("appProp")) {
-    mainClassName=mainClassPackage+"start"+project.getProperty("appProp")+"Demo"
+run.doFirst {
+    if (project.ext.get("demoApplicationName")) {
+        project.setProperty('mainClassName', mainClassPackage+"start"+project.ext.get("demoApplicationName")+"Demo")
+    }
+    println "starting demo: "+project.getProperty('mainClassName')
 }
 
 dependencies {

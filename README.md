@@ -2,6 +2,7 @@ The Dolphin Project
 ===================
 
 Website: http://open-dolphin.org
+see also the user guide, which is linked from the website.
 
 Team: Dieter Holz, Andres Almiray, Dierk Koenig
 
@@ -16,17 +17,12 @@ Prerequisites
 If you use Java 7u6 or later, you are all set.
 Otherwise, JAVAFX_HOME must be set to a 2.1.0 version. (Version 2.2 also works fine.)
 
-Running an initial demo
+Running an initial "Push" demo
 -----------------------
-> gradlew demo-javafx-combined:run
+> gradlew PushDemo
 
-To see a choice of demos use the .bat or .sh script:
-> startDemo
-
-Use
-> startDemo 1
-
-to start the first demo.
+To see a choice of demos use:
+> gradlew listDemos
 
 How to build
 ------------
@@ -37,12 +33,17 @@ Server integration
 Running the push demo with the grails server integration
 - gradlew build
 - cd dolphin-grails
-- grails run-app
-- // start the "GrailsClient" demo
+- grails run-app &
+- cd ..
+- gradlew GrailsClientPushDemo
 
+IDE integration
+---------------
 You can create an IDEA project for the full dolphin code by running
 - gradlew idea
 
+or for eclipse via
+- gradlew eclipse
 
 Purpose
 -------
