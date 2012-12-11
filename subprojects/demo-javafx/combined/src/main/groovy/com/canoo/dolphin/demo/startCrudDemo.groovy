@@ -15,7 +15,6 @@
  */
 
 package com.canoo.dolphin.demo
-
 import com.canoo.dolphin.demo.crud.CrudActions
 import com.canoo.dolphin.demo.crud.CrudInMemoryService
 import com.canoo.dolphin.demo.crud.CrudView

@@ -3,10 +3,10 @@ package com.canoo.dolphin.demo.crud
 class CrudInMemoryService implements CrudService {
     List<Map> listPortfolios() {
         return [
-            [name:'Balanced',total:100,fixed:false],
-            [name:'Growth',  total: 40,fixed:false],
-            [name:'Risky',   total: 30,fixed:false],
-            [name:'Insane',  total: 20,fixed:false],
+            [domainId:1, name:'Balanced',total:100,fixed:false],
+            [domainId:2, name:'Growth',  total:100,fixed:false],
+            [domainId:3, name:'Risky',   total:100,fixed:false],
+            [domainId:4, name:'Insane',  total:100,fixed:false],
         ]
     }
     List<Map> listPositions() {

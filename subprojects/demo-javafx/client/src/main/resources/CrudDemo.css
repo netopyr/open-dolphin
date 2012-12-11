@@ -1,8 +1,8 @@
-#positions:focused {
+.noBorder:focused {
     -fx-background-color: transparent, -fx-box-border,-fx-control-inner-background;
 }
 
-#plus, #minus {
+.bottomButton {
     -fx-background-radius: 0;
     -fx-background-insets: 0, 0, 1;
 }
