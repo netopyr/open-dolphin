@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package com.canoo.dolphin.demo
-
+package com.canoo.dolphin.demo.crud
 import com.canoo.dolphin.core.ModelStoreEvent
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
@@ -23,23 +22,23 @@ import com.canoo.dolphin.core.client.ClientPresentationModel
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.chart.PieChart
-import javafx.scene.layout.GridPane
 
 import java.beans.PropertyChangeListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
-import static com.canoo.dolphin.binding.JavaFxUtil.value
 import static com.canoo.dolphin.binding.JavaFxUtil.cellEdit
+import static com.canoo.dolphin.binding.JavaFxUtil.value
+import static com.canoo.dolphin.demo.crud.CrudConstants.*
 import static groovyx.javafx.GroovyFX.start
-import static javafx.scene.layout.GridPane.*
+import static javafx.scene.layout.GridPane.REMAINING
 
 class CrudView {
 
+    @SuppressWarnings("GroovyAssignabilityCheck")
     static show(ClientDolphin clientDolphin) {
 
         def selectedPortfolio = clientDolphin.presentationModel(
-                'selectedPortfolio',
-                 domainId:1, name:'Portfolio One', total:"n/a", fixed:false)
+                PM_SELECTED_PORTFOLIO, domainId: 1, name:'Portfolio One', total:"n/a", fixed:false)
 
         ObservableList<ClientPresentationModel> observableListOfPositions = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfPortfolios = FXCollections.observableArrayList()
@@ -57,6 +56,7 @@ class CrudView {
                         tabPane id:'tabs', {
                             tab id:'tab', {
                                 gridPane hgap:10, vgap:12, padding: 20, {
+                                    columnConstraints     minWidth: 80, halignment: "right"
                                     label       "Portfolio",    row: 0, column: 0
                                     textField   id:'nameField', row: 0, column: 1, minHeight:32
                                     label       "Positions",    row: 1, column: 0
@@ -97,16 +97,25 @@ class CrudView {
 
             bind 'total'    of selectedPortfolio to 'text'      of totalField
 
-            clientDolphin.addModelStoreListener 'Position', { ModelStoreEvent event ->
+            clientDolphin.addModelStoreListener TYPE_POSITION, { ModelStoreEvent event ->
                 PresentationModel pm = event.presentationModel
                 if (pm.portfolioId.value != selectedPortfolio.domainId.value) return
                 switch (event.type){
                     case ModelStoreEvent.Type.ADDED:
                         observableListOfPositions << pm
-                        pm.weight.addPropertyChangeListener('value', { clientDolphin.send 'updateTotal' } as PropertyChangeListener)
+                        pm.weight.addPropertyChangeListener('value', { clientDolphin.send CMD_UPDATE_TOTAL } as PropertyChangeListener)
                         def pieDataPoint = new PieChart.Data("",0)
                         bind 'instrument' of pm to 'name'     of pieDataPoint
                         bind 'weight'     of pm to 'pieValue' of pieDataPoint, { it.toDouble() }
+
+                        pm.instrument.addPropertyChangeListener('value', { // Workaround for JavaFX bug
+                            def index = chartData.indexOf pieDataPoint
+                            def newDataPoint = new PieChart.Data(it.newValue, pieDataPoint.pieValue)
+                            bind 'instrument' of pm to 'name'     of newDataPoint
+                            bind 'weight'     of pm to 'pieValue' of newDataPoint, { it.toDouble() }
+                            chartData[index] = newDataPoint       // consider unbinding pieDataPoint
+                        } as PropertyChangeListener)
+
                         chartData << pieDataPoint
                         break
                     case ModelStoreEvent.Type.REMOVED:
@@ -118,8 +127,8 @@ class CrudView {
             }
 
             plus.onAction {
-                clientDolphin.presentationModel(null, 'Position', instrument:'changeme', weight:10, portfolioId:selectedPortfolio.domainId.value)
-                clientDolphin.send 'updateTotal'
+                clientDolphin.presentationModel(null, TYPE_POSITION, instrument:'changeme', weight:10, portfolioId:selectedPortfolio.domainId.value)
+                clientDolphin.send CMD_UPDATE_TOTAL
             }
 
             minus.onAction {
@@ -127,16 +136,15 @@ class CrudView {
                 if (! position) return
                 clientDolphin.delete(position)
                 positions.selectionModel.clearSelection() // this may become a server decision
-                clientDolphin.send 'updateTotal'
+                clientDolphin.send CMD_UPDATE_TOTAL
             }
 
-            // startup and main loop
-            clientDolphin.send 'pullPositions', { positions ->
-                clientDolphin.send 'updateTotal'
+            clientDolphin.send CMD_PULL_POSITIONS, { positions ->
+                clientDolphin.send CMD_UPDATE_TOTAL
             }
 
-            clientDolphin.send 'pullPortfolios', { portfolios ->
-                for (pm in portfolios) {
+            clientDolphin.send CMD_PULL_PORTFOLIOS, { portfolioPms ->
+                for (pm in portfolioPms) {
                     observableListOfPortfolios << pm
                 }
                 fadeTransition(1.s, node: portfolios, to: 1).playFromStart()
