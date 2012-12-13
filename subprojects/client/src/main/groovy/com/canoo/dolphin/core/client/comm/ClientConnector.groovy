@@ -213,17 +213,8 @@ abstract class ClientConnector implements PropertyChangeListener {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
             return null
         }
-
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
         attribute.value = serverCommand.newValue
-
-        /* // todo dk: what is up here?
-        List<Attribute> clientAttributes = clientModelStore.findAllAttributesByQualifier(attribute.qualifier)
-        clientAttributes.findAll { it.value != serverCommand.newValue }.each { outdated ->
-            log.info "C: updating '$outdated.propertyName' id '$serverCommand.attributeId' from '$outdated.value' to '$serverCommand.newValue'"
-            outdated.value = serverCommand.newValue
-        }
-        */
         return null // this command is not expected to be sent explicitly, so no pm needs to be returned
     }
 
