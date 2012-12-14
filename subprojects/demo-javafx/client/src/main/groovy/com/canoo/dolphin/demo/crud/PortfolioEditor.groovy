@@ -90,32 +90,32 @@ class PortfolioEditor {
             def observableListOfPositions = observableListOfPositions
             def positions = positions
             clientDolphin.addModelStoreListener TYPE_POSITION, { ModelStoreEvent event ->
-                PresentationModel pm = event.presentationModel
-                if (pm.portfolioId.value != portfolioPM.domainId.value) return // only consider positions that refer to us
+                PresentationModel position = event.presentationModel
+                if (position[ATT_PORTFOLIO_ID].value != portfolioPM[ATT_DOMAIN_ID].value) return // only consider positions that refer to us
                 switch (event.type){
                     case ModelStoreEvent.Type.ADDED:
-                        observableListOfPositions << pm
-                        pm.weight.addPropertyChangeListener('value', {
+                        observableListOfPositions << position
+                        position[ATT_WEIGHT].addPropertyChangeListener('value', {
                             setCurrentPortfolio()
                             clientDolphin.send CMD_UPDATE_TOTAL
                         } as PropertyChangeListener)
                         def pieDataPoint = new PieChart.Data("",0)
-                        bind 'instrument' of pm to 'name'     of pieDataPoint
-                        bind 'weight'     of pm to 'pieValue' of pieDataPoint, { it.toDouble() }
+                        bind 'instrument' of position to 'name'     of pieDataPoint
+                        bind 'weight'     of position to 'pieValue' of pieDataPoint, { it.toDouble() }
 
-                        pm.instrument.addPropertyChangeListener('value', { // Workaround for JavaFX bug
+                        position[ATT_INSTRUMENT].addPropertyChangeListener('value', { // Workaround for http://javafx-jira.kenai.com/browse/RT-26845
                             def index = chart.data.indexOf pieDataPoint
                             def newDataPoint = new PieChart.Data(it.newValue, pieDataPoint.pieValue)
-                            bind 'instrument' of pm to 'name'     of newDataPoint
-                            bind 'weight'     of pm to 'pieValue' of newDataPoint, { it.toDouble() }
+                            bind 'instrument' of position to 'name'     of newDataPoint
+                            bind 'weight'     of position to 'pieValue' of newDataPoint, { it.toDouble() }
                             chart.data[index] = newDataPoint       // consider unbinding pieDataPoint
                         } as PropertyChangeListener)
 
                         chart.data.add pieDataPoint
                         break
                     case ModelStoreEvent.Type.REMOVED:
-                        def index = observableListOfPositions.indexOf pm // assuming list and chartData have the same order
-                        observableListOfPositions.remove pm
+                        def index = observableListOfPositions.indexOf position // assuming list and chartData have the same order
+                        observableListOfPositions.remove position
                         chart.data.remove index
                         break
                 }
@@ -123,7 +123,7 @@ class PortfolioEditor {
 
             plus.onAction {
                 setCurrentPortfolio()
-                clientDolphin.presentationModel(null, TYPE_POSITION, instrument:'changeme', weight:10, portfolioId:portfolioPM.domainId.value)
+                clientDolphin.presentationModel(null, TYPE_POSITION, instrument:'changeme', weight:10, portfolioId:portfolioPM[ATT_DOMAIN_ID].value)
                 clientDolphin.send CMD_UPDATE_TOTAL
             }
 
@@ -151,6 +151,6 @@ class PortfolioEditor {
 
     def void setCurrentPortfolio() {
         def visiblePortfolio = clientDolphin.findPresentationModelById(PM_SELECTED_PORTFOLIO)
-        visiblePortfolio.portfolioId.value = portfolioPM.id
+        visiblePortfolio[ATT_PORTFOLIO_ID].value = portfolioPM.id
     }
 }

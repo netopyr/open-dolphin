@@ -20,6 +20,6 @@ def config = new JavaFxInMemoryConfig()
 def serverDolphin = config.serverDolphin
 def clientDolphin = config.clientDolphin
 
-serverDolphin.serverConnector.register new CustomAction(serverDolphin.serverModelStore)
+serverDolphin.serverConnector.register new CustomAction(serverDolphin: serverDolphin)
 
 PushView.show clientDolphin

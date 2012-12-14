@@ -36,6 +36,7 @@ class ServerAttribute extends BaseAttribute {
     /** A value should never be set directly on the server.
      * Instead, a value change request is sent to the client.
      * See the readme for the reasoning behind this design.
+     * @deprecated use ServerDolphin.changeValue
      */
     ValueChangedCommand changeValueCommand(newValue) {
         new ValueChangedCommand(attributeId: id, newValue: newValue, oldValue: value)

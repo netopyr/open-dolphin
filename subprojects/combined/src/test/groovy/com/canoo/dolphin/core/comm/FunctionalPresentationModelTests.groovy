@@ -15,11 +15,9 @@
  */
 
 package com.canoo.dolphin.core.comm
-
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerDolphin
@@ -61,17 +59,17 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.send "fetchData", { List<ClientPresentationModel> pms ->
             assert pms.size() == 26
             assert pms.collect { it.id }.sort(false) == pms.collect { it.id }   // pmIds from a single action should come in sequence
-            assert 'a' == context.clientDolphin.clientModelStore.findPresentationModelById('a').char.value
-            assert 'z' == context.clientDolphin.clientModelStore.findPresentationModelById('z').char.value
+            assert 'a' == context.clientDolphin.findPresentationModelById('a').char.value
+            assert 'z' == context.clientDolphin.findPresentationModelById('z').char.value
             context.assertionsDone() // make sure the assertions are really executed
         }
     }
 
     void testLoginUseCase() {
         serverDolphin.action "loginCmd", { cmd, response ->
-            def user = context.serverDolphin.serverModelStore.findPresentationModelById('user')
+            def user = context.serverDolphin.findPresentationModelById('user')
             if (user.name.value == 'Dierk' && user.password.value == 'Koenig') {
-                response << user.loggedIn.changeValueCommand('true')
+                ServerDolphin.changeValue(response, user.loggedIn, 'true')
             }
         }
         def user = clientDolphin.presentationModel 'user', name:null, password:null, loggedIn:null
@@ -90,7 +88,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testAsynchronousExceptionOnTheServer() {
         serverDolphin.action "someCmd", { cmd, response ->
-            throw new RuntimeException("some arbitrary exception on the server")
+            throw new RuntimeException("EXPECTED: some arbitrary exception on the server")
         }
         clientDolphin.send "someCmd", {
             fail "the onFinished handler will not be reached in this case"

@@ -1,20 +1,49 @@
 package com.canoo.dolphin.demo.crud
 
+import com.canoo.dolphin.core.server.DTO
+import com.canoo.dolphin.core.server.Slot
+
+import static com.canoo.dolphin.demo.crud.CrudConstants.*
+
 class CrudInMemoryService implements CrudService {
-    List<Map> listPortfolios() {
-        return [
-            [domainId:1, name:'Balanced',total:100,fixed:false],
-            [domainId:2, name:'Growth',  total:100,fixed:false],
-            [domainId:3, name:'Risky',   total:100,fixed:false],
-            [domainId:4, name:'Insane',  total:100,fixed:false],
-        ]
+
+    // Java-like variant
+    List<DTO> listPortfolios() {
+        List<DTO> result = new LinkedList<DTO>();
+        result.add(new DTO(
+            new Slot(ATT_DOMAIN_ID, 1),
+            new Slot(ATT_NAME, 'Balanced'),
+            new Slot(ATT_TOTAL, 100),
+            new Slot(ATT_FIXED, false)
+        ));
+        result.add(new DTO(
+            new Slot(ATT_DOMAIN_ID, 2),
+            new Slot(ATT_NAME, 'Growth'),
+            new Slot(ATT_TOTAL, 100),
+            new Slot(ATT_FIXED, false)
+        ));
+        result.add(new DTO(
+            new Slot(ATT_DOMAIN_ID, 3),
+            new Slot(ATT_NAME, 'Risky'),
+            new Slot(ATT_TOTAL, 100),
+            new Slot(ATT_FIXED, false)
+        ));
+        result.add(new DTO(
+            new Slot(ATT_DOMAIN_ID, 4),
+            new Slot(ATT_NAME, 'Insane'),
+            new Slot(ATT_TOTAL, 100),
+            new Slot(ATT_FIXED, false)
+        ));
+        return result;
     }
-    List<Map> listPositions() {
-        return [
-            [instrument:'ORCL',weight:10],
-            [instrument:'APPL',weight:40],
-            [instrument:'IBM', weight:30],
-            [instrument:'UBSN',weight:20],
-        ]
+
+    // Groovy-like variant
+    List<DTO> listPositions() {
+        [
+            [(ATT_INSTRUMENT): 'ORCL', (ATT_WEIGHT): 10],
+            [(ATT_INSTRUMENT): 'APPL', (ATT_WEIGHT): 40],
+            [(ATT_INSTRUMENT): 'IBM',  (ATT_WEIGHT): 30],
+            [(ATT_INSTRUMENT): 'UBSN', (ATT_WEIGHT): 20],
+        ].collect { new DTO(Slot.slots(it)) }
     }
 }

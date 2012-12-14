@@ -29,12 +29,16 @@ class ServerConnector {
 
     ActionRegistry registry = new ActionRegistry()
 
+    private List<DolphinServerAction> dolphinServerActions = []
+
     /** doesn't fail on missing commands **/
     List<Command> receive(Command command) {
         log.info "S:     received $command"
         List<Command> response = new LinkedList() // collecting parameter pattern
+        dolphinServerActions.each { it.dolphinResponse = response} // todo nochmal nachdenken}
+
         List<CommandHandler> actions = registry[command.id]
-        if (! actions){
+        if (!actions) {
             log.warning "S: there is no server action registered for received command: $command, " +
                         "known commands are ${registry.actions.keySet()}"
             return response
@@ -56,6 +60,7 @@ class ServerConnector {
     }
 
     void register(ServerAction action){
+        if (action instanceof DolphinServerAction) dolphinServerActions.add action
         action.registerIn registry
     }
 }

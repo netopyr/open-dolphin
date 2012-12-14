@@ -1,6 +1,8 @@
 package com.canoo.dolphin.demo.crud
 
+import com.canoo.dolphin.core.server.DTO
+
 interface CrudService {
-    List<Map> listPortfolios()
-    List<Map> listPositions()
+    List<DTO> listPortfolios()
+    List<DTO> listPositions()
 }

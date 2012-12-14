@@ -21,6 +21,8 @@ import com.canoo.dolphin.demo.crud.CrudView
 
 def config = new JavaFxInMemoryConfig()
 
-CrudActions.register(config.serverDolphin, new CrudInMemoryService())
+config.serverDolphin.register(new CrudActions(
+    crudService: new CrudInMemoryService(),
+    serverDolphin: config.serverDolphin))
 
 CrudView.show(config.clientDolphin)

@@ -178,8 +178,6 @@ abstract class ClientConnector implements PropertyChangeListener {
         List<ClientAttribute> attributes = []
         serverCommand.attributes.each { attr ->
             ClientAttribute attribute = new ClientAttribute(attr.propertyName, attr.value)
-            attribute.value = attr.value
-            attribute.id = attr.id
             attribute.qualifier = attr.qualifier
             attributes << attribute
         }
@@ -195,8 +193,6 @@ abstract class ClientConnector implements PropertyChangeListener {
             ClientAttribute attribute = model.findAttributeByPropertyName(attr.propertyName)
             if (null == attribute) {
                 attribute = new ClientAttribute(attr.propertyName, attr.value)
-                attribute.value = attr.value
-                attribute.id = attr.id
                 attribute.qualifier = attr.qualifier
                 model.addAttribute(attribute)
                 clientModelStore.registerAttribute(attribute)
@@ -261,7 +257,9 @@ abstract class ClientConnector implements PropertyChangeListener {
                 }
             }
         }
-        def presentationModel = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        def presentationModel = null
+        if (serverCommand.pmId) presentationModel = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        // if there is no pmId, it is most likely an error and CreatePresentationModelCommand should have been used
         if (!presentationModel) {
             presentationModel = new ClientPresentationModel(serverCommand.pmId, [])
             presentationModel.setPresentationModelType(serverCommand.pmType)

@@ -17,7 +17,9 @@ public class StartPushDemoJava {
         ServerDolphin lServerDolphin = lJavaFxInMemoryConfig.getServerDolphin();
         ClientDolphin lClientDolphin = lJavaFxInMemoryConfig.getClientDolphin();
 
-        lServerDolphin.getServerConnector().register(new CustomAction(lServerDolphin.getServerModelStore()));
+        CustomAction action = new CustomAction();
+        action.setServerDolphin(lServerDolphin);
+        lServerDolphin.getServerConnector().register(action);
 
         PushView.show(lClientDolphin);
     }

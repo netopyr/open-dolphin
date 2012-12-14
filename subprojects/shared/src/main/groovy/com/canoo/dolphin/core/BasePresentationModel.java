@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core;
 
 import groovy.lang.MissingPropertyException;
+import groovy.util.Eval;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -131,7 +132,9 @@ public class BasePresentationModel extends AbstractObservable implements Present
     public Object propertyMissing(String propName) {
         Attribute result = findAttributeByPropertyName(propName);
         if (null == result) {
-            throw new MissingPropertyException("The presentation model doesn't understand '" + propName + "'.", propName, this.getClass());
+            String message = "The presentation model doesn't understand '" + propName + "'. \n";
+            message += "Known attribute names are: " + Eval.x(attributes, "x.collect{it.propertyName}");
+            throw new MissingPropertyException(message, propName, this.getClass());
         }
         return result;
     }

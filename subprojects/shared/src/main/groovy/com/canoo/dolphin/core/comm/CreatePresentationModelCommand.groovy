@@ -25,6 +25,7 @@ class CreatePresentationModelCommand extends Command {
 
     // note: we always need a paramless ctor for the codec
 
+    /** @deprecated use ServerFacade convenience methods */
     static CreatePresentationModelCommand makeFrom(PresentationModel model) {
         def result = new CreatePresentationModelCommand()
         result.pmId = model.id
