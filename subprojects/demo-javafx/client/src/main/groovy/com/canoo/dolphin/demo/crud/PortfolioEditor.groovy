@@ -74,13 +74,13 @@ class PortfolioEditor {
 
     private void bindings(SceneGraphBuilder sgb) {
         sgb.with {
-            bind 'selected' of fixedField  to 'fixed'     of portfolioPM
-            bind 'fixed'    of portfolioPM to 'selected'  of fixedField
+            bind ATT_FIXED  of portfolioPM to 'selected'  of fixedField
+            bind 'selected' of fixedField  to ATT_FIXED   of portfolioPM
 
-            bind 'name'     of portfolioPM to 'text'      of nameField
-            bind 'text'     of nameField   to 'name'      of portfolioPM
+            bind ATT_NAME   of portfolioPM to 'text'      of nameField
+            bind 'text'     of nameField   to ATT_NAME    of portfolioPM
 
-            bind 'total'    of portfolioPM to 'text'      of totalField
+            bind ATT_TOTAL  of portfolioPM to 'text'      of totalField
         }
     }
 
@@ -89,6 +89,7 @@ class PortfolioEditor {
             def chart = chart // do not delete! Needed for local reference lookup.
             def observableListOfPositions = observableListOfPositions
             def positions = positions
+
             clientDolphin.addModelStoreListener TYPE_POSITION, { ModelStoreEvent event ->
                 PresentationModel position = event.presentationModel
                 if (position[ATT_PORTFOLIO_ID].value != portfolioPM[ATT_DOMAIN_ID].value) return // only consider positions that refer to us
@@ -100,8 +101,8 @@ class PortfolioEditor {
                             clientDolphin.send CMD_UPDATE_TOTAL
                         } as PropertyChangeListener)
                         def pieDataPoint = new PieChart.Data("",0)
-                        bind 'instrument' of position to 'name'     of pieDataPoint
-                        bind 'weight'     of position to 'pieValue' of pieDataPoint, { it.toDouble() }
+                        bind ATT_INSTRUMENT of position to 'name'     of pieDataPoint
+                        bind ATT_WEIGHT     of position to 'pieValue' of pieDataPoint, { it.toDouble() }
 
                         position[ATT_INSTRUMENT].addPropertyChangeListener('value', { // Workaround for http://javafx-jira.kenai.com/browse/RT-26845
                             def index = chart.data.indexOf pieDataPoint
