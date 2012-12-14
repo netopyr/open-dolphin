@@ -17,24 +17,16 @@
 package com.canoo.dolphin.demo;
 
 import com.canoo.dolphin.core.Attribute;
-import com.canoo.dolphin.core.ModelStore;
 import com.canoo.dolphin.core.PresentationModel;
 import com.canoo.dolphin.core.comm.Command;
-import com.canoo.dolphin.core.comm.CreatePresentationModelCommand;
-import com.canoo.dolphin.core.comm.DataCommand;
-import com.canoo.dolphin.core.server.ServerDolphin;
-import com.canoo.dolphin.core.server.ServerPresentationModel;
+import com.canoo.dolphin.core.server.DTO;
+import com.canoo.dolphin.core.server.Slot;
 import com.canoo.dolphin.core.server.action.DolphinServerAction;
-import com.canoo.dolphin.core.server.action.ServerAction;
 import com.canoo.dolphin.core.server.comm.ActionRegistry;
 import com.canoo.dolphin.core.server.comm.CommandHandler;
 
-import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
-import static com.canoo.dolphin.demo.DemoSearchProperties.*;
 
 
 
@@ -63,12 +55,11 @@ public class PerformanceAction extends DolphinServerAction {
                 int attCount = (attCountValue == null) ? 1 : Integer.parseInt(attCountValue.toString());
 
                 for (int pmCount = 0; pmCount < count; pmCount++) {
-                    Map<String, Object> attributeMap = new HashMap<String, Object>();
+                    LinkedList<Slot> slots = new LinkedList<>();
                     for (int attI = 0; attI < attCount; attI++) {
-                        attributeMap.put("att"+Long.toString(id++), "val"+Long.toString(id++));
+                        slots.add(new Slot("att" + Long.toString(id++), "val" + Long.toString(id++)));
                     }
-                    ServerPresentationModel model = getServerDolphin().presentationModel(attributeMap, Long.toString(id++), "all");
-                    response.add(CreatePresentationModelCommand.makeFrom(model));
+                    presentationModel(Long.toString(id++), "all", new DTO(slots));
                 }
             }
         });
