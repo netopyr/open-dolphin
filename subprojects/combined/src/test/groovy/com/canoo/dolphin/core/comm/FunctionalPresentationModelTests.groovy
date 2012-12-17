@@ -104,7 +104,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
         clientDolphin.send "someCmd", {
             context.assertionsDone()
-            throw new RuntimeException("some arbitrary exception in the onFinished handler")
+            throw new RuntimeException("EXPECTED: some arbitrary exception in the onFinished handler")
         }
 
         assert context.clientDolphin.clientConnector.exceptionHappened.val

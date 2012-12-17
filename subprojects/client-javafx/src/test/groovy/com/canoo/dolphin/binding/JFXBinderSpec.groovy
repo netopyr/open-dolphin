@@ -16,13 +16,35 @@
 
 package com.canoo.dolphin.binding
 
+import com.canoo.dolphin.core.client.ClientDolphin
+import com.canoo.dolphin.core.client.ClientModelStore
+import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
+import groovy.beans.Bindable
 import spock.lang.Specification
+
+import javax.swing.*
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JFXBinder.unbind
-import groovy.beans.Bindable
 
 class JFXBinderSpec extends Specification {
+
+    // exposes http://www.canoo.com/jira/browse/DOL-26
+    def 'binding the text property of a Swing component to an Attribute should not throw Exceptions'() {
+        given:
+        def dolphin = new ClientDolphin()
+        dolphin.clientModelStore = new ClientModelStore(dolphin)
+        dolphin.clientConnector = new InMemoryClientConnector(dolphin)
+        ClientPresentationModel loginPM = dolphin.presentationModel("loginPM", [name: "abc"])
+
+        JTextField txtName = new JTextField()
+
+        expect:
+        Binder.bind("name").of(loginPM).to("text").of(txtName)
+        Binder.bind("text").of(txtName).to("name").of(loginPM)
+    }
+
     def 'bind and unbind jfx Node to POJO'() {
         given:
         def initialValue = 'pojo'

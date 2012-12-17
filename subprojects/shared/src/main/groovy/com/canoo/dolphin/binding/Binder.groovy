@@ -219,15 +219,29 @@ class BindPojoOtherOfAble {
         this.targetPropertyName = targetPropertyName
     }
 
-    void of(Object target, Closure converter = null) { // todo: remove the duplication
+    void of(Object target, Closure converter = null) {
+        def changeListener = makeListener(target, targetPropertyName, converter)
+        target[targetPropertyName] = changeListener.convert(source[sourcePropertyName]) // set initial value
+        addListener(changeListener)
+    }
+    void of(PresentationModel target, Closure converter = null) {
+        def changeListener = makeListener(target[targetPropertyName], 'value', converter)
+        target[targetPropertyName].value = changeListener.convert(source[sourcePropertyName]) // set initial value
+        addListener(changeListener)
+    }
+
+    protected BinderPropertyChangeListener makeListener(eventProvider, String eventPropName, Closure converter) {
         def pd = Introspector.getBeanInfo(source.getClass()).getPropertyDescriptors().find { it.name == sourcePropertyName }
         if (!pd) throw new IllegalArgumentException("there is no property named '$sourcePropertyName' in '${source.dump()}'")
-        def changeListener = new BinderPropertyChangeListener(target, targetPropertyName, converter)
-        target[targetPropertyName] = changeListener.convert(source[sourcePropertyName]) // set initial value
+        return new BinderPropertyChangeListener(eventProvider, eventPropName, converter);
+    }
+
+    protected void addListener(changeListener) {
         if (!(changeListener in source.getPropertyChangeListeners(sourcePropertyName))) { // don't add the listener twice
             source.addPropertyChangeListener(sourcePropertyName, changeListener)
         }
     }
+
 }
 
 @Canonical
