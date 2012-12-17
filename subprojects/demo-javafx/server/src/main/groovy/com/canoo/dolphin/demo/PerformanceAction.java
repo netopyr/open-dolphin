@@ -55,7 +55,7 @@ public class PerformanceAction extends DolphinServerAction {
                 int attCount = (attCountValue == null) ? 1 : Integer.parseInt(attCountValue.toString());
 
                 for (int pmCount = 0; pmCount < count; pmCount++) {
-                    LinkedList<Slot> slots = new LinkedList<>();
+                    LinkedList<Slot> slots = new LinkedList();
                     for (int attI = 0; attI < attCount; attI++) {
                         slots.add(new Slot("att" + Long.toString(id++), "val" + Long.toString(id++)));
                     }
