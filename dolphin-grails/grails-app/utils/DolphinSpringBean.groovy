@@ -1,25 +1,20 @@
-import com.canoo.dolphin.core.ModelStore
-import com.canoo.dolphin.core.comm.JsonCodec
 import com.canoo.dolphin.core.server.ServerDolphin
-import com.canoo.dolphin.core.server.comm.ServerConnector
 import com.canoo.dolphin.demo.CustomAction
 import com.canoo.dolphin.demo.PerformanceAction
+import com.canoo.dolphin.demo.crud.CrudActions
+import com.canoo.dolphin.demo.crud.CrudService
 import groovy.util.logging.Log
 
 @Log
 class DolphinSpringBean {
 
-    ServerDolphin dolphin
-
-    DolphinSpringBean() {
+    DolphinSpringBean(ServerDolphin dolphin, CrudService crudService) {
         log.info "creating new dolphin session"
-        dolphin = new ServerDolphin(new ModelStore(), new ServerConnector(codec:new JsonCodec()))
-        dolphin.registerDefaultActions()
-        registerApplicationActions()
-    }
 
-    def void registerApplicationActions() {
-        dolphin.serverConnector.register(new CustomAction(dolphin.modelStore))
-		dolphin.serverConnector.register(new PerformanceAction(serverDolphin: dolphin))
+        dolphin.registerDefaultActions()
+
+        dolphin.register(new CrudActions(crudService: crudService))
+        dolphin.register(new CustomAction())
+        dolphin.register(new PerformanceAction())
     }
 }

@@ -13,7 +13,7 @@ class CrudActions extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
 
         serverDolphin.action CMD_PULL_PORTFOLIOS, { cmd, response ->
-            def portfolios = crudService.listPortfolios()
+            def portfolios = crudService.listPortfolios(1L) // fixed value until we have users
             portfolios.eachWithIndex { portfolioDTO, index ->
                 presentationModel pmId(TYPE_PORTFOLIO, index), TYPE_PORTFOLIO, portfolioDTO
             }
@@ -22,7 +22,7 @@ class CrudActions extends DolphinServerAction {
         serverDolphin.action CMD_PULL_POSITIONS, { cmd, response ->
             def visiblePortfolio  = serverDolphin.findPresentationModelById(PM_SELECTED_PORTFOLIO)
             def selectedPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[ATT_PORTFOLIO_ID].value)
-            def positions = crudService.listPositions()
+            def positions = crudService.listPositions(selectedPortfolio[ATT_DOMAIN_ID].value.toLong())
             positions.eachWithIndex { positionDTO, index ->
                 positionDTO.slots << new Slot(ATT_PORTFOLIO_ID, selectedPortfolio[ATT_DOMAIN_ID].value)
                 presentationModel null, TYPE_POSITION, positionDTO

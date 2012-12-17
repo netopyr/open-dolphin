@@ -8,7 +8,7 @@ import static com.canoo.dolphin.demo.crud.CrudConstants.*
 class CrudInMemoryService implements CrudService {
 
     // Java-like variant
-    List<DTO> listPortfolios() {
+    List<DTO> listPortfolios(long ownerId) {
         List<DTO> result = new LinkedList<DTO>();
         result.add(new DTO(
             new Slot(ATT_DOMAIN_ID, 1),
@@ -38,7 +38,7 @@ class CrudInMemoryService implements CrudService {
     }
 
     // Groovy-like variant
-    List<DTO> listPositions() {
+    List<DTO> listPositions(long portfolioId) {
         [
             [(ATT_INSTRUMENT): 'ORCL', (ATT_WEIGHT): 10],
             [(ATT_INSTRUMENT): 'APPL', (ATT_WEIGHT): 40],
