@@ -31,7 +31,7 @@ dolphin.action "saveNewSelectedPerson", { cmd, List<Command> response ->
     def pmId = "person-1" // for demo purposes assume a fixed value
 
     def newAttributes = selectedPerson.attributes.collect {
-        new ServerAttribute(propertyName: it.propertyName, initialValue: it.value, qualifier: "${pmId}.${it.propertyName}")
+        new ServerAttribute(propertyName: it.propertyName, baseValue: it.value, qualifier: "${pmId}.${it.propertyName}")
     }
     response << CreatePresentationModelCommand.makeFrom(new ServerPresentationModel(pmId, newAttributes))
 }

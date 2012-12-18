@@ -17,13 +17,11 @@
 package com.canoo.dolphin.core;
 
 public interface Attribute extends Observable {
-    String QUALIFIER_PROPERTY = "qualifier";
-
-    String DIRTY_PROPERTY = "dirty";
-
-    String BASE_VALUE = "baseValue";
-
-    String VALUE = "value";
+    String QUALIFIER_PROPERTY   = "qualifier";
+    String DIRTY_PROPERTY       = "dirty";
+    String BASE_VALUE           = "baseValue";
+    String VALUE                = "value";
+    String TAG                  = "tag";
 
     Object getValue();
 
@@ -36,6 +34,9 @@ public interface Attribute extends Observable {
     long getId();
 
     void setId(long id);
+
+    Tag getTag();
+    void setTag(Tag tag);
 
     void syncWith(Attribute source);
 

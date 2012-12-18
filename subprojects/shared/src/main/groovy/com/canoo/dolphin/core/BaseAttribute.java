@@ -28,12 +28,12 @@ import java.util.logging.Logger;
 
 public abstract class BaseAttribute extends AbstractObservable implements Attribute {
 
-    static final public Class[] SUPPORTED_VALUE_TYPES = { Character.class, String.class, Number.class, Boolean.class, Date.class };
-    static final private Logger log = Logger.getLogger(BaseAttribute.class.getName());
+    static final public  Class[] SUPPORTED_VALUE_TYPES = {Character.class, String.class, Number.class, Boolean.class, Date.class};
+    static final private Logger  log                   = Logger.getLogger(BaseAttribute.class.getName());
 
     private final String propertyName;
-    private Object value;
-    private Object initialValue;
+    private       Object value;
+    private       Object baseValue;
     private boolean dirty = false;
 
     private long id = System.identityHashCode(this); // todo: dk: has to change to tell client from server
@@ -43,10 +43,10 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         this(propertyName, null);
     }
 
-    public BaseAttribute(String propertyName, Object initialValue) {
+    public BaseAttribute(String propertyName, Object baseValue) {
         this.propertyName = propertyName;
-        this.initialValue = initialValue;
-        this.value = initialValue;
+        this.baseValue = baseValue;
+        this.value = baseValue;
     }
 
     public boolean isDirty() {
@@ -54,7 +54,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     public Object getBaseValue() {
-        return initialValue;
+        return baseValue;
     }
 
     public Object getValue() {
@@ -83,7 +83,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     // todo dk: think about specific method versions for each allowed type
     public void setValue(Object value) {
         value = checkValue(value);
-        setDirty(initialValue == null ? value != null : !initialValue.equals(value));
+        setDirty(baseValue == null ? value != null : !baseValue.equals(value));
         firePropertyChange(VALUE, this.value, this.value = value);
     }
 
@@ -91,13 +91,13 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         firePropertyChange(DIRTY_PROPERTY, this.dirty, this.dirty = dirty);
     }
 
-    private void setInitialValue(Object initialValue) {
-        setDirty(initialValue == null ? value != null : !initialValue.equals(value));
-        firePropertyChange(BASE_VALUE, this.initialValue, this.initialValue = initialValue);
+    private void setBaseValue(Object baseValue) {
+        setDirty(baseValue == null ? value != null : !baseValue.equals(value));
+        firePropertyChange(BASE_VALUE, this.baseValue, this.baseValue = baseValue);
     }
 
     public void rebase() {
-        setInitialValue(getValue());
+        setBaseValue(getValue());
     }
 
     public void reset() {
@@ -137,7 +137,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     public void syncWith(Attribute source) {
         if (this == source || null == source) return;
-        setInitialValue(source.getBaseValue());
+        setBaseValue(source.getBaseValue());
         setQualifier(source.getQualifier());
         setValue(source.getValue());
     }
