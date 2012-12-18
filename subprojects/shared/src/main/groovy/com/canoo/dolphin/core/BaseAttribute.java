@@ -35,6 +35,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     private       Object value;
     private       Object baseValue;
     private boolean dirty = false;
+    private final Tag   tag;
 
     private long id = System.identityHashCode(this); // todo: dk: has to change to tell client from server
     private String qualifier; // application specific semantics apply
@@ -47,6 +48,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         this.propertyName = propertyName;
         this.baseValue = baseValue;
         this.value = baseValue;
+        this.tag = Tag.VALUE;
     }
 
     public boolean isDirty() {
@@ -59,6 +61,10 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     public Object getValue() {
         return value;
+    }
+
+    public Tag getTag() {
+        return tag;
     }
 
     /** Check whether value is of allowed type and convert to an allowed type if possible. */
@@ -112,6 +118,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
                 .append(propertyName)
                 .append(" (")
                 .append(qualifier).append(") ")
+                .append("[").append(tag.name()).append("] ")
                 .append(value).toString();
     }
 

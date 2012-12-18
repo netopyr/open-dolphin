@@ -3,9 +3,9 @@ package com.canoo.dolphin.core;
 /**
  * An Attribute has a value and additional info like base value, isDirty, and potentially more (e.g. type).
  * Beside this, an Attribute can bear one of the tags that the Tag enum provides.
- * The default value attribute bears the VALUE tag. Lets assume it also has the qualifier 'x'.
- * Then there may be more attributes with the 'x' qualifier and one of the Tag tags to represent e.g.
- * whether the 'x' Attribute should be considered visible, enabled, and else.
+ * The default value attribute bears the VALUE tag.
+ * Then there may be more attributes for the same presentation model and property name with a Tag to represent e.g.
+ * whether the Attribute should be considered visible, enabled, and else.
  * The UI toolkit can bind against these "tag attributes" just like against the "value" attribute.
  */
 public enum Tag {

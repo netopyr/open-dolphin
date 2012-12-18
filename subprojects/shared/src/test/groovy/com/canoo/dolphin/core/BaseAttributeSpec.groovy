@@ -30,6 +30,7 @@ class BaseAttributeSpec extends Specification {
         attribute.baseValue == null
         attribute.value == null
         attribute.toString().contains "name"
+        attribute.toString().contains " [VALUE] "
     }
 
     def "check isDirty triggers when value changes (initialValue == null)"() {
