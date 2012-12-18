@@ -265,17 +265,11 @@ abstract class ClientConnector implements PropertyChangeListener {
             presentationModel.setPresentationModelType(serverCommand.pmType)
             clientModelStore.add(presentationModel)
         }
-        presentationModel.addAttribute(attribute)
-        clientModelStore.registerAttribute(attribute)
-        send new AttributeCreatedCommand(
-                pmId: presentationModel.id,
-                attributeId: attribute.id,
-                propertyName: attribute.propertyName,
-                newValue: attribute.value,
-                qualifier: attribute.qualifier
-        )
+        clientDolphin.addAttributeToModel(presentationModel, attribute)
         return presentationModel // todo dk: check and test
     }
+
+
 
     ClientPresentationModel handle(SavedPresentationModelNotification serverCommand) {
         if (!serverCommand.pmId) return null

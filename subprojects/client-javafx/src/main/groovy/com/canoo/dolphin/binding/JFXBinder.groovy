@@ -18,6 +18,7 @@ package com.canoo.dolphin.binding
 
 import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import groovy.transform.Canonical
@@ -29,7 +30,11 @@ import java.beans.PropertyChangeListener
 
 class JFXBinder {
     static JFXBindOfAble bind(String sourcePropertyName) {
-        new JFXBindOfAble(sourcePropertyName)
+        new JFXBindOfAble(sourcePropertyName, Tag.VALUE)
+    }
+
+    static JFXBindOfAble bind(String sourcePropertyName, Tag tag) {
+        new JFXBindOfAble(sourcePropertyName, tag)
     }
 
     static BindPojoOfAble bindInfo(String sourcePropertyName) {
@@ -130,21 +135,22 @@ class UnbindClientOtherOfAble {
 @Immutable
 class JFXBindOfAble {
     String sourcePropertyName
+    Tag    tag
 
     JFXBindToAble of(javafx.scene.Node source) {
         new JFXBindToAble(source, sourcePropertyName)
     }
 
     BindToAble of(PresentationModel source) {
-        return Binder.bind(sourcePropertyName).of(source)
+        return Binder.bind(sourcePropertyName, tag).of(source)
     }
 
     BindClientToAble    of(ClientPresentationModel source) {
-        new BindClientToAble(source.findAttributeByPropertyName(sourcePropertyName))
+        new BindClientToAble(source.findAttributeByPropertyNameAndTag(sourcePropertyName, tag))
     }
 
     BindPojoToAble of(Object source) {
-        return Binder.bind(sourcePropertyName).of(source)
+        return Binder.bind(sourcePropertyName, tag).of(source)
     }
 }
 

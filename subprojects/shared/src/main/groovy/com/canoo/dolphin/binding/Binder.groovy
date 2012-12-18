@@ -16,7 +16,9 @@
 
 package com.canoo.dolphin.binding
 
+import com.canoo.dolphin.core.BasePresentationModel
 import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.Tag
 
 import java.beans.Introspector
 import groovy.transform.Canonical
@@ -25,7 +27,10 @@ import java.beans.PropertyChangeEvent
 
 class Binder {
     static BindOfAble bind(String sourcePropertyName) {
-        new BindOfAble(sourcePropertyName)
+        new BindOfAble(sourcePropertyName, Tag.VALUE)
+    }
+    static BindOfAble bind(String sourcePropertyName, Tag tag) {
+        new BindOfAble(sourcePropertyName, tag)
     }
 
     static BindPojoOfAble bindInfo(String sourcePropertyName) {
@@ -139,10 +144,11 @@ class UnbindPojoOtherOfAble {
 
 @Immutable
 class BindOfAble {
-    String sourcePropertyName
+    String  sourcePropertyName
+    Tag     tag
 
     BindToAble of(PresentationModel source) {
-        new BindToAble(source, sourcePropertyName)
+        new BindToAble(source, sourcePropertyName, tag)
     }
 
     BindPojoToAble of(Object source) {
@@ -153,31 +159,35 @@ class BindOfAble {
 class BindToAble {
     final PresentationModel source
     final String sourcePropertyName
+    final Tag    tag
 
-    BindToAble(PresentationModel source, String sourcePropertyName) {
+    BindToAble(PresentationModel source, String sourcePropertyName, Tag tag) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
+        this.tag = tag
     }
 
     BindOtherOfAble to(String targetPropertyName) {
-        new BindOtherOfAble(source, sourcePropertyName, targetPropertyName)
+        new BindOtherOfAble(source, sourcePropertyName, tag, targetPropertyName)
     }
 }
 
 class BindOtherOfAble {
     final PresentationModel source
     final String sourcePropertyName
+    final Tag    tag
     final String targetPropertyName
 
-    BindOtherOfAble(PresentationModel source, String sourcePropertyName, String targetPropertyName) {
+    BindOtherOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
+        this.tag = tag
         this.targetPropertyName = targetPropertyName
     }
 
     void of(Object target, Closure converter = null) {
-        def attribute = source.findAttributeByPropertyName(sourcePropertyName)
-        if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' in '${source.dump()}'")
+        def attribute = ((BasePresentationModel)source).findAttributeByPropertyNameAndTag(sourcePropertyName, tag)
+        if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' and tag $tag in '${source.dump()}'")
         def changeListener = new BinderPropertyChangeListener(target, targetPropertyName, converter)
         target[targetPropertyName] = changeListener.convert(attribute.value) // set initial value
         // adding a listener is null and duplicate safe

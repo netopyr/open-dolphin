@@ -15,15 +15,15 @@
  */
 
 package com.canoo.dolphin.core.client
-
 import com.canoo.dolphin.core.Dolphin
 import com.canoo.dolphin.core.ModelStore
+import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter
+import com.canoo.dolphin.core.comm.AttributeCreatedNotification
 import com.canoo.dolphin.core.comm.NamedCommand
-import com.canoo.dolphin.core.comm.SwitchPresentationModelCommand
-
 /**
  * The main Dolphin facade on the client side.
  * Responsibility: single access point for dolphin capabilities.
@@ -98,6 +98,31 @@ public class ClientDolphin extends Dolphin {
      * and notifies the server if successful */
     public void delete(ClientPresentationModel modelToDelete) {
         clientModelStore.delete(modelToDelete)
+    }
+
+    /**
+     * Tags the attribute by
+     * adding a new attribute with the given tag and value to the model store
+     * inside the given presentation model and for the given property name.
+     * @return the ClientAttribute that carries the tag value
+     */
+    public ClientAttribute tag(ClientPresentationModel model, String propertyName, Tag tag, def value) {
+        def attribute = new ClientAttribute(propertyName, value, tag)
+        addAttributeToModel(model, attribute)
+        return attribute
+    }
+
+    public void addAttributeToModel(PresentationModel presentationModel, ClientAttribute attribute) {
+        presentationModel.addAttribute(attribute)
+        clientModelStore.registerAttribute(attribute)
+        clientConnector.send new AttributeCreatedNotification(
+            pmId: presentationModel.id,
+            attributeId: attribute.id,
+            propertyName: attribute.propertyName,
+            newValue: attribute.value,
+            qualifier: attribute.qualifier,
+            tag: attribute.tag
+        )
     }
 }
 

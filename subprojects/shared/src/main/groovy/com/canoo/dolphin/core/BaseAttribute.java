@@ -45,10 +45,14 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     public BaseAttribute(String propertyName, Object baseValue) {
+        this(propertyName, baseValue, Tag.VALUE);
+    }
+
+    public BaseAttribute(String propertyName, Object baseValue, Tag tag) {
         this.propertyName = propertyName;
         this.baseValue = baseValue;
         this.value = baseValue;
-        this.tag = Tag.VALUE;
+        this.tag = tag;
     }
 
     public boolean isDirty() {

@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core.client
 
 import com.canoo.dolphin.core.BaseAttribute
+import com.canoo.dolphin.core.Tag
 
 /**
  * A client side (remote) ClientAttribute is considered a remote representation of a ServerAttribute.
@@ -34,6 +35,11 @@ class ClientAttribute extends BaseAttribute {
     ClientAttribute(String propertyName, Object initialValue) {
         super(propertyName, initialValue)
     }
+
+    ClientAttribute(String propertyName, Object initialValue, Tag tag) {
+        super(propertyName, initialValue, tag)
+    }
+
 
     ClientAttribute(Map props) {
         this(props.propertyName, props.initialValue)

@@ -16,7 +16,7 @@
 
 package com.canoo.dolphin.core.server.action
 
-import com.canoo.dolphin.core.comm.AttributeCreatedCommand
+import com.canoo.dolphin.core.comm.AttributeCreatedNotification
 import com.canoo.dolphin.core.comm.ChangeAttributeMetadataCommand
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
@@ -24,7 +24,7 @@ import com.canoo.dolphin.core.server.comm.ActionRegistry
 
 class StoreAttributeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
-        registry.register(AttributeCreatedCommand) { AttributeCreatedCommand command, response ->
+        registry.register(AttributeCreatedNotification) { AttributeCreatedNotification command, response ->
             def attribute = new ServerAttribute(command.propertyName, command.newValue)
             attribute.id = command.attributeId
             attribute.value = command.newValue

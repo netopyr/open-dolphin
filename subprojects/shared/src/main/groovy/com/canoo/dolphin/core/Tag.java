@@ -13,12 +13,12 @@ public enum Tag {
     LABEL,      // the to-be-displayed String, not the key. I18N happens on the server.
     ENABLED,    // boolean
     VISIBLE,    // boolean, maps to Grails constraint display:true
-    OPTIONAL,   // boolean, maps to Grails constraint nullable:true
+    MANDATORY,  // boolean, maps to Grails constraint nullable:false
     TOOLTIP,    // String
     HELP_URL,   // Url.toExternalForm()
-    REGEX,              // regular expression for local, syntactical constraints like in "rejectField"
-    VALIDATION_ERROR,   // a single text; there may be many of such attributes
+    REGEX,            // regular expression for local, syntactical constraints like in "rejectField"
+    VALIDATION_MSG,   // a single text;
 
     // maybe this should be application specific
-    ERROR_PM_ID,        // points to a PM that has more error info, e.g text and severity; there may be many of such attributes;
+    ERROR_TYPE,       // PMs of this type capture the validation errors for this attribute
 }

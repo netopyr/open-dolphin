@@ -41,7 +41,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
         @Override
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
             for (Attribute attr : attributes) {
-                if (attr.isDirty()) {
+                if (attr.getTag() == Tag.VALUE && attr.isDirty()) {
                     setDirty(true);
                     return;
                 }
@@ -58,13 +58,20 @@ public class BasePresentationModel extends AbstractObservable implements Present
     }
 
     /**
-     * @throws AssertionError if the list of attributes is null or empty  *
+     * @throws AssertionError if the list of attributes is null or empty
      */
     public BasePresentationModel(String id, List<? extends Attribute> attributes) {
         this.id = id != null ? id : makeId(this);
-        this.attributes.addAll(attributes);
         for (Attribute attr : attributes) {
-            attr.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);
+            addAttribute(attr);
+        }
+    }
+
+    public void addAttribute(Attribute attribute) {
+        if (null == attribute || attributes.contains(attribute)) return;
+        attributes.add(attribute);
+        if (attribute.getTag() == Tag.VALUE) { // only promote value changes as dirty upwards
+            attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);
         }
     }
 
@@ -89,6 +96,12 @@ public class BasePresentationModel extends AbstractObservable implements Present
         firePropertyChange(DIRTY_PROPERTY, this.dirty, this.dirty = dirty);
     }
 
+    public void reset() {
+        for (Attribute attr : attributes) {
+            attr.reset();
+        }
+    }
+
     /**
      * @return the immutable internal representation
      */
@@ -100,10 +113,23 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return String.valueOf(System.identityHashCode(instance));
     }
 
+    public Attribute getAt(String propertyName) {
+        return findAttributeByPropertyName(propertyName);
+    }
+
+    public Attribute getAt(String propertyName, Tag tag) {
+        return findAttributeByPropertyNameAndTag(propertyName, tag);
+    }
+
     public Attribute findAttributeByPropertyName(String propertyName) {
+        return findAttributeByPropertyNameAndTag(propertyName, Tag.VALUE);
+    }
+
+    public Attribute findAttributeByPropertyNameAndTag(String propertyName, Tag tag) {
         if (null == propertyName) return null;
+        if (null == tag) return null;
         for (Attribute attribute : attributes) {
-            if (attribute.getPropertyName().equals(propertyName)) {
+            if (propertyName.equals(attribute.getPropertyName()) && tag.equals(attribute.getTag())) {
                 return attribute;
             }
         }
@@ -139,6 +165,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return result;
     }
 
+    // todo dk: also sync tag attributes
     public void syncWith(PresentationModel sourcePresentationModel) {
         for (Attribute targetAttribute : attributes) {
             Attribute sourceAttribute = sourcePresentationModel.findAttributeByPropertyName(targetAttribute.getPropertyName());
@@ -146,9 +173,4 @@ public class BasePresentationModel extends AbstractObservable implements Present
         }
     }
 
-    public void addAttribute(Attribute attribute) {
-        if (null == attribute || attributes.contains(attribute)) return;
-        this.attributes.add(attribute);
-        attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);
-    }
 }

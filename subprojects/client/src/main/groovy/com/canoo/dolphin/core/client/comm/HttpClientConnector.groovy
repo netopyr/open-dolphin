@@ -17,15 +17,9 @@
 package com.canoo.dolphin.core.client.comm
 
 import com.canoo.dolphin.core.client.ClientDolphin
-import com.canoo.dolphin.core.comm.AttributeCreatedCommand
 import com.canoo.dolphin.core.comm.Command
-import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
-import com.canoo.dolphin.core.comm.InitializeAttributeCommand
 import groovy.util.logging.Log
-import groovy.json.JsonSlurper
-import org.apache.http.client.HttpClient
 import org.apache.http.client.ResponseHandler
-import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.BasicResponseHandler
