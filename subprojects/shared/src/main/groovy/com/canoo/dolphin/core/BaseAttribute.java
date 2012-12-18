@@ -53,7 +53,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         return dirty;
     }
 
-    public Object getInitialValue() {
+    public Object getBaseValue() {
         return initialValue;
     }
 
@@ -93,7 +93,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     private void setInitialValue(Object initialValue) {
         setDirty(initialValue == null ? value != null : !initialValue.equals(value));
-        firePropertyChange(INITIAL_VALUE, this.initialValue, this.initialValue = initialValue);
+        firePropertyChange(BASE_VALUE, this.initialValue, this.initialValue = initialValue);
     }
 
     public void rebase() {
@@ -101,7 +101,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     public void reset() {
-        setValue(getInitialValue());
+        setValue(getBaseValue());
         setDirty(false);
     }
 
@@ -137,7 +137,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     public void syncWith(Attribute source) {
         if (this == source || null == source) return;
-        setInitialValue(source.getInitialValue());
+        setInitialValue(source.getBaseValue());
         setQualifier(source.getQualifier());
         setValue(source.getValue());
     }

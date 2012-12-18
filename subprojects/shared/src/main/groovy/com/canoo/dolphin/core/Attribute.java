@@ -21,7 +21,7 @@ public interface Attribute extends Observable {
 
     String DIRTY_PROPERTY = "dirty";
 
-    String INITIAL_VALUE = "initialValue";
+    String BASE_VALUE = "baseValue";
 
     String VALUE = "value";
 
@@ -41,11 +41,11 @@ public interface Attribute extends Observable {
 
     boolean isDirty();
 
-    Object getInitialValue();
+    Object getBaseValue();
 
-    /** setting the initialValue to the current value, effectively providing a new base for "dirty" calculations */
+    /** setting the base value to the current value, effectively providing a new base for "dirty" calculations */
     void rebase();
 
-    /** setting the current value back to the last known base, which is the initialValue */
+    /** setting the current value back to the last known base, which is the base value */
     void reset();
 }

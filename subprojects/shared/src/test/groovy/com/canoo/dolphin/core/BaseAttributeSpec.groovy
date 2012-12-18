@@ -27,7 +27,7 @@ class BaseAttributeSpec extends Specification {
 
         then:
 
-        attribute.initialValue == null
+        attribute.baseValue == null
         attribute.value == null
         attribute.toString().contains "name"
     }
@@ -46,7 +46,7 @@ class BaseAttributeSpec extends Specification {
         then:
 
         1 * changeListener.propertyChange(_)
-        !attribute.initialValue
+        !attribute.baseValue
         attribute.value == 'foo'
         attribute.dirty
 
@@ -57,7 +57,7 @@ class BaseAttributeSpec extends Specification {
         then:
 
         0 * changeListener.propertyChange(_)
-        !attribute.initialValue
+        !attribute.baseValue
         attribute.value == 'foo'
         attribute.dirty
 
@@ -68,7 +68,7 @@ class BaseAttributeSpec extends Specification {
         then:
 
         1 * changeListener.propertyChange(_)
-        !attribute.initialValue
+        !attribute.baseValue
         !attribute.value
         !attribute.dirty
     }
@@ -87,7 +87,7 @@ class BaseAttributeSpec extends Specification {
         then:
 
         1 * changeListener.propertyChange(_)
-        attribute.initialValue == 'bar'
+        attribute.baseValue == 'bar'
         attribute.value == 'foo'
         attribute.dirty
 
@@ -98,7 +98,7 @@ class BaseAttributeSpec extends Specification {
         then:
 
         0 * changeListener.propertyChange(_)
-        attribute.initialValue == 'bar'
+        attribute.baseValue == 'bar'
         attribute.value == 'foo'
         attribute.dirty
 
@@ -109,7 +109,7 @@ class BaseAttributeSpec extends Specification {
         then:
 
         0 * changeListener.propertyChange(_)
-        attribute.initialValue == 'bar'
+        attribute.baseValue == 'bar'
         !attribute.value
         attribute.dirty
 
@@ -120,7 +120,7 @@ class BaseAttributeSpec extends Specification {
         then:
 
         1 * changeListener.propertyChange(_)
-        attribute.initialValue == 'bar'
+        attribute.baseValue == 'bar'
         attribute.value == 'bar'
         !attribute.dirty
     }
@@ -132,7 +132,7 @@ class BaseAttributeSpec extends Specification {
         def dirtyChecker = Mock(PropertyChangeListener)
         def initialValueChecker = Mock(PropertyChangeListener)
         attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, dirtyChecker)
-        attribute.addPropertyChangeListener(Attribute.INITIAL_VALUE, initialValueChecker)
+        attribute.addPropertyChangeListener(Attribute.BASE_VALUE, initialValueChecker)
 
         when:
 
@@ -143,7 +143,7 @@ class BaseAttributeSpec extends Specification {
         1 * dirtyChecker.propertyChange(_)
         0 * initialValueChecker.propertyChange(_)
         attribute.dirty
-        attribute.initialValue == 'bar'
+        attribute.baseValue == 'bar'
         attribute.value == 'foo'
 
         when:
@@ -155,7 +155,7 @@ class BaseAttributeSpec extends Specification {
         1 * dirtyChecker.propertyChange(_)
         1 * initialValueChecker.propertyChange(_)
         !attribute.dirty
-        attribute.initialValue == 'foo'
+        attribute.baseValue == 'foo'
         attribute.value == 'foo'
     }
 
@@ -177,7 +177,7 @@ class BaseAttributeSpec extends Specification {
         1 * dirtyChecker.propertyChange(_)
         1 * valueChecker.propertyChange(_)
         attribute.dirty
-        attribute.initialValue == 'bar'
+        attribute.baseValue == 'bar'
         attribute.value == 'foo'
 
         when:
@@ -189,7 +189,7 @@ class BaseAttributeSpec extends Specification {
         1 * dirtyChecker.propertyChange(_)
         1 * valueChecker.propertyChange(_)
         !attribute.dirty
-        attribute.initialValue == 'bar'
+        attribute.baseValue == 'bar'
         attribute.value == 'bar'
     }
 
