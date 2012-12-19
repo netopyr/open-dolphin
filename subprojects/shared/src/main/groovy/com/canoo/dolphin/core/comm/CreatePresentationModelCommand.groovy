@@ -25,17 +25,18 @@ class CreatePresentationModelCommand extends Command {
 
     // note: we always need a paramless ctor for the codec
 
-    /** @deprecated use ServerFacade convenience methods */
+    /** @deprecated use ServerFacade convenience methods (it is ok to use it from the client atm)*/
     static CreatePresentationModelCommand makeFrom(PresentationModel model) {
         def result = new CreatePresentationModelCommand()
         result.pmId = model.id
         result.pmType = model.presentationModelType
         model.attributes.each { attr ->
             result.attributes << [
-                    propertyName: attr.propertyName,
-                    id: attr.id,
-                    qualifier: attr.qualifier,
-                    value: attr.value
+                    propertyName:   attr.propertyName,
+                    id:             attr.id,
+                    qualifier:      attr.qualifier,
+                    value:          attr.value,
+                    tag:            attr.tag
             ]
         }
         return result

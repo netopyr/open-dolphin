@@ -17,7 +17,7 @@ public enum Tag {
     TOOLTIP,    // String
     HELP_URL,   // Url.toExternalForm()
     REGEX,            // regular expression for local, syntactical constraints like in "rejectField"
-    VALIDATION_MSG,   // a single text;
+    MESSAGE,   // a single text;
 
     // maybe this should be application specific
     ERROR_TYPE,       // PMs of this type capture the validation errors for this attribute

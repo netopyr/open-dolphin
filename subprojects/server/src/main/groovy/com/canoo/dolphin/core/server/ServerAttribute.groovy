@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.BaseAttribute
+import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.comm.ValueChangedCommand
 
 class ServerAttribute extends BaseAttribute {
@@ -26,6 +27,10 @@ class ServerAttribute extends BaseAttribute {
 
     ServerAttribute(String propertyName, Object initialValue) {
         super(propertyName, initialValue)
+    }
+
+    public ServerAttribute(String propertyName, Object baseValue, String qualifier, Tag tag){
+        super(propertyName, baseValue, qualifier, tag)
     }
 
     ServerAttribute(Map props) {

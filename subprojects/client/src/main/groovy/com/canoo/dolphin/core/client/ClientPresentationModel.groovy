@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core.client
 
 import com.canoo.dolphin.core.BasePresentationModel
+import com.canoo.dolphin.core.Tag
 
 // impls on client and server are different since client is setting the id
 
@@ -33,5 +34,16 @@ class ClientPresentationModel extends BasePresentationModel {
     /** @deprecated use ClientDolphin.presentationModel */
     static ClientPresentationModel make(String id, List<String> attributeNames) {
         return ClientDolphin.presentationModel(id, attributeNames)
+    }
+
+
+    // override with server specific return values to avoid casting in client code
+
+    ClientAttribute getAt(String propertyName) {
+        return (ClientAttribute) super.getAt(propertyName)
+    }
+
+    ClientAttribute getAt(String propertyName, Tag tag) {
+        return (ClientAttribute) super.getAt(propertyName, tag)
     }
 }

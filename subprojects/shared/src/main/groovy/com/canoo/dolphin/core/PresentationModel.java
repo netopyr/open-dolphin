@@ -25,7 +25,11 @@ public interface PresentationModel extends Observable {
 
     List<Attribute> getAttributes();
 
+    Attribute getAt(String propertyName);
+    Attribute getAt(String propertyName, Tag tag);
+
     Attribute findAttributeByPropertyName(String propertyName);
+    Attribute findAttributeByPropertyNameAndTag(String propertyName, Tag tag);
 
     Attribute findAttributeByQualifier(String qualifier);
 

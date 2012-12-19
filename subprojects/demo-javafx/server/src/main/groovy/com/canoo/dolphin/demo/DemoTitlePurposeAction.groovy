@@ -15,10 +15,12 @@
  */
 
 package com.canoo.dolphin.demo
+
 import com.canoo.dolphin.core.comm.NamedCommand
 import com.canoo.dolphin.core.server.action.DolphinServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
+import static com.canoo.dolphin.core.Tag.MESSAGE
 import static com.canoo.dolphin.demo.MyProps.ATT.*
 import static com.canoo.dolphin.demo.MyProps.CMD.*
 import static com.canoo.dolphin.demo.MyProps.PM_ID.*
@@ -31,6 +33,7 @@ class DemoTitlePurposeAction extends DolphinServerAction {
         serverDolphin.action SET_TITLE, { NamedCommand command, response ->
             def title = serverDolphin[MOLD][TITLE]
             changeValue title, title.value + " new from server"
+            changeValue serverDolphin[MOLD][TITLE, MESSAGE], "changed on server"
         }
 
         serverDolphin.action SET_PURPOSE, { NamedCommand command, response ->

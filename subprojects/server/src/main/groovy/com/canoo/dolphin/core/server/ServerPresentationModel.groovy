@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.BasePresentationModel
+import com.canoo.dolphin.core.Tag
 
 class ServerPresentationModel extends BasePresentationModel {
     ServerPresentationModel(List<ServerAttribute> attributes) {
@@ -31,5 +32,9 @@ class ServerPresentationModel extends BasePresentationModel {
 
     ServerAttribute getAt(String propertyName) {
         return (ServerAttribute) super.getAt(propertyName)
+    }
+
+    ServerAttribute getAt(String propertyName, Tag tag) {
+        return (ServerAttribute) super.getAt(propertyName, tag)
     }
 }

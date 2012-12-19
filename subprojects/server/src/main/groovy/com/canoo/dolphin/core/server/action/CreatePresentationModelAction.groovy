@@ -28,10 +28,8 @@ class CreatePresentationModelAction extends DolphinServerAction {
         registry.register(CreatePresentationModelCommand) { CreatePresentationModelCommand command, response ->
             List<ServerAttribute> attributes = []
             command.attributes.each { attr ->
-                ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value)
-                attribute.value = attr.value
+                ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value, attr.qualifier, attr.tag)
                 attribute.id = attr.id
-                attribute.qualifier = attr.qualifier
                 attributes << attribute
             }
             PresentationModel model = new ServerPresentationModel(command.pmId, attributes)

@@ -23,6 +23,8 @@ import com.canoo.dolphin.core.comm.ValueChangedCommand
 import com.canoo.dolphin.core.server.action.*
 import com.canoo.dolphin.core.server.comm.NamedCommandHandler
 import com.canoo.dolphin.core.server.comm.ServerConnector
+import groovy.util.logging.Log
+
 /**
  * The main Dolphin facade on the server side.
  * Responsibility: single access point for dolphin capabilities.
@@ -30,6 +32,7 @@ import com.canoo.dolphin.core.server.comm.ServerConnector
  * Threading model: confined to a single controller thread.
  */
 
+@Log
 class ServerDolphin extends Dolphin {
 
     /** the server model store is unique per user session */
@@ -98,6 +101,10 @@ class ServerDolphin extends Dolphin {
      * Convenience method to change an attribute value on the server side.
      */
     static void changeValue(List<Command>response, ServerAttribute attribute, value){
+        if (null == attribute) {
+            log.severe("Cannot change value on a null attribute to '$value'")
+            return
+        }
         response << new ValueChangedCommand(attributeId: attribute.id, newValue: value, oldValue: attribute.value)
     }
 
