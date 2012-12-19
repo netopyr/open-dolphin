@@ -30,35 +30,37 @@ import static javafx.scene.paint.Color.*
 /**
  * This demos shows how to handle the case that a temporary presentation model needs to synchronize
  * with a persistent one, which is not initially available.
+ * This approach is only needed when the pm-id is to be made from information that is only available
+ * after save (like the db record id). A reasonable alternative is to use a "domainId" attribute.
  */
 
 class NewAndSaveView {
     static show(ClientDolphin dolphin) {
         start { app ->
 
-            def person = dolphin.presentationModel 'selectedPerson', (NAME):'', (LASTNAME):'', persistent:false
+            def person = dolphin.presentationModel 'selectedPerson', (NAME):'', (LASTNAME):''
             def form   = dolphin.presentationModel 'personForm', mode:'Create'
 
             stage {
                 scene {
                     gridPane {
-                        label id: 'header', row: 0, column: 1
+                        label       id: 'header',        row: 0, column: 1
 
-                        label id: 'nameLabel', 'Name: ', row: 1, column: 0
-                        textField id: 'nameInput', row: 1, column: 1
+                        label       id: 'nameLabel',     row: 1, column: 0, 'Name: '
+                        textField   id: 'nameInput',     row: 1, column: 1
 
-                        label id: 'lastnameLabel', 'Lastname: ', row: 2, column: 0
-                        textField id: 'lastnameInput', row: 2, column: 1
+                        label       id: 'lastnameLabel', row: 2, column: 0, 'Lastname: '
+                        textField   id: 'lastnameInput', row: 2, column: 1
 
-                        button id: 'saveButton', row: 3, column: 1
+                        button      id: 'saveButton',    row: 3, column: 1
                     }
                 }
             }
 
             style delegate
 
-            bind NAME     of person         to FX.TEXT         of nameInput
-            bind LASTNAME of person         to FX.TEXT         of lastnameInput
+            bind NAME     of person         to FX.TEXT  of nameInput
+            bind LASTNAME of person         to FX.TEXT  of lastnameInput
             bind FX.TEXT  of nameInput      to NAME     of person
             bind FX.TEXT  of lastnameInput  to LASTNAME of person
 

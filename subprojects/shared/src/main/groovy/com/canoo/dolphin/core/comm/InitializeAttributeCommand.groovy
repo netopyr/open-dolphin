@@ -16,6 +16,7 @@
 
 package com.canoo.dolphin.core.comm
 
+import com.canoo.dolphin.core.Tag
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
@@ -26,6 +27,7 @@ class InitializeAttributeCommand extends Command {
     String qualifier
     def    newValue
     String pmType
+    Tag    tag = Tag.VALUE
 
-    String toString() { super.toString() + " pm '$pmId' pmType'$pmType' property '$propertyName' initial value '$newValue' qualifier $qualifier"}
+    String toString() { super.toString() + " pm '$pmId' pmType'$pmType' property '$propertyName' initial value '$newValue' qualifier $qualifier tag $tag" }
 }

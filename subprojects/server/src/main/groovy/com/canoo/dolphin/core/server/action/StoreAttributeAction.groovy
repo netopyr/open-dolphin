@@ -25,12 +25,9 @@ import com.canoo.dolphin.core.server.comm.ActionRegistry
 class StoreAttributeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(AttributeCreatedNotification) { AttributeCreatedNotification command, response ->
-            def attribute = new ServerAttribute(command.propertyName, command.newValue)
-            attribute.id = command.attributeId
-            attribute.value = command.newValue
-            attribute.qualifier = command.qualifier
+            def attribute = new ServerAttribute(command.propertyName, command.newValue, command.qualifier, command.tag)
             def modelStore = serverDolphin.serverModelStore
-            def pm = modelStore.findPresentationModelById(command.pmId)
+            def pm = serverDolphin.findPresentationModelById(command.pmId)
             if (null == pm) {
                 pm = new ServerPresentationModel(command.pmId, [])
                 modelStore.add(pm)

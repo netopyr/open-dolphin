@@ -37,6 +37,7 @@ import static javafx.scene.paint.Color.*
  * This demo shows how to deal with more complex isDirty requirements.
  * Use case: portfolio with many positions. Each position is a financial instrument with a weight.
  * The portfolio is considered dirty when any of its core attributes changes or any position changes.
+ * The Save button should only be enabled when the portfolio is dirty. Hitting the button does nothing.
  * Approach: put an additional "saveable" attribute on the portfolio and keep it up to date
  * with any isDirty changes of relevant sources.
  * This approach can even work in a "cascading" style.

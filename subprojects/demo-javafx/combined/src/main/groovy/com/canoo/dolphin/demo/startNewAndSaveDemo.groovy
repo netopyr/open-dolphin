@@ -18,22 +18,24 @@ package com.canoo.dolphin.demo
 
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
+import com.canoo.dolphin.core.server.DTO
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
+import com.canoo.dolphin.core.server.Slot
 
 def config = new JavaFxInMemoryConfig()
 def dolphin = config.serverDolphin
 
 dolphin.action "saveNewSelectedPerson", { cmd, List<Command> response ->
-    def selectedPerson = dolphin.findPresentationModelById('selectedPerson')
+    def selectedPerson = dolphin.getAt('selectedPerson')
 
     // here: store a new person domain object with the attributes from above and get a new persistent id in return
     def pmId = "person-1" // for demo purposes assume a fixed value
 
-    def newAttributes = selectedPerson.attributes.collect {
-        new ServerAttribute(propertyName: it.propertyName, baseValue: it.value, qualifier: "${pmId}.${it.propertyName}")
+    def slots = selectedPerson.attributes.collect {
+        new Slot(it.propertyName, it.value,"${pmId}.${it.propertyName}", it.tag)
     }
-    response << CreatePresentationModelCommand.makeFrom(new ServerPresentationModel(pmId, newAttributes))
+    dolphin.presentationModel(response, pmId, null, new DTO(slots))
 }
 
 new NewAndSaveView().show(config.clientDolphin)

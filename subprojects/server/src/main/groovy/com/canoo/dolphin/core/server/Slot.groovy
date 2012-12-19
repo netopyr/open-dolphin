@@ -1,18 +1,22 @@
 package com.canoo.dolphin.core.server
 
+import com.canoo.dolphin.core.Tag
+
 class Slot {
     String propertyName
     Object value
     String qualifier
+    Tag    tag
 
     /**
      * Convenience method with positional parameters to create an attribute specification from name/value pairs.
      * Especially useful when creating DTO objects.
      */
-    Slot (String propertyName, Object value, String qualifier = null) {
+    Slot (String propertyName, Object value, String qualifier = null, Tag tag = Tag.VALUE) {
         this.propertyName = propertyName
         this.value= value
         this.qualifier =  qualifier
+        this.tag = tag
     }
 
     /**
@@ -25,7 +29,7 @@ class Slot {
 
 
     Map<String, Object> toMap() {
-        [propertyName: propertyName, value: value, qualifier: qualifier]
+        [propertyName: propertyName, value: value, qualifier: qualifier, tag:tag]
     }
 
 }

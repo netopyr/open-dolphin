@@ -115,7 +115,7 @@ public class ClientDolphin extends Dolphin {
      * @return the ClientAttribute that carries the tag value
      */
     public ClientAttribute tag(ClientPresentationModel model, String propertyName, Tag tag, def value) {
-        def attribute = new ClientAttribute(propertyName, value, tag)
+        def attribute = new ClientAttribute(propertyName, value, null, tag)
         addAttributeToModel(model, attribute)
         return attribute
     }
