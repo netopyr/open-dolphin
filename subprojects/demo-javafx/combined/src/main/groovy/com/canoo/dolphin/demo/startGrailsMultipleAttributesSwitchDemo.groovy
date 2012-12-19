@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package com.canoo.dolphin.core.comm
+package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.Tag
+import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
 
-class AttributeCreatedNotification extends Command {
+def dolphin = StarterUtil.setupForRemote()
+dolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
 
-    String  pmId
-    long    attributeId
-    String  propertyName
-    def     newValue
-    String  qualifier
-    Tag     tag         = Tag.VALUE
-
-    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName value:$newValue qualifier:$qualifier tag:${tag?.name()}"}
-}
+MultipleAttributeSwitchView.show(dolphin)

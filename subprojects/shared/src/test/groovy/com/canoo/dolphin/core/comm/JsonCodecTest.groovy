@@ -16,6 +16,8 @@
 
 package com.canoo.dolphin.core.comm
 
+import com.canoo.dolphin.core.Tag
+
 public class JsonCodecTest extends GroovyTestCase {
 
     void testEmpty() {
@@ -68,7 +70,7 @@ public class JsonCodecTest extends GroovyTestCase {
     }
 
     void testCodingCommands() {
-        assertCodingCommand(new AttributeCreatedNotification())
+        assertCodingCommand(new AttributeCreatedNotification(tag:Tag.MESSAGE))
         assertCodingCommand(new AttributeMetadataChangedCommand())
         assertCodingCommand(new CreatePresentationModelCommand())
         assertCodingCommand(new ChangeAttributeMetadataCommand())

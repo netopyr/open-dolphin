@@ -36,7 +36,7 @@ class CreatePresentationModelCommand extends Command {
                     id:             attr.id,
                     qualifier:      attr.qualifier,
                     value:          attr.value,
-                    tag:            attr.tag
+                    tag:            attr.tag.name()
             ]
         }
         return result

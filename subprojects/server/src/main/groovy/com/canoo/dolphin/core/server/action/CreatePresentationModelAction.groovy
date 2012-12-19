@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core.server.action
 
 import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
@@ -28,7 +29,7 @@ class CreatePresentationModelAction extends DolphinServerAction {
         registry.register(CreatePresentationModelCommand) { CreatePresentationModelCommand command, response ->
             List<ServerAttribute> attributes = []
             command.attributes.each { attr ->
-                ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value, attr.qualifier, attr.tag)
+                ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value, attr.qualifier, Enum.valueOf(Tag, attr.tag))
                 attribute.id = attr.id
                 attributes << attribute
             }
