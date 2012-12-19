@@ -15,15 +15,14 @@
  */
 
 package com.canoo.dolphin.demo
-
 import com.canoo.dolphin.core.client.ClientAttribute
-import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
-import com.canoo.dolphin.core.comm.NamedCommand
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.style
-import static com.canoo.dolphin.demo.MyProps.*
+import static com.canoo.dolphin.demo.MyProps.ATT.*
+import static com.canoo.dolphin.demo.MyProps.CMD.*
+import static com.canoo.dolphin.demo.MyProps.PM_ID.*
 import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.CENTER
 
@@ -31,15 +30,20 @@ class MultipleAttributeSwitchView {
 
     static show(ClientDolphin dolphin) {
 
-        def communicator = dolphin.clientConnector
-
         start { app ->
 
-            def pm1 = makePm 'pm1', 'First PM',  "Show a first pm", dolphin
-            def pm2 = makePm 'pm2', 'Second PM', "Show a second pm", dolphin
+            def pm1 = dolphin.presentationModel('FirstDemo',
+                new ClientAttribute(TITLE,   'First title',  "pm1-title"),
+                new ClientAttribute(PURPOSE, 'First purpose',"pm1-purpose")
+            )
+            def pm2 = dolphin.presentationModel('SecondDemo',
+                new ClientAttribute(TITLE,   'Second title',   "pm2-title"),
+                new ClientAttribute(PURPOSE, 'Second purpose', "pm2-purpose")
+            )
 
-            def actualPm = makePm 'pm', 'actualPm', null, dolphin
-            actualPm.syncWith pm1
+            def mold = dolphin.presentationModel(MOLD, (TITLE):'', (PURPOSE):'')
+
+            dolphin.apply pm1 to mold
 
             stage {
                 scene {
@@ -55,38 +59,26 @@ class MultipleAttributeSwitchView {
 
                         hbox styleClass:"submit", row:3, column:1, {
                             button "Actual is one",
-                                   onAction: { dolphin.apply pm1 to actualPm }
+                                   onAction: { dolphin.apply pm1 to mold }
                             button "Actual is two",
-                                   onAction: { dolphin.apply pm2 to actualPm }
+                                   onAction: { dolphin.apply pm2 to mold }
                         }
                         hbox styleClass:"submit", row:4, column:1, {
                             button "Set title",
-                                   onAction: { dolphin.send "setTitle" }
+                                   onAction: { dolphin.send SET_TITLE }
                             button "Set purpose",
-                                   onAction: { dolphin.send "setPurpose" }
+                                   onAction: { dolphin.send SET_PURPOSE }
             }   }   }   }
 
             style delegate
 
-            bind TITLE       of actualPm to TITLE of primaryStage
-            bind TITLE       of actualPm to TEXT  of header
-            bind TITLE       of actualPm to TEXT  of titleLabel
-            bind ATT_PURPOSE of actualPm to TEXT  of purposeLabel
+            bind TITLE       of mold to FX.TITLE of primaryStage
+            bind TITLE       of mold to FX.TEXT  of header
+            bind TITLE       of mold to FX.TEXT  of titleLabel
+            bind PURPOSE     of mold to FX.TEXT  of purposeLabel
 
             primaryStage.show()
         }
     }
 
-    protected static ClientPresentationModel makePm(String idPrefix, String id, String purpose, ClientDolphin clientDolphin) {
-        def attributes = [TITLE, ATT_PURPOSE].collect { propName ->
-            def attr = new ClientAttribute(propName)
-            attr.qualifier = idPrefix + '.' + propName
-            attr
-        }
-        def pm = new ClientPresentationModel(id, attributes)
-        pm.title.value   = id
-        pm.purpose.value = purpose
-        clientDolphin.clientModelStore.add pm
-        pm
-    }
 }

@@ -28,19 +28,19 @@ import com.canoo.dolphin.core.Tag
  */
 
 class ClientAttribute extends BaseAttribute {
+
+    /** @deprecated you should not create Client Attributes without initial values */
     ClientAttribute(String propertyName) {
         this(propertyName, null)
     }
 
-    ClientAttribute(String propertyName, Object initialValue) {
-        super(propertyName, initialValue)
-    }
 
-    ClientAttribute(String propertyName, Object initialValue, Tag tag) {
-        super(propertyName, initialValue, tag)
+    ClientAttribute(String propertyName, Object initialValue, String qualifier = null, Tag tag = Tag.VALUE) {
+        super(propertyName, initialValue, qualifier, tag)
     }
 
 
+    /** @deprecated too much dependent on key names and doesn't allow setting the tag */
     ClientAttribute(Map props) {
         this(props.propertyName, props.initialValue)
         this.qualifier = props.qualifier

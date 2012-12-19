@@ -65,6 +65,14 @@ public class ClientDolphin extends Dolphin {
         return result
     }
 
+    /** both groovy- and java-friendly full-control factory */
+    ClientPresentationModel presentationModel(String id, String presentationModelType = null, ClientAttribute... attributes) {
+        def result = new ClientPresentationModel(id, attributes as List)
+        result.presentationModelType = presentationModelType
+        clientModelStore.add result
+        return result
+    }
+
     /** java-friendly convenience method for sending a named command*/
     void send(String commandName, OnFinishedHandler onFinished = null) {
         clientConnector.send new NamedCommand(commandName), onFinished

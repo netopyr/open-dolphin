@@ -28,7 +28,7 @@ import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
 import static com.canoo.dolphin.binding.Binder.bind
-import static com.canoo.dolphin.demo.MyProps.TEXT
+import static com.canoo.dolphin.demo.MyProps.ATT.*
 import static com.canoo.dolphin.demo.MyProps.TITLE
 
 public class NoGroovyFxPlainApp extends Application {
@@ -50,15 +50,15 @@ public class NoGroovyFxPlainApp extends Application {
         root.children << vbox
         
         // construct the PM
-        def titleAttr = new ClientAttribute('title')
+        def titleAttr = new ClientAttribute(TITLE)
         def pm = new ClientPresentationModel('demo',[titleAttr])
-        pm.title.value = "Hello JavaFX"
+        pm[TITLE].value = "Hello JavaFX"
 
         stage.titleProperty().bind(label.textProperty()) // JavaFX: changes to label will be propagated to the stage title
 
         // bind the view onto the PM
-        bind TITLE of pm to TEXT of label
-        bind(TITLE).of(pm).to(TEXT).of(textField) // java style
+        bind TITLE  of pm  to FX.TEXT  of label      // groovy style
+        bind(TITLE).of(pm).to(FX.TEXT).of(textField) // java style
 
         textField.onAction = { titleAttr.value = textField.text } as EventHandler
 

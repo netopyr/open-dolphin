@@ -39,6 +39,11 @@ public abstract class Dolphin {
         return getModelStore().findAllPresentationModelsByType(presentationModelType);
     }
 
+    /** alias for findPresentationModelById */
+    public PresentationModel getAt(String id) {
+        return findPresentationModelById(id);
+    }
+
     public PresentationModel findPresentationModelById(String id) {
         return getModelStore().findPresentationModelById(id);
     }

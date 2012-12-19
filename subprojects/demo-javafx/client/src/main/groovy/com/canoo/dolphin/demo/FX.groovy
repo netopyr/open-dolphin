@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package com.canoo.dolphin.core.server
+package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.BasePresentationModel
+class FX {
 
-class ServerPresentationModel extends BasePresentationModel {
-    ServerPresentationModel(List<ServerAttribute> attributes) {
-        this(null, attributes)
-    }
+    // constants for JavaFX view properties
 
-    ServerPresentationModel(String id, List<ServerAttribute> attributes) {
-        super(id, attributes)
-    }
-
-    // override with server specific return values to avoid casting in client code
-
-    ServerAttribute getAt(String propertyName) {
-        return (ServerAttribute) super.getAt(propertyName)
-    }
+    static final String TEXT        = 'text'
+    static final String TITLE       = 'title'
+    static final String TEXT_FILL   = "textFill"
+    static final String DISABLED    = "disabled"
 }

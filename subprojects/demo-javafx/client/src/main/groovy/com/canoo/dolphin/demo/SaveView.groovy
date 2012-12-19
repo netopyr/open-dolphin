@@ -22,7 +22,7 @@ import static javafx.scene.paint.Color.*
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JFXBinder.bindInfo
 import static com.canoo.dolphin.demo.DemoStyle.style
-import static com.canoo.dolphin.demo.MyProps.*
+import static com.canoo.dolphin.demo.MyProps.ATT.*
 import static groovyx.javafx.GroovyFX.start
 
 import static com.canoo.dolphin.core.Attribute.DIRTY_PROPERTY
@@ -33,7 +33,7 @@ class SaveView {
     static show(ClientDolphin dolphin) {
         start { app ->
 
-            def model = dolphin.presentationModel 'person', (ATT_NAME):'', (ATT_LASTNAME):'Smith'
+            def model = dolphin.presentationModel 'person', (NAME):'', (LASTNAME):'Smith'
 
             stage {
                 scene {
@@ -56,15 +56,15 @@ class SaveView {
 
             style delegate
 
-            bind ATT_NAME     of model         to TEXT         of nameInput
-            bind ATT_LASTNAME of model         to TEXT         of lastnameInput
-            bind TEXT         of nameInput     to ATT_NAME     of model
-            bind TEXT         of lastnameInput to ATT_LASTNAME of model
+            bind NAME     of model         to FX.TEXT  of nameInput
+            bind LASTNAME of model         to FX.TEXT  of lastnameInput
+            bind FX.TEXT  of nameInput     to NAME     of model
+            bind FX.TEXT  of lastnameInput to LASTNAME of model
 
-            bindInfo DIRTY_PROPERTY of model[ATT_NAME]     to TEXT_FILL  of nameLabel,     { it ? RED : WHITE }
-            bindInfo DIRTY_PROPERTY of model[ATT_LASTNAME] to TEXT_FILL  of lastnameLabel, { it ? RED : WHITE }
-            bindInfo DIRTY_PROPERTY of model               to TITLE      of primaryStage , { it ? '** Unsaved **': '' }
-            bindInfo DIRTY_PROPERTY of model               to DISABLED   of saveButton,    { !it }
+            bindInfo DIRTY_PROPERTY of model[NAME]     to FX.TEXT_FILL  of nameLabel,     { it ? RED : WHITE }
+            bindInfo DIRTY_PROPERTY of model[LASTNAME] to FX.TEXT_FILL  of lastnameLabel, { it ? RED : WHITE }
+            bindInfo DIRTY_PROPERTY of model           to FX.TITLE      of primaryStage , { it ? '** Unsaved **': '' }
+            bindInfo DIRTY_PROPERTY of model           to FX.DISABLED   of saveButton,    { !it }
 
             primaryStage.show()
         }

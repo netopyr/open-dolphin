@@ -17,6 +17,6 @@
 package com.canoo.dolphin.demo
 
 def config = new JavaFxInMemoryConfig()
-config.serverDolphin.serverConnector.register new CustomAction(serverDolphin: config.serverDolphin)
+config.serverDolphin.register new DemoTitlePurposeAction()
 
 MultipleAttributeSwitchView.show(config.clientDolphin)

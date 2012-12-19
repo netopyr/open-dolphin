@@ -101,4 +101,9 @@ class ServerDolphin extends Dolphin {
         response << new ValueChangedCommand(attributeId: attribute.id, newValue: value, oldValue: attribute.value)
     }
 
+    // overriding super methods with server-specific return types to avoid casting
+    ServerPresentationModel getAt(String pmId) {
+        (ServerPresentationModel) super.getAt(pmId)
+    }
+
 }
