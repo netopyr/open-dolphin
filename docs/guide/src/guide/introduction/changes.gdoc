@@ -1,4 +1,37 @@
-h4. Notable Changes since 0.3
+h4. Release 0.4 : Notable Changes since 0.3
 
-# [DOL-31|https://www.canoo.com/jira/browse/DOL-31] removed @createPresentationModel@ from @ServerDolphin@
-# [DOL-32|https://www.canoo.com/jira/browse/DOL-32] removed the linking feature
+[Release Notes - Dolphin - Version 0.4 |http://www.canoo.com/jira/secure/ReleaseNote.jspa?version=11265&styleName=Text&projectId=10480&Create=Create]
+
+# DOL-25 - provide a demo that measures dolphin response times
+# DOL-33 - allow more meta-infos per Attribute
+# DOL-19 - Provide a code example that shows how to use dolphin for lazy loading
+# DOL-21 - Build does not automatically discover javafx in JDK when JAVAFX_HOME is set
+# DOL-37 - align server and client side API for CRUD operations on presentation models and attributes
+# DOL-38 - nicer API for server side value change
+# DOL-39 - API enhancement: server actions should work transparently on the response
+# DOL-40 - API enhancement: allow finding presentation models and attributes without the need for casting in both Java and Groovy friendly manner
+# DOL-41 - start a user guide
+# DOL-42 - provide combined apidoc: javadoc / groovydoc
+# DOL-43 - Provide a DataCommand
+# DOL-44 - Provide a more complex demo (dependencies, crud operations, remoting)
+# DOL-17 - provide a 'gradlew run' to start any demo
+# DOL-18 - link the website to the latest version of the documentation
+# DOL-32 - remove the "linking" feature
+
+h5. Breaking Changes
+The "linking" feature is no longer available. See e.g. the Crud demo for alternatives.
+
+h5. Deprecations
+In the future, we will disallow direct access to the connector or model store.
+
+Please prepare by using the dolphin (@ClientDolphin@ and @ServerDolphin@) facade whenever possible.
+This also true for all the cases where application code on the server side directly invokes constructors of
+commands, presentation models or attributes. Please use factory methods instead.
+
+h5. Solved Bugs
+# DOL-15 - Basic build fails
+# DOL-22 - exception in reference table demo and search demo
+# DOL-26 - Binding the text property of a Swing component to a ClientPresentationModel throws Exception
+# DOL-31 - ServerDolphin.createPresentationModel has an "optional" parameter, which is required
+# DOL-35 - com.canoo.dolphin.demo.startCreatePresentationModelDemo.groovy still tries to invoke serverDolphin.createPresentationModel
+
