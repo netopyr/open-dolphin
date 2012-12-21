@@ -4,7 +4,14 @@ import com.canoo.dolphin.core.server.Slot
 import com.canoo.dolphin.core.server.action.DolphinServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
-import static com.canoo.dolphin.demo.crud.CrudConstants.*
+import static PortfolioConstants.*
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.DOMAIN_ID
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.TOTAL
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.PM_ID.SELECTED
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.TYPE.PORTFOLIO
+import static com.canoo.dolphin.demo.crud.PositionConstants.ATT.PORTFOLIO_ID
+import static com.canoo.dolphin.demo.crud.PositionConstants.ATT.WEIGHT
+import static com.canoo.dolphin.demo.crud.PositionConstants.TYPE.POSITION
 
 class CrudActions extends DolphinServerAction {
 
@@ -12,33 +19,33 @@ class CrudActions extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
 
-        serverDolphin.action CMD_PULL_PORTFOLIOS, { cmd, response ->
+        serverDolphin.action PortfolioConstants.CMD.PULL, { cmd, response ->
             def portfolios = crudService.listPortfolios(1L) // fixed value until we have users
             portfolios.eachWithIndex { portfolioDTO, index ->
-                presentationModel pmId(TYPE_PORTFOLIO, index), TYPE_PORTFOLIO, portfolioDTO
+                presentationModel pmId(PORTFOLIO, index), PORTFOLIO, portfolioDTO
             }
         }
 
-        serverDolphin.action CMD_PULL_POSITIONS, { cmd, response ->
-            def visiblePortfolio  = serverDolphin.findPresentationModelById(PM_SELECTED_PORTFOLIO)
-            def selectedPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[ATT_PORTFOLIO_ID].value)
-            def positions = crudService.listPositions(selectedPortfolio[ATT_DOMAIN_ID].value.toLong())
+        serverDolphin.action PositionConstants.CMD.PULL, { cmd, response ->
+            def visiblePortfolio  = serverDolphin.findPresentationModelById(SELECTED)
+            def selectedPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[PORTFOLIO_ID].value as String)
+            def positions = crudService.listPositions(selectedPortfolio[DOMAIN_ID].value.toLong())
             positions.eachWithIndex { positionDTO, index ->
-                positionDTO.slots << new Slot(ATT_PORTFOLIO_ID, selectedPortfolio[ATT_DOMAIN_ID].value)
-                presentationModel null, TYPE_POSITION, positionDTO
+                positionDTO.slots << new Slot(PORTFOLIO_ID, selectedPortfolio[DOMAIN_ID].value)
+                presentationModel null, POSITION, positionDTO
             }
         }
 
-        serverDolphin.action CMD_UPDATE_TOTAL, { cmd, response ->
-            def visiblePortfolio = serverDolphin.findPresentationModelById(PM_SELECTED_PORTFOLIO)
-            def currentPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[ATT_PORTFOLIO_ID].value)
+        serverDolphin.action PortfolioConstants.CMD.UPDATE, { cmd, response ->
+            def visiblePortfolio = serverDolphin.findPresentationModelById(SELECTED)
+            def currentPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[PORTFOLIO_ID].value)
 
-            def portfolioDomainId = currentPortfolio[ATT_DOMAIN_ID].value
-            def allPositions = serverDolphin.findAllPresentationModelsByType(TYPE_POSITION)
-            def positions = allPositions.findAll { it[ATT_PORTFOLIO_ID].value == portfolioDomainId }
-            def sum = positions.sum { it[ATT_WEIGHT].value }
+            def portfolioDomainId = currentPortfolio[DOMAIN_ID].value
+            def allPositions = serverDolphin.findAllPresentationModelsByType(POSITION)
+            def positions = allPositions.findAll { it[PORTFOLIO_ID].value == portfolioDomainId }
+            def sum = positions.sum { it[WEIGHT].value }
 
-            changeValue(currentPortfolio[ATT_TOTAL], sum)
+            changeValue(currentPortfolio[TOTAL], sum)
         }
     }
 }

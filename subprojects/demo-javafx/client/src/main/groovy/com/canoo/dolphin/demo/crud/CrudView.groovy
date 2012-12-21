@@ -17,13 +17,16 @@
 package com.canoo.dolphin.demo.crud
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.demo.FX
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JavaFxUtil.value
-import static com.canoo.dolphin.demo.crud.CrudConstants.PM_SELECTED_PORTFOLIO
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.NAME
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.CMD.PULL
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.PM_ID.SELECTED
 import static groovyx.javafx.GroovyFX.start
 
 class CrudView {
@@ -37,20 +40,24 @@ class CrudView {
         // having a pm that captures the (dolphin) portfolio id
         // This is used on the server to find out the portfolio context for a named command.
         // A "mold" is not used in this case since "apply" produces too much overhead.
-        def visiblePortfolio = clientDolphin.presentationModel(PM_SELECTED_PORTFOLIO, portfolioId: null )
+        def visiblePortfolio = clientDolphin.presentationModel(SELECTED, portfolioId: null )
 
         start { app ->
-            stage {
+            def sgb = delegate
+            stage title:"Portfolio Manager", {
                 scene width: 1000, height: 600, stylesheets:"CrudDemo.css", {
                     splitPane  {
                         dividerPosition(index: 0, position: 0.2)
-                        tableView id:'portfolios', selectionMode:"single", {
-                            value 'name',  tableColumn('Portfolio', prefWidth: 100 )
-                            value 'total', tableColumn('Total',     prefWidth: 40 )
-                            value 'fixed', tableColumn('Fixed',     prefWidth: 40 )
+                        vbox alignment: 'top_center', {
+                            label "Dierk's Portfolios", id: 'dierk'
+                            tableView id:'portfolios', selectionMode:"single", vgrow:'always', {
+                                    value 'name',  tableColumn('Portfolio', prefWidth: sgb.bind(portfolios.width() / 2) )
+                                    value 'total', tableColumn('Total',     prefWidth: sgb.bind(portfolios.width() / 4) )
+                                    value 'fixed', tableColumn('Fixed',     prefWidth: sgb.bind(portfolios.width() / 4) )
+                            }
                         }
                         stackPane {
-                            text "Please select a Portfolio"
+                            label "Please select a Portfolio", id: 'welcome'
                             tabPane id:'portfolioTabs'
                         }
                     }
@@ -60,8 +67,8 @@ class CrudView {
 
             portfolios.items = observableListOfPortfolios
 
-            def sgb = delegate
             portfolios.selectionModel.selectedItemProperty().addListener({ o, oldVal, selectedPm ->
+                if (null == selectedPm) return // happens on deselect
                  visiblePortfolio.portfolioId.value = selectedPm.id
 
                 def gotoTab = sgb.portfolioTabs.tabs.find { it.id == selectedPm.id }
@@ -70,22 +77,18 @@ class CrudView {
                     gotoTab = sgb.tab id:selectedPm.id, {
                         editor.initView(sgb)
                     }
-                    bind 'name' of selectedPm to 'text' of gotoTab
+                    bind NAME of selectedPm to FX.TEXT of gotoTab
                     sgb.portfolioTabs.tabs << gotoTab
                 }
                 sgb.portfolioTabs.selectionModel.select(gotoTab)
             } as ChangeListener)
 
-
-
-            clientDolphin.send CrudConstants.CMD_PULL_PORTFOLIOS, { portfolioPms ->
+            clientDolphin.send PULL, { portfolioPms ->
                 for (pm in portfolioPms) {
                     observableListOfPortfolios << pm
                 }
                 fadeTransition(1.s, node: portfolios, to: 1).playFromStart()
             }
-
-
 
             primaryStage.show()
         }

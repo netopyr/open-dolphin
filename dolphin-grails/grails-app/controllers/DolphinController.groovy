@@ -2,8 +2,8 @@ import com.canoo.dolphin.core.server.comm.ServerConnector
 
 class DolphinController {
 
-    DolphinSpringBean dolphinBean  // must be here in order to trigger creation
     ServerConnector serverConnector
+    DolphinSpringBean dolphinBean  // must be here in order to trigger creation (?)
 
     static allowedMethods = ['POST']
 

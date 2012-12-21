@@ -24,4 +24,9 @@ class FX {
     static final String TITLE       = 'title'
     static final String TEXT_FILL   = "textFill"
     static final String DISABLED    = "disabled"
+    static final String SELECTED    = "selected"
+    static final String VALUE       = "value"
+    static final String NAME        = "name"
+    static final String PIE_VALUE   = "pieValue"
+
 }

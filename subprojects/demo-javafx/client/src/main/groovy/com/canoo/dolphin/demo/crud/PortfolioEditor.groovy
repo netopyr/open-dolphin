@@ -3,18 +3,31 @@ import com.canoo.dolphin.core.ModelStoreEvent
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import com.canoo.dolphin.demo.FX
 import groovyx.javafx.SceneGraphBuilder
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.chart.PieChart
+import javafx.scene.control.TableView
+import javafx.util.Callback
 
 import java.beans.PropertyChangeListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JavaFxUtil.cellEdit
 import static com.canoo.dolphin.binding.JavaFxUtil.value
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.DOMAIN_ID
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.FIXED
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.NAME
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.TOTAL
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.CMD.UPDATE
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.PM_ID.SELECTED
+import static com.canoo.dolphin.demo.crud.PositionConstants.ATT.INSTRUMENT
+import static com.canoo.dolphin.demo.crud.PositionConstants.ATT.PORTFOLIO_ID
+import static com.canoo.dolphin.demo.crud.PositionConstants.ATT.WEIGHT
+import static com.canoo.dolphin.demo.crud.PositionConstants.CMD.PULL
+import static com.canoo.dolphin.demo.crud.PositionConstants.TYPE.POSITION
 import static javafx.scene.layout.GridPane.REMAINING
-import static com.canoo.dolphin.demo.crud.CrudConstants.*
 
 @SuppressWarnings("GroovyAssignabilityCheck")
 class PortfolioEditor {
@@ -49,11 +62,13 @@ class PortfolioEditor {
                 nameField = textField       row: 0, column: 1, minHeight:32
                 label       "Positions",    row: 1, column: 0
                 tableBox  = vbox            row: 1, column: 1, {
-                    positions = tableView   selectionMode:"single", editable:true, styleClass:'noBorder', {
-                        value 'instrument', tableColumn('Instrument', prefWidth: 100, editable:true,
-                                                        onEditCommit: cellEdit('instrument', { it.toString() } ) )
-                        value 'weight'    , tableColumn('Weight',     prefWidth:  60, editable:true,
-                                                        onEditCommit: cellEdit('weight',     { it.toInteger() } ) )
+                    positions = tableView   selectionMode:"single", editable:true, styleClass:'noBorder', id:'table', {
+                        value INSTRUMENT, tableColumn('Instrument', editable:true,
+                                                        prefWidth: sgb.bind(table.width() * 2 / 3),
+                                                        onEditCommit: cellEdit(INSTRUMENT, { it.toString() } ) )
+                        value WEIGHT    , tableColumn('Weight',     editable:true,
+                                                        prefWidth: sgb.bind(table.width() / 3 - 1),
+                                                        onEditCommit: cellEdit(WEIGHT,     { it.toInteger() } ) )
                     }
                     hbox {
                         plus  = button '+', styleClass:"bottomButton"
@@ -66,6 +81,7 @@ class PortfolioEditor {
                 fixedField = checkBox       row: 3, column: 1
                 chart      = pieChart       row: 0, column: 2, rowSpan:REMAINING, animated: true
             }
+            positions.columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             positions.items = observableListOfPositions
             result.opacity  = 0.3d
             return result
@@ -74,13 +90,17 @@ class PortfolioEditor {
 
     private void bindings(SceneGraphBuilder sgb) {
         sgb.with {
-            bind ATT_FIXED  of portfolioPM to 'selected'  of fixedField
-            bind 'selected' of fixedField  to ATT_FIXED   of portfolioPM
+            bind FIXED       of portfolioPM to FX.SELECTED  of fixedField
+            bind FX.SELECTED of fixedField  to FIXED        of portfolioPM
 
-            bind ATT_NAME   of portfolioPM to 'text'      of nameField
-            bind 'text'     of nameField   to ATT_NAME    of portfolioPM
+            bind NAME        of portfolioPM to FX.TEXT      of nameField
+            bind FX.TEXT     of nameField   to NAME         of portfolioPM
 
-            bind ATT_TOTAL  of portfolioPM to 'text'      of totalField
+            bind TOTAL       of portfolioPM to FX.TEXT      of totalField
+
+            [nameField, positions, plus, minus].each { control ->
+                bind FIXED   of portfolioPM to FX.DISABLED  of control
+            }
         }
     }
 
@@ -90,25 +110,25 @@ class PortfolioEditor {
             def observableListOfPositions = observableListOfPositions
             def positions = positions
 
-            clientDolphin.addModelStoreListener TYPE_POSITION, { ModelStoreEvent event ->
+            clientDolphin.addModelStoreListener POSITION, { ModelStoreEvent event ->
                 PresentationModel position = event.presentationModel
-                if (position[ATT_PORTFOLIO_ID].value != portfolioPM[ATT_DOMAIN_ID].value) return // only consider positions that refer to us
+                if (position[PORTFOLIO_ID].value != portfolioPM[DOMAIN_ID].value) return // only consider positions that refer to us
                 switch (event.type){
                     case ModelStoreEvent.Type.ADDED:
                         observableListOfPositions << position
-                        position[ATT_WEIGHT].addPropertyChangeListener('value', {
+                        position[WEIGHT].addPropertyChangeListener(FX.VALUE, {
                             setCurrentPortfolio()
-                            clientDolphin.send CMD_UPDATE_TOTAL
+                            clientDolphin.send UPDATE
                         } as PropertyChangeListener)
                         def pieDataPoint = new PieChart.Data("",0)
-                        bind ATT_INSTRUMENT of position to 'name'     of pieDataPoint
-                        bind ATT_WEIGHT     of position to 'pieValue' of pieDataPoint, { it.toDouble() }
+                        bind INSTRUMENT of position to FX.NAME     of pieDataPoint
+                        bind WEIGHT     of position to FX.PIE_VALUE of pieDataPoint, { it.toDouble() }
 
-                        position[ATT_INSTRUMENT].addPropertyChangeListener('value', { // Workaround for http://javafx-jira.kenai.com/browse/RT-26845
+                        position[INSTRUMENT].addPropertyChangeListener(FX.VALUE, { // Workaround for http://javafx-jira.kenai.com/browse/RT-26845
                             def index = chart.data.indexOf pieDataPoint
                             def newDataPoint = new PieChart.Data(it.newValue, pieDataPoint.pieValue)
-                            bind 'instrument' of position to 'name'     of newDataPoint
-                            bind 'weight'     of position to 'pieValue' of newDataPoint, { it.toDouble() }
+                            bind INSTRUMENT of position to FX.NAME     of newDataPoint
+                            bind WEIGHT     of position to FX.PIE_VALUE of newDataPoint, { it.toDouble() }
                             chart.data[index] = newDataPoint       // consider unbinding pieDataPoint
                         } as PropertyChangeListener)
 
@@ -124,8 +144,8 @@ class PortfolioEditor {
 
             plus.onAction {
                 setCurrentPortfolio()
-                clientDolphin.presentationModel(null, TYPE_POSITION, instrument:'changeme', weight:10, portfolioId:portfolioPM[ATT_DOMAIN_ID].value)
-                clientDolphin.send CMD_UPDATE_TOTAL
+                clientDolphin.presentationModel(null, POSITION, instrument:'changeme', weight:10, portfolioId:portfolioPM[DOMAIN_ID].value)
+                clientDolphin.send UPDATE
             }
 
             minus.onAction {
@@ -134,7 +154,7 @@ class PortfolioEditor {
                 clientDolphin.delete(position)
                 positions.selectionModel.clearSelection() // this may become a server decision
                 setCurrentPortfolio()
-                clientDolphin.send CMD_UPDATE_TOTAL
+                clientDolphin.send UPDATE
             }
         }
     }
@@ -142,8 +162,8 @@ class PortfolioEditor {
     private void pull(SceneGraphBuilder sgb) {
         sgb.with {
             setCurrentPortfolio()
-            clientDolphin.send CMD_PULL_POSITIONS, {
-                clientDolphin.send CMD_UPDATE_TOTAL, {
+            clientDolphin.send PULL, {
+                clientDolphin.send UPDATE, {
                     fadeTransition(1.s, node: view, to: 1).playFromStart()
                 }
             }
@@ -151,7 +171,7 @@ class PortfolioEditor {
     }
 
     def void setCurrentPortfolio() {
-        def visiblePortfolio = clientDolphin.findPresentationModelById(PM_SELECTED_PORTFOLIO)
-        visiblePortfolio[ATT_PORTFOLIO_ID].value = portfolioPM.id
+        def visiblePortfolio = clientDolphin.findPresentationModelById(SELECTED)
+        visiblePortfolio[PORTFOLIO_ID].value = portfolioPM.id
     }
 }

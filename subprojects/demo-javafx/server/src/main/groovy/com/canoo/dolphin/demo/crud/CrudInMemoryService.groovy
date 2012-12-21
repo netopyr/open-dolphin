@@ -3,7 +3,8 @@ package com.canoo.dolphin.demo.crud
 import com.canoo.dolphin.core.server.DTO
 import com.canoo.dolphin.core.server.Slot
 
-import static com.canoo.dolphin.demo.crud.CrudConstants.*
+import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.*
+import static com.canoo.dolphin.demo.crud.PositionConstants.ATT.*
 
 class CrudInMemoryService implements CrudService {
 
@@ -11,28 +12,28 @@ class CrudInMemoryService implements CrudService {
     List<DTO> listPortfolios(long ownerId) {
         List<DTO> result = new LinkedList<DTO>();
         result.add(new DTO(
-            new Slot(ATT_DOMAIN_ID, 1),
-            new Slot(ATT_NAME, 'Balanced'),
-            new Slot(ATT_TOTAL, 100),
-            new Slot(ATT_FIXED, false)
+            new Slot(DOMAIN_ID, 1),
+            new Slot(NAME, 'Balanced'),
+            new Slot(TOTAL, 100),
+            new Slot(FIXED, false)
         ));
         result.add(new DTO(
-            new Slot(ATT_DOMAIN_ID, 2),
-            new Slot(ATT_NAME, 'Growth'),
-            new Slot(ATT_TOTAL, 100),
-            new Slot(ATT_FIXED, false)
+            new Slot(DOMAIN_ID, 2),
+            new Slot(NAME, 'Growth'),
+            new Slot(TOTAL, 100),
+            new Slot(FIXED, false)
         ));
         result.add(new DTO(
-            new Slot(ATT_DOMAIN_ID, 3),
-            new Slot(ATT_NAME, 'Risky'),
-            new Slot(ATT_TOTAL, 100),
-            new Slot(ATT_FIXED, false)
+            new Slot(DOMAIN_ID, 3),
+            new Slot(NAME, 'Risky'),
+            new Slot(TOTAL, 100),
+            new Slot(FIXED, false)
         ));
         result.add(new DTO(
-            new Slot(ATT_DOMAIN_ID, 4),
-            new Slot(ATT_NAME, 'Insane'),
-            new Slot(ATT_TOTAL, 100),
-            new Slot(ATT_FIXED, false)
+            new Slot(DOMAIN_ID, 4),
+            new Slot(NAME, 'Insane'),
+            new Slot(TOTAL, 100),
+            new Slot(FIXED, false)
         ));
         return result;
     }
@@ -40,10 +41,10 @@ class CrudInMemoryService implements CrudService {
     // Groovy-like variant
     List<DTO> listPositions(long portfolioId) {
         [
-            [(ATT_INSTRUMENT): 'ORCL', (ATT_WEIGHT): 10],
-            [(ATT_INSTRUMENT): 'APPL', (ATT_WEIGHT): 40],
-            [(ATT_INSTRUMENT): 'IBM',  (ATT_WEIGHT): 30],
-            [(ATT_INSTRUMENT): 'UBSN', (ATT_WEIGHT): 20],
+            [(INSTRUMENT): 'ORCL', (WEIGHT): 10],
+            [(INSTRUMENT): 'APPL', (WEIGHT): 40],
+            [(INSTRUMENT): 'IBM',  (WEIGHT): 30],
+            [(INSTRUMENT): 'UBSN', (WEIGHT): 20],
         ].collect { new DTO(Slot.slots(it)) }
     }
 }
