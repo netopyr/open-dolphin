@@ -18,5 +18,6 @@ dependencies {
     compile ':jfxrt:',
             project(':demo-javafx-shared'),
             project(':client-javafx'),
-            'org.codehaus.groovyfx:groovyfx:0.2'
+            'org.codehaus.groovyfx:groovyfx:0.2',
+            'org.jfxtras:jfxtras-labs:2.2-r4'
 }

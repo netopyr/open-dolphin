@@ -30,6 +30,10 @@ import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
 import static groovyx.javafx.GroovyFX.start
 
+import jfxtras.labs.scene.control.gauge.*
+import static jfxtras.labs.scene.control.gauge.Gauge.FrameDesign.CHROME
+import static jfxtras.labs.scene.control.gauge.Gauge.LcdFont.LCD;
+
 /**
  * A demo that shows how to easily do lazy loading with the standard Dolphin on-board means.
  * Simply start and see how the table on the left-hand-side fills - depending on the sleepMillis
@@ -49,6 +53,23 @@ class LazyLoadingView {
 
         start { app ->
             SceneGraphBuilder sgb = delegate
+
+            def lcd = new Lcd (
+                 styleModel: new StyleModel(lcdValueFont: LCD, lcdUnitVisible: true),
+                 title: "Selected Value" ,
+                 unit: "value",
+                 prefWidth: 250,
+                 prefHeight: 70
+            )
+
+            def gauge = new Radial (
+                styleModel: new StyleModel(frameDesign: CHROME),
+                title: "Real Load %",
+                lcdDecimals : 3,
+                prefWidth:  250,
+                prefHeight: 250
+            )
+
             stage title:"Dolphin lazy loading demo", {
                 scene width: 700, height: 500, {
                     borderPane {
@@ -58,10 +79,12 @@ class LazyLoadingView {
                                 columnConstraints  halignment: "right"
                                 label     row: 0, column: 0, 'detail'
                                 textField row: 0, column: 1, id: 'detailsField', prefColumnCount:10
-                                label     row: 1, column: 0, 'table size:'
-                                label     row: 1, column: 1, id:'tableSizeField'
-                                label     row: 2, column: 0, 'lazily loaded:'
-                                label     row: 2, column: 1, id:"lazilyLoadedField"
+                                node      row: 1, column: 1, lcd
+                                label     row: 2, column: 0, 'table size:'
+                                label     row: 2, column: 1, id:'tableSizeField'
+                                label     row: 3, column: 0, 'lazily loaded:'
+                                label     row: 3, column: 1, id:"lazilyLoadedField"
+                                node      row: 4, column: 1, gauge
                             }
                         }
                         left margin:10, {
@@ -75,7 +98,8 @@ class LazyLoadingView {
             table.items = observableList
 
             // all the bindings ...
-            bind 'detail' of dataMold to 'text' of detailsField
+            bind 'detail' of dataMold to FX.TEXT  of detailsField
+            bind 'detail' of dataMold to FX.VALUE of lcd, { it ? (it-"server: ").toDouble() : 0 }
 
             // cell values are lazily requested from JavaFX and must return an observable value
             idCol.cellValueFactory = {
@@ -101,7 +125,10 @@ class LazyLoadingView {
             // count the number of lazily loaded pms by listing to the model store
             int count = 0
             dolphin.addModelStoreListener("LAZY") { ModelStoreEvent evt ->
-                if (evt.type == ModelStoreEvent.Type.ADDED) lazilyLoadedField.text = ++count
+                if (evt.type == ModelStoreEvent.Type.ADDED) {
+                    lazilyLoadedField.text = ++count
+                    gauge.value = 100d * count / observableList.size()
+                }
             }
 
             // when starting, first fill the table with pm ids
@@ -110,6 +137,7 @@ class LazyLoadingView {
                     observableList << map
                 }
                 tableSizeField.text = observableList.size()
+                lcd.maxValue = observableList.size()
             }
 
             primaryStage.show()
