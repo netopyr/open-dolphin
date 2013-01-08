@@ -13,9 +13,9 @@ In other words, attributes are @Observable@.
 
 In addition to the value, attributes provide more information about the value, e.g.
 whether the value is _dirty_ (i.e. it differs from the _base value_).
-
-The ability to capture more additional information is an open feature request
-([DOL-33|https://www.canoo.com/jira/browse/DOL-33]).
+The dirty state is observable such that you can bind against it.
+As soon as at least one attribute of a presentation model is dirty, that presentation
+model is also considered dirty.
 
 Attributes have an optional _qualifier_ property to capture the fact that this attribute
 represents a qualified feature in the domain world.
@@ -26,5 +26,11 @@ Whenever the value of an Attribute changes, all other attributes with the same q
 are automatically updated.
 
 Qualifiers are a prerequisite for [stable bindings|guide:concepts_binding].
+
+Since version 0.4 Dolphin attributes can be tagged in order to describe the meaning of
+the value. The @Tag@ enumeration provides all possible tags with @VALUE@ being the default.
+Tags can be used to e.g. describe whether the person firstname is a @MANDATORY@ attribute,
+whether it is @ENABLED@, @VISIBLE@, and so on.
+Attributes with a tag are observable in the usual way.
 
 See also [Usage|Attribute] and [API doc|api:com.canoo.dolphin.core.Attribute].
