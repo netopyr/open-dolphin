@@ -67,7 +67,8 @@ class LazyLoadingView {
                 title: "Real Load %",
                 lcdDecimals : 3,
                 prefWidth:  250,
-                prefHeight: 250
+                prefHeight: 250,
+                effect: dropShadow(radius: 20, color:rgba(0,0,0,0.4))
             )
 
             stage title:"Dolphin lazy loading demo", {
