@@ -35,6 +35,8 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
+        compile 'org.codehaus.gpars:gpars:1.0.0'
+
         // compile 'com.canoo.dolphin:dolphin-shared:0.1-SNAPSHOT'
         // compile 'com.canoo.dolphin:dolphin-server:0.1-SNAPSHOT'
         // compile 'com.canoo.dolphin:dolphin-demo-javafx-server:0.1-SNAPSHOT'

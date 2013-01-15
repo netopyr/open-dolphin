@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-dependencies {
-    compile 'org.codehaus.gpars:gpars:1.0.0'
-}
+package com.canoo.dolphin.demo
+
+import com.canoo.dolphin.core.client.comm.JavaFXUiThreadHandler
+
+def dolphin = StarterUtil.setupForRemote()
+dolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
+
+
+SharedTachoView.show dolphin, args.toList()

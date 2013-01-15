@@ -16,6 +16,5 @@
 
 dependencies {
     compile project(':shared'),
-            'org.codehaus.gpars:gpars:0.12',
             'org.apache.httpcomponents:httpclient:4.2.1'
 }

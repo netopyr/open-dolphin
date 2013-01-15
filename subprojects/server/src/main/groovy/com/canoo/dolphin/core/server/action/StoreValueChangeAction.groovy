@@ -29,6 +29,7 @@ class StoreValueChangeAction extends DolphinServerAction {
             def attribute = modelStore.findAttributeById(command.attributeId)
             if (attribute) {
                 attribute.value = command.newValue
+                // todo dk: tag handling
                 def attributes = modelStore.findAllAttributesByQualifier(attribute.qualifier)
                 attributes.each { it.value = command.newValue }
             } else {

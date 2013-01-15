@@ -105,6 +105,7 @@ class ServerDolphin extends Dolphin {
             log.severe("Cannot change value on a null attribute to '$value'")
             return
         }
+        if (attribute.value == value) return // standard bean check
         response << new ValueChangedCommand(attributeId: attribute.id, newValue: value, oldValue: attribute.value)
     }
 
