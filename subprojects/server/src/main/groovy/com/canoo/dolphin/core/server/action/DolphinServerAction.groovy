@@ -15,6 +15,7 @@
  */
 
 package com.canoo.dolphin.core.server.action
+
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.server.DTO
 import com.canoo.dolphin.core.server.ServerAttribute
@@ -29,11 +30,16 @@ abstract class DolphinServerAction implements ServerAction {
     List<Command> dolphinResponse
 
 
-    void presentationModel( String id, String presentationModelType, DTO dto){
+    void presentationModel(String id, String presentationModelType, DTO dto) {
         ServerDolphin.presentationModel(dolphinResponse, id, presentationModelType, dto)
     }
 
-    void changeValue(ServerAttribute attribute, value){
+    void changeValue(ServerAttribute attribute, value) {
         ServerDolphin.changeValue(dolphinResponse, attribute, value)
+    }
+
+    /** Convenience method for the InitializeAttributeCommand */
+    void initAt(String pmId, String propertyName, String qualifier, Object newValue = null) {
+        ServerDolphin.initAt(dolphinResponse, pmId, propertyName, qualifier, newValue)
     }
 }

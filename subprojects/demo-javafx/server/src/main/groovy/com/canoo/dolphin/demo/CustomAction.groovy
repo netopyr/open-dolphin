@@ -16,13 +16,10 @@
 
 package com.canoo.dolphin.demo
 import com.canoo.dolphin.core.comm.*
-import com.canoo.dolphin.core.server.DTO
-import com.canoo.dolphin.core.server.Slot
 import com.canoo.dolphin.core.server.action.DolphinServerAction
 import com.canoo.dolphin.core.server.comm.ActionRegistry
 
-import static com.canoo.dolphin.demo.VehicleProperties.*
-// todo dk: split into separate actions
+import static VehicleConstants.*
 
 class CustomAction extends DolphinServerAction {
 
@@ -37,28 +34,10 @@ class CustomAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         def vehicles = ['red', 'blue', 'green', 'orange']
         def rand = { (Math.random() * 350).toInteger() }
+
         registry.register 'setTitle', impl.curry('title')
+
         registry.register 'setPurpose', impl.curry('purpose')
-        registry.register CMD_PULL, { NamedCommand command, List<Command> response ->
-            vehicles.each { String pmId ->
-                presentationModel( pmId, PM_TYPE_VEHICLE, new DTO (
-                    new Slot(ATT_X,        rand(), "vehicle-${pmId}.x"),
-                    new Slot(ATT_Y,        rand(), "vehicle-${pmId}.y"),
-                    new Slot(ATT_WIDTH,    80),
-                    new Slot(ATT_HEIGHT,   25),
-                    new Slot(ATT_ROTATE,   rand(), "vehicle-${pmId}.rotate"),
-                    new Slot(ATT_COLOR,    pmId,   "vehicle-${pmId}.color")
-                ))
-            }
-        }
-        registry.register CMD_UPDATE, { NamedCommand command, response ->
-            sleep((Math.random() * 1000).toInteger()) // long-polling: server sleeps until new info is available
-            Collections.shuffle(vehicles)
-            def pm = serverDolphin.findPresentationModelById(vehicles.first())
-            changeValue pm[ATT_X],        rand()
-            changeValue pm[ATT_Y],        rand()
-            changeValue pm[ATT_ROTATE],   rand()
-        }
 
         registry.register 'pullTasks', { NamedCommand command, response ->
             vehicles.each {
@@ -72,10 +51,10 @@ class CustomAction extends DolphinServerAction {
             if (command.pmId.startsWith('vehicleDetail')) {
                 String selector = command.pmId.split('-')[1]
                 response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_WIDTH, newValue: rand(),)
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_X, qualifier: "vehicle-${selector}.x")
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_Y, qualifier: "vehicle-${selector}.y")
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_ROTATE, qualifier: "vehicle-${selector}.rotate")
-                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_COLOR, qualifier: "vehicle-${selector}.color")
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_X,      qualifier: qualify(selector, ATT_X))
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_Y,      qualifier: qualify(selector, ATT_Y))
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_ROTATE, qualifier: qualify(selector, ATT_ROTATE))
+                response << new InitializeAttributeCommand(pmId: command.pmId, propertyName: ATT_COLOR,  qualifier: qualify(selector, ATT_COLOR))
             }
         }
     }

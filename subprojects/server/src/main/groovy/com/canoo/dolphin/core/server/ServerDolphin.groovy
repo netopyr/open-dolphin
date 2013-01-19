@@ -19,6 +19,7 @@ import com.canoo.dolphin.core.Dolphin
 import com.canoo.dolphin.core.ModelStore
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
+import com.canoo.dolphin.core.comm.InitializeAttributeCommand
 import com.canoo.dolphin.core.comm.ValueChangedCommand
 import com.canoo.dolphin.core.server.action.*
 import com.canoo.dolphin.core.server.comm.NamedCommandHandler
@@ -107,6 +108,11 @@ class ServerDolphin extends Dolphin {
         }
         if (attribute.value == value) return // standard bean check
         response << new ValueChangedCommand(attributeId: attribute.id, newValue: value, oldValue: attribute.value)
+    }
+
+    /** Convenience method for the InitializeAttributeCommand */
+    static void initAt(List<Command>response, String pmId, String propertyName, String qualifier, Object newValue = null) {
+        response << new InitializeAttributeCommand(pmId: pmId, propertyName: propertyName, qualifier: qualifier, newValue: newValue)
     }
 
     // overriding super methods with server-specific return types to avoid casting

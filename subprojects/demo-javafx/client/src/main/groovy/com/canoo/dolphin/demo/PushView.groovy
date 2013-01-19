@@ -26,15 +26,14 @@ import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.scene.shape.Rectangle
-import javafx.util.Callback
 
 import java.beans.PropertyChangeListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
+import static com.canoo.dolphin.binding.JavaFxUtil.value
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-import static com.canoo.dolphin.demo.VehicleProperties.*
+import static VehicleConstants.*
 import static groovyx.javafx.GroovyFX.start
-import com.canoo.dolphin.core.client.ClientAttributeWrapper
 
 class PushView {
 
@@ -43,14 +42,7 @@ class PushView {
         def longPoll = null
         longPoll = { dolphin.send CMD_UPDATE, longPoll }
 
-        ClientPresentationModel selectedVehicle = dolphin.presentationModel('selectedVehicle',
-                (ATT_X     )  :null,
-                (ATT_Y     )  :null,
-                (ATT_WIDTH )  :null,
-                (ATT_HEIGHT)  :null,
-                (ATT_ROTATE)  :null,
-                (ATT_COLOR )  :null,
-        )
+        ClientPresentationModel selectedVehicle = dolphin.presentationModel(ID_SELECTED, ALL_ATTRIBUTES)
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         Map<String, Rectangle> pmIdsToRect = [:] // pmId to rectangle
@@ -61,7 +53,6 @@ class PushView {
                 scene width: 700, height: 500, {
                     borderPane {
                         top margin:10, {
-                            //rectangle(x: 0, y: 0, width: 1, height: 40, fill: transparent) // rigidArea only needed with the b15, no longer with b19
                             hbox alignment:'center', prefWidth: 700, spacing:5, id:'header', {
                                 label 'Selected'
                                 rectangle(id:'selRect', arcWidth:10, arcHeight:10, width:74, height:20, stroke: cyan, strokeWidth: 2, strokeType:'outside') {
@@ -74,10 +65,10 @@ class PushView {
                         }
                         left margin:10, {
                             tableView(id: 'table', opacity: 0.2d) {
-                                tableColumn(property:'id', text:"Color", prefWidth: 50 )
-                                xCol   = tableColumn(text:'X', prefWidth: 40)
-                                yCol   = tableColumn(text:'Y', prefWidth: 40)
-                                rotCol = tableColumn(text:'Angle')
+                                tableColumn(property:'id',    text:"Color", prefWidth: 50 )
+                                value ATT_X,      tableColumn(text:'X',     prefWidth: 40)
+                                value ATT_Y,      tableColumn(text:'Y',     prefWidth: 40)
+                                value ATT_ROTATE, tableColumn(text:'Angle')
                             }
                         }
                         stackPane {
@@ -88,11 +79,6 @@ class PushView {
             logo.opacity = 0.1d
 
             table.items = observableListOfPms
-
-            // auto-update the cell values
-            xCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
-            yCol.cellValueFactory   = { return new ClientAttributeWrapper(it.value[ATT_Y]) } as Callback
-            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_ROTATE]) } as Callback
 
             // used as both, event handler and change listener
             def changeSelectionHandler = { pm ->
@@ -138,14 +124,14 @@ class PushView {
 
             // all the bindings ...
 
-            bind ATT_X      of selectedVehicle to 'text' of selX // simple binding + action
+            bind ATT_X      of selectedVehicle to FX.TEXT   of selX // simple binding + action
             selX.onAction = { selectedVehicle[ATT_X].value = it.source.text.toInteger() } as EventHandler
 
-            bind ATT_Y      of selectedVehicle to 'text' of selY // example of a "bidirectional" binding
-            bind 'text'     of selY            to ATT_Y  of selectedVehicle, { it ? it.toInteger() : 0 }
+            bind ATT_Y      of selectedVehicle to FX.TEXT   of selY // example of a "bidirectional" binding
+            bind FX.TEXT    of selY            to ATT_Y     of selectedVehicle, { it ? it.toInteger() : 0 }
 
-            bind ATT_ROTATE of selectedVehicle to 'rotate' of selAngle, { (it ?: 0 ).toDouble() }
-            bind ATT_COLOR  of selectedVehicle to 'fill'   of selRect,  { it ? sgb[it] : sgb.transparent }
+            bind ATT_ROTATE of selectedVehicle to FX.ROTATE of selAngle, { (it ?: 0 ).toDouble() }
+            bind ATT_COLOR  of selectedVehicle to FX.FILL   of selRect,  { it ? sgb[it] : sgb.transparent }
 
             // bind 'selectedItem' of table.selectionModel to { ... }
             table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->

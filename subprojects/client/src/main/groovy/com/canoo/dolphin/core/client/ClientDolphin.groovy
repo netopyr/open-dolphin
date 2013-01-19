@@ -42,8 +42,7 @@ public class ClientDolphin extends Dolphin {
         return clientModelStore
     }
 
-    /** Convenience method for a typical case of creating a ClientPresentationModel.
-     * @deprecated it is very unlikely that setting attributes without initial values makes any sense.
+    /** Convenience method for a creating a ClientPresentationModel with initial null values for the attributes
      */
     ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
         def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)})

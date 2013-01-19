@@ -21,12 +21,22 @@ import com.canoo.dolphin.core.comm.ChangeAttributeMetadataCommand
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import groovy.util.logging.Log
 
+@Log
 class StoreAttributeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(AttributeCreatedNotification) { AttributeCreatedNotification command, response ->
-            def attribute = new ServerAttribute(command.propertyName, command.newValue, command.qualifier, command.tag)
             def modelStore = serverDolphin.serverModelStore
+
+            def existing = modelStore.findAttributeById(command.attributeId)
+            if (existing) {
+                log.warning "trying to store an already existing attribute: $command"
+                return
+            }
+
+            def attribute = new ServerAttribute(command.propertyName, command.newValue, command.qualifier, command.tag)
+
             def pm = serverDolphin.findPresentationModelById(command.pmId)
             if (null == pm) {
                 pm = new ServerPresentationModel(command.pmId, [])

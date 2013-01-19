@@ -29,9 +29,9 @@ class StoreValueChangeAction extends DolphinServerAction {
             def attribute = modelStore.findAttributeById(command.attributeId)
             if (attribute) {
                 attribute.value = command.newValue
-                // todo dk: tag handling
-                def attributes = modelStore.findAllAttributesByQualifier(attribute.qualifier)
-                attributes.each { it.value = command.newValue }
+                // todo dk: tag handling // proliferation of values between qualifiers happens on the client side
+                // def attributes = modelStore.findAllAttributesByQualifier(attribute.qualifier)
+                // attributes.each { it.value = command.newValue }
             } else {
                 log.severe("cannot find attribute with id $command.attributeId to change value to '$command.newValue'.")
             }

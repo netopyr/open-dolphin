@@ -16,36 +16,31 @@
 
 package com.canoo.dolphin.demo
 
-import com.canoo.dolphin.core.client.ClientAttribute
-import com.canoo.dolphin.core.client.ClientAttributeWrapper
+import com.canoo.dolphin.core.PresentationModel
+import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
-import com.canoo.dolphin.core.client.comm.OnFinishedHandler
-import com.canoo.dolphin.core.comm.NamedCommand
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.util.Callback
 
 import java.beans.PropertyChangeListener
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
+import static com.canoo.dolphin.binding.JavaFxUtil.value
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-import static com.canoo.dolphin.demo.VehicleProperties.*
+import static VehicleConstants.*
+import static com.canoo.dolphin.demo.VehicleTaskConstants.ATT_DESCRIPTION
 import static groovyx.javafx.GroovyFX.start
-import com.canoo.dolphin.core.client.comm.WithPresentationModelHandler
 
 class SharedAttributesView {
 
     static show(ClientDolphin clientDolphin) {
 
-        def communicator = clientDolphin.clientConnector
+        def selectedVehicle = clientDolphin.presentationModel null, vehiclePmId : null
 
-        def selectedVehicle = new ClientPresentationModel('selectedVehicle', [new ClientAttribute('vehiclePmId')])
-        clientDolphin.clientModelStore.add selectedVehicle
-
-        ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
+        ObservableList<ClientPresentationModel> observableListOfPms   = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfTasks = FXCollections.observableArrayList()
 
         start { app ->
@@ -56,9 +51,9 @@ class SharedAttributesView {
                         left margin: 10, {
                             tableView(id: 'table', opacity: 0.2d) {
                                 tableColumn(property: 'id', text: "Color", prefWidth: 50)
-                                xCol = tableColumn(text: 'X', prefWidth: 40)
-                                yCol = tableColumn(text: 'Y', prefWidth: 40)
-                                rotCol = tableColumn(text: 'Angle')
+                                value ATT_X,        tableColumn(text: 'X', prefWidth: 40)
+                                value ATT_Y,        tableColumn(text: 'Y', prefWidth: 40)
+                                value ATT_ROTATE,   tableColumn(text: 'Angle')
                             }
                         }
                         center margin: [10, 0, 10, 0], {
@@ -66,41 +61,33 @@ class SharedAttributesView {
                         }
                         right margin: 10, {
                             tableView(id: 'taskTable', opacity: 0.2d) {
-                                tableColumn(property: 'id', text: "descr", prefWidth: 100)
-                                vehicleFillCol = tableColumn(text: 'Vehicle Color', prefWidth: 50)
-                                vehicleXCol = tableColumn(text: 'Vehicle X', prefWidth: 50)
+                                value ATT_DESCRIPTION,  tableColumn(text: "Task", prefWidth: 100)
+                                value ATT_COLOR,        tableColumn(text: 'Vehicle Color', prefWidth: 50)
+                                value ATT_X,            tableColumn(text: 'Vehicle X',     prefWidth: 50)
                             }
                         }
                     }
                 }
             }
-
             table.items = observableListOfPms
             taskTable.items = observableListOfTasks
 
-            // auto-update the cell values
-            xCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
-            yCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_Y]) } as Callback
-            rotCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_ROTATE]) } as Callback
-
-            vehicleFillCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_COLOR]) } as Callback
-            vehicleXCol.cellValueFactory = { return new ClientAttributeWrapper(it.value[ATT_X]) } as Callback
-
             // startup and main loop
 
-            communicator.send(new NamedCommand(id: 'pullVehicles'), [onFinished: { pms ->
-                for (pm in pms) {
-                    observableListOfPms << pm
-                }
-                fadeTransition(1.s, node: table, to: 1).playFromStart()
-            }] as OnFinishedHandler )
-
-            communicator.send(new NamedCommand(id: 'pullTasks'), [onFinished: { pms ->
+            clientDolphin.send VehicleTaskConstants.CMD_PULL, { pms ->
                 for (pm in pms) {
                     observableListOfTasks << pm
                 }
                 fadeTransition(1.s, node: taskTable, to: 1).playFromStart()
-            }] as OnFinishedHandler )
+
+                clientDolphin.send VehicleConstants.CMD_PULL, { vehiclePMs ->
+                    for (pm in vehiclePMs) {
+                        observableListOfPms << pm
+                        clientDolphin.updateQualifiers pm
+                    }
+                    fadeTransition(1.s, node: table, to: 1).playFromStart()
+                }
+            }
 
             blueStyle sgb
 
@@ -135,22 +122,22 @@ class SharedAttributesView {
                         }
                     }
 
-                    clientDolphin.clientModelStore.withPresentationModel 'vehicleDetail-'+selectedPmId, { ClientPresentationModel detailPm ->
-                        assert detailPm
+                    def detailPm = clientDolphin.findPresentationModelById(selectedPmId)
+                    assert detailPm
 
-                        bind ATT_COLOR of detailPm to 'text' of tab
+                    bind ATT_COLOR  of detailPm  to FX.TEXT   of tab
 
-                        bind ATT_X of detailPm to 'text' of sgb.x
-                        bind 'text' of sgb.x to ATT_X of detailPm
+                    bind ATT_X      of detailPm  to FX.TEXT   of sgb.x
+                    bind FX.TEXT    of sgb.x     to ATT_X     of detailPm
 
-                        bind ATT_Y of detailPm to 'text' of sgb.y
-                        bind ATT_ROTATE of detailPm to 'text' of sgb.angle
+                    bind ATT_Y      of detailPm  to FX.TEXT   of sgb.y
+                    bind ATT_ROTATE of detailPm  to FX.TEXT   of sgb.angle
 
-                        bind ATT_WIDTH of detailPm to 'text' of sgb.width
-                        bind 'text' of sgb.width to ATT_WIDTH of detailPm
+                    bind ATT_WIDTH  of detailPm  to FX.TEXT   of sgb.width
+                    bind FX.TEXT    of sgb.width to ATT_WIDTH of detailPm
 
-                        fadeTransition(1.s, node: grid, to: 1).playFromStart()
-                    } as WithPresentationModelHandler
+                    fadeTransition(1.s, node: grid, to: 1).playFromStart()
+
                     sgb.vehicles.tabs << tab
                 }
                 sgb.vehicles.selectionModel.select(tab)
@@ -159,4 +146,6 @@ class SharedAttributesView {
             primaryStage.show()
         }
     }
+
+
 }

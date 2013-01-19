@@ -17,6 +17,7 @@
 package com.canoo.dolphin.demo
 
 def config = new JavaFxInMemoryConfig()
-config.serverDolphin.serverConnector.register new CustomAction(serverDolphin: config.serverDolphin)
+config.serverDolphin.register new VehiclePushActions(serverDolphin: config.serverDolphin)
+config.serverDolphin.register new VehicleTaskActions(serverDolphin: config.serverDolphin)
 
 SharedAttributesView.show(config.clientDolphin)

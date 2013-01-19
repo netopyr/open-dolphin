@@ -25,7 +25,7 @@ import javafx.collections.ObservableList
 import javafx.util.Callback
 
 import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-import static com.canoo.dolphin.demo.VehicleProperties.*
+import static VehicleConstants.*
 
 import static groovyx.javafx.GroovyFX.start
 
@@ -49,11 +49,11 @@ class BindListView {
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
 
-        dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
+        dolphin.addModelStoreListener TYPE_VEHICLE, { evt ->
             syncList(observableListOfPms, evt)
         }
 
-        dolphin.addModelStoreListener PM_TYPE_VEHICLE, { evt ->
+        dolphin.addModelStoreListener TYPE_VEHICLE, { evt ->
             if (! evt.presentationModel.id.startsWith('magenta')) return
             syncList(observableListOfMagentaPms, evt)
         }
@@ -93,7 +93,7 @@ class BindListView {
 
 			add.onAction {
                 dolphin.presentationModel "magenta_${System.currentTimeMillis()}",
-                   PM_TYPE_VEHICLE,
+                   TYPE_VEHICLE,
                    (ATT_X) : 0
 			}
 

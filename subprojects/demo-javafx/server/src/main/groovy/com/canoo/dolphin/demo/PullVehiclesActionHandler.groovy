@@ -24,7 +24,7 @@ import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.NamedCommandHandler
 
-import static com.canoo.dolphin.demo.VehicleProperties.*
+import static VehicleConstants.*
 
 class PullVehiclesActionHandler implements NamedCommandHandler {
     int rand() { return (Math.random() * 350).toInteger() }
@@ -40,7 +40,7 @@ class PullVehiclesActionHandler implements NamedCommandHandler {
                 new ServerAttribute(propertyName: ATT_ROTATE,   baseValue: rand(),  qualifier: "vehicle-${ pmId }.rotate"),
                 new ServerAttribute(propertyName: ATT_COLOR,    baseValue: pmId,    qualifier: "vehicle-${ pmId }.color")
             ])
-            model.setPresentationModelType(PM_TYPE_VEHICLE)
+            model.setPresentationModelType(TYPE_VEHICLE)
             response << CreatePresentationModelCommand.makeFrom(model)
         }
     }
