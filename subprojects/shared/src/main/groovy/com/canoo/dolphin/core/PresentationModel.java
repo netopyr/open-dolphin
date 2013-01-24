@@ -26,9 +26,16 @@ public interface PresentationModel extends Observable {
     List<Attribute> getAttributes();
 
     Attribute getAt(String propertyName);
+
     Attribute getAt(String propertyName, Tag tag);
 
+    /**
+     * Convenience method to get the value of an attribute if it exists or a default value otherwise.
+     */
+    public int getValue(String attributeName, int defaultValue);
+
     Attribute findAttributeByPropertyName(String propertyName);
+
     Attribute findAttributeByPropertyNameAndTag(String propertyName, Tag tag);
 
     Attribute findAttributeByQualifier(String qualifier);
@@ -41,5 +48,5 @@ public interface PresentationModel extends Observable {
 
     void addAttribute(Attribute attribute);
 
-	boolean isDirty();
+    boolean isDirty();
 }

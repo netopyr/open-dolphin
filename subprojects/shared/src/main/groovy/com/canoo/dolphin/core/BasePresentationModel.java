@@ -117,6 +117,17 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return findAttributeByPropertyName(propertyName);
     }
 
+    // todo dk: overload with types for defaultValue
+
+    /**
+     * Convenience method to get the value of an attribute if it exists or a default value otherwise.
+     */
+    public int getValue(String attributeName, int defaultValue) {
+        Attribute attribute = getAt(attributeName);
+        Object attributeValue = (attribute == null) ? null : attribute.getValue();
+        return (attributeValue == null) ? defaultValue : Integer.parseInt(attributeValue.toString());
+    }
+
     public Attribute getAt(String propertyName, Tag tag) {
         return findAttributeByPropertyNameAndTag(propertyName, tag);
     }

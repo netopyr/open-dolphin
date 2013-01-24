@@ -20,18 +20,13 @@ import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.comm.InMemoryClientConnector
 import groovy.swing.SwingBuilder
-import groovyx.javafx.SceneGraphBuilder
-import javafx.beans.value.ChangeListener
 
 import javax.swing.BorderFactory
 import javax.swing.WindowConstants
-import java.awt.GridLayout
 
 import static com.canoo.dolphin.binding.Binder.bind
 import static com.canoo.dolphin.core.ModelStoreEvent.Type.ADDED
 import static com.canoo.dolphin.core.ModelStoreEvent.Type.REMOVED
-import static com.canoo.dolphin.demo.DemoStyle.blueStyle
-import static groovyx.javafx.GroovyFX.start
 
 /**
  * Measuring the response time when requesting so-many presentation models
