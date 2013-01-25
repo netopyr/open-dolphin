@@ -10,6 +10,10 @@ beans = {
         bean.scope = 'singleton'
     }
 
+    manyEventsBus(EventBus) { bean ->
+        bean.scope = 'singleton'
+    }
+
     modelStore(ModelStore) { bean ->
         bean.scope = 'session' // every session must have its own model store
     }
@@ -27,7 +31,8 @@ beans = {
         DolphinSpringBean,
         ref('serverDolphin'),
         ref('grailsCrudService'),                    // more services would come here...
-        ref('tachoBus')
+        ref('tachoBus'),
+        ref('manyEventsBus')
     ) { bean ->
         bean.scope = 'session'
     }

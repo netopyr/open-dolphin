@@ -65,7 +65,7 @@ environments {
         grails.logging.jul.usebridge = true
     }
     production {
-        grails.logging.jul.usebridge = false
+        grails.logging.jul.usebridge = true
         // TODO: grails.serverURL = "http://www.changeme.com"
     }
 }
@@ -91,5 +91,5 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    info   "grails.app.controllers.DolphinController"
+    //info   "grails.app.controllers.DolphinController"
 }

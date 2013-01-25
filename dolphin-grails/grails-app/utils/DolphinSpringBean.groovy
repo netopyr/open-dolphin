@@ -2,6 +2,7 @@ import com.canoo.dolphin.core.server.EventBus
 import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.demo.CustomAction
 import com.canoo.dolphin.demo.DemoTitlePurposeAction
+import com.canoo.dolphin.demo.ManyEventsAction
 import com.canoo.dolphin.demo.PerformanceAction
 import com.canoo.dolphin.demo.SharedTachoAction
 import com.canoo.dolphin.demo.crud.CrudActions
@@ -14,7 +15,8 @@ class DolphinSpringBean {
     DolphinSpringBean(
         ServerDolphin dolphin,
         CrudService crudService,
-        EventBus tachoBus
+        EventBus tachoBus,
+        EventBus manyEventsBus
     ) {
         log.info "creating new dolphin session"
 
@@ -27,6 +29,7 @@ class DolphinSpringBean {
         dolphin.register(new CustomAction())
         dolphin.register(new PerformanceAction())
         dolphin.register(new SharedTachoAction().subscribedTo(tachoBus))
+        dolphin.register(new ManyEventsAction().subscribedTo(manyEventsBus))
 
     }
 }
