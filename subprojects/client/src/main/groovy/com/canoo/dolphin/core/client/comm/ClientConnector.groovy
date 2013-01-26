@@ -206,7 +206,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     ClientPresentationModel handle(ValueChangedCommand serverCommand) {
         Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) {
-            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
+            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update old value '$serverCommand.oldValue' to new value '$serverCommand.newValue'"
             return null
         }
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
@@ -217,7 +217,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     ClientPresentationModel handle(InitialValueChangedCommand serverCommand) {
         Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) {
-            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update"
+            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot set initial value to '$attribute.value'"
             return null
         }
         log.info "C: updating id '$serverCommand.attributeId' setting initialValue to '$attribute.value'"

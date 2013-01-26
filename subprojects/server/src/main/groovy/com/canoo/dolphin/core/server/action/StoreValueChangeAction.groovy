@@ -33,7 +33,7 @@ class StoreValueChangeAction extends DolphinServerAction {
                 // def attributes = modelStore.findAllAttributesByQualifier(attribute.qualifier)
                 // attributes.each { it.value = command.newValue }
             } else {
-                log.severe("cannot find attribute with id $command.attributeId to change value to '$command.newValue'.")
+                log.severe("cannot find attribute with id $command.attributeId to change value from '$command.oldValue' to '$command.newValue'.")
             }
         }
     }
