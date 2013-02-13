@@ -38,6 +38,7 @@ subprojects {
     }
 
     dependencies {
+        compile 'org.codehaus.groovy:groovy-all:1.8.8'
         groovy  'org.codehaus.groovy:groovy-all:1.8.8'
         testCompile 'org.spockframework:spock-core:0.6-groovy-1.8', {
             exclude group:'org.codehaus.groovy', module: 'groovy-all'
@@ -96,6 +97,7 @@ def mavenizedProjects() {
             project(':client-javafx'),
             project(':shared'),
             project(':server'),
+            project(':combined'),
             project(':demo-javafx-server'), // for testing with dolphin-grails
             project(':demo-javafx-shared'), // for testing with dolphin-grails
     ]

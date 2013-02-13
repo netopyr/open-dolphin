@@ -21,6 +21,7 @@ import com.canoo.dolphin.demo.FX
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.scene.text.Font
 
 import static com.canoo.dolphin.binding.JFXBinder.bind
 import static com.canoo.dolphin.binding.JavaFxUtil.value
@@ -33,6 +34,8 @@ class CrudView {
 
     @SuppressWarnings("GroovyAssignabilityCheck")
     static show(ClientDolphin clientDolphin) {
+
+        Font.loadFont(CrudView.getResourceAsStream('/Eurostile-Demi.ttf'), 72)
 
         ObservableList<ClientPresentationModel> observableListOfPortfolios = FXCollections.observableArrayList()
 
@@ -57,13 +60,12 @@ class CrudView {
                             }
                         }
                         stackPane {
-                            label "Please select a Portfolio", id: 'welcome'
+                            text "Please select a Portfolio", id: 'welcome'
                             tabPane id:'portfolioTabs'
                         }
                     }
                 }
             }
-
 
             portfolios.items = observableListOfPortfolios
 
