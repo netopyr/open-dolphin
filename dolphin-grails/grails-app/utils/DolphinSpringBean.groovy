@@ -5,6 +5,7 @@ import com.canoo.dolphin.demo.DemoTitlePurposeAction
 import com.canoo.dolphin.demo.ManyEventsAction
 import com.canoo.dolphin.demo.PerformanceAction
 import com.canoo.dolphin.demo.SharedTachoAction
+import com.canoo.dolphin.demo.VehiclePushActions
 import com.canoo.dolphin.demo.crud.CrudActions
 import com.canoo.dolphin.demo.crud.CrudService
 import groovy.util.logging.Log
@@ -24,6 +25,7 @@ class DolphinSpringBean {
 
         // todo dk: we may want to use dolphin.action cmdName, handler
 
+        dolphin.register(new VehiclePushActions())
         dolphin.register(new CrudActions(crudService: crudService))
         dolphin.register(new DemoTitlePurposeAction())
         dolphin.register(new CustomAction())
