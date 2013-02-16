@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core.client.comm
 
 import com.canoo.dolphin.core.comm.Command
+import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Log
 import com.canoo.dolphin.core.client.ClientDolphin
@@ -44,6 +45,8 @@ class InMemoryClientConnector extends ClientConnector {
         serverConnector.receive(command) // there is no need for encoding since we are in-memory
     }
 
+
+    @CompileStatic
     void processAsync(Runnable processing) {
         if (processAsync) super.processAsync(processing)
         else doExceptionSafe(processing)

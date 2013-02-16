@@ -1,5 +1,8 @@
 package com.canoo.dolphin.core.server
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class DTO {
     List<Slot> slots
 
@@ -16,7 +19,7 @@ class DTO {
      * Create the representation that is used within commands.
      */
     List<Map<String, Object>> encodable() {
-        slots.collect(new LinkedList()) { it.toMap() }
+        (List<Map<String, Object>>) slots.collect(new LinkedList()) {Slot slot -> slot.toMap() }
     }
 
 }

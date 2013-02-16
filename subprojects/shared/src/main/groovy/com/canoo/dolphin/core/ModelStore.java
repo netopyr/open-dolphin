@@ -88,7 +88,7 @@ public class ModelStore {
                 attribute.addPropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
                 if (!isBlank(attribute.getQualifier())) addAttributeByQualifier(attribute);
             }
-            fireModelStoreChangedEvent(model, ModelStoreEvent.Type.ADDED);
+            if (!modelStoreListeners.isEmpty()) fireModelStoreChangedEvent(model, ModelStoreEvent.Type.ADDED);
             added = true;
         }
         return added;
@@ -296,10 +296,8 @@ public class ModelStore {
     }
 
     protected void fireModelStoreChangedEvent(PresentationModel model, ModelStoreEvent.Type eventType) {
-        ModelStoreEvent event = new ModelStoreEvent(
-                eventType,
-                model
-        );
+        if (modelStoreListeners.isEmpty()) return;
+        ModelStoreEvent event = new ModelStoreEvent(eventType, model);
         for (ModelStoreListener listener : modelStoreListeners) {
             listener.modelStoreChanged(event);
         }

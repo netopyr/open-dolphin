@@ -1,7 +1,9 @@
 package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.Tag
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class Slot {
     String propertyName
     Object value
@@ -24,7 +26,7 @@ class Slot {
      * Especially useful when a service returns data that an action puts into presentation models.
      */
     static List<Slot> slots(Map<String, Object> data) {
-        data.collect(new LinkedList()) { new Slot(it.key, it.value) }
+        data.collect(new LinkedList()) { String key, Object value -> new Slot(key, value) }
     }
 
 
