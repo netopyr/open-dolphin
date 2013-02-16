@@ -21,8 +21,10 @@ import com.canoo.dolphin.core.comm.ChangeAttributeMetadataCommand
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 
+@CompileStatic
 @Log
 class StoreAttributeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {

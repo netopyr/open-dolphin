@@ -22,15 +22,17 @@ import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class CreatePresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(CreatePresentationModelCommand) { CreatePresentationModelCommand command, response ->
             List<ServerAttribute> attributes = []
-            command.attributes.each { attr ->
-                ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value, attr.qualifier, Enum.valueOf(Tag, attr.tag))
-                attribute.id = attr.id
+            for (Map<String, Object> attr in command.attributes) {
+                ServerAttribute attribute = new ServerAttribute((String) attr.propertyName, attr.value, (String) attr.qualifier, Enum.valueOf(Tag, (String) attr.tag))
+                attribute.id = attr.id as Long
                 attributes << attribute
             }
             PresentationModel model = new ServerPresentationModel(command.pmId, attributes)

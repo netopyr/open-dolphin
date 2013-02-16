@@ -18,7 +18,9 @@ package com.canoo.dolphin.core.server
 
 import com.canoo.dolphin.core.BasePresentationModel
 import com.canoo.dolphin.core.Tag
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class ServerPresentationModel extends BasePresentationModel {
     ServerPresentationModel(List<ServerAttribute> attributes) {
         this(null, attributes)

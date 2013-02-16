@@ -20,11 +20,14 @@ import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.server.DTO
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerDolphin
+import groovy.transform.CompileStatic
 
 /**
  * Common superclass for all actions that need access to
  * the ServerDolphin, e.g. to work with the server model store.
  */
+
+@CompileStatic
 abstract class DolphinServerAction implements ServerAction {
     ServerDolphin serverDolphin
     List<Command> dolphinResponse

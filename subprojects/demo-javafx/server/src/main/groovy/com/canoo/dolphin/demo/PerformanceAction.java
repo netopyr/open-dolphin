@@ -16,9 +16,7 @@
 
 package com.canoo.dolphin.demo;
 
-import com.canoo.dolphin.core.Attribute;
 import com.canoo.dolphin.core.PresentationModel;
-import com.canoo.dolphin.core.comm.Command;
 import com.canoo.dolphin.core.server.DTO;
 import com.canoo.dolphin.core.server.Slot;
 import com.canoo.dolphin.core.server.action.DolphinServerAction;
@@ -27,7 +25,6 @@ import com.canoo.dolphin.core.server.comm.CommandHandler;
 import com.canoo.dolphin.core.server.comm.SimpleCommandHandler;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class PerformanceAction extends DolphinServerAction {
     static long id = 0;

@@ -21,6 +21,7 @@ import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import groovy.transform.Immutable
 import groovy.transform.Canonical
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue

@@ -24,12 +24,14 @@ import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter
 import com.canoo.dolphin.core.comm.AttributeCreatedNotification
 import com.canoo.dolphin.core.comm.NamedCommand
+
 /**
  * The main Dolphin facade on the client side.
  * Responsibility: single access point for dolphin capabilities.
  * Collaborates with client model store and client connector.
  * Threading model: confined to the UI handling thread.
  */
+// makes use of dynamic dispatch, do not use @CompileStatic
 public class ClientDolphin extends Dolphin {
 
     // todo dk: the client model store should become a secret of the ClientDolphin

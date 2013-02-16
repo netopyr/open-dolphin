@@ -19,15 +19,17 @@ package com.canoo.dolphin.core;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ModelStore {
 
-    // todo dk: this doesn't need to be ConcurrentHashMaps since we are thread-confined
-    private final Map<String, PresentationModel> presentationModels = new ConcurrentHashMap<String, PresentationModel>();
-    private final Map<String, List<PresentationModel>> modelsPerType = new ConcurrentHashMap<String, List<PresentationModel>>();
-    private final Map<Long, Attribute> attributesPerId = new ConcurrentHashMap<Long, Attribute>();
-    private final Map<String, List<Attribute>> attributesPerQualifier = new ConcurrentHashMap<String, List<Attribute>>();
+    private final static int PM_CAPACITY  =  1000;
+    private final static int TYPE_CAPACITY  =  40;
+    private final static int ATT_CAPACITY = 10000;
+
+    private final Map<String, PresentationModel> presentationModels = new HashMap<String, PresentationModel>(PM_CAPACITY);
+    private final Map<String, List<PresentationModel>> modelsPerType = new HashMap<String, List<PresentationModel>>(TYPE_CAPACITY);
+    private final Map<Long, Attribute> attributesPerId = new HashMap<Long, Attribute>(ATT_CAPACITY);
+    private final Map<String, List<Attribute>> attributesPerQualifier = new HashMap<String, List<Attribute>>(PM_CAPACITY);
 
     private final Set<ModelStoreListenerWrapper> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper>();
 
