@@ -60,7 +60,7 @@ class HttpClientConnector extends ClientConnector {
         }
         catch (ex) {
             log.severe("cannot transmit")
-            ex.printStackTrace()
+            throw ex
         }
         return result
     }

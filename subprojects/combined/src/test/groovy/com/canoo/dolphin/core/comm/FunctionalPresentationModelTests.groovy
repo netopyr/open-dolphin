@@ -114,27 +114,44 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testAsynchronousExceptionOnTheServer() {
+        def count = 0
+        clientDolphin.clientConnector.onException = { count++ }
+
         serverDolphin.action "someCmd", { cmd, response ->
             throw new RuntimeException("EXPECTED: some arbitrary exception on the server")
         }
+        serverDolphin.action "noop", { cmd, response ->
+            // no operation
+        }
+
         clientDolphin.send "someCmd", {
             fail "the onFinished handler will not be reached in this case"
         }
+        clientDolphin.send "noop", {
+            assert count == 1
+        }
 
-        assert context.clientDolphin.clientConnector.exceptionHappened.val
-        context.assertionsDone()
+        // provoke a second exception
+        clientDolphin.send "someCmd", {
+            fail "the onFinished handler will not be reached either"
+        }
+        clientDolphin.send "noop", {
+            assert count == 2
+            context.assertionsDone()
+        }
+
     }
 
     void testAsynchronousExceptionInOnFinishedHandler() {
+
+        clientDolphin.clientConnector.onException = { context.assertionsDone() }
+
         serverDolphin.action "someCmd", { cmd, response ->
             // nothing to do
         }
         clientDolphin.send "someCmd", {
-            context.assertionsDone()
             throw new RuntimeException("EXPECTED: some arbitrary exception in the onFinished handler")
         }
-
-        assert context.clientDolphin.clientConnector.exceptionHappened.val
     }
 
     void testUnregisteredCommand() {

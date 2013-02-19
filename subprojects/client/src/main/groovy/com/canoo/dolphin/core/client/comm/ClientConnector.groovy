@@ -39,16 +39,15 @@ abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
 
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
+    Closure onException = { Throwable up ->
+        log.severe("onException reached, rethrowing in UI Thread, consider setting ClientConnector.onException")
+        uiThreadHandler.executeInsideUiThread { throw up } // not sure whether this is a good default
+    }
 
-    DataflowVariable<Throwable> exceptionHappened
     protected ClientDolphin clientDolphin
 
     ClientConnector(ClientDolphin clientDolphin) {
         this.clientDolphin = clientDolphin
-        exceptionHappened = new DataflowVariable<Throwable>()
-        exceptionHappened.whenBound {
-            throw exceptionHappened.val
-        }
     }
 
     protected getClientModelStore() {
@@ -105,8 +104,8 @@ abstract class ClientConnector implements PropertyChangeListener {
     @CompileStatic
     void send(Command command, OnFinishedHandler callback = null) {
         def me = this
-        def result = new DataflowVariable()
         processAsync {
+            def result = new DataflowVariable()
             me.info "C: transmitting $command"
             result << transmit(command)
             insideUiThread {
@@ -152,8 +151,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             processing.run()
         } catch (e) {
             StackTraceUtils.deepSanitize(e)
-            exceptionHappened << e
-            throw e
+            onException e
         }
     }
 
