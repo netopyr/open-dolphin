@@ -38,7 +38,7 @@ class StoreAttributeAction extends DolphinServerAction {
             }
 
             def attribute = new ServerAttribute(command.propertyName, command.newValue, command.qualifier, command.tag)
-
+            attribute.id = command.attributeId
             def pm = serverDolphin.findPresentationModelById(command.pmId)
             if (null == pm) {
                 pm = new ServerPresentationModel(command.pmId, [])
