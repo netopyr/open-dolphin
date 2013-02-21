@@ -17,6 +17,7 @@
 package com.canoo.dolphin.core.server
 import com.canoo.dolphin.core.Dolphin
 import com.canoo.dolphin.core.ModelStore
+import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 import com.canoo.dolphin.core.comm.InitializeAttributeCommand
@@ -113,8 +114,8 @@ class ServerDolphin extends Dolphin {
     }
 
     /** Convenience method for the InitializeAttributeCommand */
-    static void initAt(List<Command>response, String pmId, String propertyName, String qualifier, Object newValue = null) {
-        response << new InitializeAttributeCommand(pmId: pmId, propertyName: propertyName, qualifier: qualifier, newValue: newValue)
+    static void initAt(List<Command>response, String pmId, String propertyName, String qualifier, Object newValue = null, Tag tag = Tag.VALUE) {
+        response << new InitializeAttributeCommand(pmId: pmId, propertyName: propertyName, qualifier: qualifier, newValue: newValue, tag: tag)
     }
 
     // overriding super methods with server-specific return types to avoid casting

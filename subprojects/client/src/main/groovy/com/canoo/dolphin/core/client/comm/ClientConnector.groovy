@@ -255,8 +255,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     ClientPresentationModel handle(InitializeAttributeCommand serverCommand) {
-        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
-        attribute.qualifier = serverCommand.qualifier
+        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.qualifier) {
