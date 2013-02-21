@@ -106,6 +106,24 @@ def mavenizedProjects() {
 configure(mavenizedProjects()) {
     group = 'com.canoo.dolphin'
     apply plugin: 'maven'
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+    
+    uploadArchives {
+        repositories.mavenDeployer {
+            def nexusURL = version.endsWith('SNAPSHOT')? nexusDeployURL : nexusReleaseDelopyURL
+            repository(url: nexusURL) {
+                authentication(userName: nexusDeployUser, password: nexusDeployPassword)
+            }
+        }
+    }
 }
 
 def distDir = new File(rootDir, 'dist')
