@@ -20,9 +20,8 @@ dependencies {
         'org.codehaus.groovyfx:groovyfx:0.2'
 }
 
-configure(install.repositories.mavenInstaller) {
-    pom.whenConfigured {pm ->
-        def dep = pm.dependencies.find {dep -> dep.artifactId == 'jfxrt' }
-        pm.dependencies.remove(dep)
-    }
+uploadArchives.repositories.mavenDeployer {
+    pom.whenConfigured { pom -> pom.dependencies = pom.dependencies.findAll {
+	dep -> !dep.artifactId=='jfxrt' }
+    } 
 }
