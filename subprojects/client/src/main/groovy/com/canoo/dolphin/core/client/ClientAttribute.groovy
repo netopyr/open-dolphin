@@ -18,6 +18,7 @@ package com.canoo.dolphin.core.client
 
 import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.Tag
+import groovy.transform.CompileStatic
 
 /**
  * A client side (remote) ClientAttribute is considered a remote representation of a ServerAttribute.
@@ -27,6 +28,7 @@ import com.canoo.dolphin.core.Tag
  * b) through the valueProperty() method for JavaFx
  */
 
+@CompileStatic
 class ClientAttribute extends BaseAttribute {
 
     /** @deprecated you should not create Client Attributes without initial values */
@@ -42,7 +44,7 @@ class ClientAttribute extends BaseAttribute {
 
     /** @deprecated too much dependent on key names and doesn't allow setting the tag */
     ClientAttribute(Map props) {
-        this(props.propertyName, props.initialValue)
+        this(props.propertyName.toString(), props.initialValue)
         this.qualifier = props.qualifier
     }
 }

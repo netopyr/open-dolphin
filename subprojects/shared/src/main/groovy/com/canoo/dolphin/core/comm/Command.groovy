@@ -16,6 +16,8 @@
 
 package com.canoo.dolphin.core.comm
 
+import groovy.transform.CompileStatic
+
 // todo dk: go through all subtypes and apply the new naming convention
 
 /**
@@ -29,6 +31,7 @@ package com.canoo.dolphin.core.comm
  * The receiving side is responsible for finding the appropriate action.
  */
 
+@CompileStatic
 class Command {
 
     String getId() { idFor this.class }

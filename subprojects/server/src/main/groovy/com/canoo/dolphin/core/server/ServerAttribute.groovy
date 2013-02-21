@@ -19,7 +19,9 @@ package com.canoo.dolphin.core.server
 import com.canoo.dolphin.core.BaseAttribute
 import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.comm.ValueChangedCommand
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class ServerAttribute extends BaseAttribute {
     ServerAttribute(String propertyName) {
         this(propertyName, null)
@@ -34,7 +36,7 @@ class ServerAttribute extends BaseAttribute {
     }
 
     ServerAttribute(Map props) {
-        this(props.propertyName, props.initialValue)
+        this(props.propertyName.toString(), props.initialValue)
         this.qualifier = props.qualifier
     }
 

@@ -37,7 +37,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
     private String presentationModelType;
     private boolean dirty = false;
 
-    private final PropertyChangeListener DIRTY_FLAG_CHECKER = new PropertyChangeListener() {
+    protected final PropertyChangeListener DIRTY_FLAG_CHECKER = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
             for (Attribute attr : attributes) {

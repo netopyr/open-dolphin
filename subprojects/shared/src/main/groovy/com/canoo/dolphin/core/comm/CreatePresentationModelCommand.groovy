@@ -15,9 +15,11 @@
  */
 
 package com.canoo.dolphin.core.comm
-
+import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.PresentationModel
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class CreatePresentationModelCommand extends Command {
     String pmId
     String pmType
@@ -30,13 +32,13 @@ class CreatePresentationModelCommand extends Command {
         def result = new CreatePresentationModelCommand()
         result.pmId = model.id
         result.pmType = model.presentationModelType
-        model.attributes.each { attr ->
+        for (Attribute attr in model.attributes) {
             result.attributes << [
-                    propertyName:   attr.propertyName,
-                    id:             attr.id,
-                    qualifier:      attr.qualifier,
-                    value:          attr.value,
-                    tag:            attr.tag.name()
+                propertyName:   attr.propertyName,
+                id:             attr.id,
+                qualifier:      attr.qualifier,
+                value:          attr.value,
+                tag:            attr.tag.name()
             ]
         }
         return result

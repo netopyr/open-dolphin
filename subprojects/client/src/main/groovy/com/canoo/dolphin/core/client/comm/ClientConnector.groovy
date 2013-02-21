@@ -20,7 +20,9 @@ import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientAttribute
 import com.canoo.dolphin.core.client.ClientDolphin
+import com.canoo.dolphin.core.client.ClientModelStore
 import com.canoo.dolphin.core.client.ClientPresentationModel
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 import groovyx.gpars.dataflow.DataflowVariable
 import groovyx.gpars.group.DefaultPGroup
@@ -100,39 +102,51 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     PGroup group = new DefaultPGroup(poolSize)
 
+    @CompileStatic
     void send(Command command, OnFinishedHandler callback = null) {
+        def me = this
         def result = new DataflowVariable()
         processAsync {
-            log.info "C: transmitting $command"
+            me.info "C: transmitting $command"
             result << transmit(command)
             insideUiThread {
-                List<Command> response = result.get()
-                log.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
+                List<Command> response = result.get() as List<Command>
+                me.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
 
-                List<ClientPresentationModel> pms = []
-                List<Map> maps = []
-                for (serverCommand in response) {
-                    def pm = handle serverCommand
+                List<ClientPresentationModel> pms = new LinkedList<ClientPresentationModel>()
+                List<Map> maps = new LinkedList<Map>()
+                for (Command serverCommand in response) {
+                    def pm = me.dispatchHandle serverCommand
                     if (pm && pm instanceof ClientPresentationModel) {
-                        pms << pm
+                        pms << (ClientPresentationModel) pm
                     } else if (pm && pm instanceof Map) {
-                        maps << pm
+                        maps << (Map) pm
                     }
                 }
                 if (callback) {
-                    callback.onFinished(pms.unique {it.id})
+                    callback.onFinished( (List<ClientPresentationModel>) pms.unique { ((ClientPresentationModel) it).id})
                     callback.onFinishedData(maps)
                 }
             }
         }
     }
 
+    void info (Object message) {
+        log.info message
+    }
+
+    Object dispatchHandle(Command command) {
+        handle command
+    }
+
+    @CompileStatic
     void processAsync(Runnable processing) {
         group.task {
             doExceptionSafe processing
         }
     }
 
+    @CompileStatic
     void doExceptionSafe(Runnable processing) {
         try {
             processing.run()
@@ -143,12 +157,13 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
     }
 
+    @CompileStatic
     void insideUiThread(Runnable processing) {
         doExceptionSafe {
             if (uiThreadHandler) {
                 uiThreadHandler.executeInsideUiThread(processing)
             } else {
-                log.warning("please provide howToProcessInsideUI handler")
+                println("please provide howToProcessInsideUI handler")
                 processing.run()
             }
         }
@@ -169,21 +184,22 @@ abstract class ClientConnector implements PropertyChangeListener {
         return model
     }
 
+    @CompileStatic
     ClientPresentationModel handle(CreatePresentationModelCommand serverCommand) {
         // check if we already have serverCommand.pmId in our store
         // if true we simply update attribute ids and add any missing attributes
-        if (clientModelStore.containsPresentationModel(serverCommand.pmId)) {
+        if (((ClientModelStore)clientModelStore).containsPresentationModel(serverCommand.pmId)) {
             return mergeAttributes(serverCommand.pmId, serverCommand.attributes)
         }
         List<ClientAttribute> attributes = []
-        serverCommand.attributes.each { attr ->
-            ClientAttribute attribute = new ClientAttribute(attr.propertyName, attr.value)
+        for (attr in serverCommand.attributes) {
+            ClientAttribute attribute = new ClientAttribute(attr.propertyName.toString(), attr.value)
             attribute.qualifier = attr.qualifier
             attributes << attribute
         }
         ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
         model.presentationModelType = serverCommand.pmType
-        clientModelStore.add(model)
+        ((ClientModelStore)clientModelStore).add(model)
         return model
     }
 

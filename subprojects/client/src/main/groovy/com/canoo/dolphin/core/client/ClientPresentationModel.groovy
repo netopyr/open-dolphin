@@ -16,11 +16,14 @@
 
 package com.canoo.dolphin.core.client
 
+import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.BasePresentationModel
 import com.canoo.dolphin.core.Tag
+import groovy.transform.CompileStatic
 
 // impls on client and server are different since client is setting the id
 
+@CompileStatic
 class ClientPresentationModel extends BasePresentationModel {
 
     ClientPresentationModel(List<ClientAttribute> attributes) {
@@ -33,9 +36,8 @@ class ClientPresentationModel extends BasePresentationModel {
 
     /** @deprecated use ClientDolphin.presentationModel */
     static ClientPresentationModel make(String id, List<String> attributeNames) {
-        return ClientDolphin.presentationModel(id, attributeNames)
+        throw new UnsupportedOperationException("method 'make' is no longer available");
     }
-
 
     // override with server specific return values to avoid casting in client code
 

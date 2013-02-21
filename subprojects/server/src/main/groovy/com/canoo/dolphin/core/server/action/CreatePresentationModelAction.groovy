@@ -20,22 +20,29 @@ import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.comm.CreatePresentationModelCommand
 import com.canoo.dolphin.core.server.ServerAttribute
+import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.ServerPresentationModel
 import com.canoo.dolphin.core.server.comm.ActionRegistry
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class CreatePresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(CreatePresentationModelCommand) { CreatePresentationModelCommand command, response ->
-            List<ServerAttribute> attributes = []
-            command.attributes.each { attr ->
-                ServerAttribute attribute = new ServerAttribute(attr.propertyName, attr.value, attr.qualifier, Enum.valueOf(Tag, attr.tag))
-                attribute.id = attr.id
-                attributes << attribute
-            }
-            PresentationModel model = new ServerPresentationModel(command.pmId, attributes)
-            model.presentationModelType = command.pmType
-            serverDolphin.serverModelStore.add(model)
+            createPresentationModel(command, serverDolphin) // closure wrapper for correct scoping and extracted method for static compilation
         }
+    }
+
+    private static void createPresentationModel(CreatePresentationModelCommand command, ServerDolphin serverDolphin) {
+        List<ServerAttribute> attributes = new LinkedList()
+        for (Map<String, Object> attr in command.attributes) {
+            ServerAttribute attribute = new ServerAttribute((String) attr.propertyName, attr.value, (String) attr.qualifier, Enum.valueOf(Tag, (String) attr.tag))
+            attribute.id = attr.id as Long
+            attributes << attribute
+        }
+        PresentationModel model = new ServerPresentationModel(command.pmId, attributes)
+        model.presentationModelType = command.pmType
+        serverDolphin.serverModelStore.add(model)
     }
 }

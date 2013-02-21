@@ -24,6 +24,7 @@ import com.canoo.dolphin.core.comm.ValueChangedCommand
 import com.canoo.dolphin.core.server.action.*
 import com.canoo.dolphin.core.server.comm.NamedCommandHandler
 import com.canoo.dolphin.core.server.comm.ServerConnector
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 
 /**
@@ -33,6 +34,7 @@ import groovy.util.logging.Log
  * Threading model: confined to a single controller thread.
  */
 
+@CompileStatic
 @Log
 class ServerDolphin extends Dolphin {
 

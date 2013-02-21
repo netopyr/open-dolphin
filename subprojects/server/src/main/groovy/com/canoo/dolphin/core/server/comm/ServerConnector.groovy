@@ -19,10 +19,13 @@ package com.canoo.dolphin.core.server.comm
 import com.canoo.dolphin.core.comm.Codec
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.server.action.*
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 import org.codehaus.groovy.runtime.StackTraceUtils
 import java.util.logging.Level
 
+
+@CompileStatic
 @Log
 class ServerConnector {
     Codec codec
@@ -35,7 +38,9 @@ class ServerConnector {
     List<Command> receive(Command command) {
         log.info "S:     received $command"
         List<Command> response = new LinkedList() // collecting parameter pattern
-        dolphinServerActions.each { it.dolphinResponse = response} // todo nochmal nachdenken}
+        for (DolphinServerAction it in dolphinServerActions) {
+            it.dolphinResponse = response
+        } // todo nochmal nachdenken}
 
         List<CommandHandler> actions = registry[command.id]
         if (!actions) {

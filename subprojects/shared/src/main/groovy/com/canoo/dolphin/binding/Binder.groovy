@@ -21,6 +21,7 @@ import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.Tag
 
 import java.beans.Introspector
+import groovy.transform.Immutable
 import groovy.transform.Canonical
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeEvent

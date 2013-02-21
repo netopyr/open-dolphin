@@ -15,14 +15,19 @@
  */
 
 package com.canoo.dolphin.core.comm
+
+import com.canoo.dolphin.LogConfig
 import com.canoo.dolphin.core.PresentationModel
 import com.canoo.dolphin.core.client.ClientDolphin
 import com.canoo.dolphin.core.client.ClientPresentationModel
 import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter
+import com.canoo.dolphin.core.server.DTO
 import com.canoo.dolphin.core.server.ServerAttribute
 import com.canoo.dolphin.core.server.ServerDolphin
 import com.canoo.dolphin.core.server.ServerPresentationModel
+import com.canoo.dolphin.core.server.Slot
 import com.canoo.dolphin.core.server.comm.NamedCommandHandler
+
 /**
  * Showcase for how to test an application without the GUI by
  * issuing the respective commands and model changes against the
@@ -47,11 +52,33 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         context.done.await()
     }
 
+    void testPerformance() {
+        LogConfig.noLogs()
+        long id = 0
+        serverDolphin.action "performance", { cmd, response ->
+            100.times { attr ->
+                serverDolphin.presentationModel(response, "id_${id++}".toString(), null, new DTO(new Slot("attr_$attr", attr)))
+            }
+        }
+        def start = System.nanoTime()
+        100.times {
+            clientDolphin.send "performance", { List<ClientPresentationModel> pms ->
+                assert pms.size() == 100
+                pms.each { clientDolphin.delete(it) }
+            }
+        }
+        clientDolphin.send "performance", { List<ClientPresentationModel> pms ->
+            assert pms.size() == 100
+            println ((System.nanoTime() - start).intdiv(1_000_000))
+            context.assertionsDone() // make sure the assertions are really executed
+        }
+    }
+
     void testFetchingAnInitialListOfData() {
         serverDolphin.action "fetchData", { cmd, response ->
             ('a'..'z').each {
                 PresentationModel model = new ServerPresentationModel(it, [
-                        new ServerAttribute('char', it)
+                    new ServerAttribute('char', it)
                 ])
                 response << CreatePresentationModelCommand.makeFrom(model)
             }
@@ -72,7 +99,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
                 ServerDolphin.changeValue(response, user.loggedIn, 'true')
             }
         }
-        def user = clientDolphin.presentationModel 'user', name:null, password:null, loggedIn:null
+        def user = clientDolphin.presentationModel 'user', name: null, password: null, loggedIn: null
         clientDolphin.send "loginCmd", {
             assert !user.loggedIn.value
 

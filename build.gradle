@@ -28,8 +28,8 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    sourceCompatibility = '1.6'
-    targetCompatibility = '1.6'
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
     archivesBaseName = "dolphin-${project.name}"
 
     repositories {
@@ -38,9 +38,9 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.codehaus.groovy:groovy-all:1.8.8'
-        groovy  'org.codehaus.groovy:groovy-all:1.8.8'
-        testCompile 'org.spockframework:spock-core:0.6-groovy-1.8', {
+        compile 'org.codehaus.groovy:groovy-all:2.1.1'
+        groovy  'org.codehaus.groovy:groovy-all:2.1.1'
+        testCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
             exclude group:'org.codehaus.groovy', module: 'groovy-all'
         }
         testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
