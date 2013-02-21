@@ -176,7 +176,6 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return result;
     }
 
-    // todo dk: also sync tag attributes
     public void syncWith(PresentationModel sourcePresentationModel) {
         for (Attribute targetAttribute : attributes) {
             Attribute sourceAttribute = sourcePresentationModel.getAt(targetAttribute.getPropertyName(), targetAttribute.getTag());

@@ -16,12 +16,9 @@
 
 package com.canoo.dolphin.core.client
 
-import com.canoo.dolphin.core.Attribute
 import com.canoo.dolphin.core.BasePresentationModel
 import com.canoo.dolphin.core.Tag
 import groovy.transform.CompileStatic
-
-// impls on client and server are different since client is setting the id
 
 @CompileStatic
 class ClientPresentationModel extends BasePresentationModel {
