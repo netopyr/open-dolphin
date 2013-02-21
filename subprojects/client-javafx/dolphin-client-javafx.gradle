@@ -21,7 +21,12 @@ dependencies {
 }
 
 uploadArchives.repositories.mavenDeployer {
-    pom.whenConfigured { pom -> pom.dependencies = pom.dependencies.findAll {
-	dep -> !dep.artifactId=='jfxrt' }
-    } 
+	pom.whenConfigured { pom -> pom.dependencies = pom.dependencies.findAll {dep -> !dep.artifactId=='jfxrt' } }
+}
+
+
+install {
+    repositories.mavenInstaller {
+	pom.whenConfigured { pom -> pom.dependencies = pom.dependencies.findAll {dep -> !dep.artifactId=='jfxrt' } }
+    }
 }
