@@ -40,7 +40,9 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
     Closure onException = { Throwable up ->
-        log.severe("onException reached, rethrowing in UI Thread, consider setting ClientConnector.onException")
+        def out = new StringWriter()
+        up.printStackTrace(new PrintWriter(out))
+        log.severe("onException reached, rethrowing in UI Thread, consider setting ClientConnector.onException\n${out.buffer}")
         uiThreadHandler.executeInsideUiThread { throw up } // not sure whether this is a good default
     }
 
