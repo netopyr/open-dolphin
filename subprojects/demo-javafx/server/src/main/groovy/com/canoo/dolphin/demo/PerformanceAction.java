@@ -48,14 +48,7 @@ public class PerformanceAction extends DolphinServerAction {
         }
     };
 
-    private final CommandHandler syncAction = new SimpleCommandHandler() {
-        public void handleCommand() {
-            // do nothing; this is only for synchronizing the timer after "clear"
-        }
-    };
-
     public void registerIn(final ActionRegistry registry) {
-        registry.register("sync",       syncAction);
         registry.register("stressTest", stressAction);
     }
 

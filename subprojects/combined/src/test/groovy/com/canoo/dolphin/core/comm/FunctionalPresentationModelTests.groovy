@@ -119,14 +119,11 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         serverDolphin.action "someCmd", { cmd, response ->
             throw new RuntimeException("EXPECTED: some arbitrary exception on the server")
         }
-        serverDolphin.action "noop", { cmd, response ->
-            // no operation
-        }
 
         clientDolphin.send "someCmd", {
             fail "the onFinished handler will not be reached in this case"
         }
-        clientDolphin.send "noop", {
+        clientDolphin.sync {
             assert count == 1
         }
 
@@ -134,11 +131,10 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.send "someCmd", {
             fail "the onFinished handler will not be reached either"
         }
-        clientDolphin.send "noop", {
+        clientDolphin.sync {
             assert count == 2
             context.assertionsDone()
         }
-
     }
 
     void testAsynchronousExceptionInOnFinishedHandler() {

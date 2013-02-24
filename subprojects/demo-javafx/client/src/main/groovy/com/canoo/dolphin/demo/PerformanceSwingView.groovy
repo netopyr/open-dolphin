@@ -113,7 +113,7 @@ class PerformanceSwingView {
                 def all = dolphin.findAllPresentationModelsByType('all')
                 def temp = new LinkedList(all)
                 for (pm in temp) { dolphin.delete(pm) }
-                dolphin.send "sync", { pms ->
+                dolphin.sync {
                     long end = System.nanoTime()
                     long ms = (end - start).intdiv 1000000
                     input.time.value = ms
