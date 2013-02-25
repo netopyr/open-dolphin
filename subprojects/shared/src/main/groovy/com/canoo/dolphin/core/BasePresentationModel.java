@@ -60,10 +60,10 @@ public class BasePresentationModel extends AbstractObservable implements Present
     /**
      * @throws AssertionError if the list of attributes is null or empty
      */
-    public BasePresentationModel(String id, List<? extends Attribute> attributes) {
+    public BasePresentationModel(String id, List attributes) {
         this.id = id != null ? id : makeId(this);
-        for (Attribute attr : attributes) {
-            addAttribute(attr);
+        for (Object attr : attributes) {
+            addAttribute((Attribute) attr);
         }
     }
 
