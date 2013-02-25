@@ -27,9 +27,11 @@ class StoreInitialValueChangeAction extends DolphinServerAction {
         registry.register(InitialValueChangedCommand) { InitialValueChangedCommand command, response ->
             def modelStore = serverDolphin.serverModelStore
             Attribute attribute = modelStore.findAttributeById(command.attributeId)
-            if (attribute) attribute.rebase()
-            else log.warning("Could not find attribute with id $command.attributeId to change its initial value.")
-            log.finest "S: attribute $attribute.id for $attribute.propertyName with value $attribute.value is dirty? : $attribute.dirty"
+            if (attribute) {
+                attribute.rebase()
+                log.finest "S: attribute $attribute.id for $attribute.propertyName with value $attribute.value is dirty? : $attribute.dirty"
+            }
+            else log.warning("Could not find attribute with id '$command.attributeId' to change its initial value.")
         }
     }
 }
