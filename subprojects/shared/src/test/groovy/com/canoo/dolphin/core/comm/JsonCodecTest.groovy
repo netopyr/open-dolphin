@@ -78,6 +78,7 @@ public class JsonCodecTest extends GroovyTestCase {
         assertCodingCommand(new DataCommand([a:1, b:2]))
         assertCodingCommand(new DeletedPresentationModelNotification())
         assertCodingCommand(new DeletePresentationModelCommand())
+        assertCodingCommand(new EmptyNotification())
         assertCodingCommand(new InitializeAttributeCommand())
         assertCodingCommand(new InitialValueChangedCommand())
         assertCodingCommand(new NamedCommand())

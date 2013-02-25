@@ -23,6 +23,7 @@ import com.canoo.dolphin.core.client.comm.ClientConnector
 import com.canoo.dolphin.core.client.comm.OnFinishedHandler
 import com.canoo.dolphin.core.client.comm.OnFinishedHandlerAdapter
 import com.canoo.dolphin.core.comm.AttributeCreatedNotification
+import com.canoo.dolphin.core.comm.EmptyNotification
 import com.canoo.dolphin.core.comm.NamedCommand
 
 /**
@@ -85,6 +86,16 @@ public class ClientDolphin extends Dolphin {
             void onFinished(List<ClientPresentationModel> presentationModels) {
                 onFinished(presentationModels)
             }
+        })
+    }
+
+    /** both java- and groovy-friendly convenience method to send an empty command, which will have no
+     * presentation models nor data in the callback */
+    void sync(Runnable runnable) {
+        clientConnector.send(new EmptyNotification(), new OnFinishedHandlerAdapter() {
+            void onFinished(List<ClientPresentationModel> presentationModels) {
+               runnable.run()
+           }
         })
     }
 

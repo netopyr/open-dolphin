@@ -43,6 +43,9 @@ public interface Attribute extends Observable {
 
     Object getBaseValue();
 
+
+    // todo dk: add rebase to BasePresentationModel or to facade
+
     /** setting the base value to the current value, effectively providing a new base for "dirty" calculations */
     void rebase();
 

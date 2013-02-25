@@ -39,16 +39,17 @@ abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
 
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
+    Closure onException = { Throwable up ->
+        def out = new StringWriter()
+        up.printStackTrace(new PrintWriter(out))
+        log.severe("onException reached, rethrowing in UI Thread, consider setting ClientConnector.onException\n${out.buffer}")
+        uiThreadHandler.executeInsideUiThread { throw up } // not sure whether this is a good default
+    }
 
-    DataflowVariable<Throwable> exceptionHappened
     protected ClientDolphin clientDolphin
 
     ClientConnector(ClientDolphin clientDolphin) {
         this.clientDolphin = clientDolphin
-        exceptionHappened = new DataflowVariable<Throwable>()
-        exceptionHappened.whenBound {
-            throw exceptionHappened.val
-        }
     }
 
     protected getClientModelStore() {
@@ -105,8 +106,8 @@ abstract class ClientConnector implements PropertyChangeListener {
     @CompileStatic
     void send(Command command, OnFinishedHandler callback = null) {
         def me = this
-        def result = new DataflowVariable()
         processAsync {
+            def result = new DataflowVariable()
             me.info "C: transmitting $command"
             result << transmit(command)
             insideUiThread {
@@ -152,8 +153,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             processing.run()
         } catch (e) {
             StackTraceUtils.deepSanitize(e)
-            exceptionHappened << e
-            throw e
+            onException e
         }
     }
 
@@ -257,8 +257,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     ClientPresentationModel handle(InitializeAttributeCommand serverCommand) {
-        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue)
-        attribute.qualifier = serverCommand.qualifier
+        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.qualifier) {

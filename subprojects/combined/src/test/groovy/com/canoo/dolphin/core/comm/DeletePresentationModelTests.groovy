@@ -30,8 +30,6 @@ class DeletePresentationModelTests extends GroovyTestCase {
         context = new TestInMemoryConfig()
         serverDolphin = context.serverDolphin
         clientDolphin = context.clientDolphin
-
-        serverDolphin.action "sync", { cmd, response -> /* sync for the callback */ }
     }
 
     @Override
@@ -49,7 +47,7 @@ class DeletePresentationModelTests extends GroovyTestCase {
         def found = clientDolphin.findPresentationModelById(modelId)
         assert model == found
         // ... and in the server model store after roundtrip
-        clientDolphin.send "sync", {
+        clientDolphin.sync {
             assert serverDolphin.modelStore.findPresentationModelById(modelId)
         }
         // when we now delete the pm
@@ -65,10 +63,10 @@ class DeletePresentationModelTests extends GroovyTestCase {
             // assert it.is(model)
         }
         // the model is also gone from the server model store
-        clientDolphin.send "sync", {
+        clientDolphin.sync {
             assert !serverDolphin.modelStore.findPresentationModelById(modelId)
         }
         // we are done
-        clientDolphin.send "sync", { context.assertionsDone() }
+        clientDolphin.sync { context.assertionsDone() }
     }
 }

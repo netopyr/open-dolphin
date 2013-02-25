@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package com.canoo.dolphin.demo
+package com.canoo.dolphin.core.comm
 
-class FX {
+/**
+ * A notification that does nothing on the server.
+ * It is only used to hook into the communication at a known point
+ * such that the onFinished handler can be executed
+ * in the expected sequence.
+ */
 
-    // constants for JavaFX view properties
-
-    static final String TEXT        = 'text'
-    static final String TITLE       = 'title'
-    static final String TEXT_FILL   = "textFill"
-    static final String FILL        = "fill"
-    static final String ROTATE      = "rotate"
-    static final String DISABLED    = "disabled"
-    static final String SELECTED    = "selected"
-    static final String VALUE       = "value"
-    static final String NAME        = "name"
-    static final String PIE_VALUE   = "pieValue"
-    static final String TOOLTIP     = "tooltip"
-
+class EmptyNotification extends Command {
 
 }

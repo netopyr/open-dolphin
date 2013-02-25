@@ -16,6 +16,7 @@
 
 package com.canoo.dolphin.core.server.action
 
+import com.canoo.dolphin.core.Tag
 import com.canoo.dolphin.core.comm.Command
 import com.canoo.dolphin.core.server.DTO
 import com.canoo.dolphin.core.server.ServerAttribute
@@ -42,7 +43,7 @@ abstract class DolphinServerAction implements ServerAction {
     }
 
     /** Convenience method for the InitializeAttributeCommand */
-    void initAt(String pmId, String propertyName, String qualifier, Object newValue = null) {
-        ServerDolphin.initAt(dolphinResponse, pmId, propertyName, qualifier, newValue)
+    void initAt(String pmId, String propertyName, String qualifier, Object newValue = null, Tag tag = Tag.VALUE) {
+        ServerDolphin.initAt(dolphinResponse, pmId, propertyName, qualifier, newValue, tag)
     }
 }

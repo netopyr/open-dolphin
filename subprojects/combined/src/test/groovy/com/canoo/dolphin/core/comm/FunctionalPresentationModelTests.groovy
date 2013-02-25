@@ -102,39 +102,51 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         def user = clientDolphin.presentationModel 'user', name: null, password: null, loggedIn: null
         clientDolphin.send "loginCmd", {
             assert !user.loggedIn.value
+        }
+        user.name.value = "Dierk"
+        user.password.value = "Koenig"
 
-            user.name.value = "Dierk"
-            user.password.value = "Koenig"
-
-            clientDolphin.send "loginCmd", {
-                assert user.loggedIn.value
-                context.assertionsDone()
-            }
+        clientDolphin.send "loginCmd", {
+            assert user.loggedIn.value
+            context.assertionsDone()
         }
     }
 
     void testAsynchronousExceptionOnTheServer() {
+        def count = 0
+        clientDolphin.clientConnector.onException = { count++ }
+
         serverDolphin.action "someCmd", { cmd, response ->
             throw new RuntimeException("EXPECTED: some arbitrary exception on the server")
         }
+
         clientDolphin.send "someCmd", {
             fail "the onFinished handler will not be reached in this case"
         }
+        clientDolphin.sync {
+            assert count == 1
+        }
 
-        assert context.clientDolphin.clientConnector.exceptionHappened.val
-        context.assertionsDone()
+        // provoke a second exception
+        clientDolphin.send "someCmd", {
+            fail "the onFinished handler will not be reached either"
+        }
+        clientDolphin.sync {
+            assert count == 2
+            context.assertionsDone()
+        }
     }
 
     void testAsynchronousExceptionInOnFinishedHandler() {
+
+        clientDolphin.clientConnector.onException = { context.assertionsDone() }
+
         serverDolphin.action "someCmd", { cmd, response ->
             // nothing to do
         }
         clientDolphin.send "someCmd", {
-            context.assertionsDone()
             throw new RuntimeException("EXPECTED: some arbitrary exception in the onFinished handler")
         }
-
-        assert context.clientDolphin.clientConnector.exceptionHappened.val
     }
 
     void testUnregisteredCommand() {

@@ -1,6 +1,9 @@
 .label {
     -fx-text-fill: white;
 }
+.tooltip {
+    -fx-background-color:firebrick;
+}
 
 #header {
     -fx-font-size: 18;
@@ -23,4 +26,8 @@
         transparent       30%,
         rgba(0,0,0,0.15) 100%
     );
+}
+
+.invalid {
+    -fx-text-fill:red;
 }

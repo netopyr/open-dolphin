@@ -28,8 +28,8 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+    sourceCompatibility = '1.6'
+    targetCompatibility = '1.6' // some users are still on 1.6
     archivesBaseName = "dolphin-${project.name}"
 
     repositories {

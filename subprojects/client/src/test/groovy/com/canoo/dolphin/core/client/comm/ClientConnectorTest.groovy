@@ -29,6 +29,7 @@ class ClientConnectorTest extends GroovyTestCase {
     protected void setUp() {
         dolphin = new ClientDolphin()
         clientConnector = new TestClientConnector(dolphin)
+        clientConnector.uiThreadHandler = { it() } as UiThreadHandler
         dolphin.clientConnector = clientConnector
         dolphin.clientModelStore = new ClientModelStore(dolphin)
     }
@@ -41,6 +42,14 @@ class ClientConnectorTest extends GroovyTestCase {
         def result = clientConnector.handle(command)
         assert myPmId == result.id
         assert dolphin.findPresentationModelById(myPmId)
+    }
+
+    void testDefaultOnExceptionHandler(){
+        def msg = shouldFail(RuntimeException) {
+            clientConnector.onException(new RuntimeException("test exception"))
+        }
+        println "..."
+        println msg
     }
 
 }
