@@ -91,5 +91,5 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    info   "com.canoo.dolphin.core.server"
+    info   "org.opendolphin.core.server"
 }

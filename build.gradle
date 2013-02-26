@@ -104,7 +104,6 @@ def mavenizedProjects() {
 }
 
 configure(mavenizedProjects()) {
-    group = 'com.canoo.dolphin'
     apply plugin: 'maven'
     apply plugin: 'signing'
 
@@ -235,7 +234,7 @@ task apidoc(type: Groovydoc) {
     link("http://groovy.codehaus.org/api", "groovy.", "org.codehaus.groovy.")
 }
 
-def demos = new File(rootDir,'subprojects/demo-javafx/combined/src/main/groovy/com/canoo/dolphin/demo')
+def demos = new File(rootDir,'subprojects/demo-javafx/combined/src/main/groovy/org/opendolphin/demo')
     .list()
     .findAll {it.startsWith('start') && it.endsWith('Demo.groovy')}
     .collect { it - 'start' - 'Demo.groovy' }

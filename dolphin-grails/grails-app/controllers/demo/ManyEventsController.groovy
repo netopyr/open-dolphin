@@ -1,6 +1,6 @@
 package demo
 
-import com.canoo.dolphin.core.server.EventBus
+import org.opendolphin.core.server.EventBus
 
 class ManyEventsController {
 

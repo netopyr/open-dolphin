@@ -16,7 +16,7 @@
 
 apply plugin: 'application'
 
-def mainClassPackage = "com.canoo.dolphin.demo."
+def mainClassPackage = "org.opendolphin.demo."
 mainClassName = mainClassPackage+"startPushDemo"
 
 run.doFirst {

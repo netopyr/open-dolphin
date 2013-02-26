@@ -1,8 +1,8 @@
-import com.canoo.dolphin.core.ModelStore
-import com.canoo.dolphin.core.comm.JsonCodec
-import com.canoo.dolphin.core.server.EventBus
-import com.canoo.dolphin.core.server.ServerDolphin
-import com.canoo.dolphin.core.server.comm.ServerConnector
+import org.opendolphin.core.ModelStore
+import org.opendolphin.core.comm.JsonCodec
+import org.opendolphin.core.server.EventBus
+import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.core.server.comm.ServerConnector
 
 beans = {
 
