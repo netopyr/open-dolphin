@@ -106,21 +106,79 @@ def mavenizedProjects() {
 configure(mavenizedProjects()) {
     group = 'com.canoo.dolphin'
     apply plugin: 'maven'
+    apply plugin: 'signing'
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
+    task sourcesJar(type: Jar, dependsOn:classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
     }
 
+    javadoc {
+        failOnError = false
+    }
+
+    task javadocJar(type: Jar, dependsOn:javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
     artifacts {
         archives sourcesJar
+        archives javadocJar
     }
+
+    signing {
+        required { gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
     
     uploadArchives {
         repositories.mavenDeployer {
             def nexusURL = version.endsWith('SNAPSHOT')? nexusDeployURL : nexusReleaseDelopyURL
-            repository(url: nexusURL) {
-                authentication(userName: nexusDeployUser, password: nexusDeployPassword)
+            def sonatypeURL = version.endsWith('SNAPSHOT')? sonatypeDeployURL : sonatypeReleaseDeployURL
+            if (project.hasProperty('mavenCentral')) {
+                beforeDeployment { MavenDeployment deployment ->
+                    signing.signPom(deployment)
+                }
+                repository(url: sonatypeURL) {
+                    authentication(userName: sonatypeUser, password: sonatypePassword)
+                }
+            } else {
+                repository(url: nexusURL) {
+                    authentication(userName: nexusDeployUser, password: nexusDeployPassword)
+                }
+            }
+            pom.project {
+                name 'Open Dolphin'
+                packaging 'jar'
+                description 'Dolphin is a free open-source library that protects your business applications against the uncertainties of changing visualization technologies.'
+                url 'http://open-dolhin.org/'
+
+                scm {
+                    url 'scm:git@github.com:canoo/open-dolphin.git'
+                    connection 'scm:git@github.com:canoo/open-dolphin.git'
+                    developerConnection 'scm:git@github.com:canoo/open-dolphin.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'detlef-brendle'
+                        name 'Detlef Brendle'
+                    }
+                    developer {
+                        id 'Dierk'
+                        name 'Dierk Koenig'
+                    }
+                }
             }
         }
     }
