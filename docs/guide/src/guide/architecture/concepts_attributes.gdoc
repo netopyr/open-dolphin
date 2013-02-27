@@ -33,4 +33,4 @@ Tags can be used to e.g. describe whether the person firstname is a @MANDATORY@ 
 whether it is @ENABLED@, @VISIBLE@, and so on.
 Attributes with a tag are observable in the usual way.
 
-See also [Usage|Attribute] and [API doc|api:com.canoo.dolphin.core.Attribute].
+See also [Usage|Attribute] and [API doc|api:org.opendolphin.core.Attribute].

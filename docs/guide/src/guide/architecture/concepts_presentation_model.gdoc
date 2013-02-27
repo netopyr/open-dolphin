@@ -47,7 +47,7 @@ h4. What is special
 - They have a unique _id_, which either the application programmer provides or is automatically assigned otherwise.
 - They optionally have a _type_ parameter for logical grouping.
 
-See also: [Usage|PresentationModel] and [API doc|api:com.canoo.dolphin.core.PresentationModel].
+See also: [Usage|PresentationModel] and [API doc|api:org.opendolphin.core.PresentationModel].
 
 h4. Where the logic goes
 
