@@ -1,4 +1,4 @@
-import com.canoo.dolphin.core.server.comm.ServerConnector
+import org.opendolphin.core.server.comm.ServerConnector
 
 class DolphinController {
 

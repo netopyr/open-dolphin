@@ -1,11 +1,11 @@
 package dolphin.grails
 
-import com.canoo.dolphin.core.server.DTO
-import com.canoo.dolphin.core.server.Slot
-import com.canoo.dolphin.demo.crud.CrudService
+import org.opendolphin.core.server.DTO
+import org.opendolphin.core.server.Slot
+import org.opendolphin.demo.crud.CrudService
 
-import static com.canoo.dolphin.demo.crud.PortfolioConstants.ATT.*
-import static com.canoo.dolphin.demo.crud.PositionConstants.ATT.*
+import static org.opendolphin.demo.crud.PortfolioConstants.ATT.*
+import static org.opendolphin.demo.crud.PositionConstants.ATT.*
 
 class GrailsCrudService implements CrudService {
 

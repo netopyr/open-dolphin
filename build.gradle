@@ -1,7 +1,7 @@
 import java.text.DateFormat
 
 /*
- * Copyright 2012 Canoo Engineering AG.
+ * Copyright 2012-2013 Canoo Engineering AG.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,7 +104,6 @@ def mavenizedProjects() {
 }
 
 configure(mavenizedProjects()) {
-    group = 'com.canoo.dolphin'
     apply plugin: 'maven'
     apply plugin: 'signing'
 
@@ -233,7 +232,7 @@ task apidoc(type: Groovydoc) {
     link("http://groovy.codehaus.org/api", "groovy.", "org.codehaus.groovy.")
 }
 
-def demos = new File(rootDir,'subprojects/demo-javafx/combined/src/main/groovy/com/canoo/dolphin/demo')
+def demos = new File(rootDir,'subprojects/demo-javafx/combined/src/main/groovy/org/opendolphin/demo')
     .list()
     .findAll {it.startsWith('start') && it.endsWith('Demo.groovy')}
     .collect { it - 'start' - 'Demo.groovy' }
