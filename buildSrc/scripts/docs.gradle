@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier
 project.ext.guideBuildDirectory = "${buildDir}/guide"
 
 
-task buildGuide(type: GrailsDoc) {
+task buildGuide(type: GrailsDoc, group:'Documentation') {
     srcDir    = file('docs/guide/src')
     props     = file('docs/guide/src/doc.properties')
     styleDir  = file('docs/guide/resources/style')
@@ -15,13 +15,13 @@ task buildGuide(type: GrailsDoc) {
     outputDir = file(project.ext.guideBuildDirectory)
 }
 
-task pdfGuide(type: PdfGuide, dependsOn: buildGuide) {
+task pdfGuide(type: PdfGuide, dependsOn: buildGuide, group:'Documentation') {
     inputs.files file(project.ext.guideBuildDirectory + '/guide')
     outputDirectory = new File(project.ext.guideBuildDirectory)
     pdfName = "dolphin-guide-${project.version}.pdf"
 }
 
-task zipGuide(type: Zip, dependsOn: pdfGuide) {
+task zipGuide(type: Zip, dependsOn: pdfGuide, group:'Documentation') {
     appendix = 'guide'
     from project.ext.guideBuildDirectory
 }
