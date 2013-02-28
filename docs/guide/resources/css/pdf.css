@@ -28,6 +28,15 @@
     font-size: 12pt;
 }
 
+#dolphinlogo {
+    background-image: url(../img/dolphin.png);
+    width:156px;
+    height:100px;
+    position: absolute;
+    top: 100px;
+    right: 0px;
+}
+
 #main {
     margin: 0;
 }
@@ -64,6 +73,10 @@ h1 {
     font-size: 1.5em;
     string-set: header content();
     page-break-before: always
+}
+
+div div h1 {
+    page-break-before: avoid;
 }
 
 h1>a {
