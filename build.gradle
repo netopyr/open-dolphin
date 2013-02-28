@@ -178,6 +178,14 @@ configure(mavenizedProjects()) {
 
                 developers {
                     developer {
+                        id 'aalmiray'
+                        name 'Andres Almiray'
+                    }
+                    developer {
+                        id 'DieterHolz'
+                        name 'Dieter Holz'
+                    }
+                    developer {
                         id 'detlef-brendle'
                         name 'Detlef Brendle'
                     }
