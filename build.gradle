@@ -163,7 +163,7 @@ configure(mavenizedProjects()) {
                 url 'http://open-dolhin.org/'
 
                 scm {
-                    url 'scm:git@github.com:canoo/open-dolphin.git'
+                    url 'https://github.com/canoo/open-dolphin.git'
                     connection 'scm:git@github.com:canoo/open-dolphin.git'
                     developerConnection 'scm:git@github.com:canoo/open-dolphin.git'
                 }
