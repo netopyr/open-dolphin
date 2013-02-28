@@ -28,22 +28,22 @@ import org.apache.http.impl.client.DefaultHttpClient
 @Log
 class HttpClientConnector extends ClientConnector {
 
-    String baseUrl = "http://localhost:8080/dolphin-grails"
+    String servletUrl = "http://localhost:8080/dolphin-grails/dolphin/"
 
     private DefaultHttpClient httpClient = new DefaultHttpClient()
     private ResponseHandler responseHandler = new BasicResponseHandler()
 
     int getPoolSize() { 1 }
 
-    HttpClientConnector(ClientDolphin clientDolphin, String baseUrl) {
+    HttpClientConnector(ClientDolphin clientDolphin, String servletUrl) {
         super(clientDolphin)
-        this.baseUrl = baseUrl
+        this.servletUrl = servletUrl
     }
 
     List<Command> transmit(Command command) {
         def result = new LinkedList<Command>()
         try {
-            def url = "$baseUrl/dolphin/"
+            def url = "$servletUrl"
 
             def content = codec.encode([command])  // for the moment, there is only one command in the list
 
