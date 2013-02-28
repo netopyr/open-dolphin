@@ -16,4 +16,5 @@
 
 dependencies {
     compile project(':shared')
+    compile 'javax.servlet:servlet-api:2.5'
 }
