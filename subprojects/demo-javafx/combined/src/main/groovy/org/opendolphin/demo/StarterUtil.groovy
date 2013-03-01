@@ -12,7 +12,7 @@ class StarterUtil {
         LogConfig.logCommunication()
         def dolphin = new ClientDolphin()
         dolphin.setClientModelStore(new ClientModelStore(dolphin))
-        def url = System.properties.remote ?: "http://localhost:8080/dolphin-grails"
+        def url = System.properties.remote ?: "http://localhost:8080/dolphin-grails/dolphin/"
         println " connecting to  $url "
         println "use -Dremote=... to override"
         def connector = new HttpClientConnector(dolphin, url)

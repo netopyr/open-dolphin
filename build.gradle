@@ -23,7 +23,17 @@ ext {
     jfxLibDir = locateJfxLibDir()
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "net.saliman:gradle-cobertura-plugin:1.1.1"
+    }
+}
+
 subprojects {
+    apply plugin: 'cobertura'
     apply plugin: 'groovy'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
@@ -54,9 +64,7 @@ subprojects {
         }
     }
 
-    if ( ! project.hasProperty('coverage')) return
-    if ( project.name.startsWith('demo-'))  return
-    apply from: "${rootDir}/gradle/coverage.gradle"
+
 }
 
 String locateJfxLibDir() {
@@ -155,7 +163,7 @@ configure(mavenizedProjects()) {
                 url 'http://open-dolhin.org/'
 
                 scm {
-                    url 'scm:git@github.com:canoo/open-dolphin.git'
+                    url 'https://github.com/canoo/open-dolphin.git'
                     connection 'scm:git@github.com:canoo/open-dolphin.git'
                     developerConnection 'scm:git@github.com:canoo/open-dolphin.git'
                 }
@@ -169,6 +177,14 @@ configure(mavenizedProjects()) {
                 }
 
                 developers {
+                    developer {
+                        id 'aalmiray'
+                        name 'Andres Almiray'
+                    }
+                    developer {
+                        id 'DieterHolz'
+                        name 'Dieter Holz'
+                    }
                     developer {
                         id 'detlef-brendle'
                         name 'Detlef Brendle'
@@ -216,7 +232,7 @@ apply {
 }
 
 
-task apidoc(type: Groovydoc) {
+task apidoc(group:'Documentation',type: Groovydoc) {
     def coreProjects = subprojects.findAll { ! it.name.contains('demo') }
     source coreProjects.collect {project -> project.sourceSets.main.allSource }
     classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath})
@@ -243,7 +259,8 @@ demos.each { demo ->
     task "${demo}DemoPreparation"(description:"internal") << {
         project(':demo-javafx-combined').ext.set('demoApplicationName' , demo)
     }
-    task "${demo}Demo"(dependsOn:["${demo}DemoPreparation", ':demo-javafx-combined:run'],
+    def group = demo.startsWith('Grails') ? 'Demo (server required)' : 'Demo'
+    task "${demo}Demo"(group:group, dependsOn:["${demo}DemoPreparation", ':demo-javafx-combined:run'],
                        description:"start the ${demo} demo"){}
 }
 
