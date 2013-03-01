@@ -1,3 +1,14 @@
+h4. Release 0.7
+
+There are no changes in this release. It has only been built to set the
+maven group id to @org.open-dolphin@ to comply with the conventions on maven central.
+
+The project artefacts are now available for download from
+[MavenCentral|http://search.maven.org/#search%7Cga%7C1%7Corg.open-dolphin]
+
+Please refer to [DolphinJumpStart|http://github.com/canoo/DolphinJumpStart] for an example on how to use OpenDolphin
+with either Maven or Gradle.
+
 h4. Release 0.6 : Notable Changes since 0.5
 
 The 0.6 release has only one change, which is a rather big and breaking one:
