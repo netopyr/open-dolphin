@@ -31,3 +31,7 @@
 .invalid {
     -fx-text-fill:red;
 }
+
+.dirty {
+    -fx-text-fill:yellow;
+}
