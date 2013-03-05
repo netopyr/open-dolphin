@@ -20,24 +20,23 @@ import org.opendolphin.core.Tag
 import static org.opendolphin.demo.MyProps.ATT.*
 
 def config = new JavaFxInMemoryConfig()
+def dolphin = config.serverDolphin
 
 // example for setting tags at startup
-config.serverDolphin.action "init", { cmd, response ->
-    config.serverDolphin.initAt response, 'person', NAME,     null, "First name: ", Tag.LABEL
-    config.serverDolphin.initAt response, 'person', LASTNAME, null, "Last name: ",  Tag.LABEL
+dolphin.action "init", { cmd, response ->
+    dolphin.initAt response, 'person', NAME,     null, "First name: ", Tag.LABEL
+    dolphin.initAt response, 'person', LASTNAME, null, "Last name: ",  Tag.LABEL
 
-    config.serverDolphin.initAt response, 'person', NAME, null, ".*a.*",  Tag.REGEX
-    config.serverDolphin.initAt response, 'person', NAME, null, "must contain an 'a' ", Tag.TOOLTIP
+    dolphin.initAt response, 'person', NAME, null, ".*a.*",  Tag.REGEX
+    dolphin.initAt response, 'person', NAME, null, "must contain an 'a' ", Tag.TOOLTIP
 }
 
 // example for changing tags at runtime
-config.serverDolphin.action "german", { cmd, response ->
-    def model = config.serverDolphin.getAt('person')
-    config.serverDolphin.changeValue response, model.getAt(NAME,     Tag.LABEL), "Vorname: "
-    config.serverDolphin.changeValue response, model.getAt(LASTNAME, Tag.LABEL), "Nachname: "
+dolphin.action "german", { cmd, response ->
+    def model = dolphin.getAt('person')
+    dolphin.changeValue response, model.getAt(NAME,     Tag.LABEL), "Vorname: "
+    dolphin.changeValue response, model.getAt(LASTNAME, Tag.LABEL), "Nachname: "
+    dolphin.changeValue response, model.getAt(NAME,     Tag.TOOLTIP), "muss ein 'a' enthalten "
 }
-
-
-
 
 new AttributeTagView().show(config.clientDolphin)

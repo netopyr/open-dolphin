@@ -31,6 +31,7 @@ class FX {
     static final String NAME        = "name"
     static final String PIE_VALUE   = "pieValue"
     static final String TOOLTIP     = "tooltip"
+    static final String STYLE_CLASS = "styleClass"
 
 
 }

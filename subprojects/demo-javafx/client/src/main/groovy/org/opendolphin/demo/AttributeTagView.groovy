@@ -20,6 +20,8 @@ import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientDolphin
 import javafx.scene.control.Tooltip
 
+import java.beans.PropertyChangeListener
+
 import static org.opendolphin.binding.JFXBinder.bind
 import static org.opendolphin.binding.JFXBinder.bindInfo
 import static org.opendolphin.core.Attribute.DIRTY_PROPERTY
@@ -68,8 +70,8 @@ class AttributeTagView {
                     }
                 }
             }
-
-            style delegate
+            def sgb = delegate
+            style sgb
 
             // binding the values
             bind NAME     of model         to FX.TEXT  of nameInput
@@ -77,11 +79,8 @@ class AttributeTagView {
 
             dolphin.send 'init', { pms ->        // only do binding after server has initialized the tags
                 bind FX.TEXT  of nameInput     to NAME     of model, { newVal ->
-                    if (newVal ==~ model.getAt(NAME, Tag.REGEX).value) {
-                        nameInput.styleClass.remove('invalid')
-                    } else {
-                        nameInput.styleClass.add('invalid')
-                    }
+                    boolean matches = newVal ==~ model.getAt(NAME, Tag.REGEX).value
+                    putStyle(sgb.nameInput, !matches, 'invalid')
                     return newVal
                 }
                 bind FX.TEXT  of lastnameInput to LASTNAME of model
@@ -93,12 +92,22 @@ class AttributeTagView {
             }
 
             // binding meta properties
-            bindInfo DIRTY_PROPERTY of model[NAME]     to FX.TEXT_FILL  of nameLabel,     { it ? BROWN : WHITE }
-            bindInfo DIRTY_PROPERTY of model[LASTNAME] to FX.TEXT_FILL  of lastnameLabel, { it ? BROWN : WHITE }
-            bindInfo DIRTY_PROPERTY of model           to TITLE         of primaryStage , { it ? '** DIRTY **': '' }
-            bindInfo DIRTY_PROPERTY of model           to 'disabled'    of reset        , { !it }
+            model[NAME].addPropertyChangeListener('dirty',
+                { putStyle(sgb.nameLabel, it.newValue, 'dirty') } as PropertyChangeListener)
+            model[LASTNAME].addPropertyChangeListener('dirty',
+                { putStyle(sgb.lastnameLabel, it.newValue, 'dirty') } as PropertyChangeListener)
+            bindInfo DIRTY_PROPERTY of model           to FX.TITLE        of primaryStage , { it ? '** DIRTY **': '' }
+            bindInfo DIRTY_PROPERTY of model           to FX.DISABLED     of reset        , { !it }
 
             primaryStage.show()
+        }
+    }
+
+    static void putStyle(node, boolean addOrRemove, String styleClassName) {
+        if (addOrRemove) {
+            node.styleClass.add(styleClassName)
+        } else {
+            node.styleClass.remove(styleClassName)
         }
     }
 
