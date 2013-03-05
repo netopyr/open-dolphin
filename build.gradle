@@ -42,6 +42,24 @@ subprojects {
     targetCompatibility = '1.6' // some users are still on 1.6
     archivesBaseName = "dolphin-${project.name}"
 
+    cobertura {
+        if (!(new File('').absolutePath == projectDir.absolutePath)){
+            // multiproject build location
+            coverageDatafile = file("${rootProject.buildDir}/cobertura/cobertura.ser")
+            coverageReportDir = file("${rootProject.buildDir}/reports/cobertura")
+            rootProject.subprojects.each {
+                coverageDirs << file("subprojects/${it.name}/build/classes/main")
+            }
+            rootProject.subprojects.each {
+                coverageSourceDirs << file("subprojects/${it.name}/src/main/groovy")
+                coverageSourceDirs << file("subprojects/${it.name}/src/main/java")
+            }
+            coverageExcludes = ['.*org.opendolphin.demo.*','.*org.opendolphin.logo.*']
+        }
+
+
+    }
+
     repositories {
         flatDir name: 'javafx', dirs: [jfxLibDir]
         mavenCentral()
@@ -53,7 +71,7 @@ subprojects {
         testCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
-        testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
+        testRuntime 'net.saliman:gradle-cobertura-plugin:1.1.1'
     }
 
     task makeDirs(description: 'make all dirs for project setup') << {
@@ -268,3 +286,6 @@ demos.each { demo ->
             description: "start the ${demo} demo") {}
 }
 
+task clean(type: Delete){
+    delete 'build'
+}

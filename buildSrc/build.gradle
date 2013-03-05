@@ -15,5 +15,6 @@ dependencies {
     compile(ext.xhtmlRenderer) { transitive = false }
     compile(ext.lowagieItext) { transitive = false }
     compile(ext.radeox) { transitive = false }
+    compile "net.saliman:gradle-cobertura-plugin:1.1.1"
 }
 
