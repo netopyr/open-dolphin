@@ -49,14 +49,14 @@ subprojects {
 
     dependencies {
         compile 'org.codehaus.groovy:groovy-all:2.1.1'
-        groovy  'org.codehaus.groovy:groovy-all:2.1.1'
+        groovy 'org.codehaus.groovy:groovy-all:2.1.1'
         testCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
-            exclude group:'org.codehaus.groovy', module: 'groovy-all'
+            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         testRuntime 'net.sourceforge.cobertura:cobertura:1.9.4.1'
     }
 
-    task makeDirs(description:'make all dirs for project setup') << {
+    task makeDirs(description: 'make all dirs for project setup') << {
         def sources = [sourceSets.main, sourceSets.test]
         sources*.allSource*.srcDirs.flatten().each { File srcDir ->
             println "making $srcDir"
@@ -69,9 +69,9 @@ subprojects {
 
 String locateJfxLibDir() {
     def javaFxHome = System.env['JAVAFX_HOME'] ?: ''
-    def javaHome   = System.env['JAVA_HOME']   ?: ''
-    def jdk7       = System.getProperty('java.version')[0..2].toDouble() >= 1.7
-    def jdk7Home   = System.properties.'java.home' ?: ''
+    def javaHome = System.env['JAVA_HOME'] ?: ''
+    def jdk7 = System.getProperty('java.version')[0..2].toDouble() >= 1.7
+    def jdk7Home = System.properties.'java.home' ?: ''
 
     def result = "$javaFxHome/rt/lib"
     if (new File("$result/jfxrt.jar").exists()) {
@@ -115,7 +115,7 @@ configure(mavenizedProjects()) {
     apply plugin: 'maven'
     apply plugin: 'signing'
 
-    task sourcesJar(type: Jar, dependsOn:classes) {
+    task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
     }
@@ -124,7 +124,7 @@ configure(mavenizedProjects()) {
         failOnError = false
     }
 
-    task javadocJar(type: Jar, dependsOn:javadoc) {
+    task javadocJar(type: Jar, dependsOn: javadoc) {
         classifier = 'javadoc'
         from javadoc.destinationDir
     }
@@ -135,68 +135,72 @@ configure(mavenizedProjects()) {
     }
 
     signing {
-        required { gradle.taskGraph.hasTask("uploadArchives") }
+        required { gradle.taskGraph.hasTask(uploadArchives) }
         sign configurations.archives
     }
 
-    
-    uploadArchives {
-        repositories.mavenDeployer {
-            def nexusURL = version.endsWith('SNAPSHOT')? nexusDeployURL : nexusReleaseDelopyURL
-            def sonatypeURL = version.endsWith('SNAPSHOT')? sonatypeDeployURL : sonatypeReleaseDeployURL
-            if (project.hasProperty('mavenCentral')) {
-                beforeDeployment { MavenDeployment deployment ->
-                    signing.signPom(deployment)
-                }
-                repository(url: sonatypeURL) {
-                    authentication(userName: sonatypeUser, password: sonatypePassword)
-                }
-            } else {
-                repository(url: nexusURL) {
-                    authentication(userName: nexusDeployUser, password: nexusDeployPassword)
-                }
-            }
-            pom.project {
-                name 'Open Dolphin'
-                packaging 'jar'
-                description 'Dolphin is a free open-source library that protects your business applications against the uncertainties of changing visualization technologies.'
-                url 'http://open-dolhin.org/'
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.hasTask(uploadArchives)) {
+            uploadArchives {
+                repositories.mavenDeployer {
+                    def nexusURL = version.endsWith('SNAPSHOT') ? nexusDeployURL : nexusReleaseDelopyURL
+                    def sonatypeURL = version.endsWith('SNAPSHOT') ? sonatypeDeployURL : sonatypeReleaseDeployURL
+                    beforeDeployment { MavenDeployment deployment ->
+                        signing.signPom(deployment)
+                    }
+                    if (project.hasProperty('mavenCentral')) {
+                        repository(url: sonatypeURL) {
+                            authentication(userName: sonatypeUser, password: sonatypePassword)
+                        }
+                    } else {
+                        repository(url: nexusURL) {
+                            authentication(userName: nexusDeployUser, password: nexusDeployPassword)
+                        }
+                    }
+                    pom.project {
+                        name 'Open Dolphin'
+                        packaging 'jar'
+                        description 'Dolphin is a free open-source library that protects your business applications against the uncertainties of changing visualization technologies.'
+                        url 'http://open-dolhin.org/'
 
-                scm {
-                    url 'https://github.com/canoo/open-dolphin.git'
-                    connection 'scm:git@github.com:canoo/open-dolphin.git'
-                    developerConnection 'scm:git@github.com:canoo/open-dolphin.git'
-                }
+                        scm {
+                            url 'https://github.com/canoo/open-dolphin.git'
+                            connection 'scm:git@github.com:canoo/open-dolphin.git'
+                            developerConnection 'scm:git@github.com:canoo/open-dolphin.git'
+                        }
 
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
-                    }
-                }
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
 
-                developers {
-                    developer {
-                        id 'aalmiray'
-                        name 'Andres Almiray'
-                    }
-                    developer {
-                        id 'DieterHolz'
-                        name 'Dieter Holz'
-                    }
-                    developer {
-                        id 'detlef-brendle'
-                        name 'Detlef Brendle'
-                    }
-                    developer {
-                        id 'Dierk'
-                        name 'Dierk Koenig'
+                        developers {
+                            developer {
+                                id 'aalmiray'
+                                name 'Andres Almiray'
+                            }
+                            developer {
+                                id 'DieterHolz'
+                                name 'Dieter Holz'
+                            }
+                            developer {
+                                id 'detlef-brendle'
+                                name 'Detlef Brendle'
+                            }
+                            developer {
+                                id 'Dierk'
+                                name 'Dierk Koenig'
+                            }
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 def distDir = new File(rootDir, 'dist')
@@ -222,7 +226,7 @@ subprojects.each { proj ->
     }
 }
 
-task wrap(type:Wrapper, description:"create a gradlew") {
+task wrap(type: Wrapper, description: "create a gradlew") {
     gradleVersion = '1.3'
 }
 
@@ -232,10 +236,10 @@ apply {
 }
 
 
-task apidoc(group:'Documentation',type: Groovydoc) {
-    def coreProjects = subprojects.findAll { ! it.name.contains('demo') }
-    source coreProjects.collect {project -> project.sourceSets.main.allSource }
-    classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath})
+task apidoc(group: 'Documentation', type: Groovydoc) {
+    def coreProjects = subprojects.findAll { !it.name.contains('demo') }
+    source coreProjects.collect { project -> project.sourceSets.main.allSource }
+    classpath = files(subprojects.collect { project -> project.sourceSets.main.compileClasspath })
     groovyClasspath = classpath
     destinationDir = new File(buildDir, 'api')
     docTitle = "Open Dolphin API documentation"
@@ -243,24 +247,24 @@ task apidoc(group:'Documentation',type: Groovydoc) {
     header = docTitle
     windowTitle = docTitle
     overview = new File('docs/docOverview.html')
-    link("http://download.oracle.com/javase/7/docs/api", "java.","javax.")
+    link("http://download.oracle.com/javase/7/docs/api", "java.", "javax.")
     link("http://docs.oracle.com/javafx/2/api/", "javafx.")
     link("http://groovy.codehaus.org/api", "groovy.", "org.codehaus.groovy.")
 }
 
-def demos = new File(rootDir,'subprojects/demo-javafx/combined/src/main/groovy/org/opendolphin/demo')
-    .list()
-    .findAll {it.startsWith('start') && it.endsWith('Demo.groovy')}
-    .collect { it - 'start' - 'Demo.groovy' }
+def demos = new File(rootDir, 'subprojects/demo-javafx/combined/src/main/groovy/org/opendolphin/demo')
+        .list()
+        .findAll { it.startsWith('start') && it.endsWith('Demo.groovy') }
+.collect { it - 'start' - 'Demo.groovy' }
 
-task listDemos(description:"List all available demos") << { demos.sort().each { println "gradlew ${it}Demo" } }
+task listDemos(description: "List all available demos") << { demos.sort().each { println "gradlew ${it}Demo" } }
 
 demos.each { demo ->
-    task "${demo}DemoPreparation"(description:"internal") << {
-        project(':demo-javafx-combined').ext.set('demoApplicationName' , demo)
+    task "${demo}DemoPreparation"(description: "internal") << {
+        project(':demo-javafx-combined').ext.set('demoApplicationName', demo)
     }
     def group = demo.startsWith('Grails') ? 'Demo (server required)' : 'Demo'
-    task "${demo}Demo"(group:group, dependsOn:["${demo}DemoPreparation", ':demo-javafx-combined:run'],
-                       description:"start the ${demo} demo"){}
+    task "${demo}Demo"(group: group, dependsOn: ["${demo}DemoPreparation", ':demo-javafx-combined:run'],
+            description: "start the ${demo} demo") {}
 }
 
