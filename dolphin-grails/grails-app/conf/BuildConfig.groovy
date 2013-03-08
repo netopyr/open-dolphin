@@ -19,11 +19,11 @@ grails.project.dependency.resolution = {
         inherits true // Whether to inherit repository definitions from plugins
 
         mavenLocal()
+        mavenCentral()
 
         grailsPlugins()
         grailsHome()
         grailsCentral()
-        mavenCentral()
 
         // uncomment these to enable remote dependency resolution from public Maven repositories
         //mavenCentral()
@@ -37,10 +37,10 @@ grails.project.dependency.resolution = {
     dependencies {
         compile 'org.codehaus.gpars:gpars:1.0.0'
 
-        compile 'org.opendolphin:dolphin-shared:0.6-SNAPSHOT'
-        compile 'org.opendolphin:dolphin-server:0.6-SNAPSHOT'
-        compile 'org.opendolphin:dolphin-demo-javafx-server:0.6-SNAPSHOT'
-        compile 'org.opendolphin:dolphin-demo-javafx-shared:0.6-SNAPSHOT'
+        compile 'org.open-dolphin:dolphin-shared:0.7'
+        compile 'org.open-dolphin:dolphin-server:0.7'
+        compile 'org.open-dolphin:dolphin-demo-javafx-server:0.7'
+        compile 'org.open-dolphin:dolphin-demo-javafx-shared:0.7'
     }
 
     plugins {
