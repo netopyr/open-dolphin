@@ -135,14 +135,14 @@ configure(mavenizedProjects()) {
         failOnError = false
     }
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
+    task groovydocJar(type: Jar, dependsOn:groovydoc) {
         classifier = 'javadoc'
-        from javadoc.destinationDir
+        from groovydoc.destinationDir
     }
 
     artifacts {
         archives sourcesJar
-        archives javadocJar
+        archives groovydocJar
     }
 
     signing {
