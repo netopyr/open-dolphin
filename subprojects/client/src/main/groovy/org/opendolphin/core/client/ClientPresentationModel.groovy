@@ -23,6 +23,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ClientPresentationModel extends BasePresentationModel {
 
+    boolean clientSideOnly = false
+
     ClientPresentationModel(List<ClientAttribute> attributes) {
         this(null, attributes)
     }

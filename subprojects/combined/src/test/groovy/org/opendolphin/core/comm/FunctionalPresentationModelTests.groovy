@@ -45,6 +45,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         context = new TestInMemoryConfig()
         serverDolphin = context.serverDolphin
         clientDolphin = context.clientDolphin
+        LogConfig.noLogs()
     }
 
     @Override
@@ -53,7 +54,6 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testPerformance() {
-        LogConfig.noLogs()
         long id = 0
         serverDolphin.action "performance", { cmd, response ->
             100.times { attr ->
@@ -71,6 +71,41 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             assert pms.size() == 100
             println ((System.nanoTime() - start).intdiv(1_000_000))
             context.assertionsDone() // make sure the assertions are really executed
+        }
+    }
+
+    void testCreationRoundtripDefaultBehavior() {
+        serverDolphin.action "create", { cmd, response ->
+            serverDolphin.presentationModel(response, "id".toString(), null, new DTO(new Slot("attr", 'attr')))
+        }
+        serverDolphin.action "checkNotificationReached", { cmd, response ->
+            assert 1 == serverDolphin.modelStore.listPresentationModels().size()
+            assert serverDolphin.getAt("id")
+        }
+
+        clientDolphin.send "create", { List<ClientPresentationModel> pms ->
+            assert pms.size() == 1
+            assert 'attr' == pms.first().getAt("attr").value
+            clientDolphin.send "checkNotificationReached", { List<ClientPresentationModel> xxx ->
+                context.assertionsDone() // make sure the assertions are really executed
+            }
+        }
+    }
+
+    void testCreationNoRoundtripWhenClientSideOnly() {
+        serverDolphin.action "create", { cmd, response ->
+            serverDolphin.clientSideModel(response, "id".toString(), null, new DTO(new Slot("attr", 'attr')))
+        }
+        serverDolphin.action "checkNotificationReached", { cmd, response ->
+            assert 0 == serverDolphin.modelStore.listPresentationModels().size()
+        }
+
+        clientDolphin.send "create", { List<ClientPresentationModel> pms ->
+            assert pms.size() == 1
+            assert 'attr' == pms.first().getAt("attr").value
+            clientDolphin.send "checkNotificationReached", { List<ClientPresentationModel> xxx ->
+                context.assertionsDone() // make sure the assertions are really executed
+            }
         }
     }
 

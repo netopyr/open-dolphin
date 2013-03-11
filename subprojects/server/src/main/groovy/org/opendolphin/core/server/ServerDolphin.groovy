@@ -101,6 +101,13 @@ class ServerDolphin extends Dolphin {
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable())
     }
 
+    /** Convenience method to let Dolphin create a
+     *    <strong> client-side only </strong>
+     *  presentation model as specified by the DTO. */
+    static void clientSideModel(List<Command> response, String id, String presentationModelType, DTO dto){
+        response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable(), clientSideOnly:true)
+    }
+
 
     /**
      * Convenience method to change an attribute value on the server side.
