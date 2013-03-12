@@ -281,6 +281,7 @@ demos.each { demo ->
 
 task clean(type: Delete) {
     delete 'build'
+    delete 'dist'
 }
 
 task(projectCoverage, description: 'This task merges the module cobertura reports and generates one report.') {
