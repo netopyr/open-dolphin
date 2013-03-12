@@ -7,9 +7,7 @@ import org.apache.http.impl.client.DefaultHttpClient
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
-import org.opendolphin.core.comm.DataCommand
 import org.opendolphin.core.comm.JsonCodec
-
 
 class HttpClientConnectorTests extends GroovyTestCase {
 
