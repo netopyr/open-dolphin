@@ -52,6 +52,10 @@ public class ClientModelStore extends ModelStore {
         return success;
     }
 
+    public boolean addClientSideOnly(PresentationModel model) {
+        return super.add(model);
+    }
+
     @Override
     public boolean remove(PresentationModel model) {
         boolean success = super.remove(model);
@@ -120,13 +124,14 @@ public class ClientModelStore extends ModelStore {
     }
 
     public void delete(String modelId) {
-        delete(findPresentationModelById(modelId));
+        delete((ClientPresentationModel)findPresentationModelById(modelId));
     }
 
-    public void delete(PresentationModel model) {
+    public void delete(ClientPresentationModel model) {
         if (model == null) return;
         if (containsPresentationModel(model.getId())) {
             remove(model);
+            if (model.isClientSideOnly()) return;
             getClientConnector().send(new DeletedPresentationModelNotification(model.getId()));
         }
     }

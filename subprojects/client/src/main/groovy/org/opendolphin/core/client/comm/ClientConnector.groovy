@@ -188,6 +188,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         // check if we already have serverCommand.pmId in our store
         // if true we simply update attribute ids and add any missing attributes
         if (((ClientModelStore)clientModelStore).containsPresentationModel(serverCommand.pmId)) {
+            if (serverCommand.clientSideOnly) { /* todo dk: maybe conflict resolution or warning */ }
             return mergeAttributes(serverCommand.pmId, serverCommand.attributes)
         }
         List<ClientAttribute> attributes = []
@@ -198,7 +199,12 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
         ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
         model.presentationModelType = serverCommand.pmType
-        ((ClientModelStore)clientModelStore).add(model)
+        if (serverCommand.clientSideOnly) {
+            model.clientSideOnly = true
+            ((ClientModelStore)clientModelStore).addClientSideOnly(model)
+        } else {
+            ((ClientModelStore)clientModelStore).add(model)
+        }
         return model
     }
 

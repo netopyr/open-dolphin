@@ -23,6 +23,7 @@ import groovy.transform.CompileStatic
 class CreatePresentationModelCommand extends Command {
     String pmId
     String pmType
+    boolean clientSideOnly = false // per default all model creation is synced back to the server
     List<Map<String, Object>> attributes = []
 
     // note: we always need a paramless ctor for the codec
@@ -44,5 +45,5 @@ class CreatePresentationModelCommand extends Command {
         return result
     }
 
-    String toString() {super.toString()+ " pmId $pmId pmType $pmType attributes $attributes"}
+    String toString() {super.toString()+ " pmId $pmId pmType $pmType ${ clientSideOnly ? 'CLIENT-SIDE-ONLY!': '' } attributes $attributes"}
 }
