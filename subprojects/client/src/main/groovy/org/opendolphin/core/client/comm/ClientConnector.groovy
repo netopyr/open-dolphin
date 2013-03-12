@@ -168,6 +168,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
     }
 
+    //TODO: db: @Dierk : can this method be removed ?
     def handle(Command serverCommand, Set pmIds) {
         log.warning "C: cannot handle $serverCommand"
     }
@@ -188,7 +189,9 @@ abstract class ClientConnector implements PropertyChangeListener {
         // check if we already have serverCommand.pmId in our store
         // if true we simply update attribute ids and add any missing attributes
         if (((ClientModelStore)clientModelStore).containsPresentationModel(serverCommand.pmId)) {
-            if (serverCommand.clientSideOnly) { /* todo dk: maybe conflict resolution or warning */ }
+            if (serverCommand.clientSideOnly) {
+            /* todo dk: maybe conflict resolution or warning */
+            }
             return mergeAttributes(serverCommand.pmId, serverCommand.attributes)
         }
         List<ClientAttribute> attributes = []
@@ -238,7 +241,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     ClientPresentationModel handle(InitialValueChangedCommand serverCommand) {
         Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) {
-            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot set initial value to '$attribute.value'"
+            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot set initial value."
             return null
         }
         log.info "C: updating id '$serverCommand.attributeId' setting initialValue to '$attribute.value'"
@@ -302,6 +305,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         if (!serverCommand.pmId) return null
         PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
         // rebase locally first
+        if (!model) return null
         model.attributes*.reset()
         // inform server of changes
         // todo dk: this should already have been sent by the PCL
