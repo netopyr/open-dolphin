@@ -17,8 +17,8 @@
 package org.opendolphin.core.comm
 
 import org.opendolphin.LogConfig
-import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.client.comm.InMemoryClientConnector
 import org.opendolphin.core.server.ServerDolphin
@@ -28,21 +28,22 @@ class DefaultInMemoryConfig {
     ClientDolphin clientDolphin = new ClientDolphin()
     ServerDolphin serverDolphin = new ServerDolphin()
 
-    DefaultInMemoryConfig() {
+    DefaultInMemoryConfig(boolean processAsync = true) {
         LogConfig.logCommunication()
 
         clientDolphin.clientModelStore = new ClientModelStore(clientDolphin)
         clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin)
+        clientDolphin.clientConnector.processAsync = processAsync
 
         clientDolphin.clientConnector.sleepMillis = 100
         clientDolphin.clientConnector.serverConnector = serverDolphin.serverConnector
 
     }
 
-    /** @deprecated use clientDolphin.clientConnector */
-    ClientConnector getConnector() { clientDolphin.clientConnector}
+    /** @deprecated use clientDolphin.clientConnector  */
+    ClientConnector getConnector() { clientDolphin.clientConnector }
 
-    /** @deprecated use serverDolphin.registerDefaultActions() */
+    /** @deprecated use serverDolphin.registerDefaultActions()  */
     void registerDefaultActions() {
         serverDolphin.registerDefaultActions()
     }
