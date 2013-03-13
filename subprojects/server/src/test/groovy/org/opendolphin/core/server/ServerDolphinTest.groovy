@@ -16,7 +16,10 @@
 
 package org.opendolphin.core.server
 
-public class ServerDolphinTest extends GroovyTestCase{
+import org.opendolphin.core.ModelStoreEvent
+import org.opendolphin.core.ModelStoreListener
+
+public class ServerDolphinTest extends GroovyTestCase {
     ServerDolphin dolphin
 
     @Override
@@ -34,7 +37,7 @@ public class ServerDolphinTest extends GroovyTestCase{
         dolphin.modelStore.add pm1
 
         assert ['first'].toSet() == dolphin.listPresentationModelIds()
-        assert [pm1]             == dolphin.listPresentationModels().toList()
+        assert [pm1] == dolphin.listPresentationModels().toList()
 
         def pm2 = new ServerPresentationModel("second", [])
         dolphin.modelStore.add pm2
@@ -42,8 +45,71 @@ public class ServerDolphinTest extends GroovyTestCase{
         assert 2 == dolphin.listPresentationModelIds().size()
         assert 2 == dolphin.listPresentationModels().size()
 
-        for (id in dolphin.listPresentationModelIds()){
+        for (id in dolphin.listPresentationModelIds()) {
             assert dolphin.findPresentationModelById(id) in dolphin.listPresentationModels()
+        }
+    }
+
+    void testAddRemoveModelStoreListener() {
+        int typedListenerCallCount = 0
+        int listenerCallCount = 0
+        ModelStoreListener listener = new ModelStoreListener() {
+            @Override
+            void modelStoreChanged(ModelStoreEvent event) {
+                listenerCallCount++
+            }
+        }
+        ModelStoreListener typedListener = new ModelStoreListener() {
+            @Override
+            void modelStoreChanged(ModelStoreEvent event) {
+                typedListenerCallCount++
+            }
+        }
+        dolphin.addModelStoreListener 'person', typedListener
+        dolphin.addModelStoreListener listener
+        dolphin.getModelStore().add(new ServerPresentationModel('p1', []))
+        ServerPresentationModel modelWithType = new ServerPresentationModel('person1', [])
+        modelWithType.setPresentationModelType('person')
+        dolphin.getModelStore().add(modelWithType)
+        dolphin.getModelStore().add(new ServerPresentationModel('p2', []))
+        dolphin.removeModelStoreListener typedListener
+        dolphin.removeModelStoreListener listener
+        assert 3 == listenerCallCount
+        assert 1 == typedListenerCallCount
+    }
+
+    void testAddModelStoreListenerWithClosure() {
+        int typedListenerCallCount = 0
+        int listenerCallCount = 0
+        dolphin.addModelStoreListener 'person', { evt -> typedListenerCallCount++ }
+        dolphin.addModelStoreListener { evt -> listenerCallCount++ }
+        dolphin.getModelStore().add(new ServerPresentationModel('p1', []))
+        ServerPresentationModel modelWithType = new ServerPresentationModel('person1', [])
+        modelWithType.setPresentationModelType('person')
+        dolphin.getModelStore().add(modelWithType)
+        dolphin.getModelStore().add(new ServerPresentationModel('p2', []))
+        assert 3 == listenerCallCount
+        assert 1 == typedListenerCallCount
+    }
+
+    void testHasModelStoreListener() {
+        ModelStoreListener listener = getListener()
+        assert !dolphin.hasModelStoreListener(null)
+        assert !dolphin.hasModelStoreListener(listener)
+        dolphin.addModelStoreListener listener
+        assert dolphin.hasModelStoreListener(listener)
+        listener = getListener()
+        dolphin.addModelStoreListener('person', listener)
+        assert !dolphin.hasModelStoreListener('car',listener)
+        assert dolphin.hasModelStoreListener('person',listener)
+    }
+
+    private ModelStoreListener getListener() {
+        new ModelStoreListener() {
+            @Override
+            void modelStoreChanged(ModelStoreEvent event) {
+
+            }
         }
     }
 }
