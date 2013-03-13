@@ -46,7 +46,7 @@ class BinderTest extends GroovyTestCase {
     void testAttributeBinding() {
         given:
         def initialValue = "Andres&Dierk"
-        def sourcePm = new BasePresentationModel([new SimpleAttribute('text')])
+        def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text')])
         sourcePm.text.value = initialValue
         def targetPojo = new Pojo()
 

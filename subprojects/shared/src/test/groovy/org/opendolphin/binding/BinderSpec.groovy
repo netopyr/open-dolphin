@@ -17,6 +17,7 @@
 package org.opendolphin.binding
 
 import org.opendolphin.core.BasePresentationModel
+import org.opendolphin.core.PresentationModel
 import spock.lang.Specification
 
 import static org.opendolphin.binding.Binder.bind
@@ -64,7 +65,7 @@ class BinderSpec extends Specification {
     def 'bind and unbind on POJOs and PMs'() {
         given:
         def initialValue = 'pojo'
-        def sourcePm = new BasePresentationModel([new SimpleAttribute('text')])
+        def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text')])
         sourcePm.text.value = initialValue
         def targetPojo = new Pojo()
 

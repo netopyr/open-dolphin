@@ -24,7 +24,7 @@ class BasePresentationModelSpec extends Specification {
         given:
 
         def baseAttribute = new MyAttribute('myPropName')
-        def pm = new BasePresentationModel([baseAttribute])
+        def pm = new BasePresentationModel('1',[baseAttribute])
 
         expect:
 
@@ -35,7 +35,7 @@ class BasePresentationModelSpec extends Specification {
     def "missing attributes throw MissingPropertyException on access"() {
         given:
         def baseAttribute = new MyAttribute('myPropName')
-        def pm = new BasePresentationModel([baseAttribute])
+        def pm = new BasePresentationModel('1',[baseAttribute])
 
         when:
         pm.noSuchAttributeName
