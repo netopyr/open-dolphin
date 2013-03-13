@@ -39,7 +39,7 @@ class ResetPresentationModelAction implements ServerAction {
         }
     }
 
-    List<Command> doWithPresentationModel(PresentationModel model) {
-        [new PresentationModelResetedCommand(pmId: model.id)]
+    Command doWithPresentationModel(PresentationModel model) {
+        new PresentationModelResetedCommand(pmId: model.id)
     }
 }
