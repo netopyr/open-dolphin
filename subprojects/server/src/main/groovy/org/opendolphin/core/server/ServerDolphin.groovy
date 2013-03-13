@@ -15,6 +15,9 @@
  */
 
 package org.opendolphin.core.server
+
+import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 import org.opendolphin.core.Dolphin
 import org.opendolphin.core.ModelStore
 import org.opendolphin.core.Tag
@@ -25,8 +28,6 @@ import org.opendolphin.core.comm.ValueChangedCommand
 import org.opendolphin.core.server.action.*
 import org.opendolphin.core.server.comm.NamedCommandHandler
 import org.opendolphin.core.server.comm.ServerConnector
-import groovy.transform.CompileStatic
-import groovy.util.logging.Log
 
 /**
  * The main Dolphin facade on the server side.
@@ -90,7 +91,7 @@ class ServerDolphin extends Dolphin {
      * @deprecated one should never create SPMs this way - it only leads to confusion. Use the other factory methods.
      */
     ServerPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
-        List attributes = attributeNamesAndValues.collect {key, value -> new ServerAttribute(key, value) }
+        List attributes = attributeNamesAndValues.collect {String key, value -> new ServerAttribute(key, value) }
         ServerPresentationModel result = new ServerPresentationModel(id, attributes)
         result.presentationModelType = presentationModelType
         result
