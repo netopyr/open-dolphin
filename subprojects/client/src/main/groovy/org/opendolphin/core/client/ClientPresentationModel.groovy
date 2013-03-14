@@ -37,7 +37,7 @@ class ClientPresentationModel extends BasePresentationModel {
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
         super(id ?: "" + instanceCount++ + AUTO_ID_SUFFIX, attributes)
         if (id?.endsWith(AUTO_ID_SUFFIX)) {
-            throw new IllegalArgumentException("presentation model with self-provided id may not end with suffix '$AUTO_ID_SUFFIX' since that is reserved")
+            throw new IllegalArgumentException("presentation model with self-provided id '$id' may not end with suffix '$AUTO_ID_SUFFIX' since that is reserved.")
         }
     }
 
