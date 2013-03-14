@@ -54,8 +54,7 @@ class ClientConnectorTests extends GroovyTestCase {
         def msg = shouldFail(RuntimeException) {
             clientConnector.onException(new RuntimeException("test exception"))
         }
-        println "..."
-        println msg
+        assert msg == "test exception"
     }
 
     void testPropertyChange_DirtyPropertyIgnored() {
@@ -218,31 +217,11 @@ class ClientConnectorTests extends GroovyTestCase {
         assert 0 == clientConnector.getTransmitCount(2)
     }
 
-    void testHandle_CreatePresentationModel_ClientSideOnly_MergeAttributesToExistingModel() {
-        dolphin.presentationModel('p1')
-        def attribute = new ClientAttribute('attr')
-        dolphin.getAt('p1').addAttribute(attribute)
-        assert clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', clientSideOnly: true,
-                attributes: [
-                        [propertyName: 'attr', id: 20],
-                        [propertyName: 'attr2', value: 'initialValue2', qualifier: 'qualifier']
-                ]))
-        assert 20 == dolphin.getAt('p1').getAt('attr').id
-        assert 'initialValue2' == dolphin.getAt('p1').getAt('attr2').value
-        assert 'qualifier' == dolphin.getAt('p1').getAt('attr2').qualifier
-    }
     void testHandle_CreatePresentationModel_MergeAttributesToExistingModel() {
         dolphin.presentationModel('p1')
-        def attribute = new ClientAttribute('attr')
-        dolphin.getAt('p1').addAttribute(attribute)
-        assert clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type',
-                attributes: [
-                        [propertyName: 'attr', id: 20],
-                        [propertyName: 'attr2', value: 'initialValue2', qualifier: 'qualifier']
-                ]))
-        assert 20 == dolphin.getAt('p1').getAt('attr').id
-        assert 'initialValue2' == dolphin.getAt('p1').getAt('attr2').value
-        assert 'qualifier' == dolphin.getAt('p1').getAt('attr2').qualifier
+        shouldFail(IllegalStateException) {
+            clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', attributes: []))
+        }
     }
 
     void testHandle_DeletePresentationModel() {

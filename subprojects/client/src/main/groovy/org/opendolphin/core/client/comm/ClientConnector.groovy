@@ -189,10 +189,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         // check if we already have serverCommand.pmId in our store
         // if true we simply update attribute ids and add any missing attributes
         if (((ClientModelStore)clientModelStore).containsPresentationModel(serverCommand.pmId)) {
-            if (serverCommand.clientSideOnly) {
-            /* todo dk: maybe conflict resolution or warning */
-            }
-            return mergeAttributes(serverCommand.pmId, serverCommand.attributes)
+            throw new IllegalStateException("There already is a presentation model with id '$serverCommand.pmId' known to the client.")
         }
         List<ClientAttribute> attributes = []
         for (attr in serverCommand.attributes) {
@@ -207,22 +204,6 @@ abstract class ClientConnector implements PropertyChangeListener {
             ((ClientModelStore)clientModelStore).addClientSideOnly(model)
         } else {
             ((ClientModelStore)clientModelStore).add(model)
-        }
-        return model
-    }
-
-    def ClientPresentationModel mergeAttributes(String pmId, List<Map<String, Object>> attributes) {
-        ClientPresentationModel model = clientModelStore.findPresentationModelById(pmId)
-        attributes.each { attr ->
-            ClientAttribute attribute = model.findAttributeByPropertyName(attr.propertyName)
-            if (null == attribute) {
-                attribute = new ClientAttribute(attr.propertyName, attr.value)
-                attribute.qualifier = attr.qualifier
-                model.addAttribute(attribute)
-                clientModelStore.registerAttribute(attribute)
-            } else {
-                clientModelStore.updateAttributeId(attribute, attr.id)
-            }
         }
         return model
     }
