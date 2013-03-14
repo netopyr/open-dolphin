@@ -213,19 +213,12 @@ configure(mavenizedProjects()) {
 }
 
 def distDir = new File(rootDir, 'dist')
-def grailsLibDir = new File(rootDir, 'dolphin-grails/lib')
 subprojects.each { proj ->
     evaluationDependsOn proj.path
     proj.jar.doLast { jarTask ->
         copy {
             from jarTask.archivePath
             into distDir
-        }
-        if (proj.name.contains('server') || proj.name.contains('shared')) {
-            copy {
-                from jarTask.archivePath
-                into grailsLibDir
-            }
         }
     }
     proj.tasks.add(name: 'sourceZip', type: Zip) {
