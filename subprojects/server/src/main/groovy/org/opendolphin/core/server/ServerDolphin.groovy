@@ -87,16 +87,6 @@ class ServerDolphin extends Dolphin {
         register(serverAction)
     }
 
-    /** groovy-friendly convenience method for a typical case of creating a ServerPresentationModel with initial values
-     * @deprecated one should never create SPMs this way - it only leads to confusion. Use the other factory methods.
-     */
-    ServerPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
-        List attributes = attributeNamesAndValues.collect {String key, value -> new ServerAttribute(key, value) }
-        ServerPresentationModel result = new ServerPresentationModel(id, attributes)
-        result.presentationModelType = presentationModelType
-        result
-    }
-
     /** Convenience method to let Dolphin create a presentation model as specified by the DTO. */
     static void presentationModel(List<Command> response, String id, String presentationModelType, DTO dto){
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable())
@@ -108,7 +98,6 @@ class ServerDolphin extends Dolphin {
     static void clientSideModel(List<Command> response, String id, String presentationModelType, DTO dto){
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable(), clientSideOnly:true)
     }
-
 
     /**
      * Convenience method to change an attribute value on the server side.

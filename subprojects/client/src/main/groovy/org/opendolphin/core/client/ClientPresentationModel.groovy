@@ -41,11 +41,6 @@ class ClientPresentationModel extends BasePresentationModel {
         }
     }
 
-    /** @deprecated use ClientDolphin.presentationModel  */
-    static ClientPresentationModel make(String id, List<String> attributeNames) {
-        throw new UnsupportedOperationException("method 'make' is no longer available");
-    }
-
     // override with server specific return values to avoid casting in client code
 
     ClientAttribute getAt(String propertyName) {
