@@ -135,11 +135,11 @@ class UnbindPojoOtherOfAble {
         def pd = Introspector.getBeanInfo(source.getClass()).getPropertyDescriptors().find { it.name == sourcePropertyName }
         if (!pd) throw new IllegalArgumentException("there is no property named '$sourcePropertyName' in '${source.dump()}'")
         // find a BinderPropertyChangeListener that matches
-        def listener = source.getPropertyChangeListeners('value').find {
+        def listener = source.getPropertyChangeListeners(sourcePropertyName).find {
             it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == targetPropertyName
         }
         // remove the listener
-        if (listener) source.removePropertyChangeListener('value', listener)
+        if (listener) source.removePropertyChangeListener(sourcePropertyName, listener)
     }
 }
 
