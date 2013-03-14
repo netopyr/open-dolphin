@@ -1,5 +1,3 @@
-import groovy.io.FileType
-
 /*
  * Copyright 2012-2013 Canoo Engineering AG.
  *
@@ -309,7 +307,6 @@ task(projectCoverage, description: 'This task merges the module cobertura report
             args.addAll(it.sourceSets.main.java.srcDirs)
             args.addAll(it.sourceSets.main.groovy.srcDirs)
         }
-        println args
         net.sourceforge.cobertura.reporting.Main.main(args as String[]);
     }
 }
