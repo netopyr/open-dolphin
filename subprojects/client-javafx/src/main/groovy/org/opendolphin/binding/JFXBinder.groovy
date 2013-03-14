@@ -127,7 +127,7 @@ class UnbindClientOtherOfAble {
     }
 
     void of(Object target) {
-        def listener = new JFXBinderPropertyChangeListener(attribute, target, targetPropertyName, converter)
+        def listener = new JFXBinderPropertyChangeListener(attribute, target, targetPropertyName)
         attribute.removePropertyChangeListener('value', listener)
     }
 }
