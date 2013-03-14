@@ -23,17 +23,25 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ClientPresentationModel extends BasePresentationModel {
 
+    private static final String AUTO_ID_SUFFIX = "-AUTO-ID"
     boolean clientSideOnly = false
+    private static long instanceCount = 0
 
     ClientPresentationModel(List<ClientAttribute> attributes) {
         this(null, attributes)
     }
 
+    /**
+     * @param id if id is null or empty, the hashCode will be used
+     */
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
-        super(id, attributes)
+        super(id ?: "" + instanceCount++ + AUTO_ID_SUFFIX, attributes)
+        if (id?.endsWith(AUTO_ID_SUFFIX)) {
+            throw new IllegalArgumentException("presentation model with self-provided id may not end with suffix '$AUTO_ID_SUFFIX' since that is reserved")
+        }
     }
 
-    /** @deprecated use ClientDolphin.presentationModel */
+    /** @deprecated use ClientDolphin.presentationModel  */
     static ClientPresentationModel make(String id, List<String> attributeNames) {
         throw new UnsupportedOperationException("method 'make' is no longer available");
     }

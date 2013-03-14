@@ -50,7 +50,7 @@ class ModelStoreSpec extends Specification {
         def dolphin = new Dolphin() {
             ModelStore getModelStore() { modelStore }
         }
-        def bpm = new BasePresentationModel([])
+        def bpm = new BasePresentationModel(null,[])
         bpm.presentationModelType = "type"
         modelStore.add bpm
         expect:
@@ -63,9 +63,9 @@ class ModelStoreSpec extends Specification {
         def dolphin = new Dolphin() {
             ModelStore getModelStore() { modelStore }
         }
-        def bpm1 = new BasePresentationModel([])
-        def bpm2 = new BasePresentationModel([])
-        def bpm3 = new BasePresentationModel([])
+        def bpm1 = new BasePresentationModel("1",[])
+        def bpm2 = new BasePresentationModel("2",[])
+        def bpm3 = new BasePresentationModel("3",[])
         bpm1.presentationModelType = "type"
         bpm2.presentationModelType = "type"
         bpm3.presentationModelType = "some other type"

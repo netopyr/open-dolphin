@@ -30,6 +30,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     static final public  Class[] SUPPORTED_VALUE_TYPES = {Character.class, String.class, Number.class, Boolean.class, Date.class};
     static final private Logger  log                   = Logger.getLogger(BaseAttribute.class.getName());
+    static private long  instanceCount = 0;
 
     private final String propertyName;
     private       Object value;
@@ -37,7 +38,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     private boolean dirty = false;
     private final Tag   tag;
 
-    private long id = System.identityHashCode(this); // todo: dk: has to change to tell client from server
+    private long id = instanceCount++;
     private String qualifier; // application specific semantics apply
 
     public BaseAttribute(String propertyName) {

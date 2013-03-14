@@ -51,17 +51,10 @@ public class BasePresentationModel extends AbstractObservable implements Present
     };
 
     /**
-     * @throws AssertionError if the list of attributes is null or empty  *
-     */
-    public BasePresentationModel(List<Attribute> attributes) {
-        this(null, attributes);
-    }
-
-    /**
      * @throws AssertionError if the list of attributes is null or empty
      */
     public BasePresentationModel(String id, List attributes) {
-        this.id = id != null ? id : makeId(this);
+        this.id = id;
         for (Object attr : attributes) {
             addAttribute((Attribute) attr);
         }
@@ -107,10 +100,6 @@ public class BasePresentationModel extends AbstractObservable implements Present
      */
     public List<Attribute> getAttributes() {
         return Collections.unmodifiableList(attributes);
-    }
-
-    protected static String makeId(PresentationModel instance) {
-        return String.valueOf(System.identityHashCode(instance));
     }
 
     public Attribute getAt(String propertyName) {
