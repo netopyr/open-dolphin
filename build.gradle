@@ -79,17 +79,23 @@ subprojects {
 String locateJfxLibDir() {
     def javaFxHome = System.env['JAVAFX_HOME'] ?: ''
     def javaHome = System.env['JAVA_HOME'] ?: ''
-    def jdk7 = System.getProperty('java.version')[0..2].toDouble() >= 1.7
-    def jdk7Home = System.properties.'java.home' ?: ''
+    def jdk7 = System.getProperty('java.version')[0..2].toDouble() == 1.7
+    def jdk8 = System.getProperty('java.version')[0..2].toDouble() == 1.8
+    def jdkHome = System.properties.'java.home' ?: ''
 
     def result = "$javaFxHome/rt/lib"
     if (new File("$result/jfxrt.jar").exists()) {
         println "using javafx from explicit JAVAFX_HOME: $result"
         return result
     }
-    result = "$jdk7Home/lib/"
+    result = "$jdkHome/lib/"
     if (jdk7 && new File("$result/jfxrt.jar").exists()) {
         println "using javafx from current java 7: $result"
+        return result
+    }
+    result = "$jdkHome/lib/ext/"
+    if (jdk8 && new File("$result/jfxrt.jar").exists()) {
+        println "using javafx from current java 8: $result"
         return result
     }
     result = "$javaHome/jre/lib/"
