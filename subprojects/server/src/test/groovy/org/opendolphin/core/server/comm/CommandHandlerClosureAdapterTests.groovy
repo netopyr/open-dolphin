@@ -13,6 +13,7 @@ class CommandHandlerClosureAdapterTests extends GroovyTestCase {
         assert adapter.equals(adapter)
         assert !adapter.equals(new CommandHandlerClosureAdapter(closureTwo))
         assert !adapter.equals('')
+        assert !adapter.equals(null)
         assert adapter.hashCode() == closureOne.hashCode()
     }
 

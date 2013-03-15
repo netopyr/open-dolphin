@@ -44,8 +44,7 @@ class ServerConnector {
 
         List<CommandHandler> actions = registry[command.id]
         if (!actions) {
-            log.warning "S: there is no server action registered for received command: $command, " +
-                        "known commands are ${registry.actions.keySet()}"
+            log.warning "S: there is no server action registered for received command: $command, known commands are ${registry.actions.keySet()}"
             return response
         }
         // copying the list of actions allow an Action to unregister itself

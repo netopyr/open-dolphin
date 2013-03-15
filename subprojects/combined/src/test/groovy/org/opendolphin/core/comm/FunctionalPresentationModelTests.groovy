@@ -27,6 +27,9 @@ import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.comm.NamedCommandHandler
+import org.opendolphin.core.server.comm.ServerConnector
+
+import java.util.logging.Level
 
 /**
  * Showcase for how to test an application without the GUI by
@@ -185,9 +188,12 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testUnregisteredCommand() {
+        serverDolphin.serverConnector.log.level = Level.ALL
         clientDolphin.send "no-such-action-registered", {
             // unknown actions are silently ignored and logged as warnings on the server side.
         }
+        serverDolphin.serverConnector.log.level = Level.OFF
+        clientDolphin.send "no-such-action-registered"
         context.assertionsDone()
     }
 
