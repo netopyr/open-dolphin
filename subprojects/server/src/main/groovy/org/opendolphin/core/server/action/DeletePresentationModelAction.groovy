@@ -17,27 +17,15 @@
 package org.opendolphin.core.server.action
 
 import org.opendolphin.core.PresentationModel
-import org.opendolphin.core.comm.Command
-import org.opendolphin.core.comm.DeletePresentationModelCommand
 import org.opendolphin.core.comm.DeletedPresentationModelNotification
 import org.opendolphin.core.server.comm.ActionRegistry
 
 class DeletePresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
-        registry.register(DeletePresentationModelCommand) { DeletePresentationModelCommand command, response ->
-            handleCommand(command)
-            response << new DeletedPresentationModelNotification(pmId: model.id)
-        }
-
         registry.register(DeletedPresentationModelNotification) { DeletedPresentationModelNotification command, response ->
-            handleCommand(command)
+            PresentationModel model = serverDolphin.getAt(command.pmId)
+            serverDolphin.modelStore.remove(model)
         }
-    }
-
-    def void handleCommand(Command command) {
-        PresentationModel model = serverDolphin.modelStore.findPresentationModelById(command.pmId)
-        // application specific logic could be here (e.g. in a subclass)
-        serverDolphin.modelStore.remove(model)
     }
 }
