@@ -49,7 +49,7 @@ class SaveView {
                         textField id: 'lastnameInput', row: 2, column: 1
 
                         button id: 'saveButton', 'Save', row: 3, column: 1,
-                                onAction: { dolphin.clientModelStore.save(model) }
+                                onAction: { dolphin.send "save" }
                     }
                 }
             }

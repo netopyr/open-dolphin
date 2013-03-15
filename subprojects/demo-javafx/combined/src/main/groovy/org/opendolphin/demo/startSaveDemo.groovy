@@ -16,10 +16,12 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.comm.SavedPresentationModelNotification
+
 def config = new JavaFxInMemoryConfig()
 
-// at this point we could register a specific
-// SavePresentationModelAction
-// for the SavePresentationModelCommand
+config.serverDolphin.action("save") { cmd, resp ->
+    resp << new SavedPresentationModelNotification("person") // assuming the save was successful
+}
 
 new SaveView().show(config.clientDolphin)

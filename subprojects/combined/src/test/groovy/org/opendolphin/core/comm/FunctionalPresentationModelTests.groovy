@@ -27,7 +27,6 @@ import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.comm.NamedCommandHandler
-import org.opendolphin.core.server.comm.ServerConnector
 
 import java.util.logging.Level
 

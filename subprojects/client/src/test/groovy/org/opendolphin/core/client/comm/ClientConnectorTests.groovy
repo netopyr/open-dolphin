@@ -125,16 +125,6 @@ class ClientConnectorTests extends GroovyTestCase {
         assert !clientConnector.handle(new PresentationModelResetedCommand(pmId: 'notExist'))
     }
 
-    void testSavePresentationModel() {
-        dolphin.presentationModel('p1')
-        clientConnector.clientModelStore.save('p1')
-        sleep(100)
-        assert 2 == clientConnector.getTransmitCount(1)
-        assert 2 == clientConnector.transmittedCommands.size()
-        assert CreatePresentationModelCommand == clientConnector.transmittedCommands[0].class
-        assert SavePresentationModelCommand == clientConnector.transmittedCommands[1].class
-    }
-
     void testHandle_InitializeAttribute() {
         def syncedAttribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
         dolphin.clientModelStore.registerAttribute(syncedAttribute)
@@ -281,9 +271,6 @@ class TestClientConnector extends ClientConnector {
         [new PresentationModelResetedCommand(pmId: command.pmId)]
     }
 
-    List construct(SavePresentationModelCommand command) {
-        [new SavedPresentationModelNotification(pmId: command.pmId)]
-    }
 }
 
 class ExtendedAttribute extends ClientAttribute {
