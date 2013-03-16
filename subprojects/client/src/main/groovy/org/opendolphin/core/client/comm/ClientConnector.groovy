@@ -65,7 +65,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             attributes.each { it.value = evt.newValue }
         } else if (evt.propertyName == Attribute.BASE_VALUE) {
             if (evt.oldValue == evt.newValue) return
-            send constructInitialValueChangedCommand(evt)
+            send constructBaseValueChangedCommand(evt)
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
             attributes.each { it.rebase() }
         } else {
@@ -82,8 +82,8 @@ abstract class ClientConnector implements PropertyChangeListener {
         )
     }
 
-    private InitialValueChangedCommand constructInitialValueChangedCommand(PropertyChangeEvent evt) {
-        new InitialValueChangedCommand(
+    private BaseValueChangedCommand constructBaseValueChangedCommand(PropertyChangeEvent evt) {
+        new BaseValueChangedCommand(
                 attributeId: evt.source.id
         )
     }
@@ -219,7 +219,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         return null // this command is not expected to be sent explicitly, so no pm needs to be returned
     }
 
-    ClientPresentationModel handle(InitialValueChangedCommand serverCommand) {
+    ClientPresentationModel handle(BaseValueChangedCommand serverCommand) {
         Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot set initial value."

@@ -186,14 +186,35 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
     }
 
-    void testUnregisteredCommand() {
+    void testUnregisteredCommandWithLog() {
         serverDolphin.serverConnector.log.level = Level.ALL
         clientDolphin.send "no-such-action-registered", {
             // unknown actions are silently ignored and logged as warnings on the server side.
         }
+        context.assertionsDone()
+    }
+    void testUnregisteredCommandWithoutLog() {
         serverDolphin.serverConnector.log.level = Level.OFF
         clientDolphin.send "no-such-action-registered"
         context.assertionsDone()
+    }
+
+    void testRebaseIsTransferred() {
+        ClientPresentationModel person = clientDolphin.presentationModel("person",null,name:'Dierk')
+        assert person.name.value == "Dierk"
+        person.name.value = "Mittie"
+        assert person.name.dirty
+        clientDolphin.sync { assert serverDolphin["person"].name.value == "Mittie" }
+        person.name.rebase()
+        assert ! person.name.dirty
+        assert person.name.value == "Mittie" // value unchanged
+        assert person.name.baseValue == "Mittie" // base value changed
+        clientDolphin.sync {
+            assert serverDolphin["person"].name.baseValue == "Mittie" // rebase is done on server
+            context.assertionsDone()
+        }
+        // last, silly and only for the coverage, we test behavior when id is wrong ...
+        clientDolphin.clientConnector.send new BaseValueChangedCommand(attributeId: 0)
     }
 
     void testActionAndSendJavaLike() {

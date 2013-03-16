@@ -19,7 +19,7 @@ package org.opendolphin.core.comm
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
-class InitialValueChangedCommand extends Command {
+class BaseValueChangedCommand extends Command {
     long attributeId
 
     String toString() { super.toString() + " attr:$attributeId"}

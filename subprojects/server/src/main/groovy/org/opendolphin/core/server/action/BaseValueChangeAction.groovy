@@ -17,14 +17,14 @@
 package org.opendolphin.core.server.action
 
 import org.opendolphin.core.Attribute
-import org.opendolphin.core.comm.InitialValueChangedCommand
+import org.opendolphin.core.comm.BaseValueChangedCommand
 import org.opendolphin.core.server.comm.ActionRegistry
 import groovy.util.logging.Log
 
 @Log
-class StoreInitialValueChangeAction extends DolphinServerAction {
+class BaseValueChangeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
-        registry.register(InitialValueChangedCommand) { InitialValueChangedCommand command, response ->
+        registry.register(BaseValueChangedCommand) { BaseValueChangedCommand command, response ->
             def modelStore = serverDolphin.serverModelStore
             Attribute attribute = modelStore.findAttributeById(command.attributeId)
             if (attribute) {

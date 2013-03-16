@@ -90,7 +90,7 @@ class ClientConnectorTests extends GroovyTestCase {
         assert 2 == clientConnector.transmitCount
         assert attribute.baseValue == 'newValue'
         assert 2 == clientConnector.transmittedCommands.size()
-        assert clientConnector.transmittedCommands.any { it instanceof InitialValueChangedCommand }
+        assert clientConnector.transmittedCommands.any { it instanceof BaseValueChangedCommand }
     }
 
     void testMetaDataChange() {
@@ -164,14 +164,14 @@ class ClientConnectorTests extends GroovyTestCase {
 
     void testHandle_InitialValueChanged_AttrNotExists() {
         def attribute = new ClientAttribute('attr', 'initialValue')
-        assert !clientConnector.handle(new InitialValueChangedCommand(attributeId: attribute.id))
+        assert !clientConnector.handle(new BaseValueChangedCommand(attributeId: attribute.id))
     }
 
     void testHandle_InitialValueChanged() {
         def attribute = new ClientAttribute('attr', 'initialValue')
         attribute.value = 'newValue'
         dolphin.clientModelStore.registerAttribute(attribute)
-        clientConnector.handle(new InitialValueChangedCommand(attributeId: attribute.id))
+        clientConnector.handle(new BaseValueChangedCommand(attributeId: attribute.id))
         assert 'newValue' == attribute.baseValue
     }
 
