@@ -18,9 +18,11 @@ package org.opendolphin.core.comm
 
 import org.opendolphin.LogConfig
 import org.opendolphin.core.PresentationModel
+import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
+import org.opendolphin.core.client.comm.WithPresentationModelHandler
 import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.ServerAttribute
 import org.opendolphin.core.server.ServerDolphin
@@ -207,14 +209,74 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.sync { assert serverDolphin["person"].name.value == "Mittie" }
         person.name.rebase()
         assert ! person.name.dirty
-        assert person.name.value == "Mittie" // value unchanged
+        assert person.name.value     == "Mittie" // value unchanged
         assert person.name.baseValue == "Mittie" // base value changed
         clientDolphin.sync {
             assert serverDolphin["person"].name.baseValue == "Mittie" // rebase is done on server
             context.assertionsDone()
         }
-        // last, silly and only for the coverage, we test behavior when id is wrong ...
+    }
+
+    // silly and only for the coverage, we test behavior when id is wrong ...
+    void testIdNotFoundInVariousCommands() {
         clientDolphin.clientConnector.send new BaseValueChangedCommand(attributeId: 0)
+        clientDolphin.clientConnector.send new ValueChangedCommand(attributeId: 0)
+        ServerDolphin.changeValue(null, null, null)
+        ServerDolphin.changeValue(null, new ServerAttribute('a',42), 42)
+        context.assertionsDone()
+    }
+
+    void testApplyPm() {
+        serverDolphin.action("checkPmWasApplied") { cmd, resp ->
+            assert 1 == serverDolphin['second'].getAt('a',Tag.VALUE).value
+            context.assertionsDone()
+        }
+        def first = clientDolphin.presentationModel("first", null, a:1)
+        def second = clientDolphin.presentationModel("second", null, a:2)
+        clientDolphin.apply first to second
+        assert 1 == second.a.value
+        clientDolphin.send "checkPmWasApplied"
+    }
+
+    void testPmCreationWithNullValuesAndTagIt() {
+        def nullValuePM = clientDolphin.presentationModel("someId", ['a', 'b', 'c'])
+        assert null == nullValuePM.c.value
+        clientDolphin.tag(nullValuePM, 'a', Tag.MESSAGE, "the 'a' message")
+        assert nullValuePM.getAt('a', Tag.MESSAGE).value == "the 'a' message"
+        context.assertionsDone()
+    }
+
+    void testDataRequest() {
+        serverDolphin.action("myData") { cmd, resp ->
+            resp << new DataCommand([a:1, b:2])
+        }
+        clientDolphin.data "myData", { data ->
+            assert data.size() == 1
+            assert data[0].a == 1
+            assert data[0].b == 2
+            context.assertionsDone()
+        }
+    }
+
+    void testPmReset() {
+        def myPm = clientDolphin.presentationModel("myPm", null, a:1)
+        myPm.a.value = 2
+        assert myPm.dirty
+        myPm.reset()
+        myPm.a.value = 1
+        assert ! myPm.dirty
+        context.assertionsDone()
+    }
+
+    void testWithPresentationModelFetchedFromServer() {
+        serverDolphin.serverConnector.registry.register(GetPresentationModelCommand) { GetPresentationModelCommand cmd, response ->
+            serverDolphin.presentationModel(response, "newPm", null, new DTO(new Slot('a','1')))
+        }
+        clientDolphin.modelStore.withPresentationModel("newPm", { pm ->
+            assert pm.id == 'newPm'
+            assert pm.a.value == '1'
+            context.assertionsDone()
+        } as WithPresentationModelHandler)
     }
 
     void testActionAndSendJavaLike() {

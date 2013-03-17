@@ -205,6 +205,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         } else {
             ((ClientModelStore)clientModelStore).add(model)
         }
+        clientDolphin.updateQualifiers(model)
         return model
     }
 
@@ -270,6 +271,7 @@ abstract class ClientConnector implements PropertyChangeListener {
             clientModelStore.add(presentationModel)
         }
         clientDolphin.addAttributeToModel(presentationModel, attribute)
+        clientDolphin.updateQualifiers(presentationModel)
         return presentationModel // todo dk: check and test
     }
 

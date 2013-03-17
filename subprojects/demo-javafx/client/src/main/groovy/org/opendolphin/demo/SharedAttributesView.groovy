@@ -81,7 +81,6 @@ class SharedAttributesView {
                 clientDolphin.send VehicleConstants.CMD_PULL, { vehiclePMs ->
                     for (pm in vehiclePMs) {
                         observableListOfPms << pm
-                        clientDolphin.updateQualifiers pm
                     }
                     fadeTransition(1.s, node: table, to: 1).playFromStart()
                 }

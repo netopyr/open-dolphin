@@ -23,9 +23,6 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class ServerAttribute extends BaseAttribute {
-    ServerAttribute(String propertyName) {
-        this(propertyName, null)
-    }
 
     ServerAttribute(String propertyName, Object initialValue) {
         super(propertyName, initialValue)
@@ -35,17 +32,4 @@ class ServerAttribute extends BaseAttribute {
         super(propertyName, baseValue, qualifier, tag)
     }
 
-    ServerAttribute(Map props) {
-        this(props.propertyName.toString(), props.initialValue)
-        this.qualifier = props.qualifier
-    }
-
-    /** A value should never be set directly on the server.
-     * Instead, a value change request is sent to the client.
-     * See the readme for the reasoning behind this design.
-     * @deprecated use ServerDolphin.changeValue
-     */
-    ValueChangedCommand changeValueCommand(newValue) {
-        new ValueChangedCommand(attributeId: id, newValue: newValue, oldValue: value)
-    }
 }

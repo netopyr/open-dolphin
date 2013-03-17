@@ -16,6 +16,7 @@
 
 package org.opendolphin.core.client
 
+import org.opendolphin.core.client.comm.WithPresentationModelHandler
 import spock.lang.Specification
 import org.opendolphin.core.client.comm.InMemoryClientConnector
 import org.opendolphin.core.ModelStoreListener
@@ -75,4 +76,25 @@ class ClientModelStoreSpec extends Specification {
         0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.ADDED, pm))
         0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.REMOVED, pm))
 	}
+
+    // when not in store, we need a functional test
+    void "withPresentationModel returns known one if in store"() {
+        given:
+        modelStore.add pm
+        def found = null
+        when:
+        modelStore.withPresentationModel(pm.id, { pm -> found = pm } as WithPresentationModelHandler)
+        then:
+        pm == found
+    }
+
+    void "trying to delete a pm that is not known to the store is silently ignored"() {
+        when:
+        modelStore.delete(null)
+        modelStore.delete(pm) // has not been added!
+        then:
+        0 * listener.modelStoreChanged(new ModelStoreEvent(ModelStoreEvent.Type.REMOVED, pm))
+    }
+
+
 }

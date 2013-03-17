@@ -268,24 +268,4 @@ class BinderPropertyChangeListener implements PropertyChangeListener {
     Object convert(Object value) {
         converter != null ? converter(value) : value
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this.is(o)) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BinderPropertyChangeListener that = (BinderPropertyChangeListener) o;
-
-        if (!target.equals(that.target)) return false;
-        if (!targetPropertyName.equals(that.targetPropertyName)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = target.hashCode();
-        result = 31 * result + targetPropertyName.hashCode();
-        return result;
-    }
 }

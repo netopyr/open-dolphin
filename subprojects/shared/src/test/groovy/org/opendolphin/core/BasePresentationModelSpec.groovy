@@ -45,6 +45,33 @@ class BasePresentationModelSpec extends Specification {
         exception.message.contains('noSuchAttributeName')
     }
 
+    def "getValue(name,int) convenience method"() {
+        given:
+        def baseAttribute = new MyAttribute('myInt',1)
+        def pm = new BasePresentationModel('1',[baseAttribute])
+
+        expect:
+        1 == pm.getValue('myInt', 0)
+        0 == pm.getValue('no-such-property', 0)
+    }
+
+    def "finder methods"() {
+        given:
+        def baseAttribute = new MyAttribute('myInt',1)
+        baseAttribute.qualifier = 'myQualifier'
+        def pm = new BasePresentationModel('1',[baseAttribute])
+
+        expect:
+        null == pm.findAttributeByPropertyNameAndTag('myInt', null) // null safe
+        null == pm.findAttributeByPropertyNameAndTag(null, null) // null safe
+
+        null == pm.findAttributeByQualifier('no-such-qualifier')
+        baseAttribute == pm.findAttributeByQualifier('myQualifier')
+
+        null == pm.findAttributeById(Long.MAX_VALUE)
+        baseAttribute == pm.findAttributeById(baseAttribute.id)
+    }
+
     def "dirty attributes make the pm dirty too"() {
         given:
 

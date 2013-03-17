@@ -71,13 +71,6 @@ public class ClientModelStore extends ModelStore {
         attribute.addPropertyChangeListener(getClientConnector());
     }
 
-    public void updateAttributeId(Attribute attribute, long id) {
-        removeAttributeById(attribute);
-        attribute.setId(id);
-        addAttributeById(attribute);
-        attribute.addPropertyChangeListener(getClientConnector());
-    }
-
     public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {
         ClientPresentationModel result = (ClientPresentationModel) findPresentationModelById(requestedPmId);
         if (result != null) {
@@ -97,22 +90,6 @@ public class ClientModelStore extends ModelStore {
             }
         };
         getClientConnector().send(cmd, callBack);
-    }
-
-    public void reset(String modelId) {
-        reset(findPresentationModelById(modelId));
-    }
-
-    public void reset(PresentationModel model) {
-        if (model == null) return;
-        if (!containsPresentationModel(model.getId())) {
-            add(model);
-        }
-        getClientConnector().send(new ResetPresentationModelCommand(model.getId()));
-    }
-
-    public void delete(String modelId) {
-        delete((ClientPresentationModel)findPresentationModelById(modelId));
     }
 
     public void delete(ClientPresentationModel model) {

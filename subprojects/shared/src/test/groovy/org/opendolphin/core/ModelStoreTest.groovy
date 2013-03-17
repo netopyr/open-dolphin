@@ -33,6 +33,11 @@ class ModelStoreTest extends GroovyTestCase {
         modelStore.add(parent)
 
         assert storeListener.event
+        assert storeListener.event.toString()
+        assert storeListener.event.hashCode()
+        assert storeListener.event == storeListener.event
+        assert storeListener.event != null
+        assert storeListener.event != new Object()
         assert storeListener.event.presentationModel == parent
         assert storeListener.event.type == ModelStoreEvent.Type.ADDED
         assert parentStoreListener.event

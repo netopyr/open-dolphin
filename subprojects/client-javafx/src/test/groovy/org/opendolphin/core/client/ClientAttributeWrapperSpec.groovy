@@ -22,31 +22,31 @@ import spock.lang.Specification
 class ClientAttributeWrapperSpec extends Specification {
     void "ChangeListener is notified when an attribute value changes"() {
         given:
-
         def attribute = new ClientAttribute('name')
         def wrapper = new ClientAttributeWrapper(attribute)
         attribute.value = ""
         def changeListener = Mock(ChangeListener)
 
         when:
-
         wrapper.addListener(changeListener)
         attribute.value = 'newValue'
-
         then:
-
         1 * changeListener.changed(_, _, _)
         attribute.value == 'newValue'
         wrapper.get() == 'newValue'
+        wrapper.getName() == 'name'
 
         when:
-
         wrapper.set('latestValue')
-
         then:
-
         1 * changeListener.changed(_, _, _)
         attribute.value == 'latestValue'
         wrapper.get() == 'latestValue'
+
+        when:
+        wrapper = new ClientAttributeWrapper(attribute)
+        wrapper.set(null)
+        then:
+        null ==wrapper.get()
     }
 }

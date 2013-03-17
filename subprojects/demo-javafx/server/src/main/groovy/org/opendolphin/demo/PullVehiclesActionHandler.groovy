@@ -16,12 +16,11 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.comm.Command
-import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.NamedCommand
-import org.opendolphin.core.server.ServerAttribute
-import org.opendolphin.core.server.ServerPresentationModel
+import org.opendolphin.core.server.DTO
+import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.comm.NamedCommandHandler
 
 import static VehicleConstants.*
@@ -32,16 +31,15 @@ class PullVehiclesActionHandler implements NamedCommandHandler {
     void handleCommand(NamedCommand command, List<Command> response) {
         def vehicles = ['red', 'blue', 'green', 'orange']
         vehicles.each { String pmId ->
-            PresentationModel model = new ServerPresentationModel(pmId, [
-                new ServerAttribute(propertyName: ATT_X,        baseValue: rand(),  qualifier: "vehicle-${ pmId }.x"),
-                new ServerAttribute(propertyName: ATT_Y,        baseValue: rand(),  qualifier: "vehicle-${ pmId }.y"),
-                new ServerAttribute(propertyName: ATT_WIDTH,    baseValue: 80),
-                new ServerAttribute(propertyName: ATT_HEIGHT,   baseValue: 25),
-                new ServerAttribute(propertyName: ATT_ROTATE,   baseValue: rand(),  qualifier: "vehicle-${ pmId }.rotate"),
-                new ServerAttribute(propertyName: ATT_COLOR,    baseValue: pmId,    qualifier: "vehicle-${ pmId }.color")
-            ])
-            model.setPresentationModelType(TYPE_VEHICLE)
-            response << CreatePresentationModelCommand.makeFrom(model)
+            DTO model = new DTO(
+                new Slot(ATT_X,        rand(),  "vehicle-${ pmId }.x"),
+                new Slot(ATT_Y,        rand(),  "vehicle-${ pmId }.y"),
+                new Slot(ATT_WIDTH,    80),
+                new Slot(ATT_HEIGHT,   25),
+                new Slot(ATT_ROTATE,   rand(),  "vehicle-${ pmId }.rotate"),
+                new Slot(ATT_COLOR,    pmId,    "vehicle-${ pmId }.color")
+            )
+            ServerDolphin.presentationModel(response, pmId, TYPE_VEHICLE, model)
         }
     }
 }

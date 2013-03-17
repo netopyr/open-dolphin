@@ -1,7 +1,9 @@
 package org.opendolphin.core.server
 
 import groovyx.gpars.dataflow.DataflowQueue
-import spock.lang.Specification;
+import spock.lang.Specification
+
+import java.lang.ref.WeakReference;
 
 public class EventBusSpec extends Specification {
 

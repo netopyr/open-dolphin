@@ -22,9 +22,6 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class ServerPresentationModel extends BasePresentationModel {
-    ServerPresentationModel(List<ServerAttribute> attributes) {
-        this(null, attributes)
-    }
 
     ServerPresentationModel(String id, List<ServerAttribute> attributes) {
         super(id, attributes)

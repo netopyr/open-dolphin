@@ -16,36 +16,33 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.comm.CreatePresentationModelCommand
-import org.opendolphin.core.server.ServerAttribute
-import org.opendolphin.core.server.ServerPresentationModel
+import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.core.server.Slot
+import org.opendolphin.core.server.DTO
 
 def config = new JavaFxInMemoryConfig()
 
-
 config.serverDolphin.action "fillFirst", { cmd, response ->
-    ServerPresentationModel pm1 = new ServerPresentationModel("First 1", [new ServerAttribute("value","even")])
-    response << CreatePresentationModelCommand.makeFrom(pm1)
-    ServerPresentationModel pm2 = new ServerPresentationModel("First 2", [new ServerAttribute("value","odd")])
-    response << CreatePresentationModelCommand.makeFrom(pm2)
+    DTO pm1 = new DTO(new Slot("value","even"))
+    ServerDolphin.presentationModel(response,"First 1", null, pm1)
+    DTO pm2 = new DTO(new Slot("value","odd"))
+    ServerDolphin.presentationModel(response,"First 2", null, pm2)
 }
 
 config.serverDolphin.action "fillRelation", { cmd, response ->
     [0,2,4,6,8].each {
-        ServerPresentationModel pm = new ServerPresentationModel([
-            new ServerAttribute("first", "even" ),
-            new ServerAttribute("second", "Second $it" )
-        ])
-        pm.presentationModelType = "FirstSecondRelation"
-        response << CreatePresentationModelCommand.makeFrom(pm)
+        DTO pm = new DTO(
+            new Slot("first", "even" ),
+            new Slot("second", "Second $it" )
+        )
+        ServerDolphin.presentationModel(response,null, "FirstSecondRelation", pm)
     }
     [1,3,5,7,9].each {
-        ServerPresentationModel pm = new ServerPresentationModel([
-            new ServerAttribute("first", "odd" ),
-            new ServerAttribute("second", "Second $it" )
-        ])
-        pm.presentationModelType = "FirstSecondRelation"
-        response << CreatePresentationModelCommand.makeFrom(pm)
+        DTO pm = new DTO(
+            new Slot("first", "odd" ),
+            new Slot("second", "Second $it" )
+        )
+        ServerDolphin.presentationModel(response,null, "FirstSecondRelation", pm)
     }
 }
 
