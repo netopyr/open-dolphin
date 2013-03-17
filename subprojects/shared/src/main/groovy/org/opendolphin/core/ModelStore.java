@@ -108,6 +108,7 @@ public class ModelStore {
             presentationModels.remove(model.getId());
             for (Attribute attribute : model.getAttributes()) {
                 removeAttributeById(attribute);
+                removeAttributeByQualifier(attribute);
                 attribute.removePropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
                 if (!isBlank(attribute.getQualifier())) removeAttributeByQualifier(attribute);
             }
@@ -166,8 +167,10 @@ public class ModelStore {
         String type = model.getPresentationModelType();
         if (isBlank(type)) return;
         List<PresentationModel> list = modelsPerType.get(type);
-        if (null != list) {
-            list.remove(model);
+        if (null == list) return;
+        list.remove(model);
+        if (list.isEmpty()) {
+            modelsPerType.remove(type);
         }
     }
 
@@ -176,6 +179,9 @@ public class ModelStore {
         List<Attribute> list = attributesPerQualifier.get(qualifier);
         if (null == list) return;
         list.remove(attribute);
+        if (list.isEmpty()) {
+            attributesPerQualifier.remove(qualifier);
+        }
     }
 
     /**
