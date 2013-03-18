@@ -277,7 +277,7 @@ abstract class ClientConnector implements PropertyChangeListener {
     ClientPresentationModel handle(SavedPresentationModelNotification serverCommand) {
         if (!serverCommand.pmId) return null
         ClientPresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
-        if (!model) {
+        if (null == model) {
             log.warning("model with id '$serverCommand.pmId' not found, cannot rebase")
             return null
         }
@@ -288,12 +288,9 @@ abstract class ClientConnector implements PropertyChangeListener {
     ClientPresentationModel handle(PresentationModelResetedCommand serverCommand) {
         if (!serverCommand.pmId) return null
         PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
-        // rebase locally first
+        // reset locally first
         if (!model) return null
         model.attributes*.reset()
-        // inform server of changes
-        // todo dk: this should already have been sent by the PCL
-        model.attributes.each { attribute -> send(new ValueChangedCommand(attributeId: attribute.id)) }
         return model
     }
 
