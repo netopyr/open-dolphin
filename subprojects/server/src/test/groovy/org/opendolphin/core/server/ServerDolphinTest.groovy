@@ -72,10 +72,12 @@ public class ServerDolphinTest extends GroovyTestCase {
         modelWithType.setPresentationModelType('person')
         dolphin.getModelStore().add(modelWithType)
         dolphin.getModelStore().add(new ServerPresentationModel('p2', []))
-        dolphin.removeModelStoreListener typedListener
+        dolphin.removeModelStoreListener 'person', typedListener
         dolphin.removeModelStoreListener listener
         assert 3 == listenerCallCount
         assert 1 == typedListenerCallCount
+
+
     }
 
     void testAddModelStoreListenerWithClosure() {

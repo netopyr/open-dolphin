@@ -35,7 +35,7 @@ public class JavaDemo {
                 latch.countDown();
             }
         });
-        inMemoryConfig.registerDefaultActions();
+        inMemoryConfig.getServerDolphin().registerDefaultActions();
         inMemoryConfig.getServerDolphin().getServerConnector().register(new JavaAction());
 
         ConsoleView.show(inMemoryConfig.getClientDolphin());

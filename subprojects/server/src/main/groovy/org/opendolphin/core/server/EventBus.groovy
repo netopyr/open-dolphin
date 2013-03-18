@@ -55,13 +55,18 @@ class EventBus {
             def nullRefs = new LinkedList()
             for (queueRef in list) {
                 def queue = queueRef.get()
-                if (queue == null) {
-                    nullRefs << queueRef
-                    continue
-                }
+                if (nullProtectionDone(queue, queueRef, nullRefs)) continue
                 if ( ! sender.is(queue)) queue << value
             }
             list.removeAll nullRefs
         }
+    }
+
+    protected static boolean nullProtectionDone(queue, queueRef, nullRefs) {
+        if (queue == null) {
+            nullRefs << queueRef
+            return true
+        }
+        return false
     }
 }

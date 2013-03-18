@@ -208,16 +208,6 @@ public class ModelStore {
     }
 
     /**
-     * Finds out if a model is contained in this store.
-     *
-     * @param model the model to search in the store.
-     * @return true if the model is found in this store, false otherwise.
-     */
-    public boolean containsPresentationModel(PresentationModel model) {
-        return model != null && presentationModels.containsKey(model.getId());
-    }
-
-    /**
      * Finds out if a model is contained in this store, based on its id.
      *
      * @param id the id to search in the store.
@@ -268,7 +258,7 @@ public class ModelStore {
     }
 
     // todo: move to an utility class
-    private static boolean isBlank(String str) {
+    public static boolean isBlank(String str) {
         return null == str || str.trim().length() == 0;
     }
 
@@ -308,47 +298,4 @@ public class ModelStore {
             listener.modelStoreChanged(event);
         }
     }
-
-    private static class ModelStoreListenerWrapper implements ModelStoreListener {
-        private static final String ANY_PRESENTATION_MODEL_TYPE = "*";
-        private final String presentationModelType;
-        private final ModelStoreListener delegate;
-
-        private ModelStoreListenerWrapper(String presentationModelType, ModelStoreListener delegate) {
-            this.presentationModelType = !isBlank(presentationModelType) ? presentationModelType : ANY_PRESENTATION_MODEL_TYPE;
-            this.delegate = delegate;
-        }
-
-        private boolean presentationModelTypeMatches(String presentationModelType) {
-            return ANY_PRESENTATION_MODEL_TYPE.equals(this.presentationModelType) || this.presentationModelType.equals(presentationModelType);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (null == o) return false;
-
-            if (o instanceof ModelStoreListenerWrapper) {
-                ModelStoreListenerWrapper that = (ModelStoreListenerWrapper) o;
-                return delegate.equals(that.delegate) && presentationModelType.equals(that.presentationModelType);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = presentationModelType.hashCode();
-            result = 31 * result + delegate.hashCode();
-            return result;
-        }
-
-        @Override
-        public void modelStoreChanged(ModelStoreEvent event) {
-            String pmType = event.getPresentationModel().getPresentationModelType();
-            if (presentationModelTypeMatches(pmType)) {
-                delegate.modelStoreChanged(event);
-            }
-        }
-    }
-
 }

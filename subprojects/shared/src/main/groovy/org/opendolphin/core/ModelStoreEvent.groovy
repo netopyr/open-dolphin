@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package org.opendolphin.core;
+package org.opendolphin.core
 
+import groovy.transform.CompileStatic
+import groovy.transform.EqualsAndHashCode;
+
+@CompileStatic
+@EqualsAndHashCode
 public class ModelStoreEvent {
     public enum Type {
         ADDED, REMOVED
@@ -46,24 +51,4 @@ public class ModelStoreEvent {
                 .toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ModelStoreEvent that = (ModelStoreEvent) o;
-
-        if (type != that.type) return false;
-        if (presentationModel != null ? !presentationModel.equals(that.presentationModel) : that.presentationModel != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + (presentationModel != null ? presentationModel.hashCode() : 0);
-        return result;
-    }
 }

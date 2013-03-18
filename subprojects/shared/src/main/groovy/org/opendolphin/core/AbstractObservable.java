@@ -53,11 +53,6 @@ public class AbstractObservable implements Observable {
         return pcs.getPropertyChangeListeners(propertyName);
     }
 
-    protected void firePropertyChange(PropertyChangeEvent event) {
-        if (event != null && event.getOldValue() == event.getNewValue()) return;
-        pcs.firePropertyChange(event);
-    }
-
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         if (oldValue == newValue) return;
         pcs.firePropertyChange(propertyName, oldValue, newValue);

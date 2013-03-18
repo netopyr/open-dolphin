@@ -235,28 +235,7 @@ class JFXBinderPropertyChangeListener implements PropertyChangeListener {
     Object convert(Object value) {
         converter != null ? converter(value) : value
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this.is(o)) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        JFXBinderPropertyChangeListener that = (JFXBinderPropertyChangeListener) o;
-
-        if (!attribute.equals(that.attribute)) return false;
-        if (!target.equals(that.target)) return false;
-        if (!targetPropertyName.equals(that.targetPropertyName)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = attribute.hashCode();
-        result = 31 * result + target.hashCode();
-        result = 31 * result + targetPropertyName.hashCode();
-        return result;
-    }
+    // we have equals(o) and hashCode() from @Canonical
 }
 
 @Canonical
@@ -283,27 +262,6 @@ class JFXBinderChangeListener implements ChangeListener {
         converter != null ? converter(value) : value
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this.is(o)) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    // we have equals(o) and hashCode() from @Canonical
 
-        JFXBinderChangeListener that = (JFXBinderChangeListener) o;
-
-        if (!source.equals(that.source)) return false;
-        if (!sourcePropertyName.equals(that.sourcePropertyName)) return false;
-        if (!target.equals(that.target)) return false;
-        if (!targetPropertyName.equals(that.targetPropertyName)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = source.hashCode();
-        result = 31 * result + sourcePropertyName.hashCode();
-        result = 31 * result + target.hashCode();
-        result = 31 * result + targetPropertyName.hashCode();
-        return result;
-    }
 }

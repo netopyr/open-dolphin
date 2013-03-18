@@ -40,12 +40,4 @@ class DefaultInMemoryConfig {
 
     }
 
-    /** @deprecated use clientDolphin.clientConnector  */
-    ClientConnector getConnector() { clientDolphin.clientConnector }
-
-    /** @deprecated use serverDolphin.registerDefaultActions()  */
-    void registerDefaultActions() {
-        serverDolphin.registerDefaultActions()
-    }
-
 }

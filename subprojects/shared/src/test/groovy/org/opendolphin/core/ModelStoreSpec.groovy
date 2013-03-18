@@ -79,4 +79,33 @@ class ModelStoreSpec extends Specification {
         bpm1 in result
         bpm2 in result
     }
+
+    def "add and remove a pm including type and qualifier"() {
+        given:
+        def modelStore = new ModelStore()
+        def bpm1 = new BasePresentationModel("pm1",[new BaseAttribute('attr','val','quali',Tag.VALUE) {} ])
+        bpm1.presentationModelType = "type"
+
+        when:
+        modelStore.add bpm1
+        then:
+        'val' == modelStore.findPresentationModelById('pm1').attr.value
+
+        when:
+        modelStore.remove bpm1
+        then:
+        null == modelStore.findPresentationModelById('pm1')
+    }
+
+    def "try to register an attribute twice"() {
+        given:
+        def modelStore = new ModelStore()
+        def attr = new BaseAttribute('attr','val','quali',Tag.VALUE) {}
+
+        when:
+        modelStore.registerAttribute(attr)
+        modelStore.registerAttribute(attr)
+        then:
+        attr.getPropertyChangeListeners(Attribute.QUALIFIER_PROPERTY).size() == 1
+    }
 }

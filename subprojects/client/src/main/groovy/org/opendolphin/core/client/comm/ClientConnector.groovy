@@ -168,9 +168,8 @@ abstract class ClientConnector implements PropertyChangeListener {
         }
     }
 
-    //TODO: db: @Dierk : can this method be removed ?
-    def handle(Command serverCommand, Set pmIds) {
-        log.warning "C: cannot handle $serverCommand"
+    def handle(Command serverCommand) {
+        log.severe "C: cannot handle unknown command '$serverCommand'"
     }
 
     Map handle(DataCommand serverCommand){
@@ -275,11 +274,13 @@ abstract class ClientConnector implements PropertyChangeListener {
         return presentationModel // todo dk: check and test
     }
 
-
-
     ClientPresentationModel handle(SavedPresentationModelNotification serverCommand) {
         if (!serverCommand.pmId) return null
-        PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        ClientPresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        if (!model) {
+            log.warning("model with id '$serverCommand.pmId' not found, cannot rebase")
+            return null
+        }
         model.attributes*.rebase() // rebase sends update command if needed through PCL
         return model
     }

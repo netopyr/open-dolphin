@@ -3,8 +3,6 @@ package org.opendolphin.core.server
 import groovyx.gpars.dataflow.DataflowQueue
 import spock.lang.Specification
 
-import java.lang.ref.WeakReference;
-
 public class EventBusSpec extends Specification {
 
     void 'no notification without registration'() {
@@ -49,5 +47,21 @@ public class EventBusSpec extends Specification {
         then:
         null == flowOne.poll()
         null == flowTwo.poll()
+    }
+
+    void 'null-safe protection'() {
+        given:
+        def nullRefs = []
+        when:
+        def done = EventBus.nullProtectionDone(null, 'x', nullRefs)
+        then:
+        done == true
+        'x' in nullRefs
+
+        when:
+        done = EventBus.nullProtectionDone('not-null', 'y', nullRefs)
+        then:
+        done == false
+        ! ('y' in nullRefs)
     }
 }

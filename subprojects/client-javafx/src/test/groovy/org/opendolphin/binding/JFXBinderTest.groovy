@@ -132,6 +132,17 @@ class JFXBinderTest extends GroovyTestCase {
         assert 'newValue' == targetLabel.text
     }
 
+    void testBindAndUnbindFromNodeToClientPresentationModel() {
+        def sourceLabel = new javafx.scene.control.Label()
+        ClientPresentationModel targetPm = new ClientPresentationModel('model', [new ClientAttribute('attr', '')])
+        bind 'text' of sourceLabel to 'attr' of targetPm
+        sourceLabel.text = 'newValue'
+        assert 'newValue' == targetPm.attr.value
+        unbind 'text' of sourceLabel from 'attr' of targetPm
+        sourceLabel.text = 'anotherValue'
+        assert 'newValue' == targetPm.attr.value
+    }
+
     void testUnbindFromPresentationModel() {
         def targetLabel = new javafx.scene.control.Label()
         PresentationModel model = new BasePresentationModel('model', [new ClientAttribute('attr', '')])
@@ -140,6 +151,17 @@ class JFXBinderTest extends GroovyTestCase {
         assert 'newValue' == targetLabel.text
         unbind 'attr' of model from 'text' of targetLabel
         model.getAt('attr').value = 'anotherValue'
+        assert 'newValue' == targetLabel.text
+    }
+
+    void testUnbindFromPojo() {
+        def targetLabel = new javafx.scene.control.Label()
+        def pojo = new PojoBean()
+        bind 'value' of pojo to 'text' of targetLabel
+        pojo.value = 'newValue'
+        assert 'newValue' == targetLabel.text
+        unbind 'value' of pojo from 'text' of targetLabel
+        pojo.value = 'anotherValue'
         assert 'newValue' == targetLabel.text
     }
 

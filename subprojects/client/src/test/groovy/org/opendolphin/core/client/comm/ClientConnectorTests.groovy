@@ -40,6 +40,10 @@ class ClientConnectorTests extends GroovyTestCase {
         dolphin.clientModelStore = new ClientModelStore(dolphin)
     }
 
+    void testSevereLogWhenCommandNotFound() {
+        clientConnector.handle( new Command() )
+    }
+
     void testHandleSimpleCreatePresentationModelCommand() {
         final myPmId = "myPmId"
         assert null == dolphin.findPresentationModelById(myPmId)
@@ -234,6 +238,24 @@ class ClientConnectorTests extends GroovyTestCase {
         def data = [k: 'v']
         assert data == clientConnector.handle(new DataCommand(data))
     }
+
+    void testHandleSavedPMNotificationForKnownPm() {
+        def pm = dolphin.presentationModel('wasSaved',null,a:1,b:1)
+        pm.a.value = 2
+        pm.b.value = 2
+        def result = clientConnector.handle(new SavedPresentationModelNotification(pmId:'wasSaved'))
+        assert pm.a.value == 2
+        assert ! pm.a.dirty
+        assert pm.b.value == 2
+        assert ! pm.b.dirty
+        assert result == pm
+    }
+
+    void testHandleSavedPMNotificationForUnKnownPmIsSilentlyIgnored() {
+        assert null == clientConnector.handle(new SavedPresentationModelNotification(pmId:'no-such-id'))
+    }
+
+
 }
 
 @Log
