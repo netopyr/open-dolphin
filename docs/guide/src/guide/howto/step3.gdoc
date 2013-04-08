@@ -1,0 +1,77 @@
+In
+[step3.JumpStart|https://github.com/canoo/DolphinJumpStart/blob/master/combined/src/main/java/step_3/JumpStart.java]
+we first cleanup the code such that it becomes more obvious, which part belongs to the (client) view and the
+(server) controller. In the first place, OpenDolphin leads to a _logical_ view-controller distinction and
+client-server split. The only thing that is optionally shared are constants.
+
+It is always a good idea to refactor literal values into constants, especially if they
+are used in more than one place for a unique purpose.
+Therefore, pull out our String literals into static references:
+
+{code}
+private static final String MODEL_ID           = "modelId";
+private static final String MODEL_ATTRIBUTE_ID = "attrId";
+private static final String COMMAND_ID         = "LogOnServer";
+{code}
+
+The configuration setup should move into the constructor:
+
+{code}
+public JumpStart() {
+    config = new DefaultInMemoryConfig();
+    textAttributeModel = config.getClientDolphin().presentationModel(MODEL_ID, new ClientAttribute(MODEL_ATTRIBUTE_ID, ""));
+    config.getClientDolphin().getClientConnector().setUiThreadHandler(new JavaFXUiThreadHandler());
+    config.registerDefaultActions();
+}
+{code}
+
+This leaves the "start" method with "view" responsibilities only:
+the initial contruction and separate method call for binding and registering actions.
+
+{code}
+@Override
+public void start(Stage stage) throws Exception {
+    Pane root = PaneBuilder.create().children(
+            VBoxBuilder.create().children(
+                    textField = TextFieldBuilder.create().build(),
+                    button    = ButtonBuilder.create().text("press me").build(),
+                    HBoxBuilder.create().children(
+                            LabelBuilder.create().text("IsDirty ?").build(),
+                            status = CheckBoxBuilder.create().disable(true).build()
+                    ).build()
+
+            ).build()
+    ).build();
+
+    addServerSideAction();
+    addClientSideAction();
+    setupBinding();
+
+    stage.setScene(new Scene(root, 300, 100));
+    stage.show();
+}
+{code}
+
+We add an additional labeled checkbox to visualize the status: whether the text field - or better
+say the dolphin attribute that stands behind it - is considered "dirty".
+
+!../img/dolphin_pics/step3.png!
+
+As soon as you change the content of the text field, this checkbox should become selected.
+If you remove your edits, it should become unselected again!
+
+Here is how the binding for that requirement looks like:
+
+{code}
+JFXBinder.bind("text").of(textField).to(MODEL_ATTRIBUTE_ID).of(textAttributeModel);
+JFXBinder.bindInfo("dirty").of(textAttributeModel.getAt(MODEL_ATTRIBUTE_ID)).to("selected").of(status);
+{code}
+
+At this point we see the next benefit of presentation model and attribute abstractions:
+they can provide more information about themselves and can carry additional state that is
+automatically updated and available for binding.
+
+Each attribute has a "base" value. When the current value differs from that base value, it is
+considered "dirty". A presentation model is dirty, if and only if any of it's attributes is dirty.
+
+With this knowledge, we can even do a little more.

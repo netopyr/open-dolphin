@@ -1,0 +1,38 @@
+In
+[step4.JumpStart|https://github.com/canoo/DolphinJumpStart/blob/master/combined/src/main/java/step_4/JumpStart.java]
+we make even further use of the bindable dirty state.
+
+First, we are binding not against the dirty state of an attribute, but against the whole
+presentation model behind it. This simplifies the binding:
+
+{code}
+JFXBinder.bindInfo("dirty").of(textAttributeModel).to("selected").of(status);
+{code}
+
+Second, we also want the button to only be enabled when there is something reasonable to
+do, i.e. when there is some value change in the form. This is a very common requirement
+in business applications.
+
+Now, JavaFX buttons do not have an "enabled" state, only a "disabled" state with the opposite
+logic. Luckily, our binding facilities are perfectly able to handle this with a converter:
+
+{code}
+JFXBinder.bindInfo("dirty").of(textAttributeModel).to("disabled").of(button, new Closure(null) {
+    protected Object doCall(boolean dirtyState) {
+        return !dirtyState;
+    }
+});
+{code}
+
+The converter is a Closure (coming from Groovy). But no worries. We can perfectly use it
+in Java. Future API extensions may offer a more specific converter type here.
+
+You probably guessed that this code looks nicer in Groovy. Yes, it does:
+
+{code}
+bindInfo "dirty" of textAttributeModel to "disabled" of button,  { state -> !state }
+{code}
+
+Once the code is so nicely broken into independent parts we can put the various parts in separate modules
+for better dependency management.
+

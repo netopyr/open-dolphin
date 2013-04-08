@@ -1,0 +1,28 @@
+We stay in the "combined" module and enhance the JavaFX view
+[step1.JumpStart|https://github.com/canoo/DolphinJumpStart/blob/master/combined/src/main/java/step_1/JumpStart.java].
+just slightly with a text field and a button that prints the content of the textfield when clicked.
+
+The application should appear on your screen like \\
+!../img/dolphin_pics/step1.png!
+
+The code now contains references to the widgets
+{code}
+private TextField field;
+private Button    button;
+{code}
+
+and an action handler
+
+{code}
+button.setOnAction(new EventHandler<ActionEvent>() {
+    public void handle(ActionEvent actionEvent) {
+        System.out.println("text field contains: "+field.getText());
+    }
+});
+{code}
+
+The printing of the field content is our "stand-in" for a real business logic.
+You can easily assume some persistence action at this point or
+"service" calls in general.
+
+Now it is time to introduce OpenDolphin.

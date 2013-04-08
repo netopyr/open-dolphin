@@ -12,6 +12,15 @@ architecture:
   concepts_remoting: Understanding the client-server split and threading model
   concepts_commands: Communicating via Commands
   concepts_discussion: Discussion
+howto:
+  title: How to get started with OpenDolphin
+  step1: Adding nodes to a stage, registering an onAction handler
+  step2: Introducing a presentation model with one attribute and bind the value
+  step3: Logical separation between client and server
+  step4: Bind the "dirty" of presentation models to the view
+  step5: Split into modules/projects
+  step6: Enhanced view, let the "director" wire all application actions
+  step7: Remote setup
 demos:
   title : Use Cases and Demos
   demo_yard: The container yard monitoring application

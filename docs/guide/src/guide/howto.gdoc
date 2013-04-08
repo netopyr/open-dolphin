@@ -1,0 +1,60 @@
+For an easy entry into OpenDolphin, we will follow the steps of the
+[DolphinJumpStart|https://github.com/canoo/DolphinJumpStart] project.
+
+We implement a very simple application that contains only one text field and two buttons to 'save' or 'reset' the value.
+'Saving' will do nothing but printing the current field value on the server side.
+
+Both buttons are only enabled if there is really something to save/reset, i.e. the field value is dirty.
+The dirty state is also visualized via a CSS class (background color changes). Resetting triggers a 'shake' animation.
+
+Steps 0 to 4 solely live in the "combined" module for a simple jumpstart
+before we properly split client and server in step 5 and only keep a starter class in "combined".
+
+Step 7 produces a war file that you can deploy on e.g. tomcat and the client starter moves to the "client" module.
+
+h4. Setup and of start a basic JavaFX view
+
+Let's start with the setup.
+
+Please make sure you have visited the [DolphinJumpStart|https://github.com/canoo/DolphinJumpStart] project
+and have seen the readme.
+
+You can either choose to clone the repo for following each step (recommended)
+or use the provided zip files for a Maven or Gradle build of your own application.
+
+The root directory contains a pom.xml that you may want to point your IDE to for creating a project.
+All major IDEs should understand this.
+
+In case you are not using any IDE, follow the readme for how to build and run the various steps.
+
+We start our development in the "combined" module with the simplest possible JavaFX view
+[step0.JumpStart|https://github.com/canoo/DolphinJumpStart/blob/master/combined/src/main/java/step_0/JumpStart.java].
+The class has a main method such that you can start it from inside the IDE.
+Otherwise use the command line launcher as described in the readme.
+
+When your setup is correct, it should appear on your screen like
+
+!../img/dolphin_pics/step0.png!
+
+The gist of the code shows a simple call into the JavaFX API.
+{code}
+public class JumpStart extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setScene(new Scene(new Pane(), 300, 100));
+        primaryStage.setTitle("Dolphin Jump Start");
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(JumpStart.class);
+    }
+}
+{code}
+
+You are free to also use any other Java-based widget toolkit at this point:
+Swing, AWT, SWT, Eclipse RCP, and else. That makes no difference to OpenDolphin.
+
+Of course, the application needs some sensible content, which we will add right away -
+still without any OpenDolphin specifics.
