@@ -1,0 +1,86 @@
+h4. Use Case
+
+Sometimes a value change in lets say a text field should immediately update all
+dependent views (a label, a frame title) -
+but sometimes only when a certain event occurs: button clicked, enter pressed, focus change and the likes.
+
+Sometimes the binding is unidirectional, sometimes bidirectional.
+
+h4. Approach
+
+OpenDolphin bindinds are always immediate.
+When the source value changes the target value is updated immediately.
+
+If you need a deferred update, you do not use binding at all but provide the respective
+event handler to copy the value from the source to the target, usually by setting the
+value of an attribute.
+
+Bindings are always unidirectional.
+If you need bidirectional binding, you use two binding statements, one for either direction.
+
+h4. Demo
+
+The demo looks like
+
+!../img/dolphin_pics/singleAttMultBindings.png!
+
+When you edit the text field, the header is immediately updated.
+
+Label and frame title are only updated when hitting enter in the text field or when clicking the button.
+
+Please see the full [demo sources|https://github.com/canoo/open-dolphin/blob/master/subprojects/demo-javafx/client/src/main/groovy/org/opendolphin/demo/SingleAttributeMultipleBindingsView.groovy].
+
+OpenDolphin bindings always go from source to target.
+This code makes sure that whenever the title attribute of the presentation model changes,
+the title of the frame is updated:
+
+{code}
+bind TITLE of pm to FX.TITLE of primaryStage   // groovy style
+{code}
+
+The same is true for the label, but here we are more Java-stylish:
+
+{code}
+bind(TITLE).of(pm).to(FX.TEXT).of(label)       // java fluent-interface style
+{code}
+
+The input text field shall always show the value of the title attribute:
+
+{code}
+bind TITLE of pm to FX.TEXT of input
+{code}
+
+Hitting enter or clicking the button shall copy the value of the text input field
+to the attribute and thus trigger update of all bound views.
+We share the same event handler for the onAction of the text input field and
+the submit button:
+
+{code}
+def copyFieldToPm = { pm[TITLE].value = sgb.input.text } as EventHandler
+sgb.input.onAction  = copyFieldToPm
+sgb.submit.onAction = copyFieldToPm
+{code}
+
+_Corner case_:\\
+If we need a mixture of both immediate and deferred update, then we have a bit of
+a problem. We can resolve it by directly binding the views (ignoring the attribute):
+
+{code}
+// auto-update the header with every keystroke
+bind FX.TEXT of input to FX.TEXT of header
+{code}
+
+The views now act as one "combined" view, but this situation should be avoided since
+we do not want the views to know each other. They shall only know their attributes.
+
+_Variant_:\\
+A second way of approaching the above is binding the text field back to the title
+attribute, which will automatically trigger updates of all dependent views with
+every keystroke. This is effectively a bidirectional binding:
+
+{code}
+// the below is an alternative that updates the pm with every keystroke and thus all bound listeners
+// bind TEXT of input to TITLE of pm
+{code}
+
+

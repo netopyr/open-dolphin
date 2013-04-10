@@ -12,12 +12,12 @@ before we properly split client and server in step 5 and only keep a starter cla
 
 Step 7 produces a war file that you can deploy on e.g. tomcat and the client starter moves to the "client" module.
 
-h4. Setup and of start a basic JavaFX view
+h4. Setup and start of a basic JavaFX view
 
 Let's start with the setup.
 
 Please make sure you have visited the [DolphinJumpStart|https://github.com/canoo/DolphinJumpStart] project
-and have seen the readme.
+and have looked at the readme.
 
 You can either choose to clone the repo for following each step (recommended)
 or use the provided zip files for a Maven or Gradle build of your own application.

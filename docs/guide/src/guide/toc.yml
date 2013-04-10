@@ -23,13 +23,13 @@ howto:
   step7: Remote setup
 demos:
   title : Use Cases and Demos
-  demo_yard: The container yard monitoring application
   demo_login: The general approach of OpenDolphin with a Login dialog
-  demo_binding: Binding against Presentation Models
+  demo_singleAttMultBindings: Immediate and deferred binding
+  demo_yard: The container yard monitoring application
 config:
-  title: Configuration and Setup
+  title: tbd Configuration and Setup
   config_standalone: Standalone in-memory usage
   config_remote: Remote setup
 devzone:
-  title : Developer Zone
+  title : tbd Developer Zone
   devzone_build: How to build

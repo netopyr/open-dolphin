@@ -35,8 +35,7 @@ class SingleAttributeMultipleBindingsView {
             layoutFrame builder
             style builder
 
-            def pm = createPresentationModel()
-            clientDolphin.clientModelStore.add pm
+            def pm = createPresentationModel(clientDolphin)
             bindPmToViews pm, builder
             attachHandlers pm, builder
 
@@ -58,10 +57,9 @@ class SingleAttributeMultipleBindingsView {
         }
     }
 
-    ClientPresentationModel createPresentationModel() {
-        def titleAttr = new ClientAttribute(TITLE)
-        titleAttr.value = "Some Text: <enter> or <submit>"
-        return new ClientPresentationModel('demo', [titleAttr])
+    ClientPresentationModel createPresentationModel(ClientDolphin dolphin) {
+        def titleAttr = new ClientAttribute(TITLE, "Some Text: <enter> or <submit>")
+        return dolphin.presentationModel('demo', titleAttr)
     }
 
     void bindPmToViews(ClientPresentationModel pm, SceneGraphBuilder sgb) {
@@ -81,8 +79,8 @@ class SingleAttributeMultipleBindingsView {
     }
 
     void attachHandlers(ClientPresentationModel pm, SceneGraphBuilder sgb) {
-        sgb.updatePm = { pm[TITLE].value = sgb.input.text } as EventHandler
-        sgb.input.onAction  = sgb.updatePm
-        sgb.submit.onAction = sgb.updatePm
+        def copyFieldToPm = { pm[TITLE].value = sgb.input.text } as EventHandler
+        sgb.input.onAction  = copyFieldToPm
+        sgb.submit.onAction = copyFieldToPm
     }
 }
