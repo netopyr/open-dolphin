@@ -78,7 +78,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     /** Check whether value is of allowed type and convert to an allowed type if possible. */
-    static Object checkValue(Object value) {
+    public static Object checkValue(Object value) {
         if (null == value) return null;
         if (value instanceof Tag) return ((Tag)value).name(); // name instead of ordinal to make decoding easier
         Object result = value;

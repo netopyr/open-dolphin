@@ -18,6 +18,7 @@ package org.opendolphin.core.server
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
+import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.Dolphin
 import org.opendolphin.core.ModelStore
 import org.opendolphin.core.Tag
@@ -106,6 +107,7 @@ class ServerDolphin extends Dolphin {
             return
         }
         if (attribute.value == value) return // standard bean check
+        value = BaseAttribute.checkValue(value)
         response << new ValueChangedCommand(attributeId: attribute.id, newValue: value, oldValue: attribute.value)
     }
 
