@@ -8,7 +8,7 @@ Sometimes the binding is unidirectional, sometimes bidirectional.
 
 h4. Approach
 
-OpenDolphin bindinds are always immediate.
+OpenDolphin bindings are always immediate.
 When the source value changes the target value is updated immediately.
 
 If you need a deferred update, you do not use binding at all but provide the respective

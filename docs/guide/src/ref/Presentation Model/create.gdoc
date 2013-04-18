@@ -1,14 +1,132 @@
-h2. Create a Presentation Model on the client side
+Presentation models can be created on the client and on the server side via the dolphin facade.
+
+h2. Create a Presentation Model from the (client) view
+
+The
+[client dolphin|api:org.opendolphin.core.client.ClientDolphin]
+has a @presentationModel@ factory method that instantiates a
+[ClientPresentationModel|api:org.opendolphin.core.client.ClientPresentationModel]
+and adds it to the client side
+[ModelStore|api:org.opendolphin.core.ModelStore]
+such that all required listeners are set up and the server is notified about the construction.
 
 h4. Java style
 
-h4. Groovy style
-
-h2. Create a Presentation Model on the server side
-
-h4. Java style
-
-h4. Groovy style
+The recommended way to create a presentation model in Java on the client side is by using the
+presentationModel factory method that sets
+* the unique id (if null it will be set to a generated id)
+* the type (may be null if no type is required)
+* a variable argument list of [ClientAttributes|api:org.opendolphin.core.client.ClientAttribute],
+see also the [Attribute|guide:concepts_attributes] guide.
 
 {code}
+ClientPresentationModel pm = clientDolphin.presentationModel("myPmId", "myPmType", firstNameAtt, lastNameAtt);
+{code}
+
+h4. Groovy style
+
+In Groovy you can do the exact same as in Java or use one of the following shortcuts.
+
+Generate attributes with null values from a list of attribute names.
+{code}
+def pm = clientDolphin.presentationModel("myPmId", ["firstName", "lastName"])
+{code}
+
+Generate attributes from named arguments or a map.
+{code}
+def pm = clientDolphin.presentationModel("myPmId", firstName:"Dierk", lastName:"Koenig")
+{code}
+
+Using constants (recommended) for any variant of the above.
+{code}
+final FIRST = "firstName"
+final LAST  = "lastName"
+// mind the parentheses
+def pm = clientDolphin.presentationModel("myPmId", (FIRST):"Dierk", (LAST):"Koenig")
+{code}
+
+h2. Create a Presentation Model from the (server) controller
+
+On the server side, the construction of a presentation model looks very similar
+but works quite differently behind the scenes. The reason is that on the server
+side, presentation models are not directly constructed but the the client is
+advised to do so. After the client has created the presentation model, the
+server is notified and the actual creation happens automatically as part of
+the general synchronization process.
+
+The
+[server dolphin|api:org.opendolphin.core.server.ServerDolphin]
+has a @presentationModel@ convenience method that sends a
+[CreatePresentationModelCommand|api:org.opendolphin.core.comm.CreatePresentationModelCommand]
+to the client.
+
+Since server-side constructions of presentation models do not instantiate
+any presentation models themselves, there also are no attributes to
+create the models from. Instead, we use Data Transfer Objects
+([DTO|api:org.opendolphin.core.server.DTO]s) and [org.opendolphin.core.server.Slot|api:Slot]s.
+
+See also ["The purpose of DTOs"|Guide:dto_purpose].
+
+The @presentationModel@ convenience method needs to know the current
+response (list of commands) such that it can send the
+[CreatePresentationModelCommand|api:org.opendolphin.core.comm.CreatePresentationModelCommand].
+Therefore, you will see the @response@ as a parameter to the
+method.
+
+When inside a [DolphinServerAction|api:org.opendolphin.core.server.action.DolphinServerAction] the
+current response is known and the method call is a bit shorter.
+We list both alternatives.
+
+h4. Java style
+
+From anywhere:
+{code}
+getServerDolphin().presentationModel(response, "MyPmId", "MyType", new DTO(
+    new Slot("firstName", "Dierk"),
+    new Slot("lastName", "Koenig")
+);
+{code}
+
+From inside a [DolphinServerAction|api:org.opendolphin.core.server.action.DolphinServerAction]:
+{code}
+presentationModel("MyPmId", "MyType", new DTO(
+    new Slot("firstName", "Dierk"),
+    new Slot("lastName", "Koenig")
+);
+{code}
+
+h4. Groovy style or any other functional language
+
+You may want to create DTOs from a map.
+Otherwise the calls are identical
+
+{code}
+Map data = [firstName: "Dierk", lastName:"Koenig"]
+presentationModel "MyPmId", "MyType", new DTO(Slot.slots(data))
+{code}
+
+h2. Create client-side-only Presentation Models
+
+OpenDolphin supports presentation models that are only created on the
+client (view) and synchronized back to the server (controller).
+
+{note}
+Client-side only presentation models remain fully functional
+on the client side, i.e. binding, updates, and handling of
+qualifiers is exactly the same.\\
+They are just not visible on the server.
+{note}
+
+The typical use case is the collection of search result
+presentation models, which are often not needed on the
+server side.
+
+The api is exactly the same, only the method name changes to
+@clientSideModel@.
+
+{code}
+getServerDolphin().clientSideModel(response, "MyPmId", "MyType", new DTO(
+    new Slot("firstName", "Dierk"),
+    new Slot("lastName",  "Koenig")
+);
 {code}
