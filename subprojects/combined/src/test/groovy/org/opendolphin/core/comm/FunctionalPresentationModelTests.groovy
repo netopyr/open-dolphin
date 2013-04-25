@@ -296,6 +296,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         })
     }
 
+    /*
     void testAttributeRebase() {
         ClientPresentationModel pm = clientDolphin.presentationModel('pm', attr: 1)
         assert pm.attr.value == 1
@@ -314,4 +315,5 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             context.assertionsDone()
         }
     }
+    */
 }
