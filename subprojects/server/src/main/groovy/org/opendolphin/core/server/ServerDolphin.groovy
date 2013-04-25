@@ -22,6 +22,7 @@ import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.Dolphin
 import org.opendolphin.core.ModelStore
 import org.opendolphin.core.Tag
+import org.opendolphin.core.comm.BaseValueChangedCommand
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.InitializeAttributeCommand
@@ -96,6 +97,11 @@ class ServerDolphin extends Dolphin {
      *  presentation model as specified by the DTO. */
     static void clientSideModel(List<Command> response, String id, String presentationModelType, DTO dto){
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable(), clientSideOnly:true)
+    }
+
+    /** Convenience method to let Dolphin reset the value of an attribute */
+    static void rebase(List<Command> response, long attributeId){
+        response << new BaseValueChangedCommand(attributeId: attributeId)
     }
 
     /**
