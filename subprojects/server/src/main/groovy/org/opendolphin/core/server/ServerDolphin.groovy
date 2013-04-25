@@ -25,6 +25,7 @@ import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.BaseValueChangedCommand
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
+import org.opendolphin.core.comm.DeletePresentationModelCommand
 import org.opendolphin.core.comm.InitializeAttributeCommand
 import org.opendolphin.core.comm.ValueChangedCommand
 import org.opendolphin.core.server.action.*
@@ -102,6 +103,11 @@ class ServerDolphin extends Dolphin {
     /** Convenience method to let Dolphin reset the value of an attribute */
     static void rebase(List<Command> response, long attributeId){
         response << new BaseValueChangedCommand(attributeId: attributeId)
+    }
+
+    /** Convenience method to let Dolphin delete a presentation model */
+    static void delete(List<Command> response, String pmId){
+        response << new DeletePresentationModelCommand(pmId: pmId)
     }
 
     /**

@@ -69,4 +69,34 @@ class DeletePresentationModelTests extends GroovyTestCase {
         // we are done
         clientDolphin.sync { context.assertionsDone() }
     }
+
+    /*
+    void testCreateAndDeletePresentationModelFromServer() {
+        // create the pm
+        String modelId = 'modelId'
+        def model = clientDolphin.presentationModel(modelId, someAttribute:"someValue")
+        // the model is in the client model store
+        def found = clientDolphin.findPresentationModelById(modelId)
+        assert model == found
+        // ... and in the server model store after roundtrip
+        clientDolphin.sync {
+            assert serverDolphin.modelStore.findPresentationModelById(modelId)
+        }
+
+        serverDolphin.action('triggerDelete') { cmd, response ->
+            serverDolphin.delete(response, modelId)
+        }
+        // when we now delete the pm
+        clientDolphin.send 'triggerDelete'
+
+        clientDolphin.sync {
+            // ... it is no longer in the client model store
+            assert !clientDolphin.modelStore.findPresentationModelById(modelId)
+            // the model is also gone from the server model store
+            assert !serverDolphin.modelStore.findPresentationModelById(modelId)
+            // we are done
+            context.assertionsDone()
+        }
+    }
+    */
 }
