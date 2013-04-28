@@ -17,10 +17,6 @@ class SharedTachoAction extends DolphinServerAction {
     private EventBus tachoBus
     private final DataflowQueue speedQueue = new DataflowQueue()
 
-    private final int EVENT_PROVIDER_WAIT_MS = 500
-    private final int EVENT_CONSUMER_WAIT_MS = 5000
-    private int waitMillis = EVENT_CONSUMER_WAIT_MS
-
     SharedTachoAction subscribedTo(EventBus tachoBus) {
         this.tachoBus = tachoBus
         tachoBus.subscribe(speedQueue)
@@ -32,11 +28,10 @@ class SharedTachoAction extends DolphinServerAction {
             def modelStore = serverDolphin.serverModelStore
             def attribute = modelStore.findAttributeById(command.attributeId)
             if (attribute) {
-                if (attribute.qualifier == "train.speed") {
-                    def value = command.newValue//.toInteger()
+                if (attribute.qualifier == "train.speed.input") {
+                    def value = command.newValue
                     tachoBus.publish(speedQueue, value)
                     log.info "published train speed $value"
-                    waitMillis = EVENT_PROVIDER_WAIT_MS
                 }
             }
         }
@@ -47,17 +42,18 @@ class SharedTachoAction extends DolphinServerAction {
             def attribute = modelStore.findAllAttributesByQualifier("train.speed").find{ it.tag == Tag.VALUE }
             if (! attribute) return
 
-            def speed = speedQueue.getVal(waitMillis, TimeUnit.MILLISECONDS)    // take the last value
+            def speed = speedQueue.getVal(1, TimeUnit.MINUTES)    // typical long-poll wait
+
             def lastSpeed = speed
-            while (null != speed) {
+            while (null != speed) { // for efficiency read all there is until quiet
                 lastSpeed = speed
-                speed = speedQueue.getVal(20, TimeUnit.MILLISECONDS)
+                speed = speedQueue.getVal(10, TimeUnit.MILLISECONDS) // quiet time
             }
             if (null != lastSpeed) {
-                waitMillis = EVENT_CONSUMER_WAIT_MS
                 log.info "got speed notification: $lastSpeed"
                 serverDolphin.changeValue(response, attribute, lastSpeed)
             }
+
             return response
         }
     }

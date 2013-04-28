@@ -18,8 +18,11 @@ package org.opendolphin.demo
 
 import org.opendolphin.core.client.comm.JavaFXUiThreadHandler
 
-def dolphin = StarterUtil.setupForRemote()
-dolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
+def writeDolphin = StarterUtil.setupForRemote()
+writeDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
+
+def readDolphin = StarterUtil.setupForRemote()
+readDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
 
 
-SharedTachoView.show dolphin, args.toList()
+SharedTachoView.show readDolphin, writeDolphin
