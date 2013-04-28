@@ -23,5 +23,5 @@ import groovy.transform.TupleConstructor
  */
 @TupleConstructor
 class NamedCommand extends Command {
-    String id
+    String id // todo dk: should better be "name"
 }
