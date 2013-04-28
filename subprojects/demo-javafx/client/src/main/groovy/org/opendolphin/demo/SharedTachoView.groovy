@@ -27,20 +27,24 @@ import static jfxtras.labs.scene.control.gauge.Gauge.FrameDesign.CHROME
 
 /**
  * This demo shows how to use the publish-subscribe pattern with the help of the Dolphin
- * event bus. Run multiple instances of it, where one instance is started with the command
- * line argument "Driver" to enable the slider that allows changing the speed.
+ * event bus. Start multiple instances of it.
+ * You can change the speed with the slider in any started instance.
  * Observe how changing the speed updates all views quasi-instantly.
+ * The slider is an input control and a view of the current speed at the same time.
+ * This may lead to a conflict when the speed is concurrently set in two instance to different values.
+ * The latest change will win and the read-only gauge will always show the winning value.
  */
 
 class SharedTachoView {
 
-    static show(ClientDolphin dolphin, List driver) {
+    static show(ClientDolphin readDolphin, ClientDolphin writeDolphin) {
 
         start { app ->
             def gauge = new Radial(
                 styleModel: new StyleModel(frameDesign: CHROME),
                 title: "km/h",
                 prefWidth: 250, prefHeight: 250,
+                valueAnimationEnabled: false,
                 effect: dropShadow(radius: 20, color: rgba(0, 0, 0, 0.4))
             )
 
@@ -54,20 +58,20 @@ class SharedTachoView {
             }
             blueStyle delegate
 
-            def car = dolphin.presentationModel 'Train', speed: 0
-            car.speed.qualifier = "train.speed"
+            def readCar = readDolphin.presentationModel 'Train', speed: 0
+            readCar.speed.qualifier = "train.speed"
 
-            bind 'speed' of car to FX.VALUE of gauge
-            bind 'speed' of car to FX.VALUE of slider
+            def writeCar = writeDolphin.presentationModel 'Train', speed: 0
+            writeCar.speed.qualifier = "train.speed.input"
 
-            if (driver) {
-                bind FX.VALUE of slider to 'speed' of car
-            } else {
-                slider.disabled = true
-                Closure longPoll
-                longPoll = { dolphin.send "poll.train.speed", longPoll }
-                longPoll()
-            }
+            bind 'speed' of readCar  to FX.VALUE of gauge
+            bind 'speed' of readCar  to FX.VALUE of slider, { slider.pressed ? slider.value : readCar.speed.value }
+
+            bind FX.VALUE of slider to 'speed' of writeCar, { it.toInteger() }
+
+            Closure longPoll
+            longPoll = { readDolphin.send "poll.train.speed", longPoll }
+            longPoll()
 
             primaryStage.show()
         }
