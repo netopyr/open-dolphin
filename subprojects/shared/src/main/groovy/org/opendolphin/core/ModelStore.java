@@ -110,7 +110,6 @@ public class ModelStore {
                 removeAttributeById(attribute);
                 removeAttributeByQualifier(attribute);
                 attribute.removePropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
-                if (!isBlank(attribute.getQualifier())) removeAttributeByQualifier(attribute);
             }
             fireModelStoreChangedEvent(model, ModelStoreEvent.Type.REMOVED);
             removed = true;
