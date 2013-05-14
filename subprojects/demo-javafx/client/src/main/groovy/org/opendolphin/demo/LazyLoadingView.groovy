@@ -128,6 +128,11 @@ class LazyLoadingView {
             dolphin.addModelStoreListener("LAZY") { ModelStoreEvent evt ->
                 if (evt.type == ModelStoreEvent.Type.ADDED) {
                     lazilyLoadedField.text = ++count
+                }
+            }
+            // count the number of lazily loaded pms by listing to the model store
+            dolphin.addModelStoreListener("LAZY") { ModelStoreEvent evt ->
+                if (evt.type == ModelStoreEvent.Type.ADDED) {
                     gauge.value = 100d * count / observableList.size()
                 }
             }

@@ -69,7 +69,7 @@ class DirtyAttributeFlagView {
             bindInfo DIRTY_PROPERTY of model[NAME]         to FX.TEXT_FILL  of nameLabel,     { it ? RED : WHITE }
             bindInfo DIRTY_PROPERTY of model[LASTNAME]     to FX.TEXT_FILL  of lastnameLabel, { it ? RED : WHITE }
             bindInfo DIRTY_PROPERTY of model               to FX.TITLE      of primaryStage , { it ? '** DIRTY **': '' }
-            bindInfo DIRTY_PROPERTY of model               to FX.DISABLED   of saveButton,    { !it }
+            bindInfo DIRTY_PROPERTY of model               to FX.DISABLE   of saveButton,    { !it }
 
             primaryStage.show()
         }

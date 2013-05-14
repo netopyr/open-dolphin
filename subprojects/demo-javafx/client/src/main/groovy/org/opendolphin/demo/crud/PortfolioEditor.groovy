@@ -98,7 +98,7 @@ class PortfolioEditor {
             bind TOTAL       of portfolioPM to FX.TEXT      of totalField
 
             [nameField, positions, plus, minus].each { control ->
-                bind FIXED   of portfolioPM to FX.DISABLED  of control
+                bind FIXED   of portfolioPM to FX.DISABLE  of control
             }
         }
     }

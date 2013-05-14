@@ -70,7 +70,7 @@ class NewAndSaveView {
             bindInfo DIRTY_PROPERTY of person[NAME]         to FX.TEXT_FILL  of nameLabel,     { it ? RED : WHITE }
             bindInfo DIRTY_PROPERTY of person[LASTNAME]     to FX.TEXT_FILL  of lastnameLabel, { it ? RED : WHITE }
             bindInfo DIRTY_PROPERTY of person               to FX.TITLE      of primaryStage , { it ? '** Unsaved **': '' }
-            bindInfo DIRTY_PROPERTY of person               to FX.DISABLED   of saveButton,    { !it }
+            bindInfo DIRTY_PROPERTY of person               to FX.DISABLE   of saveButton,    { !it }
 
             saveButton.onAction = {
                 if (form.mode.value == "Update") {

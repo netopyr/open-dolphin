@@ -30,9 +30,6 @@ import static org.opendolphin.core.Tag.TOOLTIP
 import static org.opendolphin.demo.DemoStyle.style
 import static org.opendolphin.demo.MyProps.ATT.*
 import static groovyx.javafx.GroovyFX.start
-import static javafx.scene.paint.Color.BROWN
-import static javafx.scene.paint.Color.RED
-import static javafx.scene.paint.Color.WHITE
 
 /**
  * An example where not only the values and dirty properties are bound but also the
@@ -97,7 +94,7 @@ class AttributeTagView {
             model[LASTNAME].addPropertyChangeListener('dirty',
                 { putStyle(sgb.lastnameLabel, it.newValue, 'dirty') } as PropertyChangeListener)
             bindInfo DIRTY_PROPERTY of model           to FX.TITLE        of primaryStage , { it ? '** DIRTY **': '' }
-            bindInfo DIRTY_PROPERTY of model           to FX.DISABLED     of reset        , { !it }
+            bindInfo DIRTY_PROPERTY of model           to FX.DISABLE     of reset        , { !it }
 
             primaryStage.show()
         }
