@@ -1,0 +1,12 @@
+#main_scene {
+    -fx-background-color: radial-gradient(radius 90%, lightblue, #4a87a9);
+}
+
+.content {
+    -fx-background-color: rgba(255, 255, 255, 0.20);
+    -fx-background-radius: 5;
+}
+
+.label {
+    -fx-text-fill: white;
+}

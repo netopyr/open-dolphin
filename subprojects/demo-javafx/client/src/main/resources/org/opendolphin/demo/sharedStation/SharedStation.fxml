@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<BorderPane id="main_scene" xmlns:fx="http://javafx.com/fxml">
+  <bottom>
+    <Pane maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="null" BorderPane.alignment="TOP_LEFT">
+      <children>
+        <HBox id="HBox" alignment="CENTER" layoutX="10.0" layoutY="0.0" spacing="5.0" styleClass="white">
+          <children>
+            <Label id="user_label" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="-1.0" text="user" />
+            <Label text="is" />
+            <Label id="status_label" text="status" />
+            <Label id="word_label" text="" />
+          </children>
+        </HBox>
+      </children>
+      <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1" />
+      </padding>
+    </Pane>
+  </bottom>
+  <center>
+    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" styleClass="content" vgap="5.0" BorderPane.margin="$x1">
+      <children>
+        <Label text="Detail" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField id="input_textfield" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="-1.0" percentWidth="30.0" prefWidth="-1.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      </columnConstraints>
+      <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1" />
+      </padding>
+      <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="-1.0" valignment="CENTER" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </center>
+  <right>
+    <VBox fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="95.0" spacing="2.0">
+      <children>
+        <Button id="wakeup_button" mnemonicParsing="false" prefWidth="200.0" text="Wake up" />
+        <Button id="play_button" mnemonicParsing="false" prefWidth="200.0" text="Play" />
+        <Button id="gotobed_button" mnemonicParsing="false" prefWidth="200.0" text="Go to bed" />
+      </children>
+      <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1" />
+      </padding>
+    </VBox>
+  </right>
+  <stylesheets>
+    <URL value="@SharedStationStyle.css" />
+  </stylesheets>
+  <top>
+    <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="5.0">
+      <children>
+        <Button id="felicitas_button" mnemonicParsing="false" text="Felicitas" />
+        <Button id="florian_button" mnemonicParsing="false" text="Florian" />
+        <Button id="sophie_button" mnemonicParsing="false" text="Sophie" />
+        <Button id="elin_button" mnemonicParsing="false" text="Elin" />
+      </children>
+      <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1" />
+      </padding>
+    </HBox>
+  </top>
+</BorderPane>
