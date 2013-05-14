@@ -165,6 +165,10 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return result;
     }
 
+    /**
+     * Synchronizes all attributes of the source with all matching attributes of this presentation model
+     * @param sourcePresentationModel may not be null since this most likely indicates an error
+     */
     public void syncWith(PresentationModel sourcePresentationModel) {
         for (Attribute targetAttribute : attributes) {
             Attribute sourceAttribute = sourcePresentationModel.getAt(targetAttribute.getPropertyName(), targetAttribute.getTag());
