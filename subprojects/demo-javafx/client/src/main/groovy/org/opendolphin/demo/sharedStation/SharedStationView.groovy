@@ -65,22 +65,16 @@ class SharedStationView {
             }
         }
         dolphin.presentationModel("current_detail", "Detail", detail:'')
-        dolphin.presentationModel("user_status", null, content:null)
     }
 
     private void binding() {
         def current_user   = dolphin["current_user"]
         def current_detail = dolphin["current_detail"]
-        def user_status    = dolphin["user_status"]
-
-        user_status.content.addPropertyChangeListener(Attribute.VALUE, { event ->
-            def current_user_detail = dolphin["${current_user.name.value}-${current_user.status.value}"]
-            if (!current_user_detail) return // values are null on startup
-            dolphin.apply(current_user_detail).to(current_detail)
-        } as PropertyChangeListener)
 
         def update_user_status = {
-            user_status.content.value = "${current_user.name.value}-${current_user.status.value}"
+            def current_user_detail = dolphin["${current_user.name.value}-${current_user.status.value}"]
+            if (!current_user_detail) return it // values are null on startup
+            dolphin.apply(current_user_detail).to(current_detail)
             return it
         }
 
