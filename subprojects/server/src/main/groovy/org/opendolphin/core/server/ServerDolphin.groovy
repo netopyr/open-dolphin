@@ -27,6 +27,7 @@ import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.DeletePresentationModelCommand
 import org.opendolphin.core.comm.InitializeAttributeCommand
+import org.opendolphin.core.comm.PresentationModelResetedCommand
 import org.opendolphin.core.comm.ValueChangedCommand
 import org.opendolphin.core.server.action.*
 import org.opendolphin.core.server.comm.NamedCommandHandler
@@ -100,7 +101,7 @@ class ServerDolphin extends Dolphin {
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable(), clientSideOnly:true)
     }
 
-    /** Convenience method to let Dolphin reset the value of an attribute */
+    /** Convenience method to let Dolphin rebase the value of an attribute */
     static void rebase(List<Command> response, long attributeId){
         response << new BaseValueChangedCommand(attributeId: attributeId)
     }
@@ -108,6 +109,20 @@ class ServerDolphin extends Dolphin {
     /** Convenience method to let Dolphin delete a presentation model */
     static void delete(List<Command> response, String pmId){
         response << new DeletePresentationModelCommand(pmId: pmId)
+    }
+
+    /** Convenience method to let Dolphin reset a presentation model */
+    static void reset(List<Command> response, String pmId){
+        response << new PresentationModelResetedCommand(pmId: pmId)
+    }
+
+    /** Convenience method to let Dolphin reset the value of an attribute */
+    static void reset(List<Command> response, ServerAttribute attribute) {
+        response << new ValueChangedCommand(
+            attributeId: attribute.id,
+            oldValue: attribute.value,
+            newValue: attribute.baseValue
+        )
     }
 
     /**
