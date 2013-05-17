@@ -71,23 +71,24 @@ class SharedStationView {
         def current_user   = dolphin["current_user"]
         def current_detail = dolphin["current_detail"]
 
-        def update_user_status = {
+        def update_current_detail = {
             def current_user_detail = dolphin["${current_user.name.value}-${current_user.status.value}"]
             if (!current_user_detail) return it // values are null on startup
             dolphin.apply(current_user_detail).to(current_detail)
             return it
         }
 
-        bind "name"   of current_user to FX.TEXT of user_label,   update_user_status
-        bind "status" of current_user to FX.TEXT of status_label, update_user_status
+        bind "name"   of current_user to FX.TEXT of user_label,   update_current_detail
+        bind "status" of current_user to FX.TEXT of status_label, update_current_detail
 
-        bind "detail" of current_detail to FX.TEXT of word_label
-        bind "detail" of current_detail to FX.TEXT of input_textfield
-        bind FX.TEXT  of input_textfield to "detail" of current_detail
+        bind "detail" of current_detail to FX.TEXT of detail_label
+        bind "detail" of current_detail to FX.TEXT of detail_textfield
+        bind FX.TEXT  of detail_textfield to "detail" of current_detail
 
         users.each { user ->
             def button = this."${user}_button"
             button.onAction = { dolphin.apply(dolphin[user]).to(current_user) } as EventHandler
+            bind "name" of current_user to "style" of button, { it == user ? "-fx-background-color:transparent" : "" }
         }
         actions.each { action ->
             def button = this."${action}_button"
