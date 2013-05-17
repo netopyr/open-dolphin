@@ -27,6 +27,7 @@ import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.DeletePresentationModelCommand
 import org.opendolphin.core.comm.InitializeAttributeCommand
+import org.opendolphin.core.comm.PresentationModelResetedCommand
 import org.opendolphin.core.comm.ValueChangedCommand
 import org.opendolphin.core.server.action.*
 import org.opendolphin.core.server.comm.NamedCommandHandler
@@ -90,6 +91,7 @@ class ServerDolphin extends Dolphin {
 
     /** Convenience method to let Dolphin create a presentation model as specified by the DTO. */
     static void presentationModel(List<Command> response, String id, String presentationModelType, DTO dto){
+        if (null == response) return
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable())
     }
 
@@ -97,23 +99,73 @@ class ServerDolphin extends Dolphin {
      *    <strong> client-side only </strong>
      *  presentation model as specified by the DTO. */
     static void clientSideModel(List<Command> response, String id, String presentationModelType, DTO dto){
+        if (null == response) return
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable(), clientSideOnly:true)
     }
 
-    /** Convenience method to let Dolphin reset the value of an attribute */
+    /** Convenience method to let Dolphin rebase the value of an attribute */
+    static void rebase(List<Command> response, ServerAttribute attribute){
+        if (null == attribute) {
+            log.severe("Cannot rebase null attribute")
+            return
+        }
+        rebase(response, attribute.id)
+    }
+
+    /** Convenience method to let Dolphin rebase the value of an attribute */
     static void rebase(List<Command> response, long attributeId){
+        if (null == response) return
         response << new BaseValueChangedCommand(attributeId: attributeId)
     }
 
     /** Convenience method to let Dolphin delete a presentation model */
+    static void delete(List<Command> response, ServerPresentationModel pm){
+        if (null == pm) {
+            log.severe("Cannot delete null presentation model")
+            return
+        }
+        delete(response, pm.id)
+    }
+
+    /** Convenience method to let Dolphin delete a presentation model */
     static void delete(List<Command> response, String pmId){
+        if (null == response || isBlank(pmId)) return
         response << new DeletePresentationModelCommand(pmId: pmId)
+    }
+
+    /** Convenience method to let Dolphin reset a presentation model */
+    static void reset(List<Command> response, ServerPresentationModel pm){
+        if (null == pm) {
+            log.severe("Cannot reset null presentation model")
+            return
+        }
+        delete(response, pm.id)
+    }
+
+    /** Convenience method to let Dolphin reset a presentation model */
+    static void reset(List<Command> response, String pmId){
+        if (null == response || isBlank(pmId)) return
+        response << new PresentationModelResetedCommand(pmId: pmId)
+    }
+
+    /** Convenience method to let Dolphin reset the value of an attribute */
+    static void reset(List<Command> response, ServerAttribute attribute) {
+        if (null == response || null == attribute) {
+            log.severe("Cannot reset null attribute")
+            return
+        }
+        response << new ValueChangedCommand(
+            attributeId: attribute.id,
+            oldValue: attribute.value,
+            newValue: attribute.baseValue
+        )
     }
 
     /**
      * Convenience method to change an attribute value on the server side.
      */
     static void changeValue(List<Command>response, ServerAttribute attribute, value){
+        if (null == response) return
         if (null == attribute) {
             log.severe("Cannot change value on a null attribute to '$value'")
             return
@@ -125,6 +177,7 @@ class ServerDolphin extends Dolphin {
 
     /** Convenience method for the InitializeAttributeCommand */
     static void initAt(List<Command>response, String pmId, String propertyName, String qualifier, Object newValue = null, Tag tag = Tag.VALUE) {
+        if (null == response) return
         response << new InitializeAttributeCommand(pmId: pmId, propertyName: propertyName, qualifier: qualifier, newValue: newValue, tag: tag)
     }
 

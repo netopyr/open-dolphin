@@ -95,6 +95,12 @@ public class BasePresentationModel extends AbstractObservable implements Present
         }
     }
 
+    public void rebase() {
+        for (Attribute attr : attributes) {
+            attr.rebase();
+        }
+    }
+
     /**
      * @return the immutable internal representation
      */
