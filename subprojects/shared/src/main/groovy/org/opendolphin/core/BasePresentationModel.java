@@ -142,6 +142,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return null;
     }
 
+    // todo dk: consider removing this method. It is not used in any demo.
     public Attribute findAttributeByQualifier(String qualifier) {
         if (null == qualifier) return null;
         for (Attribute attribute : attributes) {
