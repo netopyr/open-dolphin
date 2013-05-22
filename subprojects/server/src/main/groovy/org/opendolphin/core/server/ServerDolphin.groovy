@@ -141,7 +141,7 @@ class ServerDolphin extends Dolphin {
             log.severe("Cannot reset null presentation model")
             return
         }
-        delete(response, pm.id)
+        reset(response, pm.id)
     }
 
     /** Convenience method to let Dolphin reset a presentation model */

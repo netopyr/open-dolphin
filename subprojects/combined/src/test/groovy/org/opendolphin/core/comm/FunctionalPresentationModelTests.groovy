@@ -301,14 +301,14 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         assert pm.attr.value == 1
         assert pm.attr.baseValue == 1
 
-        serverDolphin.action('updateForRebase') { cmd, response ->
+        serverDolphin.action('rebase') { cmd, response ->
             serverDolphin.rebase(response, serverDolphin['pm'].attr)
         }
         pm.attr.value = 2
         assert pm.attr.value == 2
         assert pm.attr.baseValue == 1
 
-        clientDolphin.send 'updateForRebase', {
+        clientDolphin.send 'rebase', {
             // dk: it is a bit odd that we have nest this...
             clientDolphin.sync {
                 assert serverDolphin['pm'].attr.baseValue == 2
@@ -317,17 +317,68 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
     }
 
+    void testAttributeReset() {
+        ClientPresentationModel pm = clientDolphin.presentationModel('pm', attr: 1)
+
+        serverDolphin.action('reset') { cmd, response ->
+            serverDolphin.reset(response, serverDolphin['pm'].attr)
+        }
+        pm.attr.value = 2
+
+        clientDolphin.send 'reset', {
+            assert pm.attr.value == 1
+            assert ! pm.attr.dirty
+            context.assertionsDone()
+        }
+    }
+
+    void testPresentationModelReset() {
+        ClientPresentationModel pm = clientDolphin.presentationModel('pm', attr: 1)
+
+        serverDolphin.action('reset') { cmd, response ->
+            serverDolphin.reset(response, serverDolphin['pm'])
+        }
+        pm.attr.value = 2
+        assert pm.dirty
+
+        clientDolphin.send 'reset', {
+            assert pm.attr.value == 1
+            assert ! pm.dirty
+            context.assertionsDone()
+        }
+    }
+
+    void testDeletePresentationModel() {
+        clientDolphin.presentationModel('pm', attr: 1)
+
+        serverDolphin.action('delete') { cmd, response ->
+            serverDolphin.delete(response, serverDolphin['pm'])
+        }
+        assert clientDolphin['pm']
+
+        clientDolphin.send 'delete', {
+            assert clientDolphin['pm'] == null
+            context.assertionsDone()
+        }
+    }
+
     void testWithNullResponses() {
         clientDolphin.presentationModel('pm', attr: 1)
 
         serverDolphin.action('arbitrary') { cmd, response ->
             serverDolphin.rebase(null, serverDolphin['pm'].attr)
-            serverDolphin.rebase(null, null)
+            serverDolphin.rebase([], null)
             serverDolphin.reset(null, serverDolphin['pm'])
-            serverDolphin.reset(null, '')
+            serverDolphin.reset([], '')
+            serverDolphin.reset([], (ServerAttribute) null)
+            serverDolphin.reset([], (ServerPresentationModel) null)
+            serverDolphin.delete([], null)
+            serverDolphin.delete([], '')
             serverDolphin.delete(null, '')
             serverDolphin.presentationModel(null, null,null,null)
             serverDolphin.clientSideModel(null, null, null, null)
+            serverDolphin.changeValue([], null, null)
+            serverDolphin.initAt(null, '', '', '')
         }
         clientDolphin.send('arbitrary'){
             context.assertionsDone()
