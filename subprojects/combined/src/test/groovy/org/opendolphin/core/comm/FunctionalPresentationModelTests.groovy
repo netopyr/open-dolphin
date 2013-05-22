@@ -302,7 +302,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         assert pm.attr.baseValue == 1
 
         serverDolphin.action('updateForRebase') { cmd, response ->
-            serverDolphin.rebase(response, pm.attr.id)
+            serverDolphin.rebase(response, serverDolphin['pm'].attr)
         }
         pm.attr.value = 2
         assert pm.attr.value == 2
@@ -315,6 +315,25 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
                 context.assertionsDone()
             }
         }
+    }
+
+    void testForNullResponses() {
+        ClientPresentationModel pm = clientDolphin.presentationModel('pm', attr: 1)
+        assert pm.attr.value == 1
+        assert pm.attr.baseValue == 1
+
+        serverDolphin.action('arbitrary') { cmd, response ->
+            serverDolphin.rebase(null, serverDolphin['pm'].attr) // does nothing
+            serverDolphin.reset(null, serverDolphin['pm']) // does nothing
+            serverDolphin.delete(null, serverDolphin['pm']) // does nothing
+            serverDolphin.presentationModel(null, null,null,null) // does nothing
+            serverDolphin.clientSideModel(null, null, null, null) // does nothing
+        }
+        clientDolphin.send('arbitrary'){
+            context.assertionsDone()
+
+        }
+
     }
 
 }
