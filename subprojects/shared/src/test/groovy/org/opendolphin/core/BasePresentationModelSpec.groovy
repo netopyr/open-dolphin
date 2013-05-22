@@ -136,4 +136,28 @@ class BasePresentationModelSpec extends Specification {
         attr2.dirty
         model.dirty
     }
+
+    def "rebasing a pm rebases all its attributes"() {
+        given:
+        def attr1 = new MyAttribute('one', 1)
+        def attr2 = new MyAttribute('two', 2)
+        def model = new BasePresentationModel('model', [attr1, attr2])
+
+        assert !model.dirty
+
+        when:
+        def newValue = 3
+        attr1.value = newValue
+
+        then:
+        model.dirty
+
+        when:
+        model.rebase()
+
+        then:
+        assert ! model.dirty
+        assert attr1.value == newValue
+        assert attr1.baseValue == newValue
+    }
 }
