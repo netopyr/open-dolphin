@@ -33,6 +33,8 @@ import org.opendolphin.core.server.action.*
 import org.opendolphin.core.server.comm.NamedCommandHandler
 import org.opendolphin.core.server.comm.ServerConnector
 
+import static org.opendolphin.StringUtil.isBlank
+
 /**
  * The main Dolphin facade on the server side.
  * Responsibility: single access point for dolphin capabilities.

@@ -1,12 +1,14 @@
 package org.opendolphin.core;
 
+import org.opendolphin.StringUtil;
+
 public class ModelStoreListenerWrapper implements ModelStoreListener {
     private static final String ANY_PRESENTATION_MODEL_TYPE = "*";
     private final String presentationModelType;
     private final ModelStoreListener delegate;
 
     ModelStoreListenerWrapper(String presentationModelType, ModelStoreListener delegate) {
-        this.presentationModelType = !ModelStore.isBlank(presentationModelType) ? presentationModelType : ANY_PRESENTATION_MODEL_TYPE;
+        this.presentationModelType = !StringUtil.isBlank(presentationModelType) ? presentationModelType : ANY_PRESENTATION_MODEL_TYPE;
         this.delegate = delegate;
     }
 

@@ -16,6 +16,8 @@
 
 package org.opendolphin.core;
 
+import org.opendolphin.StringUtil;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -86,7 +88,7 @@ public class ModelStore {
             for (Attribute attribute : model.getAttributes()) {
                 addAttributeById(attribute);
                 attribute.addPropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
-                if (!isBlank(attribute.getQualifier())) addAttributeByQualifier(attribute);
+                if (!StringUtil.isBlank(attribute.getQualifier())) addAttributeByQualifier(attribute);
             }
             if (!modelStoreListeners.isEmpty()) fireModelStoreChangedEvent(model, ModelStoreEvent.Type.ADDED);
             added = true;
@@ -130,7 +132,7 @@ public class ModelStore {
     protected void addAttributeByQualifier(Attribute attribute) {
         if (null == attribute) return;
         String qualifier = attribute.getQualifier();
-        if (isBlank(qualifier)) return;
+        if (StringUtil.isBlank(qualifier)) return;
         List<Attribute> list = attributesPerQualifier.get(qualifier);
         if (null == list) {
             list = new ArrayList<Attribute>();
@@ -142,7 +144,7 @@ public class ModelStore {
     protected void removeAttributeByQualifier(Attribute attribute) {
         if (null == attribute) return;
         String qualifier = attribute.getQualifier();
-        if (isBlank(qualifier)) return;
+        if (StringUtil.isBlank(qualifier)) return;
         List<Attribute> list = attributesPerQualifier.get(qualifier);
         if (null != list) {
             list.remove(attribute);
@@ -152,7 +154,7 @@ public class ModelStore {
     protected void addPresentationModelByType(PresentationModel model) {
         if (null == model) return;
         String type = model.getPresentationModelType();
-        if (isBlank(type)) return;
+        if (StringUtil.isBlank(type)) return;
         List<PresentationModel> list = modelsPerType.get(type);
         if (null == list) {
             list = new ArrayList<PresentationModel>();
@@ -164,7 +166,7 @@ public class ModelStore {
     protected void removePresentationModelByType(PresentationModel model) {
         if (null == model) return;
         String type = model.getPresentationModelType();
-        if (isBlank(type)) return;
+        if (StringUtil.isBlank(type)) return;
         List<PresentationModel> list = modelsPerType.get(type);
         if (null == list) return;
         list.remove(model);
@@ -174,7 +176,7 @@ public class ModelStore {
     }
 
     protected void removeAttributeByQualifier(Attribute attribute, String qualifier) {
-        if (isBlank(qualifier)) return;
+        if (StringUtil.isBlank(qualifier)) return;
         List<Attribute> list = attributesPerQualifier.get(qualifier);
         if (null == list) return;
         list.remove(attribute);
@@ -202,7 +204,7 @@ public class ModelStore {
      * @return a {@code List} of all presentation models for which there was a match in their type.
      */
     public List<PresentationModel> findAllPresentationModelsByType(String type) {
-        if (isBlank(type) || !modelsPerType.containsKey(type)) return Collections.emptyList();
+        if (StringUtil.isBlank(type) || !modelsPerType.containsKey(type)) return Collections.emptyList();
         return Collections.unmodifiableList(modelsPerType.get(type));
     }
 
@@ -234,7 +236,7 @@ public class ModelStore {
      * @return a {@code List} of all attributes fo which their qualifier was a match.
      */
     public List<Attribute> findAllAttributesByQualifier(String qualifier) {
-        if (isBlank(qualifier) || !attributesPerQualifier.containsKey(qualifier)) return Collections.emptyList();
+        if (StringUtil.isBlank(qualifier) || !attributesPerQualifier.containsKey(qualifier)) return Collections.emptyList();
         return Collections.unmodifiableList(attributesPerQualifier.get(qualifier));
     }
 
@@ -255,12 +257,6 @@ public class ModelStore {
         addAttributeByQualifier(attribute);
         addAttributeById(attribute);
     }
-
-    // todo: move to an utility class
-    public static boolean isBlank(String str) {
-        return null == str || str.trim().length() == 0;
-    }
-
 
     public void addModelStoreListener(ModelStoreListener listener) {
         addModelStoreListener(null, listener);
