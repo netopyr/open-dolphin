@@ -372,7 +372,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             serverDolphin.reset([], '')
             serverDolphin.reset([], (ServerAttribute) null)
             serverDolphin.reset([], (ServerPresentationModel) null)
-            serverDolphin.delete([], null)
+            serverDolphin.delete([], (ServerPresentationModel) null)
             serverDolphin.delete([], '')
             serverDolphin.delete(null, '')
             serverDolphin.presentationModel(null, null,null,null)
