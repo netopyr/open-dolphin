@@ -296,7 +296,6 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         })
     }
 
-    /*
     void testAttributeRebase() {
         ClientPresentationModel pm = clientDolphin.presentationModel('pm', attr: 1)
         assert pm.attr.value == 1
@@ -309,11 +308,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         assert pm.attr.value == 2
         assert pm.attr.baseValue == 1
 
-        clientDolphin.send 'updateForRebase'
-        clientDolphin.sync {
-            assert serverDolphin['pm'].attr.baseValue == 2
-            context.assertionsDone()
+        clientDolphin.send 'updateForRebase', {
+            // dk: it is a bit odd that we have nest this...
+            clientDolphin.sync {
+                assert serverDolphin['pm'].attr.baseValue == 2
+                context.assertionsDone()
+            }
         }
     }
-    */
+
 }
