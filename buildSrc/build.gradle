@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    compile localGroovy()
+    groovy localGroovy()
     compile gradleApi()
     compile(ext.grailsDocs) { transitive = false }
     compile(ext.xhtmlRenderer) { transitive = false }
