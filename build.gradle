@@ -235,7 +235,7 @@ subprojects.each { proj ->
 }
 
 task wrap(type: Wrapper, description: "create a gradlew") {
-    gradleVersion = '1.5'
+    gradleVersion = '1.6'
 }
 
 apply {
