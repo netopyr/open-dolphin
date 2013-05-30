@@ -6,7 +6,7 @@ import org.opendolphin.core.client.ClientPresentationModel
 
 import static org.opendolphin.demo.crud.PortfolioConstants.PM_ID.SELECTED
 
-class SampleModel {
+class CrudModel {
     ObservableList<ClientPresentationModel> observableListOfPortfolios = FXCollections.observableArrayList()
 
     ClientPresentationModel visiblePortfolio

@@ -11,6 +11,6 @@ log4j = {
            'griffon.core',
            'griffon.javafx',
            'griffon.app'
-    info  'org.apache.http'
+    warn   'org.apache.http'
 }
 

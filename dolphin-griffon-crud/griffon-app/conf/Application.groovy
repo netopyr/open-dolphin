@@ -1,6 +1,6 @@
 application {
-    title = 'Sample'
-    startupGroups = ['sample']
+    title = 'CRUD Demo'
+    startupGroups = ['crud']
 
     // Should Griffon exit when no Griffon created frames are showing?
     autoShutdown = true
@@ -9,10 +9,16 @@ application {
     //frameClass = 'javax.swing.JFrame'
 }
 mvcGroups {
-    // MVC Group for "sample"
-    'sample' {
-        model      = 'org.opendolphin.demo.crud.SampleModel'
-        view       = 'org.opendolphin.demo.crud.SampleView'
-        controller = 'org.opendolphin.demo.crud.SampleController'
+    // MVC Group for "crud"
+    'crud' {
+        model      = 'org.opendolphin.demo.crud.CrudModel'
+        view       = 'org.opendolphin.demo.crud.CrudView'
+        controller = 'org.opendolphin.demo.crud.CrudController'
+    }
+    // MVC Group for "portfolioEditor"
+    'portfolioEditor' {
+        model      = 'org.opendolphin.demo.crud.PortfolioEditorModel'
+        view       = 'org.opendolphin.demo.crud.PortfolioEditorView'
+        controller = 'org.opendolphin.demo.crud.PortfolioEditorController'
     }
 }

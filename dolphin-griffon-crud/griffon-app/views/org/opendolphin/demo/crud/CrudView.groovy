@@ -36,10 +36,8 @@ portfolios.selectionModel.selectedItemProperty().addListener({ o, oldVal, select
 
     def gotoTab = portfolioTabs.tabs.find { it.id == selectedPm.id }
     if (!gotoTab) {
-        PortfolioEditor editor = new PortfolioEditor(selectedPm, dolphin)
-        gotoTab = tab(id:selectedPm.id) {
-            editor.initView(builder)
-        }
+        def (m, v, c) = createMVCGroup('portfolioEditor', selectedPm.id, [tabId: selectedPm.id, portfolioPM: selectedPm])
+        gotoTab = v.portfolioTab
         JFXBinder.bind NAME of selectedPm to FX.TEXT of gotoTab
         portfolioTabs.tabs << gotoTab
     }

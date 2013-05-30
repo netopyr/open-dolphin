@@ -1,6 +1,6 @@
 package org.opendolphin.demo.crud
 
-class SampleController {
+class CrudController {
     def model
     def builder
 
