@@ -8,7 +8,11 @@ import org.opendolphin.demo.SharedTachoAction
 import org.opendolphin.demo.VehiclePushActions
 import org.opendolphin.demo.crud.CrudActions
 import org.opendolphin.demo.crud.CrudService
+import org.opendolphin.demo.psycho.PsychodelicJavaActions
 import groovy.util.logging.Log
+
+import java.util.logging.Level
+import java.util.logging.Logger
 
 @Log
 class DolphinSpringBean {
@@ -19,6 +23,9 @@ class DolphinSpringBean {
         EventBus tachoBus,
         EventBus manyEventsBus
     ) {
+
+        Logger.getLogger("").level = Level.OFF
+
         log.info "creating new dolphin session"
 
         dolphin.registerDefaultActions()
@@ -32,6 +39,7 @@ class DolphinSpringBean {
         dolphin.register(new PerformanceAction())
         dolphin.register(new SharedTachoAction().subscribedTo(tachoBus))
         dolphin.register(new ManyEventsAction().subscribedTo(manyEventsBus))
+        dolphin.register(new PsychodelicJavaActions())
 
     }
 }

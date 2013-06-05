@@ -37,10 +37,12 @@ grails.project.dependency.resolution = {
     dependencies {
         compile 'org.codehaus.gpars:gpars:1.0.0'
 
-        compile 'org.open-dolphin:dolphin-shared:0.8-SNAPSHOT'
-        compile 'org.open-dolphin:dolphin-server:0.8-SNAPSHOT'
-        compile 'org.open-dolphin:dolphin-demo-javafx-server:0.8-SNAPSHOT'
-        compile 'org.open-dolphin:dolphin-demo-javafx-shared:0.8-SNAPSHOT'
+        def dolphinVersion = '0.8-SNAPSHOT-2'
+
+        compile "org.open-dolphin:dolphin-shared:$dolphinVersion"
+        compile "org.open-dolphin:dolphin-server:$dolphinVersion"
+        compile "org.open-dolphin:dolphin-demo-javafx-server:$dolphinVersion"
+        compile "org.open-dolphin:dolphin-demo-javafx-shared:$dolphinVersion"
     }
 
     plugins {
