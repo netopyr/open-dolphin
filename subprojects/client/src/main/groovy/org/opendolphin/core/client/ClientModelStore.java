@@ -25,6 +25,7 @@ import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 import org.opendolphin.core.client.comm.WithPresentationModelHandler;
 import org.opendolphin.core.comm.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class ClientModelStore extends ModelStore {
@@ -93,12 +94,25 @@ public class ClientModelStore extends ModelStore {
     }
 
     public void delete(ClientPresentationModel model) {
+        delete(model, true);
+    }
+
+    public void delete(ClientPresentationModel model, boolean notify) {
         if (model == null) return;
         if (containsPresentationModel(model.getId())) {
             remove(model);
+            if (!notify) return;
             if (model.isClientSideOnly()) return;
             getClientConnector().send(new DeletedPresentationModelNotification(model.getId()));
         }
+    }
+
+    public void deleteAllPresentationModelsOfType(String presentationModelType) {
+        List<PresentationModel> models = new LinkedList<PresentationModel>(findAllPresentationModelsByType(presentationModelType));
+        for (PresentationModel model: models) {
+            delete(((ClientPresentationModel) model), false);
+        }
+        getClientConnector().send(new DeletedAllPresentationModelsOfTypeNotification(presentationModelType));
     }
 
 }

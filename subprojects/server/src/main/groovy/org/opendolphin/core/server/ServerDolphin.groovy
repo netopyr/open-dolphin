@@ -72,6 +72,7 @@ class ServerDolphin extends Dolphin {
         register new CreatePresentationModelAction()
         register new BaseValueChangeAction()
         register new DeletePresentationModelAction()
+        register new DeletedAllPresentationModelsOfTypeAction()
         serverConnector.register new EmptyAction()
     }
 
