@@ -176,7 +176,7 @@ configure(mavenizedProjects()) {
                         name 'Open Dolphin'
                         packaging 'jar'
                         description 'Dolphin is a free open-source library that protects your business applications against the uncertainties of changing visualization technologies.'
-                        url 'http://open-dolhin.org/'
+                        url 'http://open-dolphin.org/'
 
                         scm {
                             url 'https://github.com/canoo/open-dolphin.git'
