@@ -24,14 +24,10 @@ import java.util.*;
 
 public class ModelStore {
 
-    private final static int PM_CAPACITY  =  1000;
-    private final static int TYPE_CAPACITY  =  40;
-    private final static int ATT_CAPACITY = 10000;
-
-    private final Map<String, PresentationModel> presentationModels = new HashMap<String, PresentationModel>(PM_CAPACITY);
-    private final Map<String, List<PresentationModel>> modelsPerType = new HashMap<String, List<PresentationModel>>(TYPE_CAPACITY);
-    private final Map<Long, Attribute> attributesPerId = new HashMap<Long, Attribute>(ATT_CAPACITY);
-    private final Map<String, List<Attribute>> attributesPerQualifier = new HashMap<String, List<Attribute>>(PM_CAPACITY);
+    private final Map<String, PresentationModel> presentationModels;
+    private final Map<String, List<PresentationModel>> modelsPerType;
+    private final Map<Long, Attribute> attributesPerId;
+    private final Map<String, List<Attribute>> attributesPerQualifier;
 
     private final Set<ModelStoreListenerWrapper> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper>();
 
@@ -46,6 +42,18 @@ public class ModelStore {
             if (null != newQualifier) addAttributeByQualifier(attribute);
         }
     };
+
+
+    public ModelStore() {
+        this(new ModelStoreConfig());
+    }
+
+    public ModelStore(ModelStoreConfig config) {
+        presentationModels = new HashMap<String, PresentationModel>(config.getPmCapacity());
+        modelsPerType = new HashMap<String, List<PresentationModel>>(config.getTypeCapacity());
+        attributesPerId = new HashMap<Long, Attribute>(config.getAttributeCapacity());
+        attributesPerQualifier = new HashMap<String, List<Attribute>>(config.getQualifierCapacity());
+    }
 
     /**
      * Returns a {@code Set} of all known presentation model ids.<br/>

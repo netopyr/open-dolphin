@@ -18,12 +18,16 @@ package org.opendolphin.core.client;
 
 import org.opendolphin.core.Attribute;
 import org.opendolphin.core.ModelStore;
+import org.opendolphin.core.ModelStoreConfig;
 import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.client.comm.ClientConnector;
 import org.opendolphin.core.client.comm.OnFinishedHandler;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 import org.opendolphin.core.client.comm.WithPresentationModelHandler;
-import org.opendolphin.core.comm.*;
+import org.opendolphin.core.comm.CreatePresentationModelCommand;
+import org.opendolphin.core.comm.DeletedAllPresentationModelsOfTypeNotification;
+import org.opendolphin.core.comm.DeletedPresentationModelNotification;
+import org.opendolphin.core.comm.GetPresentationModelCommand;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +36,11 @@ public class ClientModelStore extends ModelStore {
     private final ClientDolphin clientDolphin;
 
     public ClientModelStore(ClientDolphin clientDolphin) {
+        this(clientDolphin, new ModelStoreConfig());
+    }
+
+    public ClientModelStore(ClientDolphin clientDolphin, ModelStoreConfig config) {
+        super(config);
         this.clientDolphin = clientDolphin;
     }
 
