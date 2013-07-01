@@ -120,6 +120,12 @@ public class ClientDolphin extends Dolphin {
         clientModelStore.delete(modelToDelete)
     }
 
+    /** Removes the models of a given type from the model store just like delete()
+     * but sends only one notification to the server */
+    public void deleteAllPresentationModelsOfType(String presentationModelType) {
+        clientModelStore.deleteAllPresentationModelsOfType(presentationModelType)
+    }
+
     /**
      * Tags the attribute by
      * adding a new attribute with the given tag and value to the model store

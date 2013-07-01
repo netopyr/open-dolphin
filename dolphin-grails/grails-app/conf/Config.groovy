@@ -62,10 +62,10 @@ grails.hibernate.cache.queries = true
 // set per-environment serverURL stem for creating absolute links
 environments {
     development {
-        grails.logging.jul.usebridge = true
+        //grails.logging.jul.usebridge = true
     }
     production {
-        grails.logging.jul.usebridge = true
+        //grails.logging.jul.usebridge = true
         // TODO: grails.serverURL = "http://www.changeme.com"
     }
 }
@@ -91,5 +91,5 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    info   "org.opendolphin.core.server"
+    //info   "org.opendolphin.core.server"
 }

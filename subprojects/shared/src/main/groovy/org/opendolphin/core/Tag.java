@@ -16,8 +16,10 @@ public enum Tag {
     MANDATORY,  // boolean, maps to Grails constraint nullable:false
     TOOLTIP,    // String
     HELP_URL,   // Url.toExternalForm()
-    REGEX,            // regular expression for local, syntactical constraints like in "rejectField"
-    MESSAGE,   // a single text;
+    REGEX,      // regular expression for local, syntactical constraints like in "rejectField"
+    MESSAGE,    // a single text;
+    VALUE_TYPE, // a single text; e.g. "java.util.Date" if the value String represents a date
+    WIDGET_HINT,// a single text; e.g. "textArea" if the String value should be displayed in a text area instead of a textField
 
     // maybe this should be application specific
     ERROR_TYPE,       // PMs of this type capture the validation errors for this attribute
