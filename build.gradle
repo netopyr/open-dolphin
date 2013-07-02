@@ -198,6 +198,10 @@ configure(mavenizedProjects()) {
                                 name 'Andres Almiray'
                             }
                             developer {
+                                id 'clipp'
+                                name 'Christoph Lipp'
+                            }
+                            developer {
                                 id 'DieterHolz'
                                 name 'Dieter Holz'
                             }
