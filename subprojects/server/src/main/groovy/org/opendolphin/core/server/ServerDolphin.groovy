@@ -33,6 +33,8 @@ import org.opendolphin.core.server.action.*
 import org.opendolphin.core.server.comm.NamedCommandHandler
 import org.opendolphin.core.server.comm.ServerConnector
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import static org.opendolphin.StringUtil.isBlank
 
 /**
@@ -52,6 +54,8 @@ class ServerDolphin extends Dolphin {
     /** the serverConnector is unique per user session */
     final ServerConnector serverConnector
 
+    private AtomicBoolean initialized = new AtomicBoolean(false);
+
     ServerDolphin(ModelStore serverModelStore, ServerConnector serverConnector) {
         this.serverModelStore = serverModelStore
         this.serverConnector = serverConnector
@@ -67,6 +71,10 @@ class ServerDolphin extends Dolphin {
     }
 
     void registerDefaultActions() {
+        if (initialized.getAndSet(true)) {
+            log.warning("attempt to initialize default actions more than once!")
+            return;
+        }
         register new StoreValueChangeAction()
         register new StoreAttributeAction()
         register new CreatePresentationModelAction()

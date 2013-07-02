@@ -13,12 +13,14 @@ class ActionRegistryTests extends GroovyTestCase {
 
     void testRegisterCommand() {
         assert 0 == registry.actions.size()
-        def action = {}
-        registry.register('Data', action)
+        def firstAction = {}
+        registry.register('Data', firstAction)
         assert 1 == registry.getAt('Data').size()
-        assert registry.getAt('Data').closure.contains(action)
-        registry.register(DataCommand, action)
-        registry.register(AttributeCreatedNotification, action)
+        assert registry.getAt('Data').closure.contains(firstAction)
+
+        def otherAction = {}
+        registry.register(DataCommand, otherAction)
+        registry.register(AttributeCreatedNotification, otherAction)
         assert 2 == registry.actions.size()
         assert 2 == registry.getAt('Data').size()
         assert 1 == registry.getAt('AttributeCreated').size()
@@ -28,7 +30,7 @@ class ActionRegistryTests extends GroovyTestCase {
         TestSimpleCommandHandler commandHandler = new TestSimpleCommandHandler()
         registry.register('Data', commandHandler)
         assert registry.getAt('Data').contains(commandHandler)
-        registry.register(DataCommand, commandHandler)
+        registry.register(DataCommand, new TestSimpleCommandHandler())
         assert 1 == registry.actions.size()
         assert 2 == registry.getAt('Data').size()
     }
@@ -56,4 +58,15 @@ class ActionRegistryTests extends GroovyTestCase {
         registry.unregister(DataCommand,action)
         assert 0 == registry.getAt('Data').size()
     }
+
+    void testRegisterCommand_MultipleCalls() {
+        assert 0 == registry.actions.size()
+        def action = {}
+        registry.register('Data', action)
+        assert 1 == registry.getAt('Data').size()
+
+        registry.register('Data', action)
+        assert 1 == registry.getAt('Data').size()
+    }
+
 }

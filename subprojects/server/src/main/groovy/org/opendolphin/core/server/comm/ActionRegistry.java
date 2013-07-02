@@ -31,19 +31,22 @@ public class ActionRegistry {
     }
 
     public void register(String commandId, Closure serverCommand) {
-        getActionsFor(commandId).add(new CommandHandlerClosureAdapter(serverCommand));
+        register(commandId, new CommandHandlerClosureAdapter(serverCommand));
     }
 
     public void register(Class commandClass, Closure serverCommand) {
-        getActionsFor(Command.idFor(commandClass)).add(new CommandHandlerClosureAdapter(serverCommand));
+        register(Command.idFor(commandClass), new CommandHandlerClosureAdapter(serverCommand));
     }
 
     public <T extends Command> void register(String commandId, CommandHandler<T> serverCommand) {
-        getActionsFor(commandId).add((CommandHandler<? super Command>) serverCommand);
+        List<CommandHandler<? super Command>> actions = getActionsFor(commandId);
+        if (!actions.contains(serverCommand)) {
+            actions.add((CommandHandler<? super Command>) serverCommand);
+        }
     }
 
     public <T extends Command>  void register(Class commandClass, CommandHandler<T> serverCommand) {
-        getActionsFor(Command.idFor(commandClass)).add((CommandHandler<? super Command>) serverCommand);
+        register(Command.idFor(commandClass), serverCommand);
     }
 
     public List<CommandHandler<? super Command>> getAt(String commandId) {
@@ -51,8 +54,7 @@ public class ActionRegistry {
     }
 
     public <T extends Command> void unregister(String commandId, Closure serverCommand) {
-        List<CommandHandler<? super Command>> commandList = getActionsFor(commandId);
-        commandList.remove(new CommandHandlerClosureAdapter(serverCommand));
+        unregister(commandId, new CommandHandlerClosureAdapter(serverCommand));
     }
 
     public void unregister(Class commandClass, Closure serverCommand) {

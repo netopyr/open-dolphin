@@ -106,11 +106,20 @@ public class ServerDolphinTest extends GroovyTestCase {
         assert dolphin.hasModelStoreListener('person',listener)
     }
 
+    void testRegisterDefaultActions() {
+        dolphin.registerDefaultActions();
+        def numDefaultActions = dolphin.serverConnector.dolphinServerActions.size()
+
+        // multiple calls should not lead to multiple initializations
+        dolphin.registerDefaultActions();
+        assert numDefaultActions == dolphin.serverConnector.dolphinServerActions.size()
+    }
+
     private ModelStoreListener getListener() {
         new ModelStoreListener() {
             @Override
             void modelStoreChanged(ModelStoreEvent event) {
-
+                // do nothing
             }
         }
     }

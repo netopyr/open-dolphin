@@ -32,7 +32,7 @@ class ServerConnector {
 
     ActionRegistry registry = new ActionRegistry()
 
-    private List<DolphinServerAction> dolphinServerActions = []
+    List<DolphinServerAction> dolphinServerActions = []
 
     /** doesn't fail on missing commands **/
     List<Command> receive(Command command) {
