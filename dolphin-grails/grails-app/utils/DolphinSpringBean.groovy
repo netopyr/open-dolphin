@@ -8,7 +8,7 @@ import org.opendolphin.demo.SharedTachoAction
 import org.opendolphin.demo.VehiclePushActions
 import org.opendolphin.demo.crud.CrudActions
 import org.opendolphin.demo.crud.CrudService
-import org.opendolphin.demo.psycho.PsychodelicJavaActions
+//import org.opendolphin.demo.psycho.PsychodelicJavaActions
 import groovy.util.logging.Log
 
 import java.util.logging.Level
@@ -39,7 +39,7 @@ class DolphinSpringBean {
         dolphin.register(new PerformanceAction())
         dolphin.register(new SharedTachoAction().subscribedTo(tachoBus))
         dolphin.register(new ManyEventsAction().subscribedTo(manyEventsBus))
-        dolphin.register(new PsychodelicJavaActions())
+ //       dolphin.register(new PsychodelicJavaActions())
 
     }
 }
