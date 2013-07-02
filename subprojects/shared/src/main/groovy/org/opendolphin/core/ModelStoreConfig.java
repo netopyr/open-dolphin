@@ -15,7 +15,12 @@
  */
 package org.opendolphin.core;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ModelStoreConfig {
+
+    private static final Logger log  = Logger.getLogger(ModelStoreConfig.class.getName());
 
     private int pmCapacity;
     private int typeCapacity;
@@ -23,30 +28,55 @@ public class ModelStoreConfig {
     private int qualifierCapacity;
 
     public ModelStoreConfig() {
-        this(1000, 40, 10000, 1000);
-    }
-
-    public ModelStoreConfig(int pmCapacity, int typeCapacity, int attributeCapacity, int qualifierCapacity) {
-        this.pmCapacity = pmCapacity;
-        this.typeCapacity = typeCapacity;
-        this.attributeCapacity = attributeCapacity;
-        this.qualifierCapacity = qualifierCapacity;
+        setPmCapacity(1024);
+        setTypeCapacity(64);
+        setAttributeCapacity(1024 * 4);
+        setQualifierCapacity(1024);
     }
 
     public int getPmCapacity() {
         return pmCapacity;
     }
 
+    public void setPmCapacity(int pmCapacity) {
+        ensurePowerOfTwo("pmCapacity", pmCapacity);
+        this.pmCapacity = pmCapacity;
+    }
+
     public int getTypeCapacity() {
         return typeCapacity;
+    }
+
+    public void setTypeCapacity(int typeCapacity) {
+        ensurePowerOfTwo("typeCapacity", typeCapacity);
+        this.typeCapacity = typeCapacity;
     }
 
     public int getAttributeCapacity() {
         return attributeCapacity;
     }
 
+    public void setAttributeCapacity(int attributeCapacity) {
+        ensurePowerOfTwo("attributeCapacity", attributeCapacity);
+        this.attributeCapacity = attributeCapacity;
+    }
+
     public int getQualifierCapacity() {
         return qualifierCapacity;
+    }
+
+    public void setQualifierCapacity(int qualifierCapacity) {
+        ensurePowerOfTwo("qualifierCapacity", qualifierCapacity);
+        this.qualifierCapacity = qualifierCapacity;
+    }
+
+    // all the capacities will be used to initialize HashMaps so they should be power of two
+    private void ensurePowerOfTwo(String parameter, int number) {
+        if (Integer.bitCount(number) > 1) {
+            if (log.isLoggable(Level.WARNING)) {
+                log.warning("Parameter '" + parameter + "' should be power of two but was " + number);
+            }
+        }
     }
 }
 
