@@ -26,7 +26,7 @@ class Slot {
      * Especially useful when a service returns data that an action puts into presentation models.
      */
     static List<Slot> slots(Map<String, Object> data) {
-        data.collect(new LinkedList()) { String key, Object value -> new Slot(key, value) }
+        (List<Slot>) data.collect(new LinkedList()) { String key, Object value -> new Slot(key, value) }
     }
 
 
