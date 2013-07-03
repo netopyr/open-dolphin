@@ -40,12 +40,12 @@ class HttpClientConnector extends ClientConnector {
         this.servletUrl = servletUrl
     }
 
-    List<Command> transmit(Command command) {
-        def result = new LinkedList<Command>()
+    List<Command> transmit(List<Command> commands) {
+        def result
         try {
             def url = "$servletUrl"
 
-            def content = codec.encode([command])  // for the moment, there is only one command in the list
+            def content = codec.encode(commands)
 
 
             HttpPost httpPost = new HttpPost(url)

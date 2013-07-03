@@ -96,7 +96,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         )
     }
 
-    abstract List<Command> transmit(Command command)
+    List<Command> transmit(Command command) {
+        transmit([command])
+    }
+
+    abstract List<Command> transmit(List<Command> commands)
 
     abstract int getPoolSize()
 

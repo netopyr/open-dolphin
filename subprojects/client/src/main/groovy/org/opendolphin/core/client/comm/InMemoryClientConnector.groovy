@@ -36,13 +36,18 @@ class InMemoryClientConnector extends ClientConnector {
     }
 
     @Override
-    List<Command> transmit(Command command) {
+    List<Command> transmit(List<Command> commands) {
         if (!serverConnector) {
             log.warning "no server connector wired for in-memory connector"
             return Collections.EMPTY_LIST
         }
         if (sleepMillis) sleep sleepMillis
-        serverConnector.receive(command) // there is no need for encoding since we are in-memory
+        def result = new LinkedList<Command>()
+        for (Command command : commands) {
+            log.finest "processing $command"
+            result.addAll(serverConnector.receive(command)) // there is no need for encoding since we are in-memory
+        }
+        result
     }
 
 
