@@ -24,9 +24,15 @@ import java.util.*;
 // todo: think about inlining this into receiver and use get/setProperty to ease registration
 public class ActionRegistry {
     // todo: think about proper sizing and synchronization needs
-    private final Map<String, List<CommandHandler<? super Command>>> ACTIONS = new HashMap<String, List<CommandHandler<? super Command>>>();
+    /** Implementation Note: the type for the values of the following Map could be
+    *  List<CommandHandler<? extends Command>>
+    * to be really precise. But since this class does not use the CommandHandlers besides registering them, especially
+    * it does not call 'handleCommand(...)' on them, it does not matter which Commands it stores. Therefore the
+    * type is defined as: List<CommandHandler>
+    */
+    private final Map<String, List<CommandHandler>> ACTIONS = new HashMap();
 
-    public Map<String, List<CommandHandler<? super Command>>> getActions() {
+    public Map<String, List<CommandHandler>> getActions() {
         return Collections.unmodifiableMap(ACTIONS);
     }
 
@@ -38,22 +44,22 @@ public class ActionRegistry {
         register(Command.idFor(commandClass), new CommandHandlerClosureAdapter(serverCommand));
     }
 
-    public <T extends Command> void register(String commandId, CommandHandler<T> serverCommand) {
-        List<CommandHandler<? super Command>> actions = getActionsFor(commandId);
+    public void register(String commandId, CommandHandler serverCommand) {
+        List<CommandHandler> actions = getActionsFor(commandId);
         if (!actions.contains(serverCommand)) {
-            actions.add((CommandHandler<? super Command>) serverCommand);
+            actions.add(serverCommand);
         }
     }
 
-    public <T extends Command>  void register(Class commandClass, CommandHandler<T> serverCommand) {
+    public void register(Class commandClass, CommandHandler serverCommand) {
         register(Command.idFor(commandClass), serverCommand);
     }
 
-    public List<CommandHandler<? super Command>> getAt(String commandId) {
+    public List<CommandHandler> getAt(String commandId) {
         return getActionsFor(commandId);
     }
 
-    public <T extends Command> void unregister(String commandId, Closure serverCommand) {
+    public void unregister(String commandId, Closure serverCommand) {
         unregister(commandId, new CommandHandlerClosureAdapter(serverCommand));
     }
 
@@ -61,19 +67,19 @@ public class ActionRegistry {
         unregister(Command.idFor(commandClass), new CommandHandlerClosureAdapter(serverCommand));
     }
 
-    public <T extends Command>  void unregister(String commandId, CommandHandler<T> serverCommand) {
-        List<CommandHandler<? super Command>> commandList = getActionsFor(commandId);
+    public void unregister(String commandId, CommandHandler serverCommand) {
+        List<CommandHandler> commandList = getActionsFor(commandId);
         commandList.remove(serverCommand);
     }
 
-    public <T extends Command> void unregister(Class commandClass, CommandHandler<T> serverCommand) {
+    public void unregister(Class commandClass, CommandHandler serverCommand) {
         unregister(Command.idFor(commandClass), serverCommand);
     }
 
-    private List<CommandHandler<? super Command>> getActionsFor(String commandName) {
-        List<CommandHandler<? super Command>> actions = ACTIONS.get(commandName);
+    private List<CommandHandler> getActionsFor(String commandName) {
+        List<CommandHandler> actions = ACTIONS.get(commandName);
         if (actions == null) {
-            actions = new ArrayList<CommandHandler<? super Command>>();
+            actions = new ArrayList<CommandHandler>();
             ACTIONS.put(commandName, actions);
         }
 
