@@ -278,12 +278,12 @@ class TestClientConnector extends ClientConnector {
     List<Command> transmit(List<Command> commands) {
         def result = new LinkedList<Command>()
         commands.each() { Command cmd ->
-            result.addAll(transmit(cmd))
+            result.addAll(transmitCommand(cmd))
         }
         result
     }
 
-    List<Command> transmit(Command command) {
+    List<Command> transmitCommand(Command command) {
         transmittedCommands << command
         latch.countDown()
         return construct(command)

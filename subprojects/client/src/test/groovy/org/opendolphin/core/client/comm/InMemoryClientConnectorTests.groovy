@@ -9,7 +9,7 @@ class InMemoryClientConnectorTests extends GroovyTestCase {
 
     void testCallConnector_NoServerConnectorWired() {
         InMemoryClientConnector connector = new InMemoryClientConnector(new ClientDolphin())
-        assert [] == connector.transmit(new Command())
+        assert [] == connector.transmit([new Command()])
     }
 
     void testCallConnector_ServerWired() {
@@ -20,7 +20,7 @@ class InMemoryClientConnectorTests extends GroovyTestCase {
             serverCalled = true
             return []
         }]
-        connector.transmit(command)
+        connector.transmit([command])
         assert serverCalled
     }
 
@@ -33,7 +33,7 @@ class InMemoryClientConnectorTests extends GroovyTestCase {
             serverCalled = true
             return []
         }]
-        connector.transmit(command)
+        connector.transmit([command])
         assert serverCalled
     }
 

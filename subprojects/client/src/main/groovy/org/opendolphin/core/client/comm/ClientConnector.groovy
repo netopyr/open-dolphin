@@ -96,10 +96,6 @@ abstract class ClientConnector implements PropertyChangeListener {
         )
     }
 
-    List<Command> transmit(Command command) {
-        transmit([command])
-    }
-
     abstract List<Command> transmit(List<Command> commands)
 
     abstract int getPoolSize()
@@ -112,7 +108,7 @@ abstract class ClientConnector implements PropertyChangeListener {
         processAsync {
             def result = new DataflowVariable()
             me.info "C: transmitting $command"
-            result << transmit(command)
+            result << transmit([command])
             insideUiThread {
                 List<Command> response = result.get() as List<Command>
                 me.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"

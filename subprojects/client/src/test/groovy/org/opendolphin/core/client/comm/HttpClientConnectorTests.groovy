@@ -29,7 +29,7 @@ class HttpClientConnectorTests extends GroovyTestCase {
                         """
             }
         }
-        def result = connector.transmit(new CreatePresentationModelCommand(pmId: 'p1'))
+        def result = connector.transmit([new CreatePresentationModelCommand(pmId: 'p1')])
         assert 1 == result.size()
         assert result[0] instanceof CreatePresentationModelCommand
         assert 'p1' == result[0].pmId
@@ -38,7 +38,7 @@ class HttpClientConnectorTests extends GroovyTestCase {
 
     void testCallWithException() {
         try {
-            connector.transmit(new Command())
+            connector.transmit([new Command()])
             fail()
         } catch (Exception e) {
             // ignore
