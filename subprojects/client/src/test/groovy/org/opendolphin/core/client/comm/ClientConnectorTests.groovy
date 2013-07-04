@@ -26,6 +26,7 @@ import org.opendolphin.core.comm.*
 
 import java.beans.PropertyChangeEvent
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class ClientConnectorTests extends GroovyTestCase {
 
@@ -39,6 +40,10 @@ class ClientConnectorTests extends GroovyTestCase {
         dolphin.clientConnector = clientConnector
         dolphin.clientModelStore = new ClientModelStore(dolphin)
     }
+
+	void assertCommandsTransmitted(int count) {
+		assert count == clientConnector.getTransmitCount(TestClientConnector.COMMAND_COUNT - count)
+	}
 
     void testSevereLogWhenCommandNotFound() {
         clientConnector.handle( new Command() )
@@ -63,19 +68,29 @@ class ClientConnectorTests extends GroovyTestCase {
 
     void testPropertyChange_DirtyPropertyIgnored() {
         clientConnector.propertyChange(new PropertyChangeEvent("dummy", Attribute.DIRTY_PROPERTY, null, null))
-        assert 0 == clientConnector.getTransmitCount(2)
+		assertCommandsTransmitted(0)
     }
 
     void testValueChange_OldAndNewValueSame() {
         clientConnector.propertyChange(new PropertyChangeEvent("dummy", Attribute.VALUE, 'sameValue', 'sameValue'))
-        assert 0 == clientConnector.getTransmitCount(2)
+		assertCommandsTransmitted(0)
     }
 
-    void testValueChange() {
+    void testValueChange_noQualifier() {
+        ClientAttribute attribute = new ClientAttribute('attr', 'initialValue')
+        dolphin.clientModelStore.registerAttribute(attribute)
+        clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
+		assertCommandsTransmitted(1)
+        assert attribute.value == 'initialValue'
+        assert 1 == clientConnector.transmittedCommands.size()
+        assert clientConnector.transmittedCommands.any { it instanceof ValueChangedCommand }
+    }
+
+    void testValueChange_withQualifier() {
         ClientAttribute attribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
         dolphin.clientModelStore.registerAttribute(attribute)
         clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
-        assert 2 == clientConnector.transmitCount
+		assertCommandsTransmitted(2)
         assert attribute.value == 'newValue'
         assert 2 == clientConnector.transmittedCommands.size()
         assert clientConnector.transmittedCommands.any { it instanceof ValueChangedCommand }
@@ -83,7 +98,7 @@ class ClientConnectorTests extends GroovyTestCase {
 
     void testBaseValueChange_OldAndNewValueSame() {
         clientConnector.propertyChange(new PropertyChangeEvent("dummy", Attribute.BASE_VALUE, 'sameValue', 'sameValue'))
-        assert 0 == clientConnector.getTransmitCount(2)
+		assertCommandsTransmitted(0)
     }
 
     void testBaseValueChange() {
@@ -91,7 +106,7 @@ class ClientConnectorTests extends GroovyTestCase {
         attribute.value = 'newValue'
         dolphin.clientModelStore.registerAttribute(attribute)
         clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, '', 'newValue'))
-        assert 2 == clientConnector.transmitCount
+		assertCommandsTransmitted(2)
         assert attribute.baseValue == 'newValue'
         assert 2 == clientConnector.transmittedCommands.size()
         assert clientConnector.transmittedCommands.any { it instanceof BaseValueChangedCommand }
@@ -103,7 +118,7 @@ class ClientConnectorTests extends GroovyTestCase {
         dolphin.clientModelStore.registerAttribute(attribute)
         clientConnector.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
         sleep(100)
-        assert 1 == clientConnector.getTransmitCount(1)
+		assertCommandsTransmitted(1)
         assert 1 == clientConnector.transmittedCommands.size()
         assert ChangeAttributeMetadataCommand == clientConnector.transmittedCommands[0].class
         assert 'newTag' == attribute.additionalParam
@@ -114,7 +129,7 @@ class ClientConnectorTests extends GroovyTestCase {
         attribute.additionalParam = 'oldValue'
         clientConnector.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
         sleep(100)
-        assert 1 == clientConnector.getTransmitCount(1)
+		assertCommandsTransmitted(1)
         assert 1 == clientConnector.transmittedCommands.size()
         assert ChangeAttributeMetadataCommand == clientConnector.transmittedCommands[0].class
         assert 'oldValue' == attribute.additionalParam
@@ -197,7 +212,7 @@ class ClientConnectorTests extends GroovyTestCase {
         assert 'initialValue' == dolphin.getAt('p1').getAt('attr').value
         assert 'qualifier' == dolphin.getAt('p1').getAt('attr').qualifier
         sleep(100)
-        assert 1 == clientConnector.getTransmitCount(1)
+		assertCommandsTransmitted(1)
         assert CreatePresentationModelCommand == clientConnector.transmittedCommands[0].class
     }
 
@@ -208,7 +223,7 @@ class ClientConnectorTests extends GroovyTestCase {
         assert 'initialValue' == dolphin.getAt('p1').getAt('attr').value
         assert 'qualifier' == dolphin.getAt('p1').getAt('attr').qualifier
         sleep(100)
-        assert 0 == clientConnector.getTransmitCount(2)
+		assertCommandsTransmitted(0)
     }
 
     void testHandle_CreatePresentationModel_MergeAttributesToExistingModel() {
@@ -230,7 +245,7 @@ class ClientConnectorTests extends GroovyTestCase {
         assert !dolphin.getAt(p1.id)
         assert !dolphin.getAt(p2.id)
         sleep(100)
-        assert 3 == clientConnector.getTransmitCount()
+		assertCommandsTransmitted(3)
         assert 1 == clientConnector.transmittedCommands.findAll { it instanceof DeletedPresentationModelNotification }.size()
     }
 
@@ -260,7 +275,10 @@ class ClientConnectorTests extends GroovyTestCase {
 
 @Log
 class TestClientConnector extends ClientConnector {
-    CountDownLatch latch = new CountDownLatch(2)
+
+	public static final int COMMAND_COUNT = 2
+
+	CountDownLatch latch = new CountDownLatch(COMMAND_COUNT)
     List<Command> transmittedCommands = []
 
     TestClientConnector(ClientDolphin clientDolphin) {
@@ -271,11 +289,15 @@ class TestClientConnector extends ClientConnector {
 
     int getTransmitCount(int countDownLatch = 0) {
         countDownLatch.times { latch.countDown() }
-        latch.await()
+		boolean timedOut = !latch.await(1, TimeUnit.SECONDS);
+		if (timedOut) {
+			throw new RuntimeException("timeout waiting for CountDownLatch")
+		}
         transmittedCommands.size()
     }
 
     List<Command> transmit(List<Command> commands) {
+		println "transmit: ${commands.size()}"
         def result = new LinkedList<Command>()
         commands.each() { Command cmd ->
             result.addAll(transmitCommand(cmd))
@@ -284,7 +306,8 @@ class TestClientConnector extends ClientConnector {
     }
 
     List<Command> transmitCommand(Command command) {
-        transmittedCommands << command
+		println "transmitCommand: $command"
+		transmittedCommands << command
         latch.countDown()
         return construct(command)
     }
