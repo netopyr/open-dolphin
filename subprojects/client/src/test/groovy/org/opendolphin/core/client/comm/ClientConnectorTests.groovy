@@ -104,17 +104,17 @@ class ClientConnectorTests extends GroovyTestCase {
     void testBaseValueChange() {
         ClientAttribute attribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
         attribute.value = 'newValue'
+		assert attribute.baseValue == 'initialValue'
         dolphin.clientModelStore.registerAttribute(attribute)
-        clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, '', 'newValue'))
+        clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, 'old_is_irrelevant', 'new_is_irrelevant'))
 		assertCommandsTransmitted(2)
         assert attribute.baseValue == 'newValue'
         assert 2 == clientConnector.transmittedCommands.size()
         assert clientConnector.transmittedCommands.any { it instanceof BaseValueChangedCommand }
     }
 
-    void testMetaDataChange() {
+    void test_that_notWellKnown_property_causes_MetaDataChange() {
         ClientAttribute attribute = new ExtendedAttribute('attr', 'initialValue', 'qualifier')
-        attribute.value = 'newValue'
         dolphin.clientModelStore.registerAttribute(attribute)
         clientConnector.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
         sleep(100)
@@ -165,6 +165,19 @@ class ClientConnectorTests extends GroovyTestCase {
         assert 'initialValue' == syncedAttribute.value
 
     }
+    void testHandle_InitializeAttribute_NewValueNotSet_and_firstOtherAttributeValueIsNull() {
+        def syncedAttribute1 = new ClientAttribute('attr', null, 'qualifier')
+        def syncedAttribute2 = new ClientAttribute('attr2', 'initialValue', 'qualifier')
+        dolphin.clientModelStore.registerAttribute(syncedAttribute1)
+        dolphin.clientModelStore.registerAttribute(syncedAttribute2)
+		// null from 'syncedAttribute1' will be synchronized to other attributes since it is the first in the list of attributes with qualifier 'qualifier'
+        clientConnector.handle(new InitializeAttributeCommand('p1', 'newProp', 'qualifier', null))
+        assert dolphin.getAt('p1')
+        assert dolphin.getAt('p1').getAt('newProp')
+        assert null == dolphin.getAt('p1').getAt('newProp').value
+        assert null == syncedAttribute1.value
+        assert null == syncedAttribute2.value
+    }
 
     void testHandle_SwitchPresentationModel_PmNotExists() {
         assert !clientConnector.handle(new SwitchPresentationModelCommand(sourcePmId: 'p1', pmId: 'p2'))
@@ -204,6 +217,14 @@ class ClientConnectorTests extends GroovyTestCase {
         assert !clientConnector.handle(new ValueChangedCommand(attributeId: attribute.id, oldValue: 'oldValue', newValue: 'newValue'))
         assert 'newValue' == attribute.value
     }
+
+    void testHandle_CreatePresentationModelTwiceFails() {
+        assert clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', attributes: [[propertyName: 'attr', value: 'initialValue', qualifier: 'qualifier']]))
+		def msg = shouldFail {
+			clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', attributes: [[propertyName: 'attr', value: 'initialValue', qualifier: 'qualifier']]))
+		}
+		assert "There already is a presentation model with id 'p1' known to the client." == msg
+	}
 
     void testHandle_CreatePresentationModel() {
         assert clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', attributes: [[propertyName: 'attr', value: 'initialValue', qualifier: 'qualifier']]))
@@ -245,6 +266,11 @@ class ClientConnectorTests extends GroovyTestCase {
         assert !dolphin.getAt(p1.id)
         assert !dolphin.getAt(p2.id)
         sleep(100)
+
+		// 3 commands will have been transferred:
+		// 1: delete of p1 (causes no DeletedPresentationModelNotification since client side only)
+		// 2: delete of p2
+		// 3: DeletedPresentationModelNotification caused by delete of p2
 		assertCommandsTransmitted(3)
         assert 1 == clientConnector.transmittedCommands.findAll { it instanceof DeletedPresentationModelNotification }.size()
     }
