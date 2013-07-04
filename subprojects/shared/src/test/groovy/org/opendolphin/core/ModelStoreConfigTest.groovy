@@ -1,8 +1,8 @@
 package org.opendolphin.core
 
-import java.util.logging.Level
+import java.util.logging.*
 
-class ModelStoreConfigTest extends GroovyLogTestCase {
+class ModelStoreConfigTest extends GroovyTestCase {
 
     private ModelStoreConfig modelStoreConfig
 
@@ -59,5 +59,23 @@ class ModelStoreConfigTest extends GroovyLogTestCase {
 
     private static String getLog(Closure inClosure) {
         return stringLog(Level.WARNING, ModelStoreConfig.class.getName(), inClosure)
+    }
+
+    // Apparently the cobertura plugin does not run tests from groovy.lang.GroovyLogTestCase
+    // This method provides a simplified version of the code used in GroovyLogTestCase
+    private static String stringLog(Level level, String qualifier, Closure yield){
+        Logger logger = Logger.getLogger(qualifier)
+
+        def out = new ByteArrayOutputStream(1024)
+        Handler stringHandler = new StreamHandler(out, new SimpleFormatter())
+        stringHandler.level = level
+        logger.addHandler(stringHandler)
+
+        yield()
+
+        stringHandler.flush()
+        out.close()
+        logger.removeHandler(stringHandler)
+        return out.toString()
     }
 }
