@@ -185,8 +185,6 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     @CompileStatic
     ClientPresentationModel handle(CreatePresentationModelCommand serverCommand) {
-        // check if we already have serverCommand.pmId in our store
-        // if true we simply update attribute ids and add any missing attributes
         if (((ClientModelStore)clientModelStore).containsPresentationModel(serverCommand.pmId)) {
             throw new IllegalStateException("There already is a presentation model with id '$serverCommand.pmId' known to the client.")
         }
