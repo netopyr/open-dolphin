@@ -38,7 +38,7 @@ class StandardCommandBatcherTest extends GroovyTestCase {
 		def list = [new CommandAndHandler()] * 3
 
 		CountDownLatch latch = new CountDownLatch(1)
-		batcher.handleCommands = { batch ->
+		batcher.handleCommands = { List<CommandAndHandler> batch ->
 			group.task {
 				assert batch.size() == 1
 				if (batch.first() == list.last()) latch.countDown()
