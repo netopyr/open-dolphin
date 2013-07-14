@@ -20,9 +20,11 @@ import org.opendolphin.core.client.comm.JavaFXUiThreadHandler
 
 def writeDolphin = StarterUtil.setupForRemote()
 writeDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
+writeDolphin.clientConnector.commandBatcher.deferMillis = 0
 
 def readDolphin = StarterUtil.setupForRemote()
 readDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
+writeDolphin.clientConnector.commandBatcher.deferMillis = 0
 
 
 SharedTachoView.show readDolphin, writeDolphin

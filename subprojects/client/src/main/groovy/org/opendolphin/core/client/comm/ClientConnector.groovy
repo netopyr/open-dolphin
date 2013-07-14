@@ -32,6 +32,7 @@ import org.codehaus.groovy.runtime.StackTraceUtils
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.util.logging.Level
 
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
@@ -65,7 +66,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         def transmitter = ProcessingNode.node { trayOut ->
             def commandsAndHandlers = commandBatcher.waitingBatches.val
             List<Command> commands = commandsAndHandlers.collect { it.command }
-            log.info "C: sending batch of size " + commands.size()
+            if (log.isLoggable(Level.INFO)) {
+                log.info "C: sending batch of size " + commands.size()
+                for (command in commands) { log.info("C:           -> "+command)}
+            }
+
             def answer = null
             doExceptionSafe(
                 { answer = transmit(commands) },
@@ -134,9 +139,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     @CompileStatic
     void send(Command command, OnFinishedHandler callback = null) {
-        def me = this
         // we are inside the UI thread and events calls come in strict order as received by the UI toolkit
-        me.info "C: batching     $command"
         commandBatcher.batch(new CommandAndHandler(command: command, handler: callback))
     }
 

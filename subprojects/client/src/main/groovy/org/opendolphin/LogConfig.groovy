@@ -24,9 +24,16 @@ import org.opendolphin.core.client.comm.ClientConnector
 class LogConfig {
 
     private static final Logger ROOT_LOGGER = Logger.getLogger("")
+    private static final LOGGERS = [
+        ROOT_LOGGER,
+        ClientConnector.log,
+        BlindCommandBatcher.log
+    ]
 
     static {
-        ROOT_LOGGER.handlers.grep(ConsoleHandler).each { it.formatter = new ShortFormatter() }
+        for (logger in LOGGERS) {
+            logger.handlers.grep(ConsoleHandler).each { it.formatter = new ShortFormatter() }
+        }
     }
 
     static noLogs() {
@@ -38,9 +45,10 @@ class LogConfig {
     }
 
     static logOnLevel(Level level) {
-        ROOT_LOGGER.level = level
-        ClientConnector.log.level = level
-        BlindCommandBatcher.log.level = level
+        for (logger in LOGGERS) {
+            logger.level = level
+            logger.handlers.each { it.setLevel(level) }
+        }
     }
 }
 

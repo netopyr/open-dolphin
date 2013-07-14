@@ -3,6 +3,7 @@ package org.opendolphin.core.client.comm
 import groovy.util.logging.Log
 import groovyx.gpars.agent.Agent
 import groovyx.gpars.dataflow.Dataflow
+import org.opendolphin.core.comm.ValueChangedCommand
 
 import java.util.concurrent.atomic.AtomicBoolean
 /**
@@ -21,25 +22,38 @@ class BlindCommandBatcher extends CommandBatcher {
     long deferMillis = 10
     /** Must be > 0*/
     int maxBatchSize = 100
+    /** when attribute x changes its value from 0 to 1 and then from 1 to 2, merge this into one change from 0 to 2 */
+    boolean mergeValueChanges = false
 
     protected final inProcess = new AtomicBoolean(false)
-
+    protected final deferralNeeded = new AtomicBoolean(false)
 
     @Override
     void batch(CommandAndHandler commandWithHandler) {
-        log.finest "batching $commandWithHandler.command with handler: $commandWithHandler.handler"
+        log.finest "batching $commandWithHandler.command with ${commandWithHandler.handler ? '' : 'out' } handler"
         agent << { List<CommandAndHandler> commandsAndHandlers ->
             commandsAndHandlers << commandWithHandler
         }
-        if (commandWithHandler.handler) {
-            processBatch()
-        } else {
+        if (commandWithHandler.isBatchable()) {
+            deferralNeeded.set(true)
             if (inProcess.get()) return
-            inProcess.set(true)
-            Dataflow.task {
-                sleep(deferMillis)
-                processBatch()
+            processDeferred()
+        } else {
+            processBatch()
+        }
+    }
+
+    protected void processDeferred() {
+        inProcess.set(true)
+        Dataflow.task {
+            def count = maxBatchSize        // never wait for more than those
+            while (deferralNeeded.get() && count > 0) {
+                count--
+                deferralNeeded.set(false)
+                sleep(deferMillis)          // while we sleep, new requests may have arrived that request deferral
             }
+            processBatch()
+            inProcess.set(false)
         }
     }
 
@@ -49,9 +63,7 @@ class BlindCommandBatcher extends CommandBatcher {
             if (last) {                         // we do have a trailing command with handler and batch it separately
                 waitingBatches << [last]
             }
-            if (commandsAndHandlers.empty) {
-                inProcess.set(false)
-            } else {
+            if ( ! commandsAndHandlers.empty) {
                 processBatch() // this is not so much like recursion, more like a trampoline
             }
         }
@@ -60,15 +72,40 @@ class BlindCommandBatcher extends CommandBatcher {
     protected CommandAndHandler batchBlinds(List<CommandAndHandler> queue) {
         if(queue.empty) return
         List<CommandAndHandler> blindCommands = new LinkedList()
-        int counter = maxBatchSize
+        int counter = maxBatchSize                      // we have to check again, since new ones may have arrived since last check
         def val = take(queue)
-        while (counter-- && val && !val.handler) {
-            blindCommands << val
+        while (counter-- && val?.isBatchable()) {      // we do have a blind
+            addToBlindsOrMerge(blindCommands, val)
             val = counter ? take(queue) : null
         }
         log.finest "batching ${blindCommands.size()} blinds"
         if (blindCommands) waitingBatches << blindCommands
         return val // may be null or a cwh that has a handler
+    }
+
+    protected void addToBlindsOrMerge(List<CommandAndHandler> blindCommands, CommandAndHandler val) {
+        if ( ! wasMerged(blindCommands,val)) {
+            blindCommands << val
+        }
+    }
+
+    protected boolean wasMerged(List<CommandAndHandler> blindCommands, CommandAndHandler val) {
+        if ( ! mergeValueChanges)                                    return false
+        if (blindCommands.empty)                                     return false
+        if (! val.command)                                           return false
+        if (! val.command      instanceof ValueChangedCommand)       return false
+
+        def mergeable = blindCommands.find { cah ->
+            cah.command != null &&
+            cah.command instanceof ValueChangedCommand &&
+            cah.command.attributeId == val.command.attributeId &&
+            cah.command.newValue == val.command.oldValue
+        }
+        if (! mergeable) return false
+
+        mergeable.command.newValue = val.command.newValue
+
+        return true
     }
 
     protected CommandAndHandler take(List<CommandAndHandler> intern) {
