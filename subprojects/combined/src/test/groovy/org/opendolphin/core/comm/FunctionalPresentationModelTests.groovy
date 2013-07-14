@@ -16,7 +16,6 @@
 
 package org.opendolphin.core.comm
 
-import org.apache.http.impl.io.ContentLengthInputStream
 import org.opendolphin.LogConfig
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag

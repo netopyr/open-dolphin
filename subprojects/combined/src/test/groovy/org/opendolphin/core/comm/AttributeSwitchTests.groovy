@@ -19,7 +19,6 @@ package org.opendolphin.core.comm
 import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModel
-
 /**
  * Tests for the approach of using plain attributes as switches by sharing the id.
  */
