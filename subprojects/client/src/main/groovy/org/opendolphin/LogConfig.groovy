@@ -16,7 +16,7 @@
 
 package org.opendolphin
 
-
+import org.opendolphin.core.client.comm.BlindCommandBatcher
 import org.opendolphin.core.client.comm.ClientConnector
 
 /** Keep logging details in one place **/
@@ -40,6 +40,7 @@ class LogConfig {
     static logOnLevel(Level level) {
         ROOT_LOGGER.level = level
         ClientConnector.log.level = level
+        BlindCommandBatcher.log.level = level
     }
 }
 

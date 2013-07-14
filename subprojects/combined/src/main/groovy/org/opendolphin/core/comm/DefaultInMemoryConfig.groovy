@@ -28,12 +28,11 @@ class DefaultInMemoryConfig {
     ClientDolphin clientDolphin = new ClientDolphin()
     ServerDolphin serverDolphin = new ServerDolphin()
 
-    DefaultInMemoryConfig(boolean processAsync = true) {
+    DefaultInMemoryConfig() {
         LogConfig.logCommunication()
 
         clientDolphin.clientModelStore = new ClientModelStore(clientDolphin)
         clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin)
-        clientDolphin.clientConnector.processAsync = processAsync
 
         clientDolphin.clientConnector.sleepMillis = 100
         clientDolphin.clientConnector.serverConnector = serverDolphin.serverConnector

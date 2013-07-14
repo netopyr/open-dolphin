@@ -37,29 +37,4 @@ class InMemoryClientConnectorTests extends GroovyTestCase {
         assert serverCalled
     }
 
-    void testProcessAsync_Disabled() {
-        InMemoryClientConnector connector = new InMemoryClientConnector(new ClientDolphin())
-        connector.processAsync = false
-        def mainThread = Thread.currentThread()
-        def workerThread = null
-        connector.processAsync {
-            workerThread = Thread.currentThread()
-        }
-        assert mainThread == workerThread
-    }
-
-    void testProcessAsync() {
-        InMemoryClientConnector connector = new InMemoryClientConnector(new ClientDolphin())
-        def mainThread = Thread.currentThread()
-        def workerThread = null
-        def latch = new CountDownLatch(1)
-        def action = {
-            workerThread = Thread.currentThread()
-            latch.countDown()
-        }
-        connector.processAsync action
-        latch.await()
-        assert mainThread != workerThread
-    }
-
 }

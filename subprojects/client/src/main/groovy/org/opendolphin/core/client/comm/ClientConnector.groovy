@@ -16,6 +16,9 @@
 
 package org.opendolphin.core.client.comm
 
+import groovyx.gpars.dataflow.KanbanFlow
+import groovyx.gpars.dataflow.KanbanTray
+import groovyx.gpars.dataflow.ProcessingNode
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.client.ClientAttribute
@@ -25,9 +28,6 @@ import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.comm.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
-import groovyx.gpars.dataflow.DataflowVariable
-import groovyx.gpars.group.DefaultPGroup
-import groovyx.gpars.group.PGroup
 import org.codehaus.groovy.runtime.StackTraceUtils
 
 import java.beans.PropertyChangeEvent
@@ -36,8 +36,8 @@ import java.beans.PropertyChangeListener
 @Log
 abstract class ClientConnector implements PropertyChangeListener {
     Codec codec
-
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
+
     Closure onException = { Throwable up ->
         def out = new StringWriter()
         up.printStackTrace(new PrintWriter(out))
@@ -45,10 +45,44 @@ abstract class ClientConnector implements PropertyChangeListener {
         uiThreadHandler.executeInsideUiThread { throw up } // not sure whether this is a good default
     }
 
-    protected ClientDolphin clientDolphin
+    protected final ClientDolphin clientDolphin
+    protected final CommandBatcher commandBatcher
 
     ClientConnector(ClientDolphin clientDolphin) {
+        this(clientDolphin, null)
+    }
+
+    ClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher) {
         this.clientDolphin = clientDolphin
+        this.commandBatcher = commandBatcher ?: new CommandBatcher()
+
+        startCommandProcessing()
+
+    }
+
+    protected void startCommandProcessing() {
+
+        def transmitter = ProcessingNode.node { trayOut ->
+            def commandsAndHandlers = commandBatcher.waitingBatches.val
+            List<Command> commands = commandsAndHandlers.collect { it.command }
+            log.info "C: sending batch of size " + commands.size()
+            def answer = null
+            doExceptionSafe(
+                { answer = transmit(commands) },
+                { trayOut << [response: answer, request: commandsAndHandlers] })
+        }
+
+        def worker = ProcessingNode.node { KanbanTray trayIn ->
+            Map got = trayIn.take()
+            if (got.response == null) return // we cannot ignore empty responses. They may have an onFinished handler
+            insideUiThread {
+                processResults(got.response, got.request)
+            }
+        }
+
+        KanbanFlow flow = new KanbanFlow()
+        flow.link transmitter to worker
+        flow.start(1)
     }
 
     protected getClientModelStore() {
@@ -98,40 +132,37 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     abstract List<Command> transmit(List<Command> commands)
 
-    abstract int getPoolSize()
-
-    PGroup group = new DefaultPGroup(poolSize)
-
     @CompileStatic
     void send(Command command, OnFinishedHandler callback = null) {
         def me = this
-        processAsync {
-            def result = new DataflowVariable()
-            me.info "C: transmitting $command"
-            result << transmit([command])
-            insideUiThread {
-                List<Command> response = result.get() as List<Command>
-                me.info "C: server responded with ${ response?.size() } command(s): ${ response?.id }"
+        // we are inside the UI thread and events calls come in strict order as received by the UI toolkit
+        me.info "C: batching     $command"
+        commandBatcher.batch(new CommandAndHandler(command: command, handler: callback))
+    }
 
-                List<ClientPresentationModel> pms = new LinkedList<ClientPresentationModel>()
-                List<Map> maps = new LinkedList<Map>()
-                for (Command serverCommand in response) {
-                    def pm = me.dispatchHandle serverCommand
-                    if (pm && pm instanceof ClientPresentationModel) {
-                        pms << (ClientPresentationModel) pm
-                    } else if (pm && pm instanceof Map) {
-                        maps << (Map) pm
-                    }
-                }
-                if (callback) {
-                    callback.onFinished( (List<ClientPresentationModel>) pms.unique { ((ClientPresentationModel) it).id})
-                    callback.onFinishedData(maps)
-                }
+    @CompileStatic
+    void processResults(List<Command> response, List<CommandAndHandler> commandsAndHandlers) {
+        def me = this
+        me.info "C: server responded with ${response?.size()} command(s): ${response?.id}"
+
+        List<ClientPresentationModel> touchedPresentationModels = new LinkedList<ClientPresentationModel>()
+        List<Map> touchedDataMaps = new LinkedList<Map>()
+        for (Command serverCommand in response) {
+            def touched = me.dispatchHandle serverCommand
+            if (touched && touched instanceof ClientPresentationModel) {
+                touchedPresentationModels << (ClientPresentationModel) touched
+            } else if (touched && touched instanceof Map) {
+                touchedDataMaps << (Map) touched
             }
+        }
+        def callback = commandsAndHandlers.first().handler // there can only be one relevant handler anyway
+        if (callback) {
+            callback.onFinished((List<ClientPresentationModel>) touchedPresentationModels.unique { ((ClientPresentationModel) it).id })
+            callback.onFinishedData(touchedDataMaps)
         }
     }
 
-    void info (Object message) {
+    void info(Object message) {
         log.info message
     }
 
@@ -140,43 +171,38 @@ abstract class ClientConnector implements PropertyChangeListener {
     }
 
     @CompileStatic
-    void processAsync(Runnable processing) {
-        group.task {
-            doExceptionSafe processing
-        }
-    }
-
-    @CompileStatic
-    void doExceptionSafe(Runnable processing) {
+    void doExceptionSafe(Runnable processing, Runnable atLeast = null) {
         try {
             processing.run()
         } catch (e) {
             StackTraceUtils.deepSanitize(e)
             onException e
+        } finally {
+            if (atLeast) atLeast.run()
         }
     }
 
     @CompileStatic
-    void insideUiThread(Runnable processing) {
-        doExceptionSafe {
+    void insideUiThread(Runnable processing, Runnable atLeast = null) {
+        doExceptionSafe ({
             if (uiThreadHandler) {
                 uiThreadHandler.executeInsideUiThread(processing)
             } else {
                 println("please provide howToProcessInsideUI handler")
                 processing.run()
             }
-        }
+        }, atLeast)
     }
 
     def handle(Command serverCommand) {
         log.severe "C: cannot handle unknown command '$serverCommand'"
     }
 
-    Map handle(DataCommand serverCommand){
+    Map handle(DataCommand serverCommand) {
         return serverCommand.data
     }
 
-    ClientPresentationModel handle(DeletePresentationModelCommand serverCommand){
+    ClientPresentationModel handle(DeletePresentationModelCommand serverCommand) {
         ClientPresentationModel model = clientDolphin.findPresentationModelById(serverCommand.pmId)
         if (!model) return null
         clientModelStore.delete(model)
@@ -185,7 +211,7 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     @CompileStatic
     ClientPresentationModel handle(CreatePresentationModelCommand serverCommand) {
-        if (((ClientModelStore)clientModelStore).containsPresentationModel(serverCommand.pmId)) {
+        if (((ClientModelStore) clientModelStore).containsPresentationModel(serverCommand.pmId)) {
             throw new IllegalStateException("There already is a presentation model with id '$serverCommand.pmId' known to the client.")
         }
         List<ClientAttribute> attributes = []

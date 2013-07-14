@@ -36,7 +36,7 @@ class ClientConnectorTests extends GroovyTestCase {
     protected void setUp() {
         dolphin = new ClientDolphin()
         clientConnector = new TestClientConnector(dolphin)
-        clientConnector.uiThreadHandler = { it() } as UiThreadHandler
+        clientConnector.uiThreadHandler = new RunLaterUiThreadHandler()
         dolphin.clientConnector = clientConnector
         dolphin.clientModelStore = new ClientModelStore(dolphin)
     }
@@ -60,6 +60,7 @@ class ClientConnectorTests extends GroovyTestCase {
     }
 
     void testDefaultOnExceptionHandler() {
+        clientConnector.uiThreadHandler = { it() } as UiThreadHandler
         def msg = shouldFail(RuntimeException) {
             clientConnector.onException(new RuntimeException("test exception"))
         }
@@ -310,8 +311,6 @@ class TestClientConnector extends ClientConnector {
     TestClientConnector(ClientDolphin clientDolphin) {
         super(clientDolphin)
     }
-
-    int getPoolSize() { 1 }
 
     int getTransmitCount(int countDownLatch = 0) {
         countDownLatch.times { latch.countDown() }

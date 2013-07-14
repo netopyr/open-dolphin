@@ -47,7 +47,7 @@ class ServerConnector {
             log.warning "S: there is no server action registered for received command: $command, known commands are ${registry.actions.keySet()}"
             return response
         }
-        // copying the list of actions allow an Action to unregister itself
+        // copying the list of actions allows an Action to unregister itself
         // avoiding ConcurrentModificationException to be thrown by the loop
         List<CommandHandler> actionsCopy = []
         actionsCopy.addAll actions

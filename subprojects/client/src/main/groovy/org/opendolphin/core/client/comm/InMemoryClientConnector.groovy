@@ -17,7 +17,6 @@
 package org.opendolphin.core.client.comm
 
 import org.opendolphin.core.comm.Command
-import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Log
 import org.opendolphin.core.client.ClientDolphin
@@ -25,18 +24,20 @@ import org.opendolphin.core.client.ClientDolphin
 @Log @InheritConstructors
 class InMemoryClientConnector extends ClientConnector {
 
-    def processAsync = true
     def sleepMillis = 0
     def serverConnector // must be injected since the class is only available in a "combined" context
-
-    int getPoolSize() { 1 } // we want to be asynchronous but with one thread only
 
     InMemoryClientConnector(ClientDolphin clientDolphin) {
         super(clientDolphin)
     }
 
+    InMemoryClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher) {
+        super(clientDolphin, commandBatcher)
+    }
+
     @Override
     List<Command> transmit(List<Command> commands) {
+        log.finest "transmitting ${commands.size()} commands"
         if (!serverConnector) {
             log.warning "no server connector wired for in-memory connector"
             return Collections.EMPTY_LIST
@@ -48,13 +49,6 @@ class InMemoryClientConnector extends ClientConnector {
             result.addAll(serverConnector.receive(command)) // there is no need for encoding since we are in-memory
         }
         result
-    }
-
-
-    @CompileStatic
-    void processAsync(Runnable processing) {
-        if (processAsync) super.processAsync(processing)
-        else doExceptionSafe(processing)
     }
 
 }

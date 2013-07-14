@@ -19,9 +19,11 @@ package org.opendolphin.core.comm
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.server.ServerDolphin
 
+import java.util.concurrent.TimeUnit
+
 class DeletePresentationModelTests extends GroovyTestCase {
 
-    TestInMemoryConfig context
+    volatile TestInMemoryConfig context
     ServerDolphin serverDolphin
     ClientDolphin clientDolphin
 
@@ -34,7 +36,7 @@ class DeletePresentationModelTests extends GroovyTestCase {
 
     @Override
     protected void tearDown() {
-        context.done.await()
+        assert context.done.await(2, TimeUnit.SECONDS)
     }
 
     void testCreateAndDeletePresentationModel() {
@@ -44,11 +46,11 @@ class DeletePresentationModelTests extends GroovyTestCase {
         // sanity check: we have a least the client model store listening to changes of someAttribute
         assert model.someAttribute.propertyChangeListeners
         // the model is in the client model store
-        def found = clientDolphin.findPresentationModelById(modelId)
+        def found = clientDolphin.getAt(modelId)
         assert model == found
         // ... and in the server model store after roundtrip
         clientDolphin.sync {
-            assert serverDolphin.modelStore.findPresentationModelById(modelId)
+            assert serverDolphin.getAt(modelId)
         }
         // when we now delete the pm
         clientDolphin.delete(model)
@@ -64,39 +66,41 @@ class DeletePresentationModelTests extends GroovyTestCase {
         }
         // the model is also gone from the server model store
         clientDolphin.sync {
-            assert !serverDolphin.modelStore.findPresentationModelById(modelId)
+            assert !serverDolphin.getAt(modelId)
+            context.assertionsDone()
         }
-        // we are done
-        clientDolphin.sync { context.assertionsDone() }
     }
 
-    /*
+
     void testCreateAndDeletePresentationModelFromServer() {
         // create the pm
         String modelId = 'modelId'
         def model = clientDolphin.presentationModel(modelId, someAttribute:"someValue")
         // the model is in the client model store
-        def found = clientDolphin.findPresentationModelById(modelId)
+        def found = clientDolphin.getAt(modelId)
         assert model == found
         // ... and in the server model store after roundtrip
         clientDolphin.sync {
-            assert serverDolphin.modelStore.findPresentationModelById(modelId)
+            assert serverDolphin.getAt(modelId)
         }
 
-        serverDolphin.action('triggerDelete') { cmd, response ->
+        serverDolphin.action('triggerDelete') { cmd, List<Command> response ->
             serverDolphin.delete(response, modelId)
         }
         // when we now delete the pm
-        clientDolphin.send 'triggerDelete'
+        clientDolphin.send 'triggerDelete', {}
 
         clientDolphin.sync {
             // ... it is no longer in the client model store
-            assert !clientDolphin.modelStore.findPresentationModelById(modelId)
+            assert !clientDolphin.getAt(modelId)
+        }
+
+        clientDolphin.sync {
             // the model is also gone from the server model store
-            assert !serverDolphin.modelStore.findPresentationModelById(modelId)
+            assert !serverDolphin.getAt(modelId)
             // we are done
             context.assertionsDone()
         }
     }
-    */
+
 }

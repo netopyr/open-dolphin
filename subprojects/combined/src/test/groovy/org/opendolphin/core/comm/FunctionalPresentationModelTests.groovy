@@ -16,12 +16,17 @@
 
 package org.opendolphin.core.comm
 
+import org.apache.http.impl.io.ContentLengthInputStream
 import org.opendolphin.LogConfig
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.comm.BlindCommandBatcher
+import org.opendolphin.core.client.comm.InMemoryClientConnector
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
+import org.opendolphin.core.client.comm.RunLaterUiThreadHandler
+import org.opendolphin.core.client.comm.UiThreadHandler
 import org.opendolphin.core.client.comm.WithPresentationModelHandler
 import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.ServerAttribute
@@ -30,6 +35,7 @@ import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.comm.NamedCommandHandler
 
+import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
 /**
@@ -40,7 +46,7 @@ import java.util.logging.Level
 
 class FunctionalPresentationModelTests extends GroovyTestCase {
 
-    TestInMemoryConfig context
+    volatile TestInMemoryConfig context
     ServerDolphin serverDolphin
     ClientDolphin clientDolphin
 
@@ -54,10 +60,22 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     @Override
     protected void tearDown() {
-        context.done.await()
+        assert context.done.await(10, TimeUnit.SECONDS)
     }
 
-    void testPerformance() {
+    void testPerformanceWithStandardCommandBatcher() {
+        doTestPerformance()
+    }
+
+    void testPerformanceWithBlindCommandBatcher() {
+        def connector = new InMemoryClientConnector(context.clientDolphin, new BlindCommandBatcher())
+        connector.uiThreadHandler = new RunLaterUiThreadHandler()
+        connector.serverConnector = serverDolphin.serverConnector
+        context.clientDolphin.clientConnector = connector
+        doTestPerformance()
+    }
+
+    void doTestPerformance() {
         long id = 0
         serverDolphin.action "performance", { cmd, response ->
             100.times { attr ->
@@ -65,10 +83,10 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             }
         }
         def start = System.nanoTime()
-        100.times {
+        100.times { soOften ->
             clientDolphin.send "performance", { List<ClientPresentationModel> pms ->
                 assert pms.size() == 100
-                pms.each { clientDolphin.delete(it) }
+                pms.each { pm -> clientDolphin.delete(pm) }
             }
         }
         clientDolphin.send "performance", { List<ClientPresentationModel> pms ->
@@ -152,6 +170,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testAsynchronousExceptionOnTheServer() {
+        LogConfig.logCommunication()
         def count = 0
         clientDolphin.clientConnector.onException = { count++ }
 
@@ -172,12 +191,15 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
         clientDolphin.sync {
             assert count == 2
+        }
+        clientDolphin.sync {
             context.assertionsDone()
         }
     }
 
     void testAsynchronousExceptionInOnFinishedHandler() {
 
+        clientDolphin.clientConnector.uiThreadHandler = { it() } as UiThreadHandler // not "run later" we need it immediately here
         clientDolphin.clientConnector.onException = { context.assertionsDone() }
 
         serverDolphin.action "someCmd", { cmd, response ->

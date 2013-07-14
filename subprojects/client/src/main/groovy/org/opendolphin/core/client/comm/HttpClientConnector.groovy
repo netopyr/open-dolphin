@@ -33,10 +33,12 @@ class HttpClientConnector extends ClientConnector {
     private DefaultHttpClient httpClient = new DefaultHttpClient()
     private ResponseHandler responseHandler = new BasicResponseHandler()
 
-    int getPoolSize() { 1 }
-
     HttpClientConnector(ClientDolphin clientDolphin, String servletUrl) {
-        super(clientDolphin)
+        this(clientDolphin, null, servletUrl)
+    }
+
+    HttpClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher, String servletUrl) {
+        super(clientDolphin, commandBatcher)
         this.servletUrl = servletUrl
     }
 
@@ -46,7 +48,6 @@ class HttpClientConnector extends ClientConnector {
             def url = "$servletUrl"
 
             def content = codec.encode(commands)
-
 
             HttpPost httpPost = new HttpPost(url)
             StringEntity entity = new StringEntity(content)

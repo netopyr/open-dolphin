@@ -37,7 +37,6 @@ class CommunicationTests extends GroovyTestCase {
 	protected void setUp() {
 		LogConfig.logCommunication()
 		def config = new TestInMemoryConfig()
-        config.clientDolphin.clientConnector.processAsync = false
         serverConnector = config.serverDolphin.serverConnector
         clientConnector = config.clientDolphin.clientConnector
         clientModelStore = config.clientDolphin.clientModelStore
@@ -57,6 +56,8 @@ class CommunicationTests extends GroovyTestCase {
 
 		ca.value = 'initial'
 
+        sleep 100 // todo dk: better
+
         assert receivedCommand
 		assert receivedCommand.id == 'ValueChanged'
 		assert receivedCommand in ValueChangedCommand
@@ -75,6 +76,7 @@ class CommunicationTests extends GroovyTestCase {
 
 		clientModelStore.add new ClientPresentationModel('testPm', [ca]) // todo dk: this should be automatic!
 
+        sleep 100 // todo dk: better
 		assert receivedCommand.id == "CreatePresentationModel"
 		assert receivedCommand instanceof CreatePresentationModelCommand
 		assert receivedCommand.pmId == 'testPm'
@@ -101,6 +103,7 @@ class CommunicationTests extends GroovyTestCase {
 
         clientModelStore.add new ClientPresentationModel('testPm', [ca]) // trigger the whole cycle
 
+        sleep 100 // todo dk: better
 		assert ca.value == "set from server"	// client is updated
 
 		assert receivedCommand.attributeId == ca.id // client notified server about value change
@@ -111,6 +114,7 @@ class CommunicationTests extends GroovyTestCase {
 		boolean reached = false
 		serverConnector.registry.register "ButtonAction", { cmd, resp -> reached = true }
 		clientConnector.send(new NamedCommand(id: "ButtonAction"))
+        sleep 100 // todo dk: better
 		assert reached
 	}
 
