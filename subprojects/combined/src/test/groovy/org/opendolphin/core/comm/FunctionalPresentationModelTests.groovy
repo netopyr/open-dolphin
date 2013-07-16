@@ -410,6 +410,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.send 'assert1'
 
         clientDolphin.deleteAllPresentationModelsOfType('PmType')
+        assert new DeletedAllPresentationModelsOfTypeNotification('PmType') =~ /pmType PmType/
 
 
         clientDolphin.send 'assert0', {
