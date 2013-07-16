@@ -25,6 +25,7 @@ import org.opendolphin.core.client.comm.BlindCommandBatcher
 import org.opendolphin.core.client.comm.InMemoryClientConnector
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
 import org.opendolphin.core.client.comm.RunLaterUiThreadHandler
+import org.opendolphin.core.client.comm.SynchronousInMemoryClientConnector
 import org.opendolphin.core.client.comm.UiThreadHandler
 import org.opendolphin.core.client.comm.WithPresentationModelHandler
 import org.opendolphin.core.server.DTO
@@ -67,8 +68,17 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testPerformanceWithBlindCommandBatcher() {
-        def connector = new InMemoryClientConnector(context.clientDolphin, new BlindCommandBatcher())
+        def batcher = new BlindCommandBatcher(mergeValueChanges:true, deferMillis: 100)
+        def connector = new InMemoryClientConnector(context.clientDolphin, batcher)
         connector.uiThreadHandler = new RunLaterUiThreadHandler()
+        connector.serverConnector = serverDolphin.serverConnector
+        context.clientDolphin.clientConnector = connector
+        doTestPerformance()
+    }
+
+    void testPerformanceWithSynchronousConnector() {
+        def connector = new SynchronousInMemoryClientConnector(context.clientDolphin)
+        connector.uiThreadHandler = { fail "should not reach here! " } as UiThreadHandler
         connector.serverConnector = serverDolphin.serverConnector
         context.clientDolphin.clientConnector = connector
         doTestPerformance()

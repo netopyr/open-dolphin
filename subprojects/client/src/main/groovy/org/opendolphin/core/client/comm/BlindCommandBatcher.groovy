@@ -25,8 +25,9 @@ class BlindCommandBatcher extends CommandBatcher {
     /** when attribute x changes its value from 0 to 1 and then from 1 to 2, merge this into one change from 0 to 2 */
     boolean mergeValueChanges = false
 
-    protected final inProcess = new AtomicBoolean(false)
-    protected final deferralNeeded = new AtomicBoolean(false)
+    protected final inProcess               = new AtomicBoolean(false) // whether we started to batch up commands
+    protected final deferralNeeded          = new AtomicBoolean(false) // whether we need to give commands the opportunity to enter the queue
+    protected shallWeEvenTryToMerge         = false // do not even try if there is no value change cmd in the batch
 
     @Override
     void batch(CommandAndHandler commandWithHandler) {
@@ -74,6 +75,7 @@ class BlindCommandBatcher extends CommandBatcher {
         List<CommandAndHandler> blindCommands = new LinkedList()
         int counter = maxBatchSize                      // we have to check again, since new ones may have arrived since last check
         def val = take(queue)
+        shallWeEvenTryToMerge = false
         while (counter-- && val?.isBatchable()) {      // we do have a blind
             addToBlindsOrMerge(blindCommands, val)
             val = counter ? take(queue) : null
@@ -91,11 +93,13 @@ class BlindCommandBatcher extends CommandBatcher {
 
     protected boolean wasMerged(List<CommandAndHandler> blindCommands, CommandAndHandler val) {
         if ( ! mergeValueChanges)                                    return false
+        if ( ! shallWeEvenTryToMerge )                               return false
         if (blindCommands.empty)                                     return false
         if (! val.command)                                           return false
         if (! val.command      instanceof ValueChangedCommand)       return false
+        shallWeEvenTryToMerge = true
 
-        def mergeable = blindCommands.find { cah ->
+        def mergeable = blindCommands.find { cah ->                 // this has O(n*n) and can become costly
             cah.command != null &&
             cah.command instanceof ValueChangedCommand &&
             cah.command.attributeId == val.command.attributeId &&
