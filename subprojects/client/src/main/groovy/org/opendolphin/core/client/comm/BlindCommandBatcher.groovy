@@ -27,7 +27,7 @@ class BlindCommandBatcher extends CommandBatcher {
 
     protected final inProcess               = new AtomicBoolean(false) // whether we started to batch up commands
     protected final deferralNeeded          = new AtomicBoolean(false) // whether we need to give commands the opportunity to enter the queue
-    protected shallWeEvenTryToMerge         = false // do not even try if there is no value change cmd in the batch
+    protected boolean shallWeEvenTryToMerge = false // do not even try if there is no value change cmd in the batch
 
     @Override
     void batch(CommandAndHandler commandWithHandler) {
@@ -60,12 +60,12 @@ class BlindCommandBatcher extends CommandBatcher {
 
     protected void processBatch() {
         agent << {  List<CommandAndHandler> commandsAndHandlers ->
-            def last = batchBlinds(commandsAndHandlers)  // always send leading blinds first
-            if (last) {                         // we do have a trailing command with handler and batch it separately
+            def last = batchBlinds(commandsAndHandlers) // always send leading blinds first
+            if (last) {                                 // we do have a trailing command with handler and batch it separately
                 waitingBatches << [last]
             }
             if ( ! commandsAndHandlers.empty) {
-                processBatch() // this is not so much like recursion, more like a trampoline
+                processBatch()                          // this is not so much like recursion, more like a trampoline
             }
         }
     }
@@ -88,17 +88,17 @@ class BlindCommandBatcher extends CommandBatcher {
     protected void addToBlindsOrMerge(List<CommandAndHandler> blindCommands, CommandAndHandler val) {
         if ( ! wasMerged(blindCommands,val)) {
             blindCommands << val
+            if (val.command in ValueChangedCommand) shallWeEvenTryToMerge = true
         }
     }
 
     protected boolean wasMerged(List<CommandAndHandler> blindCommands, CommandAndHandler val) {
-        if ( ! mergeValueChanges)                                    return false
-        if ( ! shallWeEvenTryToMerge )                               return false
-        if (blindCommands.empty)                                     return false
-        if (! val.command)                                           return false
-        if (! val.command      instanceof ValueChangedCommand)       return false
-        shallWeEvenTryToMerge = true
+        if ( ! mergeValueChanges)                 return false
+        if ( ! shallWeEvenTryToMerge )            return false
+        if (blindCommands.empty)                  return false
+        if (! val.command in ValueChangedCommand) return false
 
+        shallWeEvenTryToMerge = true
         def mergeable = blindCommands.find { cah ->                 // this has O(n*n) and can become costly
             cah.command != null &&
             cah.command instanceof ValueChangedCommand &&

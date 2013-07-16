@@ -78,10 +78,10 @@ class BlindCommandBatcherTest extends GroovyTestCase {
 
         list.each { commandAndHandler -> batcher.batch(commandAndHandler) }
 
-        def batches = batcher.waitingBatches.val
-        assert batches.size() == 1
-        assert batches.first().command.oldValue == 0
-        assert batches.first().command.newValue == 3
+        def nextBatch = batcher.waitingBatches.val
+        assert nextBatch.size() == 1
+        assert nextBatch.first().command.oldValue == 0
+        assert nextBatch.first().command.newValue == 3
         assert batcher.empty
 
     }
