@@ -1,5 +1,6 @@
 package org.opendolphin.core.client.comm
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 import groovyx.gpars.agent.Agent
 import groovyx.gpars.dataflow.Dataflow
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * when synchronizing back to the server.
  */
 
-@Log
+@Log @CompileStatic
 class BlindCommandBatcher extends CommandBatcher {
 
     final protected Agent<LinkedList<CommandAndHandler>> agent = Agent.agent(new LinkedList<CommandAndHandler>())
@@ -25,13 +26,13 @@ class BlindCommandBatcher extends CommandBatcher {
     /** when attribute x changes its value from 0 to 1 and then from 1 to 2, merge this into one change from 0 to 2 */
     boolean mergeValueChanges = false
 
-    protected final inProcess               = new AtomicBoolean(false) // whether we started to batch up commands
-    protected final deferralNeeded          = new AtomicBoolean(false) // whether we need to give commands the opportunity to enter the queue
-    protected boolean shallWeEvenTryToMerge = false // do not even try if there is no value change cmd in the batch
+    protected final AtomicBoolean inProcess      = new AtomicBoolean(false) // whether we started to batch up commands
+    protected final AtomicBoolean deferralNeeded = new AtomicBoolean(false) // whether we need to give commands the opportunity to enter the queue
+    protected boolean shallWeEvenTryToMerge      = false // do not even try if there is no value change cmd in the batch
 
     @Override
     void batch(CommandAndHandler commandWithHandler) {
-        log.finest "batching $commandWithHandler.command with ${commandWithHandler.handler ? '' : 'out' } handler"
+        log.finest "batching $commandWithHandler.command with${commandWithHandler.handler ? '' : 'out' } handler"
         agent << { List<CommandAndHandler> commandsAndHandlers ->
             commandsAndHandlers << commandWithHandler
         }
@@ -93,21 +94,26 @@ class BlindCommandBatcher extends CommandBatcher {
     }
 
     protected boolean wasMerged(List<CommandAndHandler> blindCommands, CommandAndHandler val) {
-        if ( ! mergeValueChanges)                 return false
-        if ( ! shallWeEvenTryToMerge )            return false
-        if (blindCommands.empty)                  return false
-        if (! val.command in ValueChangedCommand) return false
+        if ( ! mergeValueChanges)                   return false
+        if ( ! shallWeEvenTryToMerge )              return false
+        if (blindCommands.empty)                    return false
+        if ( ! val.command)                         return false
+        if (! (val.command in ValueChangedCommand)) return false
+        ValueChangedCommand valCmd = (ValueChangedCommand) val.command
 
         shallWeEvenTryToMerge = true
-        def mergeable = blindCommands.find { cah ->                 // this has O(n*n) and can become costly
+
+        def mergeable = blindCommands.find { CommandAndHandler cah ->           // this has O(n*n) and can become costly
             cah.command != null &&
             cah.command instanceof ValueChangedCommand &&
-            cah.command.attributeId == val.command.attributeId &&
-            cah.command.newValue == val.command.oldValue
+            ((ValueChangedCommand)cah.command).attributeId == valCmd.attributeId &&
+            ((ValueChangedCommand)cah.command).newValue == valCmd.oldValue
         }
         if (! mergeable) return false
 
-        mergeable.command.newValue = val.command.newValue
+        ValueChangedCommand mergeableCmd = (ValueChangedCommand) mergeable.command
+        log.finest("merging value changed command for attribute ${mergeableCmd.attributeId} with new values ${mergeableCmd.newValue} -> ${valCmd.newValue}")
+        mergeableCmd.newValue = valCmd.newValue
 
         return true
     }

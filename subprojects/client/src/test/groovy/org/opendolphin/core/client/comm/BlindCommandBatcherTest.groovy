@@ -1,6 +1,10 @@
 package org.opendolphin.core.client.comm
 
+import org.opendolphin.LogConfig
+import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.ValueChangedCommand
+
+import java.util.logging.Level
 
 class BlindCommandBatcherTest extends GroovyTestCase {
 
@@ -69,6 +73,8 @@ class BlindCommandBatcherTest extends GroovyTestCase {
     }
 
     void testMergeInOneCommand() {
+        LogConfig.logOnLevel(Level.ALL)
+
         batcher.mergeValueChanges = true
         def list = [
           new CommandAndHandler(command: new ValueChangedCommand(attributeId: 0, oldValue: 0, newValue: 1)),
@@ -82,6 +88,24 @@ class BlindCommandBatcherTest extends GroovyTestCase {
         assert nextBatch.size() == 1
         assert nextBatch.first().command.oldValue == 0
         assert nextBatch.first().command.newValue == 3
+        assert batcher.empty
+
+    }
+
+    void testMergeCreatePmAfterValueChange() {
+
+        batcher.mergeValueChanges = true
+        def list = [
+          new CommandAndHandler(command: new ValueChangedCommand(attributeId: 0, oldValue: 0, newValue: 1)),
+          new CommandAndHandler(command: new CreatePresentationModelCommand()),
+        ]
+
+        list.each { commandAndHandler -> batcher.batch(commandAndHandler) }
+
+        def nextBatch = batcher.waitingBatches.val
+        assert nextBatch.size() == 2
+        assert nextBatch[0].command instanceof ValueChangedCommand
+        assert nextBatch[1].command instanceof CreatePresentationModelCommand
         assert batcher.empty
 
     }
