@@ -182,6 +182,10 @@ class ServerDolphin extends Dolphin {
             return
         }
         if (attribute.value == value) return // standard bean check
+        forceChangeValue(value, response, attribute)
+    }
+
+    static void forceChangeValue(value, List<Command> response, ServerAttribute attribute) {
         value = BaseAttribute.checkValue(value)
         response << new ValueChangedCommand(attributeId: attribute.id, newValue: value, oldValue: attribute.value)
     }
