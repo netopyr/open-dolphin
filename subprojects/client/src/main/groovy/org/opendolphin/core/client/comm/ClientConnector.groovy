@@ -212,6 +212,11 @@ abstract class ClientConnector implements PropertyChangeListener {
         return model
     }
 
+    ClientPresentationModel handle(DeleteAllPresentationModelsOfTypeCommand serverCommand) {
+        clientDolphin.deleteAllPresentationModelsOfType(serverCommand.pmType)
+        return null // we cannot really return a single pm here
+    }
+
     @CompileStatic
     ClientPresentationModel handle(CreatePresentationModelCommand serverCommand) {
         if (((ClientModelStore) clientModelStore).containsPresentationModel(serverCommand.pmId)) {

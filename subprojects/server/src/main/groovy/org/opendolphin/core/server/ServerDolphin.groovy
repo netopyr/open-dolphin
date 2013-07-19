@@ -26,6 +26,8 @@ import org.opendolphin.core.comm.BaseValueChangedCommand
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.DeletePresentationModelCommand
+import org.opendolphin.core.comm.DeleteAllPresentationModelsOfTypeCommand
+import org.opendolphin.core.comm.DeletedAllPresentationModelsOfTypeNotification
 import org.opendolphin.core.comm.InitializeAttributeCommand
 import org.opendolphin.core.comm.PresentationModelResetedCommand
 import org.opendolphin.core.comm.ValueChangedCommand
@@ -142,6 +144,12 @@ class ServerDolphin extends Dolphin {
     static void delete(List<Command> response, String pmId){
         if (null == response || isBlank(pmId)) return
         response << new DeletePresentationModelCommand(pmId: pmId)
+    }
+
+    /** Convenience method to let Dolphin delete all presentation models of a given type */
+    static void deleteAllPresentationModelsOfType(List<Command> response, String pmType){
+        if (null == response || isBlank(pmType)) return
+        response << new DeleteAllPresentationModelsOfTypeCommand(pmType: pmType)
     }
 
     /** Convenience method to let Dolphin reset a presentation model */

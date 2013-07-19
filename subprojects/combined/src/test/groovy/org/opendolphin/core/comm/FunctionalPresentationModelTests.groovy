@@ -393,7 +393,24 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
     }
 
-    void testDeleteAllPresentationModelsOfType() {
+    void testDeleteAllPresentationModelsOfTypeFromServer() {
+        clientDolphin.presentationModel('pm1', 'type', attr: 1)
+        clientDolphin.presentationModel('pm2', 'type', attr: 1)
+
+        serverDolphin.action('deleteAll') { cmd, response ->
+            serverDolphin.deleteAllPresentationModelsOfType(response, 'type')
+        }
+        assert clientDolphin['pm1']
+        assert clientDolphin['pm2']
+
+        clientDolphin.send 'deleteAll', {
+            assert clientDolphin['pm1'] == null
+            assert clientDolphin['pm2'] == null
+            context.assertionsDone()
+        }
+    }
+
+    void testDeleteAllPresentationModelsOfTypeFromClient() {
 
         serverDolphin.action('assert1') { cmd, response ->
             assert 1 == serverDolphin.findAllPresentationModelsByType('PmType').size()
