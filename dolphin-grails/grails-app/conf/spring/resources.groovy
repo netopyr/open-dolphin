@@ -1,5 +1,6 @@
 import org.opendolphin.core.ModelStore
 import org.opendolphin.core.comm.JsonCodec
+import org.opendolphin.core.comm.ZippedJsonCodec
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.core.server.comm.ServerConnector
