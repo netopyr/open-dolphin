@@ -16,6 +16,7 @@ class HttpClientConnectorTests extends GroovyTestCase {
     @Override
     protected void setUp() throws Exception {
         connector = new HttpClientConnector(new ClientDolphin(), 'dummyURL')
+        connector.throwExceptionOnSessionChange = false
         connector.codec = new JsonCodec()
 
     }
