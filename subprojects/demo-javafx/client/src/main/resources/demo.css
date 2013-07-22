@@ -1,6 +1,7 @@
 .label {
     -fx-text-fill: white;
 }
+
 .tooltip {
     -fx-background-color:firebrick;
 }

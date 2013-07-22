@@ -16,15 +16,19 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.LogConfig
 import org.opendolphin.core.client.comm.JavaFXUiThreadHandler
 
-def writeDolphin = StarterUtil.setupForRemote()
-writeDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
-writeDolphin.clientConnector.commandBatcher.deferMillis = 0
 
-def readDolphin = StarterUtil.setupForRemote()
-readDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
-readDolphin.clientConnector.commandBatcher.deferMillis = 0
+def clientDolphin = StarterUtil.setupForRemote()
+clientDolphin.clientConnector.commandBatcher.deferMillis = 70
+clientDolphin.clientConnector.commandBatcher.mergeValueChanges = false
+clientDolphin.clientConnector.commandBatcher.maxBatchSize = 10
+clientDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
 
+def updateClientDolphin = StarterUtil.setupForRemote()
+updateClientDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
 
-SharedTachoView.show readDolphin, writeDolphin
+LogConfig.noLogs()
+
+SmallFootprintView.show clientDolphin, updateClientDolphin
