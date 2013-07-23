@@ -16,39 +16,28 @@
 
 package org.opendolphin
 
-import org.opendolphin.core.client.comm.BlindCommandBatcher
-import org.opendolphin.core.client.comm.ClientConnector
-
 /** Keep logging details in one place **/
-// todo dk: provide a consistent counterpart for the server
+
 class LogConfig {
 
     private static final Logger ROOT_LOGGER = Logger.getLogger("")
-    private static final LOGGERS = [
-        ROOT_LOGGER,
-        ClientConnector.log,
-        BlindCommandBatcher.log
-    ]
-
-    static {
-        for (logger in LOGGERS) {
-            logger.handlers.grep(ConsoleHandler).each { it.formatter = new ShortFormatter() }
-        }
-    }
 
     static noLogs() {
-        logOnLevel(Level.OFF)
+        logOnLevel(ROOT_LOGGER, Level.OFF)
     }
 
     static logCommunication() {
-        logOnLevel(Level.INFO)
+        logOnLevel(ROOT_LOGGER, Level.INFO)
     }
 
     static logOnLevel(Level level) {
-        for (logger in LOGGERS) {
-            logger.level = level
-            logger.handlers.each { it.setLevel(level) }
-        }
+        logOnLevel(ROOT_LOGGER, level)
+    }
+
+    static logOnLevel(Logger logger, Level level) {
+        logger.level = level
+        logger.handlers.each { it.setLevel(level) }
+        logger.handlers.grep(ConsoleHandler).each { it.formatter = new ShortFormatter() }
     }
 }
 
