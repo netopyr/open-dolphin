@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.LogConfig
 import org.opendolphin.core.server.EventBus
 
 

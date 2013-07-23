@@ -88,6 +88,7 @@ class SmallFootprintView {
                 int row = it.y.toInteger().intdiv(3)
                 int col = it.x.toInteger().intdiv(3)
                 Circle target = circles[""+row+" "+col]
+                if (!target) return
                 def oldfill = target.fill
                 target.fill = color
                 Platform.runLater {
