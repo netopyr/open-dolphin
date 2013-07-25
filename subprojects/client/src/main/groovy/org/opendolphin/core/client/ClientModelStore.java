@@ -20,10 +20,7 @@ import org.opendolphin.core.Attribute;
 import org.opendolphin.core.ModelStore;
 import org.opendolphin.core.ModelStoreConfig;
 import org.opendolphin.core.PresentationModel;
-import org.opendolphin.core.client.comm.ClientConnector;
-import org.opendolphin.core.client.comm.OnFinishedHandler;
-import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
-import org.opendolphin.core.client.comm.WithPresentationModelHandler;
+import org.opendolphin.core.client.comm.*;
 import org.opendolphin.core.comm.CreatePresentationModelCommand;
 import org.opendolphin.core.comm.DeletedAllPresentationModelsOfTypeNotification;
 import org.opendolphin.core.comm.DeletedPresentationModelNotification;
@@ -34,6 +31,7 @@ import java.util.List;
 
 public class ClientModelStore extends ModelStore {
     private final ClientDolphin clientDolphin;
+    protected final AttributeChangeListener attributeChangeListener;
 
     public ClientModelStore(ClientDolphin clientDolphin) {
         this(clientDolphin, new ModelStoreConfig());
@@ -42,10 +40,17 @@ public class ClientModelStore extends ModelStore {
     public ClientModelStore(ClientDolphin clientDolphin, ModelStoreConfig config) {
         super(config);
         this.clientDolphin = clientDolphin;
+        attributeChangeListener = new AttributeChangeListener();
+        attributeChangeListener.setClientConnector(getClientConnector());
+        attributeChangeListener.setClientModelStore(this);
     }
 
     protected ClientConnector getClientConnector() {
-        return clientDolphin.getClientConnector();
+        ClientConnector clientConnector = clientDolphin.getClientConnector();
+        if (null == attributeChangeListener.getClientConnector()){
+            attributeChangeListener.setClientConnector(clientConnector);
+        }
+        return clientConnector;
     }
 
     @Override
@@ -54,7 +59,7 @@ public class ClientModelStore extends ModelStore {
         if (success) {
             List<Attribute> attributes = model.getAttributes();
             for (Attribute attribute : attributes) {
-                attribute.addPropertyChangeListener(getClientConnector());
+                attribute.addPropertyChangeListener(attributeChangeListener);
             }
             getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
         }
@@ -70,7 +75,7 @@ public class ClientModelStore extends ModelStore {
     public boolean remove(PresentationModel model) {
         boolean success = super.remove(model);
         for (Attribute attribute : model.getAttributes()) {
-            attribute.removePropertyChangeListener(getClientConnector());
+            attribute.removePropertyChangeListener(attributeChangeListener);
         }
         return success;
     }
@@ -78,7 +83,7 @@ public class ClientModelStore extends ModelStore {
     @Override
     public void registerAttribute(Attribute attribute) {
         super.registerAttribute(attribute);
-        attribute.addPropertyChangeListener(getClientConnector());
+        attribute.addPropertyChangeListener(attributeChangeListener);
     }
 
     public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {

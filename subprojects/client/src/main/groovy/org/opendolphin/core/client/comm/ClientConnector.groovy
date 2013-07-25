@@ -35,7 +35,7 @@ import java.beans.PropertyChangeListener
 import java.util.logging.Level
 
 @Log
-abstract class ClientConnector implements PropertyChangeListener {
+abstract class ClientConnector {
     Codec codec
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
@@ -92,47 +92,6 @@ abstract class ClientConnector implements PropertyChangeListener {
 
     protected getClientModelStore() {
         clientDolphin.clientModelStore
-    }
-
-    void propertyChange(PropertyChangeEvent evt) {
-        if (evt.propertyName == Attribute.DIRTY_PROPERTY) {
-            // ignore
-        } else if (evt.propertyName == Attribute.VALUE) {
-            if (evt.oldValue == evt.newValue) return
-            send constructValueChangedCommand(evt)
-            List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
-            attributes.each { it.value = evt.newValue }
-        } else if (evt.propertyName == Attribute.BASE_VALUE) {
-            if (evt.oldValue == evt.newValue) return
-            send constructBaseValueChangedCommand(evt)
-            List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
-            attributes.each { it.rebase() }
-        } else {
-            // we assume the change is on a metadata property such as qualifier
-            send constructChangeAttributeMetadataCommand(evt)
-        }
-    }
-
-    private ValueChangedCommand constructValueChangedCommand(PropertyChangeEvent evt) {
-        new ValueChangedCommand(
-                attributeId: evt.source.id,
-                oldValue: evt.oldValue,
-                newValue: evt.newValue
-        )
-    }
-
-    private BaseValueChangedCommand constructBaseValueChangedCommand(PropertyChangeEvent evt) {
-        new BaseValueChangedCommand(
-                attributeId: evt.source.id
-        )
-    }
-
-    private ChangeAttributeMetadataCommand constructChangeAttributeMetadataCommand(PropertyChangeEvent evt) {
-        new ChangeAttributeMetadataCommand(
-                attributeId: evt.source.id,
-                metadataName: evt.propertyName,
-                value: evt.newValue
-        )
     }
 
     abstract List<Command> transmit(List<Command> commands)

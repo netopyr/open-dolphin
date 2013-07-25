@@ -32,6 +32,7 @@ class ClientConnectorTests extends GroovyTestCase {
 
 	TestClientConnector clientConnector
 	ClientDolphin dolphin
+    AttributeChangeListener attributeChangeListener
 
 	/**
 	 * Since command transmission is done in parallel to test execution thread the test method might finish
@@ -56,6 +57,7 @@ class ClientConnectorTests extends GroovyTestCase {
 		clientConnector.uiThreadHandler = new RunLaterUiThreadHandler()
 		dolphin.clientConnector = clientConnector
 		dolphin.clientModelStore = new ClientModelStore(dolphin)
+        attributeChangeListener = dolphin.clientModelStore.@attributeChangeListener
 
 		initLatch()
 	}
@@ -113,13 +115,13 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testPropertyChange_DirtyPropertyIgnored() {
-		clientConnector.propertyChange(new PropertyChangeEvent("dummy", Attribute.DIRTY_PROPERTY, null, null))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", Attribute.DIRTY_PROPERTY, null, null))
 		syncAndWaitUntilDone()
 		assertOnlySyncCommandWasTransmitted()
 	}
 
 	void testValueChange_OldAndNewValueSame() {
-		clientConnector.propertyChange(new PropertyChangeEvent("dummy", Attribute.VALUE, 'sameValue', 'sameValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", Attribute.VALUE, 'sameValue', 'sameValue'))
 		syncAndWaitUntilDone()
 		assertOnlySyncCommandWasTransmitted()
 	}
@@ -127,7 +129,7 @@ class ClientConnectorTests extends GroovyTestCase {
     void testValueChange_noQualifier() {
         ClientAttribute attribute = new ClientAttribute('attr', 'initialValue')
         dolphin.clientModelStore.registerAttribute(attribute)
-        clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
 		syncAndWaitUntilDone()
 		assertCommandsTransmitted(2)
 		assert attribute.value == 'initialValue'
@@ -139,7 +141,7 @@ class ClientConnectorTests extends GroovyTestCase {
 
 		ClientAttribute attribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(attribute)
-		clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
 		syncAndWaitUntilDone()
 
 		assertCommandsTransmitted(3)
@@ -148,7 +150,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testBaseValueChange_OldAndNewValueSame() {
-		clientConnector.propertyChange(new PropertyChangeEvent("dummy", Attribute.BASE_VALUE, 'sameValue', 'sameValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", Attribute.BASE_VALUE, 'sameValue', 'sameValue'))
 		syncAndWaitUntilDone()
 		assertOnlySyncCommandWasTransmitted()
 	}
@@ -158,7 +160,7 @@ class ClientConnectorTests extends GroovyTestCase {
 		attribute.value = 'newValue'
 		assert attribute.baseValue == 'initialValue'
 		dolphin.clientModelStore.registerAttribute(attribute)
-		clientConnector.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, 'old_is_irrelevant', 'new_is_irrelevant'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, 'old_is_irrelevant', 'new_is_irrelevant'))
 		syncAndWaitUntilDone()
 		assertCommandsTransmitted(3)
 		assert attribute.baseValue == 'newValue'
@@ -168,7 +170,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	void test_that_notWellKnown_property_causes_MetaDataChange() {
 		ClientAttribute attribute = new ExtendedAttribute('attr', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(attribute)
-		clientConnector.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
 		syncAndWaitUntilDone()
 		assertCommandsTransmitted(2)
 		assert ChangeAttributeMetadataCommand == clientConnector.transmittedCommands[0].class
@@ -178,7 +180,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	void testMetaDataChange_UnregisteredAttribute() {
 		ClientAttribute attribute = new ExtendedAttribute('attr', 'initialValue', 'qualifier')
 		attribute.additionalParam = 'oldValue'
-		clientConnector.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
 		syncAndWaitUntilDone()
 		assertCommandsTransmitted(2)
 		assert ChangeAttributeMetadataCommand == clientConnector.transmittedCommands[0].class
