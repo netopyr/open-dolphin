@@ -49,6 +49,54 @@ class JFXBinderTest extends GroovyTestCase {
         assert targetLabel.text == newValue
     }
 
+    void testNodeBindingWithConverter_Closure() {
+        given:
+        def initialValue = "initialValue"
+        def sourceLabel = new javafx.scene.control.Label()
+        sourceLabel.text = initialValue
+        def targetLabel = new javafx.scene.control.Label()
+
+        assert !targetLabel.text
+
+        when:
+        bind "text" of sourceLabel to "text" of targetLabel, {"[" + it + "]"}
+
+        assert targetLabel.text == "[initialValue]"
+
+        def newValue = "newValue"
+        sourceLabel.text = newValue
+
+        then:
+        assert targetLabel.text == "[newValue]"
+    }
+
+    void testNodeBindingWithConverter_Interface() {
+        given:
+        def initialValue = "initialValue"
+        def sourceLabel = new javafx.scene.control.Label()
+        sourceLabel.text = initialValue
+        def targetLabel = new javafx.scene.control.Label()
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return "[" + value + "]"
+            }
+        }
+        assert !targetLabel.text
+
+        when:
+        bind "text" of sourceLabel to "text" of targetLabel, converter
+
+        assert targetLabel.text == "[initialValue]"
+
+        def newValue = "newValue"
+        sourceLabel.text = newValue
+
+        then:
+        assert targetLabel.text == "[newValue]"
+    }
+
     void testPojoBinding() {
         given:
 
@@ -65,7 +113,7 @@ class JFXBinderTest extends GroovyTestCase {
     }
 
 
-    void testPojoBindingWithConverter() {
+    void testPojoBindingWithConverterClosure() {
         given:
 
         def bean = new PojoBean(value: 'white')
@@ -74,6 +122,35 @@ class JFXBinderTest extends GroovyTestCase {
         when:
 
         bindInfo 'value' of bean to 'textFill' of label, {it == 'white' ? Color.WHITE : Color.BLACK}
+
+        then:
+
+        assert label.textFill == Color.WHITE
+
+        nextWhen:
+
+        bean.value = 'foo'
+
+        nextThen:
+
+        assert label.textFill == Color.BLACK
+    }
+
+    void testPojoBindingWithConverter_Interface() {
+        given:
+
+        def bean = new PojoBean(value: 'white')
+        def label = new javafx.scene.control.Label()
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return value == 'white' ? Color.WHITE : Color.BLACK
+            }
+        }
+        when:
+
+        bindInfo 'value' of bean to 'textFill' of label, converter
 
         then:
 

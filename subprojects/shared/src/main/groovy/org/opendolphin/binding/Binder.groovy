@@ -187,6 +187,10 @@ class BindOtherOfAble {
     }
 
     void of(Object target, Closure converter = null) {
+        of target, converter == null ? null : new ConverterAdapter(converter)
+    }
+
+    void of(Object target, Converter converter) {
         def attribute = ((BasePresentationModel)source).findAttributeByPropertyNameAndTag(sourcePropertyName, tag)
         if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' and tag $tag in '${source.dump()}'")
         def changeListener = new BinderPropertyChangeListener(target, targetPropertyName, converter)
@@ -231,17 +235,23 @@ class BindPojoOtherOfAble {
     }
 
     void of(Object target, Closure converter = null) {
+        of target, converter == null ? null : new ConverterAdapter(converter)
+    }
+    void of(Object target, Converter converter) {
         def changeListener = makeListener(target, targetPropertyName, converter)
         target[targetPropertyName] = changeListener.convert(source."$sourcePropertyName") // set initial value
         addListener(changeListener)
     }
     void of(PresentationModel target, Closure converter = null) {
+        of target, converter == null ? null : new ConverterAdapter(converter)
+    }
+    void of(PresentationModel target, Converter converter) {
         def changeListener = makeListener(target[targetPropertyName], 'value', converter)
         target[targetPropertyName].value = changeListener.convert(source."$sourcePropertyName") // set initial value
         addListener(changeListener)
     }
 
-    protected BinderPropertyChangeListener makeListener(eventProvider, String eventPropName, Closure converter) {
+    protected BinderPropertyChangeListener makeListener(eventProvider, String eventPropName, Converter converter) {
         def pd = Introspector.getBeanInfo(source.getClass()).getPropertyDescriptors().find { it.name == sourcePropertyName }
         if (!pd) throw new IllegalArgumentException("there is no property named '$sourcePropertyName' in '${source.dump()}'")
         return new BinderPropertyChangeListener(eventProvider, eventPropName, converter);
@@ -259,13 +269,13 @@ class BindPojoOtherOfAble {
 class BinderPropertyChangeListener implements PropertyChangeListener {
     Object target
     String targetPropertyName
-    Closure converter
+    Converter converter
 
     void propertyChange(PropertyChangeEvent evt) {
         target[targetPropertyName] = convert(evt.newValue)
     }
 
     Object convert(Object value) {
-        converter != null ? converter(value) : value
+        converter != null ? converter.convert(value) : value
     }
 }
