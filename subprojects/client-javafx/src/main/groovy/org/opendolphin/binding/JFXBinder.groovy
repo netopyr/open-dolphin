@@ -193,6 +193,9 @@ class JFXBindOtherOfAble {
     }
 
     void of(Object target, Closure converter = null) {
+        of target, converter == null ? null : new ConverterAdapter(converter)
+    }
+    void of(Object target, Converter converter) {
         def listener = new JFXBinderChangeListener(source, sourcePropertyName, target, targetPropertyName, converter)
         // blindly add the listener as Property does not expose a method to query existing listeners
         // javafx 2.2b17
@@ -211,6 +214,9 @@ class BindClientOtherOfAble {
     }
 
     void of(Object target, Closure converter = null) {
+        of target, converter == null ? null : new ConverterAdapter(converter)
+    }
+    void of(Object target, Converter converter) {
         def listener = new JFXBinderPropertyChangeListener(attribute, target, targetPropertyName, converter)
         attribute.addPropertyChangeListener('value', listener)
         listener.update() // set the initial value after the binding and trigger the first notification
@@ -222,7 +228,7 @@ class JFXBinderPropertyChangeListener implements PropertyChangeListener {
     Attribute attribute
     Object target
     String targetPropertyName
-    Closure converter
+    Converter converter
 
     void update() {
         target[targetPropertyName] = convert(attribute.value)
@@ -233,7 +239,7 @@ class JFXBinderPropertyChangeListener implements PropertyChangeListener {
     }
 
     Object convert(Object value) {
-        converter != null ? converter(value) : value
+        converter != null ? converter.convert(value) : value
     }
     // we have equals(o) and hashCode() from @Canonical
 }
@@ -244,7 +250,7 @@ class JFXBinderChangeListener implements ChangeListener {
     String sourcePropertyName
     Object target
     String targetPropertyName
-    Closure converter
+    Converter converter
 
     void update() {
         if (target instanceof PresentationModel) {
@@ -259,7 +265,7 @@ class JFXBinderChangeListener implements ChangeListener {
     }
 
     Object convert(Object value) {
-        converter != null ? converter(value) : value
+        converter != null ? converter.convert(value) : value
     }
 
     // we have equals(o) and hashCode() from @Canonical
