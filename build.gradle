@@ -213,6 +213,10 @@ configure(mavenizedProjects()) {
                                 id 'Dierk'
                                 name 'Dierk Koenig'
                             }
+                            developer {
+                                id 'Sven'
+                                name 'Sven Ehrke'
+                            }
                         }
                     }
                 }
