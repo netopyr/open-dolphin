@@ -6,7 +6,7 @@ This ranges from performance-oriented topics like the support for client-side mo
 command batching and compressing down to operational support to e.g. detect
 unwanted breaches of the session affinity.
 
-The full list of closed issues is at [the project JIRA|http://www.canoo.com/jira/secure/ReleaseNote.jspa?version=11263&styleName=Html&projectId=10480&Create=Create]
+The full list of closed issues is at [the project JIRA|http://www.canoo.com/jira/secure/ReleaseNote.jspa?version=11263&amp;styleName=Html&amp;projectId=10480&amp;Create=Create]
 
 h4. Release 0.7
 
