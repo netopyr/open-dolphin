@@ -188,7 +188,7 @@ abstract class ClientConnector {
                 attr.propertyName.toString(),
                 attr.value,
                 attr.qualifier?.toString(),
-                Tag.valueOf(attr.tag.toString()))
+                attr.tag ? Tag.valueOf(attr.tag.toString()) : Tag.VALUE)
             attributes << attribute
         }
         ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
