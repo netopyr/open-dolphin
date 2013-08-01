@@ -21,6 +21,7 @@ import groovyx.gpars.dataflow.KanbanTray
 import groovyx.gpars.dataflow.ProcessingNode
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
+import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
@@ -183,8 +184,11 @@ abstract class ClientConnector {
         }
         List<ClientAttribute> attributes = []
         for (attr in serverCommand.attributes) {
-            ClientAttribute attribute = new ClientAttribute(attr.propertyName.toString(), attr.value)
-            attribute.qualifier = attr.qualifier
+            ClientAttribute attribute = new ClientAttribute(
+                attr.propertyName.toString(),
+                attr.value,
+                attr.qualifier?.toString(),
+                Tag.valueOf(attr.tag.toString()))
             attributes << attribute
         }
         ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
