@@ -125,7 +125,7 @@ class PushView {
             // all the bindings ...
 
             bind ATT_X      of selectedVehicle to FX.TEXT   of selX // simple binding + action
-            selX.onAction = { selectedVehicle[ATT_X].value = (it.source.text ?: 0).toInteger() } as EventHandler    // only reacts on enter: bug or feature?
+            selX.onAction = { selectedVehicle[ATT_X].value = (it.source.text ?: 0).toInteger() } as EventHandler
 
             bind ATT_Y      of selectedVehicle to FX.TEXT   of selY // example of a "bidirectional" binding
             bind FX.TEXT    of selY            to ATT_Y     of selectedVehicle, { it ? it.toInteger() : 0 }
