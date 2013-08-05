@@ -32,7 +32,8 @@ import static groovyx.javafx.GroovyFX.start
 
 import jfxtras.labs.scene.control.gauge.*
 import static jfxtras.labs.scene.control.gauge.Gauge.FrameDesign.CHROME
-import static jfxtras.labs.scene.control.gauge.Gauge.LcdFont.LCD;
+
+import static org.opendolphin.demo.LazyLoadingConstants.ATT.*
 
 /**
  * A demo that shows how to easily do lazy loading with the standard Dolphin on-board means.
@@ -47,20 +48,12 @@ class LazyLoadingView {
 
     static show(ClientDolphin dolphin) {
 
-        ClientPresentationModel dataMold = dolphin.presentationModel('dataMold', detail: null)
+        ClientPresentationModel dataMold = dolphin.presentationModel('dataMold', [ID, FIRST_LAST, LAST_FIRST, CITY, PHONE])
 
         ObservableList<Integer> observableList = FXCollections.observableArrayList()
 
         start { app ->
             SceneGraphBuilder sgb = delegate
-
-            def lcd = new Lcd (
-                 styleModel: new StyleModel(lcdValueFont: LCD, lcdUnitVisible: true),
-                 title: "Selected Value" ,
-                 unit: "value",
-                 prefWidth: 250,
-                 prefHeight: 70
-            )
 
             def gauge = new Radial (
                 styleModel: new StyleModel(frameDesign: CHROME),
@@ -72,25 +65,31 @@ class LazyLoadingView {
             )
 
             stage title:"Dolphin lazy loading demo", {
-                scene width: 700, height: 500, {
+                scene width: 750, height: 500, {
                     borderPane {
                         center margin:10, {
                             gridPane hgap:10, vgap:12, padding: 20, {
                                 columnConstraints  halignment: "right"
-                                columnConstraints  halignment: "right"
-                                label     row: 0, column: 0, 'detail'
-                                textField row: 0, column: 1, id: 'detailsField', prefColumnCount:10
-                                node      row: 1, column: 1, lcd
-                                label     row: 2, column: 0, 'table size:'
-                                label     row: 2, column: 1, id:'tableSizeField'
-                                label     row: 3, column: 0, 'lazily loaded:'
-                                label     row: 3, column: 1, id:"lazilyLoadedField"
-                                node      row: 4, column: 1, gauge
+                                columnConstraints  halignment: "left"
+                                label     row: 0, column: 0, 'Name'
+                                textField row: 0, column: 1, id: 'nameField', prefColumnCount:10
+                                label     row: 1, column: 0, 'City'
+                                textField row: 1, column: 1, id: 'cityField', prefColumnCount:10
+                                label     row: 2, column: 0, 'Phone'
+                                textField row: 2, column: 1, id: 'phoneField', prefColumnCount:10
+                                label     row: 3, column: 0, 'table size:'
+                                label     row: 3, column: 1, id:'tableSizeField'
+                                label     row: 4, column: 0, 'lazily loaded:'
+                                label     row: 4, column: 1, id:"lazilyLoadedField"
+                                label     row: 5, column: 0, 'selected index:'
+                                label     row: 5, column: 1, id:"selectedIndexField"
+                                node      row: 6, column: 1, gauge
                             }
                         }
                         left margin:10, {
                             tableView(id: 'table') {
-                                idCol = tableColumn(property:'id', text:"values", prefWidth: 100 )
+                                nameCol = tableColumn(property:'name', text:"Name", prefWidth: 150 )
+                                cityCol = tableColumn(property:'city', text:"City", prefWidth: 150 )
                             }
                         }
             }   }   }
@@ -99,16 +98,28 @@ class LazyLoadingView {
             table.items = observableList
 
             // all the bindings ...
-            bind 'detail' of dataMold to FX.TEXT  of detailsField
-            bind 'detail' of dataMold to FX.VALUE of lcd, { it ? (it-"server: ").toDouble() : 0 }
+            bind ID of dataMold to FX.TEXT of selectedIndexField
+            bind FIRST_LAST of dataMold to FX.TEXT of nameField
+            bind CITY of dataMold to FX.TEXT of cityField
+            bind PHONE of dataMold to FX.TEXT of phoneField
 
             // cell values are lazily requested from JavaFX and must return an observable value
-            idCol.cellValueFactory = {
+            nameCol.cellValueFactory = {
                 String lazyId = it.value['id']
                 def placeholder = new SimpleStringProperty("...")
                 dolphin.clientModelStore.withPresentationModel(lazyId, new WithPresentationModelHandler() {
                     void onFinished(ClientPresentationModel presentationModel) {
-                        placeholder.setValue( presentationModel.detail.value ) // fill async lazily
+                        placeholder.setValue( presentationModel.getAt(LAST_FIRST).value ) // fill async lazily
+                    }
+                } )
+                return placeholder
+            } as Callback
+            cityCol.cellValueFactory = {
+                String lazyId = it.value['id']
+                def placeholder = new SimpleStringProperty("...")
+                dolphin.clientModelStore.withPresentationModel(lazyId, new WithPresentationModelHandler() {
+                    void onFinished(ClientPresentationModel presentationModel) {
+                        placeholder.setValue( presentationModel.getAt(CITY).value ) // fill async lazily
                     }
                 } )
                 return placeholder
@@ -143,7 +154,6 @@ class LazyLoadingView {
                     observableList << map
                 }
                 tableSizeField.text = observableList.size()
-                lcd.maxValue = observableList.size()
             }
 
             primaryStage.show()
