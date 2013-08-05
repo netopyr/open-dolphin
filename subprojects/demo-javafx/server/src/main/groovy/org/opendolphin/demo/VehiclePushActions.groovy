@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.NamedCommand
 import org.opendolphin.core.server.DTO

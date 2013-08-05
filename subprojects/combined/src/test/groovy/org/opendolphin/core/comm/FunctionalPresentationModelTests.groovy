@@ -123,6 +123,24 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
     }
 
+    void testCreationRoundtripForTags() {
+        serverDolphin.action "create", { cmd, response ->
+            def NO_TYPE = null
+            def NO_QUALIFIER = null
+            serverDolphin.presentationModel(response, "id".toString(), NO_TYPE, new DTO(new Slot("attr", true, NO_QUALIFIER, Tag.VISIBLE)))
+        }
+        serverDolphin.action "checkTagIsKnownOnServerSide", { cmd, response ->
+            assert serverDolphin.getAt("id").getAt('attr', Tag.VISIBLE)
+        }
+
+        clientDolphin.send "create", { List<ClientPresentationModel> pms ->
+            assert clientDolphin.getAt("id").getAt('attr', Tag.VISIBLE)
+            clientDolphin.send "checkTagIsKnownOnServerSide", { List<ClientPresentationModel> xxx ->
+                context.assertionsDone()
+            }
+        }
+    }
+
     void testCreationNoRoundtripWhenClientSideOnly() {
         serverDolphin.action "create", { cmd, response ->
             serverDolphin.clientSideModel(response, "id".toString(), null, new DTO(new Slot("attr", 'attr')))
