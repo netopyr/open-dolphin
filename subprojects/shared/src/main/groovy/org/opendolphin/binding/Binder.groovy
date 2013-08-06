@@ -85,12 +85,20 @@ class UnbindOtherOfAble {
         this.targetPropertyName = targetPropertyName
     }
 
+    void of(PresentationModel target) {
+        doOf(target[targetPropertyName], "value")
+    }
+
     void of(Object target) {
+        doOf(target, targetPropertyName)
+    }
+
+    protected void doOf(target, String actualTargetPropertyName) {
         def attribute = source.findAttributeByPropertyName(sourcePropertyName)
         if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' in '${source.dump()}'")
         // find a BinderPropertyChangeListener that matches
         def listener = attribute.getPropertyChangeListeners('value').find {
-            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == targetPropertyName
+            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == actualTargetPropertyName
         }
         // remove the listener; this operation is null safe
         attribute.removePropertyChangeListener('value', listener)
@@ -131,12 +139,20 @@ class UnbindPojoOtherOfAble {
         this.targetPropertyName = targetPropertyName
     }
 
+    void of(PresentationModel target) {
+        doOf(target[targetPropertyName], "value")
+    }
+
     void of(Object target) {
+        doOf(target, targetPropertyName)
+    }
+
+    protected void doOf(target, String actualTargetPropertyName) {
         def pd = Introspector.getBeanInfo(source.getClass()).getPropertyDescriptors().find { it.name == sourcePropertyName }
         if (!pd) throw new IllegalArgumentException("there is no property named '$sourcePropertyName' in '${source.dump()}'")
         // find a BinderPropertyChangeListener that matches
         def listener = source.getPropertyChangeListeners(sourcePropertyName).find {
-            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == targetPropertyName
+            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == actualTargetPropertyName
         }
         // remove the listener
         if (listener) source.removePropertyChangeListener(sourcePropertyName, listener)
@@ -184,6 +200,12 @@ class BindOtherOfAble {
         this.sourcePropertyName = sourcePropertyName
         this.tag = tag
         this.targetPropertyName = targetPropertyName
+    }
+
+    void of(PresentationModel target) {
+        throw new IllegalArgumentException("You attempted to bind a presentation model attribute against a second one." +
+                " This is not supported. Please use qualifiers for such a purpose. If you have a compelling use case for" +
+                " this feature, please file a JIRA request.")
     }
 
     void of(Object target, Closure converter = null) {
@@ -243,12 +265,22 @@ class BindPojoOtherOfAble {
         addListener(changeListener)
     }
     void of(PresentationModel target, Closure converter = null) {
+        checkTargetAttributeExists(target, targetPropertyName)
         of target, converter == null ? null : new ConverterAdapter(converter)
     }
     void of(PresentationModel target, Converter converter) {
+        checkTargetAttributeExists(target, targetPropertyName)
         def changeListener = makeListener(target[targetPropertyName], 'value', converter)
         target[targetPropertyName].value = changeListener.convert(source."$sourcePropertyName") // set initial value
         addListener(changeListener)
+    }
+
+    protected checkTargetAttributeExists(PresentationModel target, String targetPropName) {
+        if (target[targetPropName] == null) {
+            throw new IllegalArgumentException("there is no attribute named '$targetPropName' " +
+                    "in presentation model with id '${target.id}', known attribute names are: " +
+                    "${target.attributes.collect {it.propertyName}}")
+        }
     }
 
     protected BinderPropertyChangeListener makeListener(eventProvider, String eventPropName, Converter converter) {

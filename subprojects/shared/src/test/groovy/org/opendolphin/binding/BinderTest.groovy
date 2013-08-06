@@ -26,8 +26,8 @@ class BinderTest extends GroovyTestCase {
     void testPojoBinding() {
         given:
         def initialValue = "Andres&Dierk"
-        def sourcePojo = new Pojo(value: initialValue)
-        def targetPojo = new Pojo()
+        def sourcePojo = new BindablePojo(value: initialValue)
+        def targetPojo = new BindablePojo()
 
         assert !targetPojo.value
 
@@ -45,8 +45,8 @@ class BinderTest extends GroovyTestCase {
 
     void testPojoBindingWithConverter_Closure() {
         given:
-        def sourcePojo = new Pojo(value: 'initialValue')
-        def targetPojo = new Pojo()
+        def sourcePojo = new BindablePojo(value: 'initialValue')
+        def targetPojo = new BindablePojo()
 
         assert !targetPojo.value
 
@@ -64,8 +64,8 @@ class BinderTest extends GroovyTestCase {
 
     void testPojoBindingWithConverter_Interface() {
         given:
-        def sourcePojo = new Pojo(value: 'initialValue')
-        def targetPojo = new Pojo()
+        def sourcePojo = new BindablePojo(value: 'initialValue')
+        def targetPojo = new BindablePojo()
 
         def converter = new Converter() {
             @Override
@@ -92,7 +92,7 @@ class BinderTest extends GroovyTestCase {
         def initialValue = "Andres&Dierk"
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text')])
         sourcePm.text.value = initialValue
-        def targetPojo = new Pojo()
+        def targetPojo = new BindablePojo()
 
         assert !targetPojo.value
 
@@ -111,7 +111,7 @@ class BinderTest extends GroovyTestCase {
     void testAttributeBindingWithConverter_Closure() {
         given:
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
-        def targetPojo = new Pojo()
+        def targetPojo = new BindablePojo()
 
         assert !targetPojo.value
 
@@ -129,7 +129,7 @@ class BinderTest extends GroovyTestCase {
     void testAttributeBindingWithConverter_Interface() {
         given:
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
-        def targetPojo = new Pojo()
+        def targetPojo = new BindablePojo()
 
         def converter = new Converter() {
             @Override
@@ -152,7 +152,7 @@ class BinderTest extends GroovyTestCase {
 
 }
 
-class Pojo {
+class BindablePojo {
     @Bindable String value
 }
 

@@ -17,18 +17,34 @@
 package org.opendolphin.binding
 
 import org.opendolphin.core.BasePresentationModel
-import org.opendolphin.core.PresentationModel
 import spock.lang.Specification
 
+import static groovy.test.GroovyAssert.shouldFail
 import static org.opendolphin.binding.Binder.bind
 import static org.opendolphin.binding.Binder.unbind
 
 class BinderSpec extends Specification {
+    def 'bind and unbind on PMs'() {
+        given:
+        def sourcePm = new BasePresentationModel("1", [new SimpleAttribute('text')])
+        sourcePm.text.value = "test"
+        def targetPm = new BasePresentationModel("2", [new SimpleAttribute('text')])
+
+        when:
+        def fail = shouldFail(IllegalArgumentException) {
+            bind "text" of sourcePm to "text" of targetPm
+        }
+
+        then:
+        fail.message.contains("You attempted to bind a presentation model attribute against a second one.")
+
+    }
+
     def 'bind and unbind on POJOs'() {
         given:
         def initialValue = 'pojo'
-        def sourcePojo = new Pojo(value: initialValue)
-        def targetPojo = new Pojo()
+        def sourcePojo = new BindablePojo(value: initialValue)
+        def targetPojo = new BindablePojo()
 
         when:
 
@@ -59,15 +75,47 @@ class BinderSpec extends Specification {
         targetPojo.value != sourcePojo.value
         targetPojo.value == 'newValue'
 
-        !sourcePojo.getPropertyChangeListeners('value').find() {it instanceof BinderPropertyChangeListener}
+        !sourcePojo.getPropertyChangeListeners('value').find() { it instanceof BinderPropertyChangeListener }
     }
 
-    def 'bind and unbind on POJOs and PMs'() {
+    def 'bind and unbind on POJOs and PMs: Source POJO, target PM'() {
         given:
         def initialValue = 'pojo'
-        def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text')])
+        def sourcePojo = new BindablePojo()
+        sourcePojo.value = initialValue;
+        def targetPm = new BasePresentationModel("1", [new SimpleAttribute('text')])
+
+        when:
+        bind 'value' of sourcePojo to 'text' of targetPm
+
+        then:
+        targetPm.text.value == sourcePojo.value
+
+
+        when:
+        sourcePojo.value = 'newValue'
+
+        then:
+        targetPm.text.value == sourcePojo.value
+
+
+        when:
+        unbind 'value' of sourcePojo from 'text' of targetPm
+        sourcePojo.value = 'anotherValue'
+
+        then:
+        sourcePojo.value == 'anotherValue'
+        targetPm.text.value == 'newValue'
+
+        !sourcePojo.getPropertyChangeListeners('value').find() { it instanceof BinderPropertyChangeListener }
+    }
+
+    def 'bind and unbind on POJOs and PMs: Source PM, target POJO'() {
+        given:
+        def initialValue = 'pojo'
+        def sourcePm = new BasePresentationModel("1", [new SimpleAttribute('text')])
         sourcePm.text.value = initialValue
-        def targetPojo = new Pojo()
+        def targetPojo = new BindablePojo()
 
         when:
 
@@ -98,6 +146,98 @@ class BinderSpec extends Specification {
         targetPojo.value != sourcePm.text.value
         targetPojo.value == 'newValue'
 
-        !sourcePm.text.getPropertyChangeListeners('value').find() {it instanceof BinderPropertyChangeListener}
+        !sourcePm.text.getPropertyChangeListeners('value').find() { it instanceof BinderPropertyChangeListener }
     }
+
+    void "binding from a non present PM attribute throws meaningful exception"() {
+
+        given:
+        def sourcePM = new BasePresentationModel("1", [])
+        def targetPojo = new BindablePojo()
+
+        when:
+        def fail = shouldFail(IllegalArgumentException) {
+            bind "nonPresentAttribute" of sourcePM to "value" of targetPojo
+        }
+
+        then:
+        fail.message.contains("there is no attribute for property name 'nonPresentAttribute'")
+    }
+
+    void "binding to a non present PM attribute with source=POJO throws meaningful exception"() {
+
+        given:
+        def sourcePojo = new BindablePojo(value: "test")
+        def targetPM = new BasePresentationModel("1", [])
+
+        when:
+        def fail = shouldFail(IllegalArgumentException) {
+            bind "value" of sourcePojo to "nonPresentAttribute" of targetPM
+        }
+
+        then:
+        fail.message.contains("there is no attribute named 'nonPresentAttribute'")
+    }
+
+    void "binding to a non present PM attribute with source=PM throws meaningful exception"() {
+
+        given:
+        def sourcePm = new BasePresentationModel("1", [new SimpleAttribute('text')])
+        def targetPM = new BasePresentationModel("1", [])
+
+        when:
+        def fail = shouldFail(IllegalArgumentException) {
+            bind "text" of sourcePm to "nonPresentAttribute" of targetPM
+        }
+
+        then:
+        fail.message.contains("You attempted to bind a presentation model attribute against a second one.")
+    }
+
+    void "binding from a non present POJO property throws meaningful exception"() {
+
+        given:
+        def sourcePojo = new BindablePojo()
+        def targetPojo = new BindablePojo()
+
+        when:
+        def fail = shouldFail(IllegalArgumentException) {
+            bind "nonPresentProperty" of sourcePojo to "value" of targetPojo
+        }
+
+        then:
+        fail.message.contains("there is no property named 'nonPresentProperty'")
+    }
+
+    void "binding to a non present POJO property with source=POJO throws meaningful exception"() {
+
+        given:
+        def sourcePojo = new BindablePojo(value: "test")
+        def targetPojo = new BindablePojo()
+
+        when:
+        def fail = shouldFail(MissingPropertyException) {
+            bind "value" of sourcePojo to "nonPresentProperty" of targetPojo
+        }
+
+        then:
+        fail.message.contains("No such property: nonPresentProperty")
+    }
+
+    void "binding to a non present POJO property with source=PM throws meaningful exception"() {
+
+        given:
+        def sourcePm = new BasePresentationModel("1", [new SimpleAttribute('text')])
+        def targetPojo = new BindablePojo()
+
+        when:
+        def fail = shouldFail(MissingPropertyException) {
+            bind "text" of sourcePm to "nonPresentProperty" of targetPojo
+        }
+
+        then:
+        fail.message.contains("No such property: nonPresentProperty")
+    }
+
+
 }
