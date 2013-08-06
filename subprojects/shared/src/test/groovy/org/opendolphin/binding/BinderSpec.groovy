@@ -168,7 +168,7 @@ class BinderSpec extends Specification {
 
         given:
         def sourcePojo = new BindablePojo(value: "test")
-        def targetPM = new BasePresentationModel("1", [])
+        def targetPM = new BasePresentationModel("1", [new SimpleAttribute('text')])
 
         when:
         def fail = shouldFail(IllegalArgumentException) {
@@ -183,7 +183,7 @@ class BinderSpec extends Specification {
 
         given:
         def sourcePm = new BasePresentationModel("1", [new SimpleAttribute('text')])
-        def targetPM = new BasePresentationModel("1", [])
+        def targetPM = new BasePresentationModel("2", [new SimpleAttribute('text')])
 
         when:
         def fail = shouldFail(IllegalArgumentException) {
