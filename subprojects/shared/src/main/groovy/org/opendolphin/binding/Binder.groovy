@@ -85,10 +85,6 @@ class UnbindOtherOfAble {
         this.targetPropertyName = targetPropertyName
     }
 
-    void of(PresentationModel target) {
-        doOf(target[targetPropertyName], "value")
-    }
-
     void of(Object target) {
         doOf(target, targetPropertyName)
     }
