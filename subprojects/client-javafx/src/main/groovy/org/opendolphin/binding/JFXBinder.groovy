@@ -46,7 +46,7 @@ class JFXBinder {
         new JFXUnbindOfAble(sourcePropertyName)
     }
 
-    static UnbindPojoOfAble unbindInfo(String sourcePropertyName) {
+    static UnbindInfoOfAble unbindInfo(String sourcePropertyName) {
         Binder.unbindInfo(sourcePropertyName)
     }
 }

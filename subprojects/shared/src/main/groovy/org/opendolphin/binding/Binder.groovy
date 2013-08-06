@@ -42,8 +42,8 @@ class Binder {
         new UnbindOfAble(sourcePropertyName)
     }
 
-    static UnbindPojoOfAble unbindInfo(String sourcePropertyName) {
-        new UnbindPojoOfAble(sourcePropertyName)
+    static UnbindInfoOfAble unbindInfo(String sourcePropertyName) {
+        new UnbindInfoOfAble(sourcePropertyName)
     }
 }
 
@@ -69,17 +69,17 @@ class UnbindFromAble {
         this.sourcePropertyName = sourcePropertyName
     }
 
-    UnbindOtherOfAble from(String targetPropertyName) {
-        new UnbindOtherOfAble(source, sourcePropertyName, targetPropertyName)
+    UnbindTargetOfAble from(String targetPropertyName) {
+        new UnbindTargetOfAble(source, sourcePropertyName, targetPropertyName)
     }
 }
 
-class UnbindOtherOfAble {
+class UnbindTargetOfAble {
     final PresentationModel source
     final String sourcePropertyName
     final String targetPropertyName
 
-    UnbindOtherOfAble(PresentationModel source, String sourcePropertyName, String targetPropertyName) {
+    UnbindTargetOfAble(PresentationModel source, String sourcePropertyName, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
@@ -102,7 +102,7 @@ class UnbindOtherOfAble {
 }
 
 @Immutable
-class UnbindPojoOfAble {
+class UnbindInfoOfAble {
     String sourcePropertyName
 
     UnbindPojoFromAble of(Object source) {
@@ -119,17 +119,17 @@ class UnbindPojoFromAble {
         this.sourcePropertyName = sourcePropertyName
     }
 
-    UnbindPojoOtherOfAble from(String targetPropertyName) {
-        new UnbindPojoOtherOfAble(source, sourcePropertyName, targetPropertyName)
+    UnbindPojoTargetOfAble from(String targetPropertyName) {
+        new UnbindPojoTargetOfAble(source, sourcePropertyName, targetPropertyName)
     }
 }
 
-class UnbindPojoOtherOfAble {
+class UnbindPojoTargetOfAble {
     final Object source
     final String sourcePropertyName
     final String targetPropertyName
 
-    UnbindPojoOtherOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
+    UnbindPojoTargetOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
@@ -180,18 +180,18 @@ class BindToAble {
         this.tag = tag
     }
 
-    BindOtherOfAble to(String targetPropertyName) {
-        new BindOtherOfAble(source, sourcePropertyName, tag, targetPropertyName)
+    BindTargetOfAble to(String targetPropertyName) {
+        new BindTargetOfAble(source, sourcePropertyName, tag, targetPropertyName)
     }
 }
 
-class BindOtherOfAble {
+class BindTargetOfAble {
     final PresentationModel source
     final String sourcePropertyName
     final Tag    tag
     final String targetPropertyName
 
-    BindOtherOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName) {
+    BindTargetOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.tag = tag
@@ -236,17 +236,17 @@ class BindPojoToAble {
         this.sourcePropertyName = sourcePropertyName
     }
 
-    BindPojoOtherOfAble to(String targetPropertyName) {
-        new BindPojoOtherOfAble(source, sourcePropertyName, targetPropertyName)
+    BindPojoTargetOfAble to(String targetPropertyName) {
+        new BindPojoTargetOfAble(source, sourcePropertyName, targetPropertyName)
     }
 }
 
-class BindPojoOtherOfAble {
+class BindPojoTargetOfAble {
     final Object source
     final String sourcePropertyName
     final String targetPropertyName
 
-    BindPojoOtherOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
+    BindPojoTargetOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
