@@ -21,7 +21,8 @@ class DolphinSpringBean {
         ServerDolphin dolphin,
         CrudService crudService,
         EventBus tachoBus,
-        EventBus manyEventsBus
+        EventBus manyEventsBus,
+        EventBus smallFootprintBus
     ) {
 
         Logger.getLogger("").level = Level.OFF
