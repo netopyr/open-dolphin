@@ -19,6 +19,7 @@ package org.opendolphin.core.comm
 import org.opendolphin.LogConfig
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
+import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.BlindCommandBatcher
@@ -61,6 +62,49 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     @Override
     protected void tearDown() {
         assert context.done.await(10, TimeUnit.SECONDS)
+    }
+
+    void testQualifiersInClientPMs() {
+        def modelA = clientDolphin.presentationModel("1", new ClientAttribute("a", 0, "QUAL"))
+        def modelB = clientDolphin.presentationModel("2", new ClientAttribute("b", 0, "QUAL"))
+
+        modelA.a.value = 1
+
+        assert modelB.b.value == 1
+        context.assertionsDone() // make sure the assertions are really executed
+    }
+
+    void testValueChangeWithQualifiersInClientSideOnlyPMs() {
+        def modelA = new ClientPresentationModel("1", [new ClientAttribute("a", 0, "QUAL")])
+        modelA.clientSideOnly = true
+        clientDolphin.modelStore.add modelA
+
+        def modelB = clientDolphin.presentationModel("2", new ClientAttribute("b", 0))
+        modelB.clientSideOnly = true
+        clientDolphin.addAttributeToModel(modelB, new ClientAttribute("bLate", 0, "QUAL"))
+
+        modelA.a.value = 1
+
+        assert modelB.bLate.value == 1
+        context.assertionsDone() // make sure the assertions are really executed
+    }
+
+    void testValueRebaseWithQualifiersInClientSideOnlyPMs() {
+        def modelA = new ClientPresentationModel("1", [new ClientAttribute("a", 0, "QUAL")])
+        modelA.clientSideOnly = true
+        clientDolphin.modelStore.add modelA
+
+        def modelB = clientDolphin.presentationModel("2", new ClientAttribute("b", 0))
+        modelB.clientSideOnly = true
+        clientDolphin.addAttributeToModel(modelB, new ClientAttribute("bLate", 0, "QUAL"))
+
+        modelA.a.value = 1
+        assert modelB.bLate.baseValue == 0
+        modelA.a.rebase()
+
+        assert modelA.a.baseValue == 1
+        assert modelB.bLate.baseValue == 1
+        context.assertionsDone() // make sure the assertions are really executed
     }
 
     void testPerformanceWithStandardCommandBatcher() {

@@ -15,25 +15,15 @@
  */
 
 package org.opendolphin.demo
-import org.opendolphin.core.comm.DataCommand
-import org.opendolphin.core.comm.GetPresentationModelCommand
-import org.opendolphin.core.comm.InitializeAttributeCommand
+
+def numEntries = 10000;
 
 def config = new JavaFxInMemoryConfig()
 def serverDolphin = config.serverDolphin
 def clientDolphin = config.clientDolphin
 clientDolphin.clientConnector.sleepMillis = 0
 
-// first get only the ids of pms to display as raw data
-serverDolphin.action "fullDataRequest", { cmd, response ->
-    100000.times {
-        response << new DataCommand(id:it)
-    }
-}
-
-// lazy server callback
-serverDolphin.serverConnector.registry.register(GetPresentationModelCommand) { GetPresentationModelCommand cmd, response ->
-    response << new InitializeAttributeCommand(pmId: cmd.pmId, propertyName: "detail", newValue: "server: "+cmd.pmId, pmType: "LAZY")
-}
+serverDolphin.action "fullDataRequest", new FullDataRequestCommandHandler(numEntries)
+serverDolphin.register new LazyLoadingAction(numEntries)
 
 LazyLoadingView.show clientDolphin

@@ -195,10 +195,8 @@ abstract class ClientConnector {
         model.presentationModelType = serverCommand.pmType
         if (serverCommand.clientSideOnly) {
             model.clientSideOnly = true
-            ((ClientModelStore)clientModelStore).addClientSideOnly(model)
-        } else {
-            ((ClientModelStore)clientModelStore).add(model)
         }
+        ((ClientModelStore)clientModelStore).add(model)
         clientDolphin.updateQualifiers(model)
         return model
     }

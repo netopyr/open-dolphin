@@ -42,8 +42,8 @@ class Binder {
         new UnbindOfAble(sourcePropertyName)
     }
 
-    static UnbindPojoOfAble unbindInfo(String sourcePropertyName) {
-        new UnbindPojoOfAble(sourcePropertyName)
+    static UnbindInfoOfAble unbindInfo(String sourcePropertyName) {
+        new UnbindInfoOfAble(sourcePropertyName)
     }
 }
 
@@ -69,28 +69,32 @@ class UnbindFromAble {
         this.sourcePropertyName = sourcePropertyName
     }
 
-    UnbindOtherOfAble from(String targetPropertyName) {
-        new UnbindOtherOfAble(source, sourcePropertyName, targetPropertyName)
+    UnbindTargetOfAble from(String targetPropertyName) {
+        new UnbindTargetOfAble(source, sourcePropertyName, targetPropertyName)
     }
 }
 
-class UnbindOtherOfAble {
+class UnbindTargetOfAble {
     final PresentationModel source
     final String sourcePropertyName
     final String targetPropertyName
 
-    UnbindOtherOfAble(PresentationModel source, String sourcePropertyName, String targetPropertyName) {
+    UnbindTargetOfAble(PresentationModel source, String sourcePropertyName, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
     }
 
     void of(Object target) {
+        doOf(target, targetPropertyName)
+    }
+
+    protected void doOf(target, String actualTargetPropertyName) {
         def attribute = source.findAttributeByPropertyName(sourcePropertyName)
         if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' in '${source.dump()}'")
         // find a BinderPropertyChangeListener that matches
         def listener = attribute.getPropertyChangeListeners('value').find {
-            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == targetPropertyName
+            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == actualTargetPropertyName
         }
         // remove the listener; this operation is null safe
         attribute.removePropertyChangeListener('value', listener)
@@ -98,7 +102,7 @@ class UnbindOtherOfAble {
 }
 
 @Immutable
-class UnbindPojoOfAble {
+class UnbindInfoOfAble {
     String sourcePropertyName
 
     UnbindPojoFromAble of(Object source) {
@@ -115,28 +119,36 @@ class UnbindPojoFromAble {
         this.sourcePropertyName = sourcePropertyName
     }
 
-    UnbindPojoOtherOfAble from(String targetPropertyName) {
-        new UnbindPojoOtherOfAble(source, sourcePropertyName, targetPropertyName)
+    UnbindPojoTargetOfAble from(String targetPropertyName) {
+        new UnbindPojoTargetOfAble(source, sourcePropertyName, targetPropertyName)
     }
 }
 
-class UnbindPojoOtherOfAble {
+class UnbindPojoTargetOfAble {
     final Object source
     final String sourcePropertyName
     final String targetPropertyName
 
-    UnbindPojoOtherOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
+    UnbindPojoTargetOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
     }
 
+    void of(PresentationModel target) {
+        doOf(target[targetPropertyName], "value")
+    }
+
     void of(Object target) {
+        doOf(target, targetPropertyName)
+    }
+
+    protected void doOf(target, String actualTargetPropertyName) {
         def pd = Introspector.getBeanInfo(source.getClass()).getPropertyDescriptors().find { it.name == sourcePropertyName }
         if (!pd) throw new IllegalArgumentException("there is no property named '$sourcePropertyName' in '${source.dump()}'")
         // find a BinderPropertyChangeListener that matches
         def listener = source.getPropertyChangeListeners(sourcePropertyName).find {
-            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == targetPropertyName
+            it instanceof BinderPropertyChangeListener && it.target == target && it.targetPropertyName == actualTargetPropertyName
         }
         // remove the listener
         if (listener) source.removePropertyChangeListener(sourcePropertyName, listener)
@@ -168,22 +180,28 @@ class BindToAble {
         this.tag = tag
     }
 
-    BindOtherOfAble to(String targetPropertyName) {
-        new BindOtherOfAble(source, sourcePropertyName, tag, targetPropertyName)
+    BindTargetOfAble to(String targetPropertyName) {
+        new BindTargetOfAble(source, sourcePropertyName, tag, targetPropertyName)
     }
 }
 
-class BindOtherOfAble {
+class BindTargetOfAble {
     final PresentationModel source
     final String sourcePropertyName
     final Tag    tag
     final String targetPropertyName
 
-    BindOtherOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName) {
+    BindTargetOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.tag = tag
         this.targetPropertyName = targetPropertyName
+    }
+
+    void of(PresentationModel target) {
+        throw new IllegalArgumentException("You attempted to bind a presentation model attribute against a second one." +
+                " This is not supported. Please use qualifiers for such a purpose. If you have a compelling use case for" +
+                " this feature, please file a JIRA request.")
     }
 
     void of(Object target, Closure converter = null) {
@@ -218,17 +236,17 @@ class BindPojoToAble {
         this.sourcePropertyName = sourcePropertyName
     }
 
-    BindPojoOtherOfAble to(String targetPropertyName) {
-        new BindPojoOtherOfAble(source, sourcePropertyName, targetPropertyName)
+    BindPojoTargetOfAble to(String targetPropertyName) {
+        new BindPojoTargetOfAble(source, sourcePropertyName, targetPropertyName)
     }
 }
 
-class BindPojoOtherOfAble {
+class BindPojoTargetOfAble {
     final Object source
     final String sourcePropertyName
     final String targetPropertyName
 
-    BindPojoOtherOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
+    BindPojoTargetOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
@@ -243,12 +261,22 @@ class BindPojoOtherOfAble {
         addListener(changeListener)
     }
     void of(PresentationModel target, Closure converter = null) {
+        checkTargetAttributeExists(target, targetPropertyName)
         of target, converter == null ? null : new ConverterAdapter(converter)
     }
     void of(PresentationModel target, Converter converter) {
+        checkTargetAttributeExists(target, targetPropertyName)
         def changeListener = makeListener(target[targetPropertyName], 'value', converter)
         target[targetPropertyName].value = changeListener.convert(source."$sourcePropertyName") // set initial value
         addListener(changeListener)
+    }
+
+    protected checkTargetAttributeExists(PresentationModel target, String targetPropName) {
+        if (target[targetPropName] == null) {
+            throw new IllegalArgumentException("there is no attribute named '$targetPropName' " +
+                    "in presentation model with id '${target.id}', known attribute names are: " +
+                    "${target.attributes.collect {it.propertyName}}")
+        }
     }
 
     protected BinderPropertyChangeListener makeListener(eventProvider, String eventPropName, Converter converter) {

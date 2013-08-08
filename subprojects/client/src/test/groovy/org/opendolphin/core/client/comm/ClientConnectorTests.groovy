@@ -36,8 +36,8 @@ class ClientConnectorTests extends GroovyTestCase {
 
 	/**
 	 * Since command transmission is done in parallel to test execution thread the test method might finish
-	 * before the command processing is complete. Therefore {@link #tearDown()) waits for this CountDownLatch
-	 * (which btw. is initialized in {@link #setUp() and decremented in the handler of a {@code dolphin.sync()} call).
+	 * before the command processing is complete. Therefore {@link #tearDown()} waits for this CountDownLatch
+	 * (which btw. is initialized in {@link #setUp()} and decremented in the handler of a {@code dolphin.sync()} call).
 	 * Also putting asserts in the callback handler of a {@code dolphin.sync()} call seems not to be reliable since JUnit
 	 * seems not to be informed (reliably) of failing assertions.
 	 *
@@ -149,7 +149,27 @@ class ClientConnectorTests extends GroovyTestCase {
 		assert clientConnector.transmittedCommands.any { it instanceof ValueChangedCommand }
 	}
 
-	void testBaseValueChange_OldAndNewValueSame() {
+    void testAddAttributeToPresentationModel_ClientSideOnly() {
+        def clientPM = clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', clientSideOnly: true, attributes: [[propertyName: '1', value: 'initialValue1', qualifier: 'qualifier']]))
+        clientConnector.clientDolphin.addAttributeToModel(clientPM, new ClientAttribute('2', 'initialValue2'))
+        syncAndWaitUntilDone()
+        assertOnlySyncCommandWasTransmitted()
+    }
+
+    void testAddTwoAttributesWithSameQualifierToSamePMIsNotAllowed() {
+        shouldFail(IllegalArgumentException) {
+            ClientPresentationModel presentationModel  = clientConnector.clientDolphin.presentationModel("1", new ClientAttribute("a", "0", "QUAL"))
+            clientConnector.clientDolphin.addAttributeToModel(presentationModel, new ClientAttribute("c", "0", "QUAL"))
+        }
+    }
+
+    void testAddTwoAttributesInConstructorWithSameQualifierToSamePMIsNotAllowed() {
+        shouldFail(IllegalArgumentException) {
+            clientConnector.clientDolphin.presentationModel("1", new ClientAttribute("a", "0", "QUAL"), new ClientAttribute("b", "0", "QUAL"))
+        }
+    }
+
+    void testBaseValueChange_OldAndNewValueSame() {
         attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", Attribute.BASE_VALUE, 'sameValue', 'sameValue'))
 		syncAndWaitUntilDone()
 		assertOnlySyncCommandWasTransmitted()
@@ -239,9 +259,9 @@ class ClientConnectorTests extends GroovyTestCase {
 
 	void testHandle_SwitchPresentationModel() {
 		ClientPresentationModel model_one = dolphin.presentationModel('p1')
-		model_one.addAttribute(new ClientAttribute('attr', 'one'))
+		model_one._internal_addAttribute(new ClientAttribute('attr', 'one'))
 		ClientPresentationModel model_two = dolphin.presentationModel('p2')
-		model_two.addAttribute(new ClientAttribute('attr', 'two'))
+		model_two._internal_addAttribute(new ClientAttribute('attr', 'two'))
 		assert clientConnector.handle(new SwitchPresentationModelCommand(sourcePmId: 'p1', pmId: 'p2'))
 		assert 'one' == dolphin.getAt('p2').getAt('attr').value
 	}

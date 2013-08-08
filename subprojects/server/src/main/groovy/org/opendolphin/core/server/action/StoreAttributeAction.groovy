@@ -44,7 +44,7 @@ class StoreAttributeAction extends DolphinServerAction {
                 pm = new ServerPresentationModel(command.pmId, [])
                 modelStore.add(pm)
             }
-            pm.addAttribute(attribute)
+            pm._internal_addAttribute(attribute)
             modelStore.registerAttribute(attribute)
         }
 

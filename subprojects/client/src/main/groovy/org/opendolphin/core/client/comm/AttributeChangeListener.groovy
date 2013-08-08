@@ -19,18 +19,31 @@ class AttributeChangeListener implements PropertyChangeListener {
             // ignore
         } else if (evt.propertyName == Attribute.VALUE) {
             if (evt.oldValue == evt.newValue) return
-            clientConnector.send constructValueChangedCommand(evt)
+            if (isSendable(evt)) {
+                clientConnector.send constructValueChangedCommand(evt)
+            }
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
             attributes.each { it.value = evt.newValue }
         } else if (evt.propertyName == Attribute.BASE_VALUE) {
             if (evt.oldValue == evt.newValue) return
-            clientConnector.send constructBaseValueChangedCommand(evt)
+            if (isSendable(evt)) {
+                clientConnector.send constructBaseValueChangedCommand(evt)
+            }
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
             attributes.each { it.rebase() }
         } else {
             // we assume the change is on a metadata property such as qualifier
-            clientConnector.send constructChangeAttributeMetadataCommand(evt)
+            if (isSendable(evt)) {
+                clientConnector.send constructChangeAttributeMetadataCommand(evt)
+            }
         }
+    }
+
+    private boolean isSendable(PropertyChangeEvent evt) {
+        def pmOfAttribute = clientModelStore.findPresentationModelByAttribute(evt.source)
+        if (pmOfAttribute == null)              return true
+        if (pmOfAttribute.isClientSideOnly())   return false
+        return true
     }
 
     private ValueChangedCommand constructValueChangedCommand(PropertyChangeEvent evt) {

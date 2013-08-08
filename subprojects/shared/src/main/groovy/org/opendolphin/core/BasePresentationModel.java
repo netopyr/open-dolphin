@@ -56,12 +56,16 @@ public class BasePresentationModel extends AbstractObservable implements Present
     public BasePresentationModel(String id, List attributes) {
         this.id = id;
         for (Object attr : attributes) {
-            addAttribute((Attribute) attr);
+            _internal_addAttribute((Attribute) attr);
         }
     }
 
-    public void addAttribute(Attribute attribute) {
+    public void _internal_addAttribute(Attribute attribute) {
         if (null == attribute || attributes.contains(attribute)) return;
+        if (attribute.getQualifier() != null && this.findAttributeByQualifier(attribute.getQualifier()) != null) {
+            throw  new IllegalArgumentException("There already is an attribute with qualifier '" + attribute.getQualifier()
+                    + "' in presentation model with id '" + this.id + "'.");
+        }
         attributes.add(attribute);
         if (attribute.getTag() == Tag.VALUE) { // only promote value changes as dirty upwards
             attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);
@@ -142,7 +146,6 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return null;
     }
 
-    // todo dk: consider removing this method. It is not used in any demo.
     public Attribute findAttributeByQualifier(String qualifier) {
         if (null == qualifier) return null;
         for (Attribute attribute : attributes) {
