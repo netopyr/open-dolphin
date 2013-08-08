@@ -40,7 +40,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     private PresentationModel presentationModel;
 
-    private long id = instanceCount++;
+    protected long id = instanceCount++;
     private String qualifier; // application specific semantics apply
 
     public BaseAttribute(String propertyName) {
@@ -153,10 +153,6 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getQualifier() {

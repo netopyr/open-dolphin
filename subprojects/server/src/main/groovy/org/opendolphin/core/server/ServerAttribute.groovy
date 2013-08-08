@@ -24,12 +24,23 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ServerAttribute extends BaseAttribute {
 
+    private boolean idAlreadySet = false;
+
     ServerAttribute(String propertyName, Object initialValue) {
         super(propertyName, initialValue)
     }
 
     public ServerAttribute(String propertyName, Object baseValue, String qualifier, Tag tag){
         super(propertyName, baseValue, qualifier, tag)
+    }
+
+    public void setId(long id) {
+        if (idAlreadySet) {
+            def pm = this.presentationModel
+            throw new IllegalStateException("You can not set the id twice for attribute with id ${this.id} of presentation model with id ${pm?.id}.")
+        }
+        idAlreadySet = true;
+        this.@id = id;
     }
 
 }

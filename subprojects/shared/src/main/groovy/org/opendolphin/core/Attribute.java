@@ -33,8 +33,6 @@ public interface Attribute extends Observable {
 
     long getId();
 
-    void setId(long id);
-
     Tag getTag();
 
     void syncWith(Attribute source);
