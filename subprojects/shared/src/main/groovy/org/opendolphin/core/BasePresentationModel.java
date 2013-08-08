@@ -66,6 +66,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
             throw  new IllegalArgumentException("There already is an attribute with qualifier '" + attribute.getQualifier()
                     + "' in presentation model with id '" + this.id + "'.");
         }
+        ((BaseAttribute)attribute).setPresentationModel(this);
         attributes.add(attribute);
         if (attribute.getTag() == Tag.VALUE) { // only promote value changes as dirty upwards
             attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);

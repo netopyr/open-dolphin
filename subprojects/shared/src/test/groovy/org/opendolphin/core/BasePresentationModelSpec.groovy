@@ -20,6 +20,21 @@ import spock.lang.Specification
 import java.beans.PropertyChangeListener
 
 class BasePresentationModelSpec extends Specification {
+    def "you can not add an attribute to two presentation models"() {
+        given:
+        def model1 = new BasePresentationModel("1", [])
+        def model2 = new BasePresentationModel("2", [])
+        def attribute = new MyAttribute("name")
+
+        when:
+        model1._internal_addAttribute(attribute)
+        model2._internal_addAttribute(attribute)
+
+        then:
+        thrown IllegalStateException
+    }
+
+
     def "attributes are accessible as properties"() {
         given:
 

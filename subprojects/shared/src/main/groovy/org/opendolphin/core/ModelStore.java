@@ -301,15 +301,4 @@ public class ModelStore {
             listener.modelStoreChanged(event);
         }
     }
-
-    //todo replace with reference from attribute to its PM
-    public PresentationModel findPresentationModelByAttribute(Attribute attribute) {
-        for (PresentationModel presentationModel : presentationModels.values()) {
-            for (Attribute currentAttribute : presentationModel.getAttributes()) {
-                if(attribute == currentAttribute)
-                    return presentationModel;
-            }
-        }
-        return null;
-    }
 }

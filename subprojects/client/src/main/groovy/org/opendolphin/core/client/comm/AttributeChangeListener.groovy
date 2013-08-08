@@ -40,7 +40,7 @@ class AttributeChangeListener implements PropertyChangeListener {
     }
 
     private boolean isSendable(PropertyChangeEvent evt) {
-        def pmOfAttribute = clientModelStore.findPresentationModelByAttribute(evt.source)
+        def pmOfAttribute = ((Attribute)evt.source).getPresentationModel()
         if (pmOfAttribute == null)              return true
         if (pmOfAttribute.isClientSideOnly())   return false
         return true

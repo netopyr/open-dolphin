@@ -38,6 +38,8 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     private boolean dirty = false;
     private final Tag   tag;
 
+    private PresentationModel presentationModel;
+
     private long id = instanceCount++;
     private String qualifier; // application specific semantics apply
 
@@ -67,6 +69,18 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     public Object getBaseValue() {
         return baseValue;
+    }
+
+    public void setPresentationModel(PresentationModel presentationModel) {
+        if (this.presentationModel != null) {
+            throw new IllegalStateException("You can not set a presentation model for an attribute that is already bound.");
+        }
+        this.presentationModel = presentationModel;
+    }
+
+    @Override
+    public PresentationModel getPresentationModel() {
+        return this.presentationModel;
     }
 
     public Object getValue() {

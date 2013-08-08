@@ -43,6 +43,7 @@ public interface Attribute extends Observable {
 
     Object getBaseValue();
 
+    PresentationModel getPresentationModel();
 
     // todo dk: add rebase to BasePresentationModel or to facade
 

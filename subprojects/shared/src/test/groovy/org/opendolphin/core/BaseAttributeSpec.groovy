@@ -20,6 +20,31 @@ import spock.lang.Specification
 import java.beans.PropertyChangeListener
 
 class BaseAttributeSpec extends Specification {
+
+    def "you can set a presentation model"() {
+        given:
+        def attribute = new MyAttribute("name")
+        def model = new BasePresentationModel("1", [])
+
+        when:
+        attribute.setPresentationModel(model)
+
+        then:
+        model == attribute.getPresentationModel()
+    }
+
+    def "you can set the presentation model only once"() {
+        given:
+        def attribute = new MyAttribute("name")
+        attribute.setPresentationModel(new BasePresentationModel("1", []))
+
+        when:
+        attribute.setPresentationModel(new BasePresentationModel("2", []))
+
+        then:
+        thrown IllegalStateException
+    }
+
     def "simple constructor with null bean and null value"() {
         when:
 
