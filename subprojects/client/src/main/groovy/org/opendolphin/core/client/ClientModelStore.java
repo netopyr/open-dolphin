@@ -61,14 +61,11 @@ public class ClientModelStore extends ModelStore {
             for (Attribute attribute : attributes) {
                 attribute.addPropertyChangeListener(attributeChangeListener);
             }
-            getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
+            if (!((ClientPresentationModel)model).isClientSideOnly()) {
+                getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
+            }
         }
-
         return success;
-    }
-
-    public boolean addClientSideOnly(PresentationModel model) {
-        return super.add(model);
     }
 
     @Override

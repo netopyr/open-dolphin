@@ -46,7 +46,12 @@ public interface PresentationModel extends Observable {
 
     String getPresentationModelType();
 
-    void addAttribute(Attribute attribute);
+    /**
+     * Warning: should only be called from the open-dolphin command layer, not from applications,
+     * since it does not register all required listeners. Consider using ClientDolphin.addAttributeToModel().
+     * @param attribute
+     */
+    void _internal_addAttribute(Attribute attribute);
 
     boolean isDirty();
 }

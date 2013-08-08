@@ -139,16 +139,18 @@ public class ClientDolphin extends Dolphin {
     }
 
     public void addAttributeToModel(PresentationModel presentationModel, ClientAttribute attribute) {
-        presentationModel.addAttribute(attribute)
+        presentationModel._internal_addAttribute(attribute)
         clientModelStore.registerAttribute(attribute)
-        clientConnector.send new AttributeCreatedNotification(
-            pmId: presentationModel.id,
-            attributeId: attribute.id,
-            propertyName: attribute.propertyName,
-            newValue: attribute.value,
-            qualifier: attribute.qualifier,
-            tag: attribute.tag
-        )
+        if (!((ClientPresentationModel)presentationModel).clientSideOnly) {
+            clientConnector.send new AttributeCreatedNotification(
+                    pmId: presentationModel.id,
+                    attributeId: attribute.id,
+                    propertyName: attribute.propertyName,
+                    newValue: attribute.value,
+                    qualifier: attribute.qualifier,
+                    tag: attribute.tag
+            )
+        }
     }
 }
 
