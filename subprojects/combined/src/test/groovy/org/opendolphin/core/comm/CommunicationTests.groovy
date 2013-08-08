@@ -18,10 +18,13 @@ package org.opendolphin.core.comm
 
 import org.opendolphin.LogConfig
 import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.server.comm.ServerConnector
+
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for the sequence between client requests and server responses.
@@ -33,15 +36,24 @@ class CommunicationTests extends GroovyTestCase {
 	ServerConnector serverConnector
 	ClientConnector clientConnector
     ClientModelStore clientModelStore
+    ClientDolphin clientDolphin
+    TestInMemoryConfig config
 
+    @Override
 	protected void setUp() {
 		LogConfig.logCommunication()
-		def config = new TestInMemoryConfig()
+		config = new TestInMemoryConfig()
         serverConnector = config.serverDolphin.serverConnector
         clientConnector = config.clientDolphin.clientConnector
         clientModelStore = config.clientDolphin.clientModelStore
+        clientDolphin  = config.clientDolphin
 
 	}
+
+    @Override
+    protected void tearDown() {
+        assert config.done.await(10, TimeUnit.SECONDS)
+    }
 
 	void testSimpleAttributeChangeIsVisibleOnServer() {
 		def ca = new ClientAttribute('name')
@@ -56,13 +68,14 @@ class CommunicationTests extends GroovyTestCase {
 
 		ca.value = 'initial'
 
-        sleep 100 // todo dk: better
-
-        assert receivedCommand
-		assert receivedCommand.id == 'ValueChanged'
-		assert receivedCommand in ValueChangedCommand
-		assert receivedCommand.oldValue == null
-		assert receivedCommand.newValue == 'initial'
+        clientDolphin.sync() {
+            assert receivedCommand
+            assert receivedCommand.id == 'ValueChanged'
+            assert receivedCommand in ValueChangedCommand
+            assert receivedCommand.oldValue == null
+            assert receivedCommand.newValue == 'initial'
+            config.assertionsDone()
+        }
 	}
 
 	void testServerIsNotifiedAboutNewAttributesAndTheirPms() {
@@ -76,11 +89,13 @@ class CommunicationTests extends GroovyTestCase {
 
 		clientModelStore.add new ClientPresentationModel('testPm', [ca]) // todo dk: this should be automatic!
 
-        sleep 100 // todo dk: better
-		assert receivedCommand.id == "CreatePresentationModel"
-		assert receivedCommand instanceof CreatePresentationModelCommand
-		assert receivedCommand.pmId == 'testPm'
-		assert receivedCommand.attributes.name
+        clientDolphin.sync() {
+            assert receivedCommand.id == "CreatePresentationModel"
+            assert receivedCommand instanceof CreatePresentationModelCommand
+            assert receivedCommand.pmId == 'testPm'
+            assert receivedCommand.attributes.name
+            config.assertionsDone()
+        }
 	}
 
 	void testWhenServerChangesValueThisTriggersUpdateOnClient() {
@@ -103,19 +118,22 @@ class CommunicationTests extends GroovyTestCase {
 
         clientModelStore.add new ClientPresentationModel('testPm', [ca]) // trigger the whole cycle
 
-        sleep 100 // todo dk: better
-		assert ca.value == "set from server"	// client is updated
-
-		assert receivedCommand.attributeId == ca.id // client notified server about value change
-		// todo: we may later want to shortcut the above for the sake of efficiency
+        clientDolphin.sync() {
+            assert ca.value == "set from server"	// client is updated
+            assert receivedCommand.attributeId == ca.id // client notified server about value change
+            // todo: we may later want to shortcut the above for the sake of efficiency
+            config.assertionsDone()
+        }
 	}
 
 	void testRequestingSomeGeneralCommandExecution() {
 		boolean reached = false
 		serverConnector.registry.register "ButtonAction", { cmd, resp -> reached = true }
 		clientConnector.send(new NamedCommand(id: "ButtonAction"))
-        sleep 100 // todo dk: better
-		assert reached
+        clientDolphin.sync() {
+		    assert reached
+            config.assertionsDone()
+        }
 	}
 
 }
