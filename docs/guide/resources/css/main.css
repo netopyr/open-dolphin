@@ -16,9 +16,9 @@ body {
 
 .body {
     /*margin-left: 30px;*/
-    font-family: Tahoma, Verdana, Arial, sans-serif;
-    font-size: 105%;
-    text-align: justify;
+    font-family: Arial, sans-serif;
+    font-size: 85%;
+    text-align: left;
     background: #F2F2F2;
 }
 
@@ -64,15 +64,16 @@ strong {
 
 #colset {
     width: 100%;
+    max-width: 100%;
 }
 
 #colset #col2, #colset #col1 {
     vertical-align: top;
 }
 
-#colset #col2 {
-    display: table-cell;
+#col2 {
     width: 250px;
+    max-width: 250px;
 }
 
 /* Required for IE6 */
@@ -85,14 +86,13 @@ strong {
 */
 
 #main {
-    margin: 10px;
     border-width: 1px;
     padding: 10px 15px;
-    margin-bottom: 0;
+    margin: 0px 10px 0px 0px;
 }
 
 #main.reference h1 {
-    color: #d10e41;
+    color: #BE1432;
 }
 
 .local {
@@ -190,7 +190,7 @@ strong {
 
 #table-of-content a:hover {
     text-decoration: none;
-    border-right: 2px solid #d10e41;
+    border-right: 2px solid #BE1432;
 }
 
 /*
@@ -311,7 +311,7 @@ strong {
 */
 
 #footer {
-    padding: 10px 10px 10px 20px;
+    padding: 10px 10px 10px 0px;
 }
 
 /*
@@ -324,17 +324,16 @@ strong {
 
 #header {
     padding: 15px 15px 5px 15px;
+    margin: 0px 10px 0px 10px;
 }
 
 #header .images {
     width: 100%;
     padding: 0;
-    margin: 0;
 }
 
 #header p {
 	font-size: 1.1em;
-	margin: 0 0 0.5em 0;
 }
 
 #header {

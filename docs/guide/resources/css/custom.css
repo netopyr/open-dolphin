@@ -9,8 +9,5 @@
     background-size: contain;
 	width:156px;
 	height:100px;
-	position:absolute;
-	right:280px;
-	top:60px;
-
+    margin: 0;
 }

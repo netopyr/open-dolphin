@@ -13,7 +13,7 @@ body, .wiki-table th strong {
 a, a:hover, a:focus, a:active, a:hover, #main .project strong, #table-of-content a:hover strong,
     #table-of-content a strong, .menu .menu-block h1, .menu a:hover, .local .local-title .toggle a,
     #navigation #nav-summary-childs a:hover, #main h1, #main h2 {
-    color: #d10e41;
+    color: #BE1432;
 }
 
 #main .project h1, #table-of-content h2 {
@@ -67,15 +67,15 @@ a, a:hover, a:focus, a:active, a:hover, #main .project strong, #table-of-content
 
 
 #navigation .selected a {
-    background: #4F717F;
+    background: #8c1224;
 }
 
 #navigation a:hover {
-    background: #6793A5;
+    background: #8c1224;
 }
 
 #navigation .selected a:hover, #navigation .active .button {
-    background: #3F6D78;
+    background: #8c1224;
 }
 
 /*
@@ -96,11 +96,11 @@ a, a:hover, a:focus, a:active, a:hover, #main .project strong, #table-of-content
 }
 
 #table-of-content a:hover {
-    background: #F2F2F2 url(../img/default/linear-gradient.png) repeat-x 0 0;
+    background: #F2F2F2;
 }
 
 .wiki-table th, #navigation {
-    background: #d10e41 ;
+    background: #BE1432 ;
 }
 
 #navigation .separator {
