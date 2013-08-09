@@ -175,7 +175,8 @@ configure(mavenizedProjects()) {
                     pom.project {
                         name 'Open Dolphin'
                         packaging 'jar'
-                        description 'Dolphin is a free open-source library that protects your business applications against the uncertainties of changing visualization technologies.'
+                        description 'Dolphin is a free open-source library that bridges the worlds of enterprise Java and desktop Java.' +
+                                    ' It uses presentation models to bind client-side views to server-side actions.'
                         url 'http://open-dolphin.org/'
 
                         scm {
