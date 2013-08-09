@@ -4,13 +4,14 @@ introduction :
   credits : Credits
 architecture:
   title : Architecture
-  architecture_structure: The Dolphin structure
+  architecture_structure: The OpenDolphin structure
   concepts_presentation_model: The concept of presentation models
   concepts_attributes: The purpose of attributes
   concepts_binding: Stable bindings
   concepts_model_store: Collections of presentation models and the model store
   concepts_remoting: Understanding the client-server split and threading model
   concepts_commands: Communicating via Commands
+  concepts_command_sequence: Relying on the command sequence
   concepts_discussion: Discussion
 howto:
   title: How to get started with OpenDolphin
