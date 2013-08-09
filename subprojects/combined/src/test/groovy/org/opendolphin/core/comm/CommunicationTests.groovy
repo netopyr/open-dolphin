@@ -37,7 +37,7 @@ class CommunicationTests extends GroovyTestCase {
 	ClientConnector clientConnector
     ClientModelStore clientModelStore
     ClientDolphin clientDolphin
-    volatile TestInMemoryConfig config
+    TestInMemoryConfig config
 
     @Override
 	protected void setUp() {
@@ -51,7 +51,7 @@ class CommunicationTests extends GroovyTestCase {
 
     @Override
     protected void tearDown() {
-        assert config.done.await(10, TimeUnit.SECONDS)
+        assert config.done.await(2, TimeUnit.SECONDS)
     }
 
 	void testSimpleAttributeChangeIsVisibleOnServer() {
@@ -67,14 +67,12 @@ class CommunicationTests extends GroovyTestCase {
 
 		ca.value = 'initial'
 
-        clientDolphin.sync() {
+        clientDolphin.sync(){
             assert receivedCommand
             assert receivedCommand.id == 'ValueChanged'
             assert receivedCommand in ValueChangedCommand
             assert receivedCommand.oldValue == null
             assert receivedCommand.newValue == 'initial'
-        }
-        clientDolphin.sync {
             config.assertionsDone()
         }
 	}
@@ -95,8 +93,6 @@ class CommunicationTests extends GroovyTestCase {
             assert receivedCommand instanceof CreatePresentationModelCommand
             assert receivedCommand.pmId == 'testPm'
             assert receivedCommand.attributes.name
-        }
-        clientDolphin.sync {
             config.assertionsDone()
         }
 	}
@@ -116,31 +112,28 @@ class CommunicationTests extends GroovyTestCase {
 		Command receivedCommand = null
 		def valueChangedAction = { ValueChangedCommand command, response ->
 			receivedCommand = command
+            clientDolphin.sync() {
+                assert ca.value == "set from server"    // client is updated
+                assert receivedCommand.attributeId == ca.id // client notified server about value change
+                // todo: we may later want to shortcut the above for the sake of efficiency
+                config.assertionsDone()
+            }
 		}
 		serverConnector.registry.register ValueChangedCommand, valueChangedAction
-
         clientModelStore.add new ClientPresentationModel('testPm', [ca]) // trigger the whole cycle
-
-        clientDolphin.sync() {
-            assert ca.value == "set from server"	// client is updated
-            assert receivedCommand.attributeId == ca.id // client notified server about value change
-            // todo: we may later want to shortcut the above for the sake of efficiency
-        }
-        clientDolphin.sync {
-            config.assertionsDone()
-        }
-	}
+    }
 
 	void testRequestingSomeGeneralCommandExecution() {
 		boolean reached = false
 		serverConnector.registry.register "ButtonAction", { cmd, resp -> reached = true }
 		clientConnector.send(new NamedCommand(id: "ButtonAction"))
+
         clientDolphin.sync() {
-		    assert reached
-        }
-        clientDolphin.sync {
+            assert reached
             config.assertionsDone()
         }
 	}
+
+
 
 }
