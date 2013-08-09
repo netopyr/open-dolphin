@@ -37,7 +37,7 @@ class CommunicationTests extends GroovyTestCase {
 	ClientConnector clientConnector
     ClientModelStore clientModelStore
     ClientDolphin clientDolphin
-    TestInMemoryConfig config
+    volatile TestInMemoryConfig config
 
     @Override
 	protected void setUp() {
@@ -47,7 +47,6 @@ class CommunicationTests extends GroovyTestCase {
         clientConnector = config.clientDolphin.clientConnector
         clientModelStore = config.clientDolphin.clientModelStore
         clientDolphin  = config.clientDolphin
-
 	}
 
     @Override
@@ -74,6 +73,8 @@ class CommunicationTests extends GroovyTestCase {
             assert receivedCommand in ValueChangedCommand
             assert receivedCommand.oldValue == null
             assert receivedCommand.newValue == 'initial'
+        }
+        clientDolphin.sync {
             config.assertionsDone()
         }
 	}
@@ -94,6 +95,8 @@ class CommunicationTests extends GroovyTestCase {
             assert receivedCommand instanceof CreatePresentationModelCommand
             assert receivedCommand.pmId == 'testPm'
             assert receivedCommand.attributes.name
+        }
+        clientDolphin.sync {
             config.assertionsDone()
         }
 	}
@@ -122,6 +125,8 @@ class CommunicationTests extends GroovyTestCase {
             assert ca.value == "set from server"	// client is updated
             assert receivedCommand.attributeId == ca.id // client notified server about value change
             // todo: we may later want to shortcut the above for the sake of efficiency
+        }
+        clientDolphin.sync {
             config.assertionsDone()
         }
 	}
@@ -132,6 +137,8 @@ class CommunicationTests extends GroovyTestCase {
 		clientConnector.send(new NamedCommand(id: "ButtonAction"))
         clientDolphin.sync() {
 		    assert reached
+        }
+        clientDolphin.sync {
             config.assertionsDone()
         }
 	}
