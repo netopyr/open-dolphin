@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-dependencies {
-    compile project(':server'),
-            project(':demo-javafx-shared')
-    compile "com.xlson.groovycsv:groovycsv:1.0"
-}
+package org.opendolphin.demo
+
+
+def config = new JavaFxInMemoryConfig()
+def serverDolphin = config.serverDolphin
+def clientDolphin = config.clientDolphin
+
+serverDolphin.serverConnector.register new MasterDetailActions(serverDolphin: serverDolphin)
+
+MasterDetailView.show clientDolphin
