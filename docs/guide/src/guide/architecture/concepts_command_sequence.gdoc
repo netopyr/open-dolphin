@@ -50,7 +50,8 @@ before processing B like in procedural programming?
 *No*. This would mean that we have to block the queue during that time, which in turn would block the UI -
 and blocking the UI is the worst you can do.
 
-"_But what if B depends on the effects of A_?" This is when we need the onFinishedHandler.
+"_But what if B depends on the effects of A_?" This is when we need the onFinishedHandler
+as explained in the next section.
 
 h4. When commands depend on previous ones
 
@@ -112,7 +113,19 @@ clientDolphin.sync { clientDolphin.send "B" }
 clientDolphin.sync { clientDolphin.send "C" }
 {code}
 
+Likewise, when B and C depend on A but not on each other (A <- B, A <- C) you can code this as
+{code}
+clientDolphin.send "A"
+clientDolphin.sync {
+    clientDolphin.send "B"
+    clientDolphin.send "C"
+}
+{code}
 
+The above has the additional effect that when B has finished, C will immediately follow
+without any other command possibly sneeking in between the two,
+no matter whether it originates from user input or preceding commands.
+In that sense you can see the @sync@ as enclosing an atomic operation.
 
 See also [Usage|Command].
 
