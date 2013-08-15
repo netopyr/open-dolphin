@@ -17,29 +17,58 @@
 package org.opendolphin.demo
 
 import groovyx.javafx.SceneGraphBuilder
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-
+import javafx.scene.control.ScrollBar
+import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.WithPresentationModelHandler
 
 import static groovyx.javafx.GroovyFX.start
 import static org.opendolphin.binding.JFXBinder.bind
+import static org.opendolphin.core.Tag.ENABLED
+import static org.opendolphin.core.Tag.LABEL
 import static org.opendolphin.demo.DemoStyle.blueStyle
 import static org.opendolphin.binding.JavaFxUtil.value
 import static org.opendolphin.demo.MasterDetailConstants.*
 
 /**
  * A demo that shows how to easily create a master-detail view with the standard Dolphin on-board means.
+ * Qualifier set (Consistent immediate updates)
+ * Usage of Tags
+ * Bidirectional JFX binding (not bidirectional binding of views!)
  */
 
 class MasterDetailView {
 
     static show(ClientDolphin dolphin) {
 
-        ClientPresentationModel dataMold = dolphin.presentationModel('dataMold', [ATT_RANK, ATT_NAME])
+        ClientPresentationModel dataMold = dolphin.presentationModel('dataMold',
+                [
+                    ATT_NAME,
+                    ATT_RANK,
+                    ATT_YEAROFBIRTH,
+                    ATT_COUNTRY,
+                    ATT_MATCHESFIFA,
+                    ATT_MATCHESRSSSF
+                ]
+        )
+        // defaults
+        dolphin.tag(dataMold, ATT_NAME,         ENABLED, false)
+        dolphin.tag(dataMold, ATT_NAME,         LABEL, "Name")
+        dolphin.tag(dataMold, ATT_RANK,         ENABLED, false)
+        dolphin.tag(dataMold, ATT_RANK,         LABEL, "Rank")
+        dolphin.tag(dataMold, ATT_YEAROFBIRTH,  ENABLED, false)
+        dolphin.tag(dataMold, ATT_YEAROFBIRTH,  LABEL, "Year of birth")
+        dolphin.tag(dataMold, ATT_COUNTRY,      ENABLED, false)
+        dolphin.tag(dataMold, ATT_COUNTRY,      LABEL, "Country")
+        dolphin.tag(dataMold, ATT_MATCHESFIFA,  ENABLED, false)
+        dolphin.tag(dataMold, ATT_MATCHESFIFA,  LABEL, "FIFA matches")
+        dolphin.tag(dataMold, ATT_MATCHESRSSSF, ENABLED, false)
+        dolphin.tag(dataMold, ATT_MATCHESRSSSF, LABEL, "RSSSF matches")
 
         ObservableList<Integer> observableList = FXCollections.observableArrayList()
 
@@ -50,38 +79,83 @@ class MasterDetailView {
                 scene width: 750, height: 500, {
                     borderPane {
                         center margin:10, {
-                            gridPane hgap:10, vgap:12, padding: 20, {
+                            int row = 0
+                            gridPane (hgap:10, vgap:12, padding: 20) {
                                 columnConstraints  halignment: "right"
                                 columnConstraints  halignment: "left"
-                                label     row: 0, column: 0, 'Rank'
-                                textField row: 0, column: 1, id: 'rankField', prefColumnCount:10
-                                label     row: 1, column: 0, 'Name'
-                                textField row: 1, column: 1, id: 'nameField', prefColumnCount:10
+
+                                label     row: row  , column: 0, id: 'rankLabel'
+                                textField row: row++, column: 1, id: 'rankField'
+
+                                label     row: row  , column: 0, id: 'nameLabel'
+                                textField row: row++, column: 1, id: 'nameField'
+
+                                label     row: row  , column: 0, id: 'yearOfBirthLabel'
+                                textField row: row++, column: 1, id: 'yearOfBirthField'
+
+                                label     row: row  , column: 0, id: 'countryLabel'
+                                textField row: row++, column: 1, id: 'countryField'
+
+                                label     row: row  , column: 0, id: 'matchesFIFALabel'
+                                textField row: row++, column: 1, id: 'matchesFIFAField'
+
+                                label     row: row  , column: 0, id: 'matchesRSSSFLabel'
+                                textField row: row++, column: 1, id: 'matchesRSSSFField'
                             }
                         }
                         left margin:10, {
                             tableView(id: 'table') {
-                                value ATT_RANK, tableColumn(property:'rank', text:"Rank", prefWidth: 50 )
-                                value ATT_NAME, tableColumn(property:'name', text:"Name", prefWidth: 250 )
+                                value ATT_RANK, tableColumn(id:'rankCol', property:'rank', prefWidth: 45 )
+                                value ATT_NAME, tableColumn(id:'nameCol', property:'name', prefWidth: 270 )
                             }
                         }
             }   }   }
             blueStyle sgb
 
+            [rankField, nameField, yearOfBirthField, countryField, matchesFIFAField, matchesRSSSFField].each { it.prefColumnCount = 15 }
+
+            // bind preferred table width to contained column widths
+            table.prefWidthProperty().bind(
+                    rankCol.prefWidthProperty()
+                            .add(nameCol.prefWidthProperty())
+                            .add(new SimpleIntegerProperty(16))
+            )
+
+            def inverter = { boolean enableStatus -> !enableStatus }
+            // all the bindings ...
+            bind ATT_NAME           of dataMold to FX.TEXT of nameField
+            bind ATT_NAME, ENABLED  of dataMold to FX.DISABLE of nameField, inverter
+            bind ATT_NAME, LABEL    of dataMold to FX.TEXT of nameLabel
+            bind ATT_NAME, LABEL    of dataMold to FX.TEXT of nameCol
+            bind FX.TEXT            of nameField to ATT_NAME of dataMold
+
+            bind ATT_RANK           of dataMold to FX.TEXT of rankField
+            bind ATT_RANK, ENABLED  of dataMold to FX.DISABLE of rankField, inverter
+            bind ATT_RANK, LABEL    of dataMold to FX.TEXT of rankLabel
+            bind ATT_RANK, LABEL    of dataMold to FX.TEXT of rankCol
+
+            bind ATT_COUNTRY            of dataMold to FX.TEXT of countryField
+            bind ATT_COUNTRY, ENABLED   of dataMold to FX.DISABLE of countryField, inverter
+            bind ATT_COUNTRY, LABEL     of dataMold to FX.TEXT of countryLabel
+
+            bind ATT_YEAROFBIRTH            of dataMold to FX.TEXT of yearOfBirthField
+            bind ATT_YEAROFBIRTH, ENABLED   of dataMold to FX.DISABLE of yearOfBirthField, inverter
+            bind ATT_YEAROFBIRTH, LABEL     of dataMold to FX.TEXT of yearOfBirthLabel
+
+            bind ATT_MATCHESFIFA            of dataMold to FX.TEXT of matchesFIFAField
+            bind ATT_MATCHESFIFA, ENABLED   of dataMold to FX.DISABLE of matchesFIFAField, inverter
+            bind ATT_MATCHESFIFA, LABEL     of dataMold to FX.TEXT of matchesFIFALabel
+
+            bind ATT_MATCHESRSSSF           of dataMold to FX.TEXT of matchesRSSSFField
+            bind ATT_MATCHESRSSSF, ENABLED  of dataMold to FX.DISABLE of matchesRSSSFField, inverter
+            bind ATT_MATCHESRSSSF, LABEL    of dataMold to FX.TEXT of matchesRSSSFLabel
+
             table.items = observableList
 
-            // all the bindings ...
-            bind ATT_RANK of dataMold to FX.TEXT of rankField
-            bind ATT_NAME of dataMold to FX.TEXT of nameField
-            bind FX.TEXT of nameField to ATT_NAME of dataMold
-
             // when a table row is selected, we fill the mold and the detail view gets updated
-            table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->
-                dolphin.clientModelStore.withPresentationModel(selectedPm.id.toString(), new WithPresentationModelHandler() {
-                    void onFinished(ClientPresentationModel presentationModel) {
-                        dolphin.apply presentationModel to dataMold
-                    }
-                } )
+            table.selectionModel.selectedItemProperty().addListener( { selectionModel, oldVal, selectedPm ->
+                if (selectedPm == null) return
+                dolphin.apply selectedPm to dataMold
             } as ChangeListener )
 
 
