@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-dependencies {
-    compile ':jfxrt:',
-        project(':client')
-}
+package org.opendolphin.logo
 
-uploadArchives.repositories.mavenDeployer {
-	pom.whenConfigured { pom -> pom.dependencies = pom.dependencies.findAll {dep -> !dep.artifactId=='jfxrt' } }
-}
+import javafx.scene.Group
 
+class DolphinLogoBuilder {
+    long width = 400
+    long height = 400
 
-install {
-    repositories.mavenInstaller {
-	pom.whenConfigured { pom -> pom.dependencies = pom.dependencies.findAll {dep -> !dep.artifactId=='jfxrt' } }
+    DolphinLogoBuilder width(double width) {
+        this.width = width
+        return this
+    }
+
+    DolphinLogoBuilder height(double height) {
+        this.height = height
+        return this
+    }
+
+    Group build() {
+        def paths = new DolphinLogoPaths(width, height).paths()
+
+        def group = new Group()
+        group.prefHeight width
+        group.prefHeight height
+        group.getChildren().addAll(paths)
+
+        return group;
     }
 }

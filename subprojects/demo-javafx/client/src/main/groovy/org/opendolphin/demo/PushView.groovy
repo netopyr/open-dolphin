@@ -16,10 +16,9 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.logo.DolphinLogo
+import org.opendolphin.logo.DolphinLogoBuilder
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
@@ -73,11 +72,17 @@ class PushView {
                             }
                         }
                         stackPane {
-                            logo = new DolphinLogo(width:401, height: 257).addTo(delegate)
+                            group {
+                                def logo = new DolphinLogoBuilder().width(401).height(257).build()
+                                def strokes = new ArrayList<Node>(logo.getChildren())
+                                for (stroke in strokes) {
+                                    path(stroke)
+                                    stroke.opacity = 0.1d
+                                }
+                            }
                             group id: 'parent', effect: dropShadow(offsetY: 2, offsetX: 2, radius: 3, input: lighting{distant(azimuth: -135.0)}), {
                                 rectangle(x: 0, y: 0, width: 400, height: 400, fill: transparent, stroke: groovyblue, strokeWidth: 0) // rigidArea
             }   }   }   }   }
-            logo.opacity = 0.1d
 
             table.items = observableListOfPms
 
