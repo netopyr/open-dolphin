@@ -173,15 +173,25 @@ class BindToAble {
     final PresentationModel source
     final String sourcePropertyName
     final Tag    tag
+    final Converter converter
 
-    BindToAble(PresentationModel source, String sourcePropertyName, Tag tag) {
+    BindToAble(PresentationModel source, String sourcePropertyName, Tag tag, Converter converter = null) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.tag = tag
+        this.converter = converter
     }
 
     BindTargetOfAble to(String targetPropertyName) {
-        new BindTargetOfAble(source, sourcePropertyName, tag, targetPropertyName)
+        new BindTargetOfAble(source, sourcePropertyName, tag, targetPropertyName, converter)
+    }
+
+    BindToAble using(Closure converter) {
+        using(new ConverterAdapter(converter))
+    }
+
+    BindToAble using(Converter converter) {
+        return new BindToAble(source, sourcePropertyName, tag, converter)
     }
 }
 
@@ -190,12 +200,14 @@ class BindTargetOfAble {
     final String sourcePropertyName
     final Tag    tag
     final String targetPropertyName
+    final Converter converter
 
-    BindTargetOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName) {
+    BindTargetOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName, Converter converter) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.tag = tag
         this.targetPropertyName = targetPropertyName
+        this.converter = converter
     }
 
     void of(PresentationModel target) {
@@ -204,11 +216,7 @@ class BindTargetOfAble {
                 " this feature, please file a JIRA request.")
     }
 
-    void of(Object target, Closure converter = null) {
-        of target, converter == null ? null : new ConverterAdapter(converter)
-    }
-
-    void of(Object target, Converter converter) {
+    void of(Object target) {
         def attribute = ((BasePresentationModel)source).findAttributeByPropertyNameAndTag(sourcePropertyName, tag)
         if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' and tag $tag in '${source.dump()}'")
         def changeListener = new BinderPropertyChangeListener(target, targetPropertyName, converter)
@@ -230,14 +238,24 @@ class BindPojoOfAble {
 class BindPojoToAble {
     final Object source
     final String sourcePropertyName
+    final Converter converter
 
-    BindPojoToAble(Object source, String sourcePropertyName) {
+    BindPojoToAble(Object source, String sourcePropertyName, Converter converter = null) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
+        this.converter = converter
     }
 
     BindPojoTargetOfAble to(String targetPropertyName) {
-        new BindPojoTargetOfAble(source, sourcePropertyName, targetPropertyName)
+        new BindPojoTargetOfAble(source, sourcePropertyName, targetPropertyName, converter)
+    }
+
+    BindPojoToAble using(Closure converter) {
+        using(new ConverterAdapter(converter))
+    }
+
+    BindPojoToAble using(Converter converter) {
+        new BindPojoToAble(source, sourcePropertyName, converter)
     }
 }
 
@@ -245,26 +263,21 @@ class BindPojoTargetOfAble {
     final Object source
     final String sourcePropertyName
     final String targetPropertyName
+    final Converter converter
 
-    BindPojoTargetOfAble(Object source, String sourcePropertyName, String targetPropertyName) {
+    BindPojoTargetOfAble(Object source, String sourcePropertyName, String targetPropertyName, Converter converter) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
+        this.converter = converter
     }
 
-    void of(Object target, Closure converter = null) {
-        of target, converter == null ? null : new ConverterAdapter(converter)
-    }
-    void of(Object target, Converter converter) {
+    void of(Object target) {
         def changeListener = makeListener(target, targetPropertyName, converter)
         target[targetPropertyName] = changeListener.convert(source."$sourcePropertyName") // set initial value
         addListener(changeListener)
     }
-    void of(PresentationModel target, Closure converter = null) {
-        checkTargetAttributeExists(target, targetPropertyName)
-        of target, converter == null ? null : new ConverterAdapter(converter)
-    }
-    void of(PresentationModel target, Converter converter) {
+    void of(PresentationModel target) {
         checkTargetAttributeExists(target, targetPropertyName)
         def changeListener = makeListener(target[targetPropertyName], 'value', converter)
         target[targetPropertyName].value = changeListener.convert(source."$sourcePropertyName") // set initial value

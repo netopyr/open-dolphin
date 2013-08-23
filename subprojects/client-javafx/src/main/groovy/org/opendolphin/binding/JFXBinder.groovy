@@ -158,14 +158,24 @@ class JFXBindOfAble {
 class JFXBindToAble {
     final javafx.scene.Node source
     final String sourcePropertyName
+    final Converter converter
 
-    JFXBindToAble(javafx.scene.Node source, String sourcePropertyName) {
+    JFXBindToAble(javafx.scene.Node source, String sourcePropertyName, Converter converter = null) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
+        this.converter = converter
     }
 
     JFXBindOtherOfAble to(String targetPropertyName) {
-        new JFXBindOtherOfAble(source, sourcePropertyName, targetPropertyName)
+        new JFXBindOtherOfAble(source, sourcePropertyName, targetPropertyName, converter)
+    }
+
+    JFXBindToAble using(Closure converter) {
+        using new ConverterAdapter(converter)
+    }
+
+    JFXBindToAble using(Converter converter) {
+        new JFXBindToAble(source, sourcePropertyName, converter)
     }
 }
 
@@ -185,17 +195,16 @@ class JFXBindOtherOfAble {
     final javafx.scene.Node source
     final String sourcePropertyName
     final String targetPropertyName
+    final Converter converter
 
-    JFXBindOtherOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName) {
+    JFXBindOtherOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName, Converter converter = null) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
+        this.converter = converter
     }
 
-    void of(Object target, Closure converter = null) {
-        of target, converter == null ? null : new ConverterAdapter(converter)
-    }
-    void of(Object target, Converter converter) {
+    void of(Object target) {
         def listener = new JFXBinderChangeListener(source, sourcePropertyName, target, targetPropertyName, converter)
         // blindly add the listener as Property does not expose a method to query existing listeners
         // javafx 2.2b17
@@ -207,16 +216,15 @@ class JFXBindOtherOfAble {
 class BindClientOtherOfAble {
     final ClientAttribute attribute
     final String targetPropertyName
+    final Converter converter
 
-    BindClientOtherOfAble(ClientAttribute attribute, String targetPropertyName) {
+    BindClientOtherOfAble(ClientAttribute attribute, String targetPropertyName, Converter converter = null) {
         this.attribute = attribute
         this.targetPropertyName = targetPropertyName
+        this.converter = converter
     }
 
-    void of(Object target, Closure converter = null) {
-        of target, converter == null ? null : new ConverterAdapter(converter)
-    }
-    void of(Object target, Converter converter) {
+    void of(Object target) {
         def listener = new JFXBinderPropertyChangeListener(attribute, target, targetPropertyName, converter)
         attribute.addPropertyChangeListener('value', listener)
         listener.update() // set the initial value after the binding and trigger the first notification

@@ -59,7 +59,7 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        bind "text" of sourceLabel to "text" of targetLabel, {"[" + it + "]"}
+        bind "text" of sourceLabel using {"[" + it + "]"} to "text" of targetLabel
 
         assert targetLabel.text == "[initialValue]"
 
@@ -86,7 +86,7 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        bind "text" of sourceLabel to "text" of targetLabel, converter
+        bind "text" of sourceLabel using converter to "text" of targetLabel
 
         assert targetLabel.text == "[initialValue]"
 
@@ -121,7 +121,7 @@ class JFXBinderTest extends GroovyTestCase {
 
         when:
 
-        bindInfo 'value' of bean to 'textFill' of label, {it == 'white' ? Color.WHITE : Color.BLACK}
+        bindInfo 'value' of bean using {it == 'white' ? Color.WHITE : Color.BLACK} to 'textFill' of label
 
         then:
 
@@ -150,7 +150,7 @@ class JFXBinderTest extends GroovyTestCase {
         }
         when:
 
-        bindInfo 'value' of bean to 'textFill' of label, converter
+        bindInfo 'value' of bean using converter to 'textFill' of label
 
         then:
 

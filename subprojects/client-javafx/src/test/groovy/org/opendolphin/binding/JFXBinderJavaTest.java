@@ -69,7 +69,7 @@ public class JFXBinderJavaTest {
             }
         };
 
-        JFXBinder.bind("text").of(sourceLabel).to("text").of(targetLabel, converter);
+        JFXBinder.bind("text").of(sourceLabel).using(converter).to("text").of(targetLabel);
 
         assertEquals("[initialValue]", targetLabel.getText());
 
@@ -104,7 +104,7 @@ public class JFXBinderJavaTest {
 
         Label label = new Label();
 
-        JFXBinder.bindInfo("value").of(pojo).to("text").of(label, converter);
+        JFXBinder.bindInfo("value").of(pojo).using(converter).to("text").of(label);
 
         assertEquals("myDolphin", label.getText());
     }

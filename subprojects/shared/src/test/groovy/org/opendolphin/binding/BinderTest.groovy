@@ -43,7 +43,7 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == newValue
     }
 
-    void testPojoBindingWithConverter_Closure() {
+    void testPojoBindingUsingConverter_Closure() {
         given:
         def sourcePojo = new BindablePojo(value: 'initialValue')
         def targetPojo = new BindablePojo()
@@ -51,7 +51,7 @@ class BinderTest extends GroovyTestCase {
         assert !targetPojo.value
 
         when:
-        bind "value" of sourcePojo to "value" of targetPojo, { "[" + it + "]"}
+        bind "value" of sourcePojo using { "[" + it + "]"} to "value" of targetPojo
 
         assert targetPojo.value == "[initialValue]"
 
@@ -62,7 +62,7 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == "[newValue]"
     }
 
-    void testPojoBindingWithConverter_Interface() {
+    void testPojoBindingUsingConverter_Interface() {
         given:
         def sourcePojo = new BindablePojo(value: 'initialValue')
         def targetPojo = new BindablePojo()
@@ -76,7 +76,7 @@ class BinderTest extends GroovyTestCase {
         assert !targetPojo.value
 
         when:
-        bind "value" of sourcePojo to "value" of targetPojo, converter
+        bind "value" of sourcePojo using converter to "value" of targetPojo
 
         assert targetPojo.value == "[initialValue]"
 
@@ -85,6 +85,26 @@ class BinderTest extends GroovyTestCase {
 
         then:
         assert targetPojo.value == "[newValue]"
+    }
+
+    // Converter chaining is possible. Currently only the last converter is taken into account
+    void testPojoBindingUsingConverter_Chaining() {
+        given:
+        def sourcePojo = new BindablePojo(value: 'initialValue')
+        def targetPojo = new BindablePojo()
+
+        assert !targetPojo.value
+
+        when:
+        bind "value" of sourcePojo using { "[" + it + "]"} using {"<" + it + ">"} to "value" of targetPojo
+
+        assert targetPojo.value == "<initialValue>"
+
+        def newValue = "newValue"
+        sourcePojo.value = newValue
+
+        then:
+        assert targetPojo.value == "<newValue>"
     }
 
     void testAttributeBinding() {
@@ -108,7 +128,7 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == newValue
     }
 
-    void testAttributeBindingWithConverter_Closure() {
+    void testAttributeBindingUsingConverter_Closure() {
         given:
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
         def targetPojo = new BindablePojo()
@@ -116,7 +136,7 @@ class BinderTest extends GroovyTestCase {
         assert !targetPojo.value
 
         when:
-        bind "text" of sourcePm to "value" of targetPojo, {"[" + it + "]"}
+        bind "text" of sourcePm using {"[" + it + "]"} to "value" of targetPojo
 
         assert targetPojo.value == "[initialValue]"
 
@@ -126,7 +146,7 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == "[newValue]"
     }
 
-    void testAttributeBindingWithConverter_Interface() {
+    void testAttributeBindingUsingConverter_Interface() {
         given:
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
         def targetPojo = new BindablePojo()
@@ -140,7 +160,7 @@ class BinderTest extends GroovyTestCase {
         assert !targetPojo.value
 
         when:
-        bind "text" of sourcePm to "value" of targetPojo, converter
+        bind "text" of sourcePm using converter to "value" of targetPojo
 
         assert targetPojo.value == "[initialValue]"
 
@@ -148,6 +168,23 @@ class BinderTest extends GroovyTestCase {
 
         then:
         assert targetPojo.value == "[newValue]"
+    }
+
+    // Converter chaining is possible. Currently only the last converter is taken into account
+    void testAttributeBindingUsingConverter_Chaining() {
+        given:
+        def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
+        def targetPojo = new BindablePojo()
+
+        when:
+        bind "text" of sourcePm using {"[" + it + "]"} using {"<" + it + ">"} to "value" of targetPojo
+
+        assert targetPojo.value == "<initialValue>"
+
+        sourcePm.text.value = "newValue"
+
+        then:
+        assert targetPojo.value == "<newValue>"
     }
 
 }
