@@ -15,6 +15,14 @@
  */
 package org.opendolphin.binding;
 
-public interface Converter {
-    Object convert(Object value);
+public interface Converter<S,T> {
+
+    /**
+     * Converts data from source type S to target type T
+     *
+     * @param value source value
+     * @return target value
+     */
+    T convert(S value);
+
 }
