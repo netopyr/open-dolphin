@@ -19,7 +19,6 @@ package org.opendolphin.binding
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
-import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientPresentationModel
 import groovy.transform.Immutable
 import groovy.transform.Canonical
@@ -87,9 +86,9 @@ class JFXUnbindFromAble {
 }
 
 class UnbindClientFromAble {
-    final ClientAttribute attribute
+    final Attribute attribute
 
-    UnbindClientFromAble(ClientAttribute attribute) {
+    UnbindClientFromAble(Attribute attribute) {
         this.attribute = attribute
     }
 
@@ -118,10 +117,10 @@ class JFXUnbindOtherOfAble {
 }
 
 class UnbindClientOtherOfAble {
-    final ClientAttribute attribute
+    final Attribute attribute
     final String targetPropertyName
 
-    UnbindClientOtherOfAble(ClientAttribute attribute, String targetPropertyName) {
+    UnbindClientOtherOfAble(Attribute attribute, String targetPropertyName) {
         this.attribute = attribute
         this.targetPropertyName = targetPropertyName
     }
@@ -146,7 +145,7 @@ class JFXBindOfAble {
         return Binder.bind(sourcePropertyName, tag).of(source)
     }
 
-    BindClientToAble    of(ClientPresentationModel source) {
+    BindClientToAble of(ClientPresentationModel source) {
         new BindClientToAble(source.findAttributeByPropertyNameAndTag(sourcePropertyName, tag))
     }
 
@@ -180,14 +179,24 @@ class JFXBindToAble {
 }
 
 class BindClientToAble {
-    final ClientAttribute attribute
+    final Attribute attribute
+    final Converter converter
 
-    BindClientToAble(ClientAttribute attribute) {
+    BindClientToAble(Attribute attribute, Converter converter = null) {
         this.attribute = attribute
+        this.converter = converter
     }
 
     BindClientOtherOfAble to(String targetPropertyName) {
-        new BindClientOtherOfAble(attribute, targetPropertyName)
+        new BindClientOtherOfAble(attribute, targetPropertyName, converter)
+    }
+
+    BindClientToAble using(Closure converter) {
+        using new ConverterAdapter(converter)
+    }
+
+    BindClientToAble using(Converter converter) {
+        new BindClientToAble(attribute, converter)
     }
 }
 
@@ -197,7 +206,7 @@ class JFXBindOtherOfAble {
     final String targetPropertyName
     final Converter converter
 
-    JFXBindOtherOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName, Converter converter = null) {
+    JFXBindOtherOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName, Converter converter) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
@@ -214,11 +223,11 @@ class JFXBindOtherOfAble {
 }
 
 class BindClientOtherOfAble {
-    final ClientAttribute attribute
+    final Attribute attribute
     final String targetPropertyName
     final Converter converter
 
-    BindClientOtherOfAble(ClientAttribute attribute, String targetPropertyName, Converter converter = null) {
+    BindClientOtherOfAble(Attribute attribute, String targetPropertyName, Converter converter) {
         this.attribute = attribute
         this.targetPropertyName = targetPropertyName
         this.converter = converter

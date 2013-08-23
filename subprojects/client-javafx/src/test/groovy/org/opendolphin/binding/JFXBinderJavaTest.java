@@ -55,7 +55,7 @@ public class JFXBinderJavaTest {
     }
 
     @Test
-    public void testNodeBindingWithConverter() {
+    public void testNodeBindingUsingConverter() {
         Label sourceLabel = new Label();
         sourceLabel.setText(initialValue);
 
@@ -91,7 +91,7 @@ public class JFXBinderJavaTest {
     }
 
     @Test
-    public void testPojoBindingWithConverter() {
+    public void testPojoBindingUsingConverter() {
         TestPojo pojo = new TestPojo();
         pojo.setValue("Dolphin");
 
@@ -119,6 +119,25 @@ public class JFXBinderJavaTest {
         sourceModel.getAt("attr_1", Tag.MESSAGE).setValue("dummy");
 
         assertEquals("dummy", targetLabel.getText());
+    }
+
+    @Test
+    public void testPresentationModelBindingUsingConverter() {
+        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("attr_1", "", null, Tag.MESSAGE));
+        ClientPresentationModel sourceModel = new ClientPresentationModel("source", attributes);
+        Label targetLabel = new Label();
+
+        Converter converter = new Converter() {
+            @Override
+            public Object convert(Object value) {
+                return "my" + value;
+            }
+        };
+
+        JFXBinder.bind("attr_1", Tag.MESSAGE).of(sourceModel).using(converter).to("text").of(targetLabel);
+        sourceModel.getAt("attr_1", Tag.MESSAGE).setValue("Dummy");
+
+        assertEquals("myDummy", targetLabel.getText());
     }
 
     @Test

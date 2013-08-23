@@ -174,6 +174,15 @@ class JFXBinderTest extends GroovyTestCase {
         assert targetLabel.text == 'dummy'
     }
 
+    void testPresentationModelBindingUsingConverter() {
+        ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('attr_1', "", null, Tag.MESSAGE)])
+        def targetLabel = new javafx.scene.control.Label()
+
+        bind 'attr_1', Tag.MESSAGE of sourceModel using { 'my' + it } to 'text' of targetLabel
+        sourceModel.getAt('attr_1', Tag.MESSAGE).value = 'Dummy'
+        assert targetLabel.text == 'myDummy'
+    }
+
     void testUnbindInfo() {
         ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('text', "")])
         def targetLabel = new javafx.scene.control.Label()
