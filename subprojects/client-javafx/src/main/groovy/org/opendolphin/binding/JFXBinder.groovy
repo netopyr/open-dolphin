@@ -82,8 +82,8 @@ class JFXUnbindFromAble {
         this.sourcePropertyName = sourcePropertyName
     }
 
-    JFXUnbindOtherOfAble from(String targetPropertyName) {
-        new JFXUnbindOtherOfAble(source, sourcePropertyName, targetPropertyName)
+    JFXUnbindTargetOfAble from(String targetPropertyName) {
+        new JFXUnbindTargetOfAble(source, sourcePropertyName, targetPropertyName)
     }
 }
 
@@ -94,17 +94,17 @@ class UnbindClientFromAble {
         this.attribute = attribute
     }
 
-    UnbindClientOtherOfAble from(String targetPropertyName) {
-        new UnbindClientOtherOfAble(attribute, targetPropertyName)
+    UnbindClientTargetOfAble from(String targetPropertyName) {
+        new UnbindClientTargetOfAble(attribute, targetPropertyName)
     }
 }
 
-class JFXUnbindOtherOfAble {
+class JFXUnbindTargetOfAble {
     final javafx.scene.Node source
     final String sourcePropertyName
     final String targetPropertyName
 
-    JFXUnbindOtherOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName) {
+    JFXUnbindTargetOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
@@ -118,11 +118,11 @@ class JFXUnbindOtherOfAble {
     }
 }
 
-class UnbindClientOtherOfAble {
+class UnbindClientTargetOfAble {
     final Attribute attribute
     final String targetPropertyName
 
-    UnbindClientOtherOfAble(Attribute attribute, String targetPropertyName) {
+    UnbindClientTargetOfAble(Attribute attribute, String targetPropertyName) {
         this.attribute = attribute
         this.targetPropertyName = targetPropertyName
     }
@@ -167,8 +167,8 @@ class JFXBindToAble {
         this.converter = converter
     }
 
-    JFXBindOtherOfAble to(String targetPropertyName) {
-        new JFXBindOtherOfAble(source, sourcePropertyName, targetPropertyName, converter)
+    JFXBindTargetOfAble to(String targetPropertyName) {
+        new JFXBindTargetOfAble(source, sourcePropertyName, targetPropertyName, converter)
     }
 
     JFXBindToAble using(Closure converter) {
@@ -189,8 +189,8 @@ class BindClientToAble {
         this.converter = converter
     }
 
-    BindClientOtherOfAble to(String targetPropertyName) {
-        new BindClientOtherOfAble(attribute, targetPropertyName, converter)
+    BindClientTargetOfAble to(String targetPropertyName) {
+        new BindClientTargetOfAble(attribute, targetPropertyName, converter)
     }
 
     BindClientToAble using(Closure converter) {
@@ -202,15 +202,15 @@ class BindClientToAble {
     }
 }
 
-class JFXBindOtherOfAble {
+class JFXBindTargetOfAble {
     final javafx.scene.Node source
     final String sourcePropertyName
     final String targetPropertyName
     final Converter converter
 
-    private static final Logger log  = Logger.getLogger(JFXBindOtherOfAble.class.getName())
+    private static final Logger log  = Logger.getLogger(JFXBindTargetOfAble.class.getName())
 
-    JFXBindOtherOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName, Converter converter) {
+    JFXBindTargetOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName, Converter converter) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
         this.targetPropertyName = targetPropertyName
@@ -240,14 +240,14 @@ class JFXBindOtherOfAble {
     }
 }
 
-class BindClientOtherOfAble {
+class BindClientTargetOfAble {
     final Attribute attribute
     final String targetPropertyName
     final Converter converter
 
-    private static final Logger log  = Logger.getLogger(BindClientOtherOfAble.class.getName())
+    private static final Logger log  = Logger.getLogger(BindClientTargetOfAble.class.getName())
 
-    BindClientOtherOfAble(Attribute attribute, String targetPropertyName, Converter converter) {
+    BindClientTargetOfAble(Attribute attribute, String targetPropertyName, Converter converter) {
         this.attribute = attribute
         this.targetPropertyName = targetPropertyName
         this.converter = converter
