@@ -25,6 +25,8 @@ import groovy.transform.Immutable
 import groovy.transform.Canonical
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeEvent
+import java.util.logging.Level
+import java.util.logging.Logger
 
 class Binder {
     static BindOfAble bind(String sourcePropertyName) {
@@ -202,6 +204,8 @@ class BindTargetOfAble {
     final String targetPropertyName
     final Converter converter
 
+    private static final Logger log  = Logger.getLogger(BindTargetOfAble.class.getName())
+
     BindTargetOfAble(PresentationModel source, String sourcePropertyName, Tag tag, String targetPropertyName, Converter converter) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
@@ -217,6 +221,24 @@ class BindTargetOfAble {
     }
 
     void of(Object target) {
+        def attribute = ((BasePresentationModel)source).findAttributeByPropertyNameAndTag(sourcePropertyName, tag)
+        if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' and tag $tag in '${source.dump()}'")
+        def changeListener = new BinderPropertyChangeListener(target, targetPropertyName, converter)
+        target[targetPropertyName] = changeListener.convert(attribute.value) // set initial value
+        // adding a listener is null and duplicate safe
+        attribute.addPropertyChangeListener('value', changeListener)
+    }
+
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Closure converter) {
+        of target, new ConverterAdapter(converter)
+    }
+
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Converter converter) {
+        if (log.isLoggable(Level.WARNING)) {
+            log.warning("bind(<property>).of(<source>).to(<property>).of(<target>, <converter>) is deprecated! Please use: bind(<property>).of(<source>).using(<converter>).to(<property>).of(<target>)");
+        }
         def attribute = ((BasePresentationModel)source).findAttributeByPropertyNameAndTag(sourcePropertyName, tag)
         if (!attribute) throw new IllegalArgumentException("there is no attribute for property name '$sourcePropertyName' and tag $tag in '${source.dump()}'")
         def changeListener = new BinderPropertyChangeListener(target, targetPropertyName, converter)
@@ -265,6 +287,8 @@ class BindPojoTargetOfAble {
     final String targetPropertyName
     final Converter converter
 
+    private static final Logger log  = Logger.getLogger(BindPojoTargetOfAble.class.getName())
+
     BindPojoTargetOfAble(Object source, String sourcePropertyName, String targetPropertyName, Converter converter) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
@@ -278,6 +302,34 @@ class BindPojoTargetOfAble {
         addListener(changeListener)
     }
     void of(PresentationModel target) {
+        checkTargetAttributeExists(target, targetPropertyName)
+        def changeListener = makeListener(target[targetPropertyName], 'value', converter)
+        target[targetPropertyName].value = changeListener.convert(source."$sourcePropertyName") // set initial value
+        addListener(changeListener)
+    }
+
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Closure converter) {
+        of target, new ConverterAdapter(converter)
+    }
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Converter converter) {
+        if (log.isLoggable(Level.WARNING)) {
+            log.warning("bind(<property>).of(<source>).to(<property>).of(<target>, <converter>) is deprecated! Please use: bind(<property>).of(<source>).using(<converter>).to(<property>).of(<target>)");
+        }
+        def changeListener = makeListener(target, targetPropertyName, converter)
+        target[targetPropertyName] = changeListener.convert(source."$sourcePropertyName") // set initial value
+        addListener(changeListener)
+    }
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(PresentationModel target, Closure converter) {
+        of target, new ConverterAdapter(converter)
+    }
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(PresentationModel target, Converter converter) {
+        if (log.isLoggable(Level.WARNING)) {
+            log.warning("bind(<property>).of(<source>).to(<property>).of(<target>, <converter>) is deprecated! Please use: bind(<property>).of(<source>).using(<converter>).to(<property>).of(<target>)");
+        }
         checkTargetAttributeExists(target, targetPropertyName)
         def changeListener = makeListener(target[targetPropertyName], 'value', converter)
         target[targetPropertyName].value = changeListener.convert(source."$sourcePropertyName") // set initial value

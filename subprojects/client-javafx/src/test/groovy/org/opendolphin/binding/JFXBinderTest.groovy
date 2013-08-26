@@ -49,6 +49,28 @@ class JFXBinderTest extends GroovyTestCase {
         assert targetLabel.text == newValue
     }
 
+    // TODO (DOL-93) remove legacy code
+    void testNodeBindingWithConverter_Closure_OldStyle() {
+        given:
+        def initialValue = "initialValue"
+        def sourceLabel = new javafx.scene.control.Label()
+        sourceLabel.text = initialValue
+        def targetLabel = new javafx.scene.control.Label()
+
+        assert !targetLabel.text
+
+        when:
+        bind "text" of sourceLabel to "text" of targetLabel, {"[" + it + "]"}
+
+        assert targetLabel.text == "[initialValue]"
+
+        def newValue = "newValue"
+        sourceLabel.text = newValue
+
+        then:
+        assert targetLabel.text == "[newValue]"
+    }
+
     void testNodeBindingWithConverter_Closure() {
         given:
         def initialValue = "initialValue"
@@ -60,6 +82,34 @@ class JFXBinderTest extends GroovyTestCase {
 
         when:
         bind "text" of sourceLabel using {"[" + it + "]"} to "text" of targetLabel
+
+        assert targetLabel.text == "[initialValue]"
+
+        def newValue = "newValue"
+        sourceLabel.text = newValue
+
+        then:
+        assert targetLabel.text == "[newValue]"
+    }
+
+    // TODO (DOL-93) remove legacy code
+    void testNodeBindingWithConverter_Interface_OldStyle() {
+        given:
+        def initialValue = "initialValue"
+        def sourceLabel = new javafx.scene.control.Label()
+        sourceLabel.text = initialValue
+        def targetLabel = new javafx.scene.control.Label()
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return "[" + value + "]"
+            }
+        }
+        assert !targetLabel.text
+
+        when:
+        bind "text" of sourceLabel to "text" of targetLabel, converter
 
         assert targetLabel.text == "[initialValue]"
 
@@ -113,6 +163,30 @@ class JFXBinderTest extends GroovyTestCase {
     }
 
 
+    // TODO (DOL-93) remove legacy code
+    void testPojoBindingWithConverterClosure_OldStyle() {
+        given:
+
+        def bean = new PojoBean(value: 'white')
+        def label = new javafx.scene.control.Label()
+
+        when:
+
+        bindInfo 'value' of bean to 'textFill' of label, {it == 'white' ? Color.WHITE : Color.BLACK}
+
+        then:
+
+        assert label.textFill == Color.WHITE
+
+        nextWhen:
+
+        bean.value = 'foo'
+
+        nextThen:
+
+        assert label.textFill == Color.BLACK
+    }
+
     void testPojoBindingWithConverterClosure() {
         given:
 
@@ -122,6 +196,36 @@ class JFXBinderTest extends GroovyTestCase {
         when:
 
         bindInfo 'value' of bean using {it == 'white' ? Color.WHITE : Color.BLACK} to 'textFill' of label
+
+        then:
+
+        assert label.textFill == Color.WHITE
+
+        nextWhen:
+
+        bean.value = 'foo'
+
+        nextThen:
+
+        assert label.textFill == Color.BLACK
+    }
+
+    // TODO (DOL-93) remove legacy code
+    void testPojoBindingWithConverter_Interface_OldStyle() {
+        given:
+
+        def bean = new PojoBean(value: 'white')
+        def label = new javafx.scene.control.Label()
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return value == 'white' ? Color.WHITE : Color.BLACK
+            }
+        }
+        when:
+
+        bindInfo 'value' of bean to 'textFill' of label, converter
 
         then:
 
@@ -172,6 +276,16 @@ class JFXBinderTest extends GroovyTestCase {
         bind 'attr_1', Tag.MESSAGE of sourceModel to 'text' of targetLabel
         sourceModel.getAt('attr_1', Tag.MESSAGE).value = 'dummy'
         assert targetLabel.text == 'dummy'
+    }
+
+    // TODO (DOL-93) remove legacy code
+    void testPresentationModelBindingUsingConverter_OldStyle() {
+        ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('attr_1', "", null, Tag.MESSAGE)])
+        def targetLabel = new javafx.scene.control.Label()
+
+        bind 'attr_1', Tag.MESSAGE of sourceModel to 'text' of targetLabel, { 'my' + it }
+        sourceModel.getAt('attr_1', Tag.MESSAGE).value = 'Dummy'
+        assert targetLabel.text == 'myDummy'
     }
 
     void testPresentationModelBindingUsingConverter() {

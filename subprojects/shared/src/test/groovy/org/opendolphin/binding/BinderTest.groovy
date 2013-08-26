@@ -43,6 +43,26 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == newValue
     }
 
+    // TODO (DOL-93) remove legacy code
+    void testPojoBindingUsingConverter_Closure_OldStyle() {
+        given:
+        def sourcePojo = new BindablePojo(value: 'initialValue')
+        def targetPojo = new BindablePojo()
+
+        assert !targetPojo.value
+
+        when:
+        bind "value" of sourcePojo to "value" of targetPojo, { "[" + it + "]"}
+
+        assert targetPojo.value == "[initialValue]"
+
+        def newValue = "newValue"
+        sourcePojo.value = newValue
+
+        then:
+        assert targetPojo.value == "[newValue]"
+    }
+
     void testPojoBindingUsingConverter_Closure() {
         given:
         def sourcePojo = new BindablePojo(value: 'initialValue')
@@ -52,6 +72,32 @@ class BinderTest extends GroovyTestCase {
 
         when:
         bind "value" of sourcePojo using { "[" + it + "]"} to "value" of targetPojo
+
+        assert targetPojo.value == "[initialValue]"
+
+        def newValue = "newValue"
+        sourcePojo.value = newValue
+
+        then:
+        assert targetPojo.value == "[newValue]"
+    }
+
+    // TODO (DOL-93) remove legacy code
+    void testPojoBindingUsingConverter_Interface_OldStyle() {
+        given:
+        def sourcePojo = new BindablePojo(value: 'initialValue')
+        def targetPojo = new BindablePojo()
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return "[" + value + "]"
+            }
+        }
+        assert !targetPojo.value
+
+        when:
+        bind "value" of sourcePojo to "value" of targetPojo, converter
 
         assert targetPojo.value == "[initialValue]"
 
@@ -107,7 +153,7 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == "<newValue>"
     }
 
-    void testAttributeBinding() {
+    void testAttributeBindingPmToPojo() {
         given:
         def initialValue = "Andres&Dierk"
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text')])
@@ -128,7 +174,26 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == newValue
     }
 
-    void testAttributeBindingUsingConverter_Closure() {
+    // TODO (DOL-93) remove legacy code
+    void testAttributeBindingPmToPojoUsingConverter_Closure_OldStyle() {
+        given:
+        def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
+        def targetPojo = new BindablePojo()
+
+        assert !targetPojo.value
+
+        when:
+        bind "text" of sourcePm to "value" of targetPojo, {"[" + it + "]"}
+
+        assert targetPojo.value == "[initialValue]"
+
+        sourcePm.text.value = "newValue"
+
+        then:
+        assert targetPojo.value == "[newValue]"
+    }
+
+    void testAttributeBindingPmToPojoUsingConverter_Closure() {
         given:
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
         def targetPojo = new BindablePojo()
@@ -146,7 +211,32 @@ class BinderTest extends GroovyTestCase {
         assert targetPojo.value == "[newValue]"
     }
 
-    void testAttributeBindingUsingConverter_Interface() {
+    // TODO (DOL-93) remove legacy code
+    void testAttributeBindingPmToPojoUsingConverter_Interface_OldStyle() {
+        given:
+        def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
+        def targetPojo = new BindablePojo()
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return "[" + value + "]"
+            }
+        }
+        assert !targetPojo.value
+
+        when:
+        bind "text" of sourcePm to "value" of targetPojo, converter
+
+        assert targetPojo.value == "[initialValue]"
+
+        sourcePm.text.value = "newValue"
+
+        then:
+        assert targetPojo.value == "[newValue]"
+    }
+
+    void testAttributeBindingPmToPojoUsingConverter_Interface() {
         given:
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
         def targetPojo = new BindablePojo()
@@ -171,7 +261,7 @@ class BinderTest extends GroovyTestCase {
     }
 
     // Converter chaining is possible. Currently only the last converter is taken into account
-    void testAttributeBindingUsingConverter_Chaining() {
+    void testAttributeBindingPmToPojoUsingConverter_Chaining() {
         given:
         def sourcePm = new BasePresentationModel("1",[new SimpleAttribute('text', 'initialValue')])
         def targetPojo = new BindablePojo()
@@ -185,6 +275,136 @@ class BinderTest extends GroovyTestCase {
 
         then:
         assert targetPojo.value == "<newValue>"
+    }
+
+    void testAttributeBindingPojoToPm() {
+        given:
+        def initialValue = "Andres&Dierk"
+        def sourcePojo = new BindablePojo()
+        def targetPm = new BasePresentationModel("1",[new SimpleAttribute('text')])
+
+        sourcePojo.value = initialValue
+
+        assert !targetPm.text.value
+
+        when:
+        bind "value" of sourcePojo to "text" of targetPm
+
+        assert targetPm.text.value == initialValue
+
+        def newValue = "newValue"
+        sourcePojo.value = newValue
+
+        then:
+        assert targetPm.text.value == newValue
+    }
+
+    // TODO (DOL-93) remove legacy code
+    void testAttributeBindingPojoToPmUsingConverter_Closure_OldStyle() {
+        given:
+        def sourcePojo = new BindablePojo()
+        def targetPm = new BasePresentationModel("1",[new SimpleAttribute('text')])
+
+        sourcePojo.value = "initialValue"
+        assert !targetPm.text.value
+
+        when:
+        bind "value" of sourcePojo to "text" of targetPm, {"[" + it + "]"}
+
+        assert targetPm.text.value == "[initialValue]"
+
+        sourcePojo.value = "newValue"
+
+        then:
+        assert targetPm.text.value == "[newValue]"
+    }
+
+    void testAttributeBindingPojoToPmUsingConverter_Closure() {
+        given:
+        def sourcePojo = new BindablePojo()
+        def targetPm = new BasePresentationModel("1",[new SimpleAttribute('text')])
+
+        sourcePojo.value = "initialValue"
+        assert !targetPm.text.value
+
+        when:
+        bind "value" of sourcePojo using {"[" + it + "]"} to "text" of targetPm
+
+        assert targetPm.text.value == "[initialValue]"
+
+        sourcePojo.value = "newValue"
+
+        then:
+        assert targetPm.text.value == "[newValue]"
+    }
+
+    // TODO (DOL-93) remove legacy code
+    void testAttributeBindingPojoToPmUsingConverter_Interface_OldStyle() {
+        given:
+        def sourcePojo = new BindablePojo()
+        def targetPm = new BasePresentationModel("1",[new SimpleAttribute('text')])
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return "[" + value + "]"
+            }
+        }
+        sourcePojo.value = "initialValue"
+        assert !targetPm.text.value
+
+        when:
+        bind "value" of sourcePojo to "text" of targetPm, converter
+
+        assert targetPm.text.value == "[initialValue]"
+
+        sourcePojo.value = "newValue"
+
+        then:
+        assert targetPm.text.value == "[newValue]"
+    }
+
+    void testAttributeBindingPojoToPmUsingConverter_Interface() {
+        given:
+        def sourcePojo = new BindablePojo()
+        def targetPm = new BasePresentationModel("1",[new SimpleAttribute('text')])
+
+        def converter = new Converter() {
+            @Override
+            Object convert(Object value) {
+                return "[" + value + "]"
+            }
+        }
+        sourcePojo.value = "initialValue"
+        assert !targetPm.text.value
+
+        when:
+        bind "value" of sourcePojo using converter to "text" of targetPm
+
+        assert targetPm.text.value == "[initialValue]"
+
+        sourcePojo.value = "newValue"
+
+        then:
+        assert targetPm.text.value == "[newValue]"
+    }
+
+    // Converter chaining is possible. Currently only the last converter is taken into account
+    void testAttributeBindingPojoToPmUsingConverter_Chaining() {
+        given:
+        def sourcePojo = new BindablePojo()
+        def targetPm = new BasePresentationModel("1",[new SimpleAttribute('text')])
+        sourcePojo.value = "initialValue"
+
+        when:
+        bind "value" of sourcePojo using {"[" + it + "]"} using {"<" + it + ">"} to "text" of targetPm
+
+        assert targetPm.text.value == "<initialValue>"
+
+        sourcePojo.value = "newValue"
+
+        then:
+        assert targetPm.text.value == "<newValue>"
     }
 
 }

@@ -27,6 +27,8 @@ import javafx.beans.value.ObservableValue
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.util.logging.Level
+import java.util.logging.Logger
 
 class JFXBinder {
     static JFXBindOfAble bind(String sourcePropertyName) {
@@ -206,6 +208,8 @@ class JFXBindOtherOfAble {
     final String targetPropertyName
     final Converter converter
 
+    private static final Logger log  = Logger.getLogger(JFXBindOtherOfAble.class.getName())
+
     JFXBindOtherOfAble(javafx.scene.Node source, String sourcePropertyName, String targetPropertyName, Converter converter) {
         this.source = source
         this.sourcePropertyName = sourcePropertyName
@@ -220,12 +224,28 @@ class JFXBindOtherOfAble {
         source."${sourcePropertyName}Property"().addListener(listener)
         listener.update() // set the initial value after the binding and trigger the first notification
     }
+
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Closure converter) {
+        of target, new ConverterAdapter(converter)
+    }
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Converter converter) {
+        if (log.isLoggable(Level.WARNING)) {
+            log.warning("bind(<property>).of(<source>).to(<property>).of(<target>, <converter>) is deprecated! Please use: bind(<property>).of(<source>).using(<converter>).to(<property>).of(<target>)");
+        }
+        def listener = new JFXBinderChangeListener(source, sourcePropertyName, target, targetPropertyName, converter)
+        source."${sourcePropertyName}Property"().addListener(listener)
+        listener.update() // set the initial value after the binding and trigger the first notification
+    }
 }
 
 class BindClientOtherOfAble {
     final Attribute attribute
     final String targetPropertyName
     final Converter converter
+
+    private static final Logger log  = Logger.getLogger(BindClientOtherOfAble.class.getName())
 
     BindClientOtherOfAble(Attribute attribute, String targetPropertyName, Converter converter) {
         this.attribute = attribute
@@ -234,6 +254,20 @@ class BindClientOtherOfAble {
     }
 
     void of(Object target) {
+        def listener = new JFXBinderPropertyChangeListener(attribute, target, targetPropertyName, converter)
+        attribute.addPropertyChangeListener('value', listener)
+        listener.update() // set the initial value after the binding and trigger the first notification
+    }
+
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Closure converter) {
+        of target, new ConverterAdapter(converter)
+    }
+    @Deprecated // TODO (DOL-93) remove legacy code
+    void of(Object target, Converter converter) {
+        if (log.isLoggable(Level.WARNING)) {
+            log.warning("bind(<property>).of(<source>).to(<property>).of(<target>, <converter>) is deprecated! Please use: bind(<property>).of(<source>).using(<converter>).to(<property>).of(<target>)");
+        }
         def listener = new JFXBinderPropertyChangeListener(attribute, target, targetPropertyName, converter)
         attribute.addPropertyChangeListener('value', listener)
         listener.update() // set the initial value after the binding and trigger the first notification
