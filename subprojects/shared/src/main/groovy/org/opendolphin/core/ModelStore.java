@@ -22,7 +22,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
+/**
+ * Central data structure to store presentation models and their attributes
+ * both on the client (view) and on the server (controller) side for separate access.
+ */
+
 public class ModelStore {
+
+    // We maintain four indexes in this data structure in order to efficiently access
+    // - presentation models by id or by type
+    // - attributes by id or by qualifier
 
     private final Map<String, PresentationModel> presentationModels;
     private final Map<String, List<PresentationModel>> modelsPerType;
