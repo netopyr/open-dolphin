@@ -256,6 +256,7 @@ abstract class ClientConnector {
         }
         def presentationModel = null
         if (serverCommand.pmId) presentationModel = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        // here we could have a pmType conflict and we may want to throw an Exception...
         // if there is no pmId, it is most likely an error and CreatePresentationModelCommand should have been used
         if (!presentationModel) {
             presentationModel = new ClientPresentationModel(serverCommand.pmId, [])
