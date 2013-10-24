@@ -81,7 +81,9 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        bind "text" of sourceLabel using {"[" + it + "]"} to "text" of targetLabel
+        // target
+//        bind "text" of sourceLabel using {"[" + it + "]"} to "text" of targetLabel
+        bind "text" of sourceLabel to "text" of targetLabel, {"[" + it + "]"}
 
         assert targetLabel.text == "[initialValue]"
 
@@ -136,7 +138,9 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        bind "text" of sourceLabel using converter to "text" of targetLabel
+        // target
+//        bind "text" of sourceLabel using converter to "text" of targetLabel
+        bind "text" of sourceLabel to "text" of targetLabel, converter
 
         assert targetLabel.text == "[initialValue]"
 
@@ -281,20 +285,21 @@ class JFXBinderTest extends GroovyTestCase {
 
     // TODO (DOL-93) remove legacy code
     void testPresentationModelBindingUsingConverter_OldStyle() {
-        ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('attr_1', "", null, Tag.MESSAGE)])
+        ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('attr_1', "", null, Tag.tagFor.MESSAGE)])
         def targetLabel = new javafx.scene.control.Label()
 
-        bind 'attr_1', Tag.MESSAGE of sourceModel to 'text' of targetLabel, { 'my' + it }
-        sourceModel.getAt('attr_1', Tag.MESSAGE).value = 'Dummy'
+        bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel to 'text' of targetLabel, { 'my' + it }
+        sourceModel.getAt('attr_1', Tag.tagFor.MESSAGE).value = 'Dummy'
         assert targetLabel.text == 'myDummy'
     }
 
     void testPresentationModelBindingUsingConverter() {
-        ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('attr_1', "", null, Tag.MESSAGE)])
+        ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('attr_1', "", null, Tag.tagFor.MESSAGE)])
         def targetLabel = new javafx.scene.control.Label()
-
-        bind 'attr_1', Tag.MESSAGE of sourceModel using { 'my' + it } to 'text' of targetLabel
-        sourceModel.getAt('attr_1', Tag.MESSAGE).value = 'Dummy'
+//        target:
+//        bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel using { 'my' + it } to 'text' of targetLabel
+        bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel to 'text' of targetLabel, { 'my' + it }
+        sourceModel.getAt('attr_1', Tag.tagFor.MESSAGE).value = 'Dummy'
         assert targetLabel.text == 'myDummy'
     }
 

@@ -69,7 +69,9 @@ public class JFXBinderJavaTest {
             }
         };
 
-        JFXBinder.bind("text").of(sourceLabel).using(converter).to("text").of(targetLabel);
+//      target:
+//        JFXBinder.bind("text").of(sourceLabel).using(converter).to("text").of(targetLabel);
+        JFXBinder.bind("text").of(sourceLabel).to("text").of(targetLabel, converter);
 
         assertEquals("[initialValue]", targetLabel.getText());
 
@@ -126,7 +128,8 @@ public class JFXBinderJavaTest {
 
     @Test
     public void testPresentationModelBindingUsingConverter() {
-        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("attr_1", "", null, Tag.MESSAGE));
+        Tag MESSAGE = Tag.tagFor.get("MESSAGE");
+        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("attr_1", "", null, MESSAGE));
         ClientPresentationModel sourceModel = new ClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
@@ -136,9 +139,10 @@ public class JFXBinderJavaTest {
                 return "my" + value;
             }
         };
-
-        JFXBinder.bind("attr_1", Tag.MESSAGE).of(sourceModel).using(converter).to("text").of(targetLabel);
-        sourceModel.getAt("attr_1", Tag.MESSAGE).setValue("Dummy");
+//        target:
+//        JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).using(converter).to("text").of(targetLabel);
+        JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).to("text").of(targetLabel, converter);
+        sourceModel.getAt("attr_1", MESSAGE).setValue("Dummy");
 
         assertEquals("myDummy", targetLabel.getText());
     }
