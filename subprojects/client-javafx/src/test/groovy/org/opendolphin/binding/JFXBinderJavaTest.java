@@ -111,12 +111,15 @@ public class JFXBinderJavaTest {
 
     @Test
     public void testPresentationModelBinding() {
-        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("attr_1", "", null, Tag.MESSAGE));
+
+        Tag MESSAGE = Tag.tagFor.get("MESSAGE");
+
+        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("attr_1", "", null, MESSAGE));
         ClientPresentationModel sourceModel = new ClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
-        JFXBinder.bind("attr_1", Tag.MESSAGE).of(sourceModel).to("text").of(targetLabel);
-        sourceModel.getAt("attr_1", Tag.MESSAGE).setValue("dummy");
+        JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).to("text").of(targetLabel);
+        sourceModel.getAt("attr_1", MESSAGE).setValue("dummy");
 
         assertEquals("dummy", targetLabel.getText());
     }

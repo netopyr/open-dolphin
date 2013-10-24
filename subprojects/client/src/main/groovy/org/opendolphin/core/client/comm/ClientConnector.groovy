@@ -16,6 +16,7 @@
 
 package org.opendolphin.core.client.comm
 
+import com.sun.org.apache.bcel.internal.generic.NEW
 import groovyx.gpars.dataflow.KanbanFlow
 import groovyx.gpars.dataflow.KanbanTray
 import groovyx.gpars.dataflow.ProcessingNode
@@ -59,7 +60,6 @@ abstract class ClientConnector {
         this.commandBatcher = commandBatcher ?: new CommandBatcher()
 
         startCommandProcessing()
-
     }
 
     protected void startCommandProcessing() {
@@ -69,7 +69,7 @@ abstract class ClientConnector {
             List<Command> commands = commandsAndHandlers.collect { it.command }
             if (log.isLoggable(Level.INFO)) {
                 log.info "C: sending batch of size " + commands.size()
-                for (command in commands) { log.info("C:           -> "+command)}
+                for (command in commands) { log.info("C:           -> " + command) }
             }
 
             def answer = null
@@ -188,7 +188,7 @@ abstract class ClientConnector {
                 attr.propertyName.toString(),
                 attr.value,
                 attr.qualifier?.toString(),
-                attr.tag ? Tag.valueOf(attr.tag.toString()) : Tag.VALUE)
+                attr.tag ? Tag.tagFor[(String) attr.tag] : Tag.VALUE)
             attributes << attribute
         }
         ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
