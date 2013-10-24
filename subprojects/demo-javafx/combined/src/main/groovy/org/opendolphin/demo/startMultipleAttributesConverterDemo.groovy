@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opendolphin.binding;
 
-public interface Converter<S,T> {
+package org.opendolphin.demo
 
-    /**
-     * Converts data from source type S to target type T
-     *
-     * @param value source value
-     * @return target value
-     */
-    T convert(S value);
+def config = new JavaFxInMemoryConfig()
 
-}
+MultipleAttributesConverterView.show(config.clientDolphin)

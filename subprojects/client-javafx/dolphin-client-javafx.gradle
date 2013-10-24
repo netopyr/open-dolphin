@@ -16,8 +16,7 @@
 
 dependencies {
     compile ':jfxrt:',
-        project(':client'),
-        'org.codehaus.groovyfx:groovyfx:0.2'
+        project(':client')
 }
 
 uploadArchives.repositories.mavenDeployer {

@@ -51,7 +51,7 @@ public class BinderJavaTest {
     }
 
     @Test
-    public void testPojoBindingWithConverter() {
+    public void testPojoBindingUsingConverter() {
         TestPojo sourcePojo = new TestPojo();
         sourcePojo.setValue(initialValue);
 
@@ -65,13 +65,32 @@ public class BinderJavaTest {
             }
         };
 
-        Binder.bind("value").of(sourcePojo).to("value").of(targetPojo, converter);
+        Binder.bind("value").of(sourcePojo).using(converter).to("value").of(targetPojo);
 
         assertEquals("[initialValue]", targetPojo.getValue());
 
         sourcePojo.setValue(newValue);
 
         assertEquals("[newValue]", targetPojo.getValue());
+    }
+
+    @Test
+    public void testPojoBindingUsingNullConverter() {
+        TestPojo sourcePojo = new TestPojo();
+        sourcePojo.setValue(initialValue);
+
+        TestPojo targetPojo = new TestPojo();
+        assertEquals(null, targetPojo.getValue());
+
+        Converter nullConverter = null;
+
+        Binder.bind("value").of(sourcePojo).using(nullConverter).to("value").of(targetPojo);
+
+        assertEquals("initialValue", targetPojo.getValue());
+
+        sourcePojo.setValue(newValue);
+
+        assertEquals("newValue", targetPojo.getValue());
     }
 
     @Test
@@ -94,7 +113,7 @@ public class BinderJavaTest {
 
 
     @Test
-    public void testAttributeBindingWithConverter() {
+    public void testAttributeBindingUsingConverter() {
         BasePresentationModel sourcePm = new BasePresentationModel("1", Arrays.asList(new TestAttribute("text")));
         sourcePm.getAt("text").setValue(initialValue);
 
@@ -109,13 +128,33 @@ public class BinderJavaTest {
 
         assertEquals(null, targetPojo.getValue());
 
-        Binder.bind("text").of(sourcePm).to("value").of(targetPojo, converter);
+        Binder.bind("text").of(sourcePm).using(converter).to("value").of(targetPojo);
 
         assertEquals("[initialValue]", targetPojo.getValue());
 
         sourcePm.getAt("text").setValue(newValue);
 
         assertEquals("[newValue]", targetPojo.getValue());
+    }
+
+    @Test
+    public void testAttributeBindingUsingNullConverter() {
+        BasePresentationModel sourcePm = new BasePresentationModel("1", Arrays.asList(new TestAttribute("text")));
+        sourcePm.getAt("text").setValue(initialValue);
+
+        TestPojo targetPojo = new TestPojo();
+
+        assertEquals(null, targetPojo.getValue());
+
+        Converter nullConverter = null;
+
+        Binder.bind("text").of(sourcePm).using(nullConverter).to("value").of(targetPojo);
+
+        assertEquals("initialValue", targetPojo.getValue());
+
+        sourcePm.getAt("text").setValue(newValue);
+
+        assertEquals("newValue", targetPojo.getValue());
     }
 
     // Binding support for Java classes is established by implementing Observable

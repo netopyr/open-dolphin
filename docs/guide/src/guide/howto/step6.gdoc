@@ -12,16 +12,17 @@ To make this happen, we enhance the binding with a little trick in the converter
 adds the "dirty" style class to the text field when needed and removes it otherwise.
 
 {code}
-JFXBinder.bindInfo("dirty").of(textAttributeModel).to("style").of(textField, new Closure(null) {
-    public String call(Boolean dirty) {
+Converter converter = new Converter<Boolean,Boolean>() {
+    public Boolean convert(Boolean dirty) {
         if (dirty) {
             textField.getStyleClass().add("dirty");
         } else {
             textField.getStyleClass().remove("dirty");
         }
-        return "";
+        return null;
     }
-});
+};
+JFXBinder.bindInfo("dirty").of(textAttributeModel).using(converter).to("style").of(textField);
 {code}
 
 The tutorial.css contains the definition of that style, which makes the code very flexible

@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package org.opendolphin.logo
+package org.opendolphin.demo.logo
 
 import groovyx.javafx.GroovyFX
 import javafx.scene.media.AudioClip
+import org.opendolphin.logo.DolphinLogoBuilder
 
 GroovyFX.start { app ->
     boolean first=true
 
     def effect = dropShadow(offsetY: 2, offsetX: 2, radius: 3, color:grey, input: lighting{distant(azimuth: -135.0)})
-    logo = new DolphinLogo(width:401, height: 257, shuffle: true, effect: effect)
+    def logo = new DolphinLogoBuilder().width(401).height(257).build()
+    def strokes = new ArrayList<Node>(logo.getChildren())
 
-    AudioClip sonar = new AudioClip(this.class.getResource("pulse.mp3").toString());
+    AudioClip sonar = new AudioClip(DolphinLogoBuilder.class.getResource("pulse.mp3").toString());
     sonar.cycleCount = 1
 
     stage title: "Tickle the Dolphin!", {
@@ -36,7 +38,18 @@ GroovyFX.start { app ->
                 ellipse translateX: -40, translateY: 110, radiusX: 220, radiusY: 20, opacity: 0.2,
                         fill: radialGradient(radius:1, center: [0.5, 0.5], stops: [[0, lightcyan], [0.3, transparent]])
             }
-            logo.addTo delegate
+            delegate.stackPane {
+                allAnimations = parallelTransition()
+                group id: 'dolphinLogoStrokes', effect: effect, {
+                    for (stroke in strokes) {
+                        path(stroke, rotate: Math.random() * 360) {
+                            allAnimations.children <<
+                                    rotateTransition(3.s, to: 0)
+                        }
+                    }
+                }
+                onMouseClicked { allAnimations.playFromStart() }
+            }
             circle id:"pulse", fill:transparent, stroke:rgb(207, 0, 58), strokeWidth: 3, opacity:0, translateX:-100, translateY: -20, effect:boxBlur(), {
                 anim = timeline cycleCount: 3, {
                     onFinished { pulse.radius = 10 }

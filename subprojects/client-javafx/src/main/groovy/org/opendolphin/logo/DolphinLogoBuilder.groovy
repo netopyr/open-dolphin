@@ -13,16 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opendolphin.binding;
 
-public interface Converter<S,T> {
+package org.opendolphin.logo
 
-    /**
-     * Converts data from source type S to target type T
-     *
-     * @param value source value
-     * @return target value
-     */
-    T convert(S value);
+import javafx.scene.Group
 
+class DolphinLogoBuilder {
+    long width = 400
+    long height = 400
+
+    DolphinLogoBuilder width(double width) {
+        this.width = width
+        return this
+    }
+
+    DolphinLogoBuilder height(double height) {
+        this.height = height
+        return this
+    }
+
+    Group build() {
+        def paths = new DolphinLogoPaths(width, height).paths()
+
+        def group = new Group()
+        group.prefHeight width
+        group.prefHeight height
+        group.getChildren().addAll(paths)
+
+        return group;
+    }
 }
