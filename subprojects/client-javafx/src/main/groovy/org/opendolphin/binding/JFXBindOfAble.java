@@ -23,14 +23,6 @@ public class JFXBindOfAble {
         return Binder.bind(sourcePropertyName, tag).of(source);
     }
 
-    public final String getSourcePropertyName() {
-        return sourcePropertyName;
-    }
-
-    public final Tag getTag() {
-        return tag;
-    }
-
     public JFXBindOfAble(String sourcePropertyName, Tag tag) {
         this.sourcePropertyName = sourcePropertyName;
         this.tag = tag;
