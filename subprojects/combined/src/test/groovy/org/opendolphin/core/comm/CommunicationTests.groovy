@@ -64,7 +64,6 @@ class CommunicationTests extends GroovyTestCase {
 			receivedCommand = command
 		}
 		serverConnector.registry.register ValueChangedCommand, testServerAction
-
 		ca.value = 'initial'
 
         clientDolphin.sync {

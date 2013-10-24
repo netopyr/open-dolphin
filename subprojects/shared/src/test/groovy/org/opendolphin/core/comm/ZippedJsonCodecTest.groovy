@@ -16,8 +16,6 @@
 
 package org.opendolphin.core.comm
 
-import org.opendolphin.core.Tag
-
 public class ZippedJsonCodecTest extends GroovyTestCase {
 
     void testEmpty() {
@@ -42,9 +40,5 @@ public class ZippedJsonCodecTest extends GroovyTestCase {
         def decoded = codec.decode(coded)
         assert commands.toString() == decoded.toString()
     }
-
-
-
-
 
 }

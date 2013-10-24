@@ -20,7 +20,7 @@ import org.opendolphin.core.comm.NamedCommand
 import org.opendolphin.core.server.action.DolphinServerAction
 import org.opendolphin.core.server.comm.ActionRegistry
 
-import static org.opendolphin.core.Tag.MESSAGE
+import static org.opendolphin.core.Tag.tagFor
 import static org.opendolphin.demo.MyProps.ATT.*
 import static org.opendolphin.demo.MyProps.CMD.*
 import static org.opendolphin.demo.MyProps.PM_ID.*
@@ -33,7 +33,7 @@ class DemoTitlePurposeAction extends DolphinServerAction {
         serverDolphin.action SET_TITLE, { NamedCommand command, response ->
             def title = serverDolphin[MOLD][TITLE]
             changeValue title, title.value + " new from server"
-            changeValue serverDolphin[MOLD][TITLE, MESSAGE], "changed on server"
+            changeValue serverDolphin[MOLD][TITLE, tagFor.MESSAGE], "changed on server"
         }
 
         serverDolphin.action SET_PURPOSE, { NamedCommand command, response ->

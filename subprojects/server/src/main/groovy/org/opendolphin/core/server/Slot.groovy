@@ -3,6 +3,7 @@ package org.opendolphin.core.server
 import org.opendolphin.core.Tag
 import groovy.transform.CompileStatic
 
+// should be immutable?
 @CompileStatic
 class Slot {
     String propertyName

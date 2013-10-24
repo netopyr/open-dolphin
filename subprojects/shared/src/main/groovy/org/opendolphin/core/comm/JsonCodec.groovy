@@ -61,7 +61,7 @@ class JsonCodec implements Codec {
                 if (key == 'className') return
                 if (key == 'id' && !(responseCommand instanceof NamedCommand)) return // set id only for NamedCommand
                 if (key == 'attributeId') value = value.toLong()
-                if (key == 'tag') value = Enum.valueOf(Tag, value)
+                if (key == 'tag') value = Tag.tagFor[value]
                 responseCommand[key] = value
             }
             log.finest "decoded command $responseCommand"

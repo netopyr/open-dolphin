@@ -94,7 +94,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     /** Check whether value is of allowed type and convert to an allowed type if possible. */
     public static Object checkValue(Object value) {
         if (null == value) return null;
-        if (value instanceof Tag) return ((Tag)value).name(); // name instead of ordinal to make decoding easier
+        if (value instanceof Tag) return ((Tag)value).getName(); // name instead of ordinal to make decoding easier
         Object result = value;
         if (result instanceof GString) result = value.toString();
         if (result instanceof BaseAttribute) {
@@ -143,7 +143,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
                 .append(propertyName)
                 .append(" (")
                 .append(qualifier).append(") ")
-                .append("[").append(tag.name()).append("] ")
+                .append("[").append(tag.getName()).append("] ")
                 .append(value).toString();
     }
 

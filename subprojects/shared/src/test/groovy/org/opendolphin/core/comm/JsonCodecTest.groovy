@@ -70,7 +70,7 @@ public class JsonCodecTest extends GroovyTestCase {
     }
 
     void testCodingCommands() {
-        assertCodingCommand(new AttributeCreatedNotification(tag:Tag.MESSAGE))
+        assertCodingCommand(new AttributeCreatedNotification(tag:Tag.TOOLTIP))
         assertCodingCommand(new AttributeMetadataChangedCommand())
         assertCodingCommand(new CreatePresentationModelCommand())
         assertCodingCommand(new ChangeAttributeMetadataCommand())

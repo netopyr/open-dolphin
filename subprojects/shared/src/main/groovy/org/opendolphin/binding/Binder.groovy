@@ -21,7 +21,6 @@ import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 
 import java.beans.Introspector
-import groovy.transform.Immutable
 import groovy.transform.Canonical
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeEvent
@@ -47,9 +46,12 @@ class Binder {
     }
 }
 
-@Immutable
 class UnbindOfAble {
     String sourcePropertyName
+
+    UnbindOfAble(String sourcePropertyName) {
+        this.sourcePropertyName = sourcePropertyName
+    }
 
     UnbindFromAble of(PresentationModel source) {
         new UnbindFromAble(source, sourcePropertyName)
@@ -101,9 +103,12 @@ class UnbindTargetOfAble {
     }
 }
 
-@Immutable
 class UnbindInfoOfAble {
     String sourcePropertyName
+
+    UnbindInfoOfAble(String sourcePropertyName) {
+        this.sourcePropertyName = sourcePropertyName
+    }
 
     UnbindPojoFromAble of(Object source) {
         new UnbindPojoFromAble(source, sourcePropertyName)
@@ -155,10 +160,14 @@ class UnbindPojoTargetOfAble {
     }
 }
 
-@Immutable
 class BindOfAble {
     String  sourcePropertyName
     Tag     tag
+
+    BindOfAble(String sourcePropertyName, Tag tag) {
+        this.sourcePropertyName = sourcePropertyName
+        this.tag = tag
+    }
 
     BindToAble of(PresentationModel source) {
         new BindToAble(source, sourcePropertyName, tag)
@@ -218,9 +227,12 @@ class BindTargetOfAble {
     }
 }
 
-@Immutable
 class BindPojoOfAble {
     String sourcePropertyName
+
+    BindPojoOfAble(String sourcePropertyName) {
+        this.sourcePropertyName = sourcePropertyName
+    }
 
     BindPojoToAble of(Object source) {
         new BindPojoToAble(source, sourcePropertyName)
@@ -297,7 +309,7 @@ class BindPojoTargetOfAble {
 class BinderPropertyChangeListener implements PropertyChangeListener {
     Object target
     String targetPropertyName
-    Converter converter
+    Converter converter // todo: needs hand-made ctor?
 
     void propertyChange(PropertyChangeEvent evt) {
         target[targetPropertyName] = convert(evt.newValue)

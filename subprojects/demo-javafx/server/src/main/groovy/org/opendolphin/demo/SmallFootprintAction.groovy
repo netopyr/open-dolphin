@@ -2,7 +2,6 @@ package org.opendolphin.demo
 
 import groovy.util.logging.Log
 import groovyx.gpars.dataflow.DataflowQueue
-import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.DataCommand
 import org.opendolphin.core.comm.NamedCommand
 import org.opendolphin.core.comm.ValueChangedCommand

@@ -159,9 +159,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
 
         clientDolphin.send "create", { List<ClientPresentationModel> pms ->
+            println 1
             assert pms.size() == 1
+            println 2
             assert 'attr' == pms.first().getAt("attr").value
+            println 3
             clientDolphin.send "checkNotificationReached", { List<ClientPresentationModel> xxx ->
+                println 4
                 context.assertionsDone() // make sure the assertions are really executed
             }
         }
@@ -334,8 +338,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testPmCreationWithNullValuesAndTagIt() {
         def nullValuePM = clientDolphin.presentationModel("someId", ['a', 'b', 'c'])
         assert null == nullValuePM.c.value
-        clientDolphin.tag(nullValuePM, 'a', Tag.MESSAGE, "the 'a' message")
-        assert nullValuePM.getAt('a', Tag.MESSAGE).value == "the 'a' message"
+        clientDolphin.tag(nullValuePM, 'a', Tag.tagFor.MESSAGE, "the 'a' message")
+        assert nullValuePM.getAt('a', Tag.tagFor.MESSAGE).value == "the 'a' message"
         context.assertionsDone()
     }
 

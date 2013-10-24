@@ -16,11 +16,12 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientDolphin
 
 import static org.opendolphin.binding.JFXBinder.bind
-import static org.opendolphin.core.Tag.MESSAGE
+import static org.opendolphin.core.Tag.tagFor
 import static org.opendolphin.demo.DemoStyle.style
 import static org.opendolphin.demo.MyProps.ATT.*
 import static org.opendolphin.demo.MyProps.CMD.*
@@ -96,7 +97,7 @@ class MultipleAttributeSwitchView {
             bind TITLE       of mold to FX.TEXT  of titleLabel
             bind PURPOSE     of mold to FX.TEXT  of purposeLabel
 
-            bind TITLE, MESSAGE of mold to FX.TEXT of titleMsg
+            bind TITLE, tagFor.MESSAGE of mold to FX.TEXT of titleMsg
 
             primaryStage.show()
         }

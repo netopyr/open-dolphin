@@ -16,7 +16,6 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.logo.DolphinLogo

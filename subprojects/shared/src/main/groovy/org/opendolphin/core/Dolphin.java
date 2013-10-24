@@ -84,16 +84,15 @@ public abstract class Dolphin {
 
     /**
      * For every attribute in the given presentation model, proliferate the attribute value to
-     * all attributes that bear the same qualifier.
+     * all attributes that bear the same qualifier and tag.
      */
     // todo dk: not quite sure whether this should be called automatically in some handle() methods
     public void updateQualifiers(PresentationModel presentationModel) {
-        for (Attribute attribute : presentationModel.getAttributes()) {
-            if (null == attribute.getQualifier()) continue;
-            if (attribute.getTag() != Tag.VALUE) continue;
-            for (Attribute target : getModelStore().findAllAttributesByQualifier(attribute.getQualifier())) {
-                if (target.getTag() != Tag.VALUE) continue;
-                target.setValue(attribute.getValue());
+        for (Attribute source : presentationModel.getAttributes()) {
+            if (null == source.getQualifier()) continue;
+            for (Attribute target : getModelStore().findAllAttributesByQualifier(source.getQualifier())) {
+                if (target.getTag() != target.getTag()) continue;
+                target.setValue(source.getValue());
             }
         }
     }

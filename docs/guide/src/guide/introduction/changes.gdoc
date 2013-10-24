@@ -1,3 +1,7 @@
+h4. Release 0.9
+
+Tags are no longer enums but constants of the Tag class (DOL-95) to allow custom tags.
+
 h4. Release 0.8
 
 25 issues have been addressed in this release where the most important ones come from our

@@ -27,5 +27,5 @@ class AttributeCreatedNotification extends Command {
     String  qualifier
     Tag     tag         = Tag.VALUE
 
-    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName value:$newValue qualifier:$qualifier tag:${tag?.name()}"}
+    String toString() { super.toString() + " attr:$attributeId, pm:$pmId, property:$propertyName value:$newValue qualifier:$qualifier tag:${tag?.name}"}
 }
