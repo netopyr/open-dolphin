@@ -20,6 +20,31 @@ import spock.lang.Specification
 import java.beans.PropertyChangeListener
 
 class BasePresentationModelSpec extends Specification {
+
+    def "finding all tag attributes for a given property name"() {
+        given:
+        def value = new MyAttribute("name",  null, Tag.VALUE)
+        def label = new MyAttribute("name",  null, Tag.LABEL)
+        def other = new MyAttribute("other", null, Tag.VALUE)
+
+
+        when:
+        def fullModel  = new BasePresentationModel("1", [value, label, other])
+        def emptyModel = new BasePresentationModel("2", [])
+
+        then:
+
+        fullModel.findAllAttributesByPropertyName("name")         == [value, label]
+        fullModel.findAllAttributesByPropertyName("other")        == [other]
+        fullModel.findAllAttributesByPropertyName("no-such-name") == []
+        fullModel.findAllAttributesByPropertyName(null)           == []
+
+        emptyModel.findAllAttributesByPropertyName("name")        == []
+
+        value.getPresentationModel().findAllAttributesByPropertyName(value.getPropertyName()) == [value, label]
+
+    }
+
     def "you can not add an attribute to two presentation models"() {
         given:
         def model1 = new BasePresentationModel("1", [])

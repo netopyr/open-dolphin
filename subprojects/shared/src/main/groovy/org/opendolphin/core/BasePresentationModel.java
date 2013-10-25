@@ -136,6 +136,18 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return findAttributeByPropertyNameAndTag(propertyName, Tag.VALUE);
     }
 
+
+    public List<Attribute> findAllAttributesByPropertyName(String propertyName) {
+        List<Attribute> result = new LinkedList<Attribute>();
+        if (null == propertyName) return result;
+        for (Attribute attribute : attributes) {
+            if (propertyName.equals(attribute.getPropertyName())) {
+                result.add(attribute);
+            }
+        }
+        return result;
+    }
+
     public Attribute findAttributeByPropertyNameAndTag(String propertyName, Tag tag) {
         if (null == propertyName) return null;
         if (null == tag) return null;
