@@ -59,6 +59,20 @@ class BasePresentationModelSpec extends Specification {
         thrown IllegalStateException
     }
 
+    def "you can not add two attributes with the same property name and tag"() {
+        given:
+        def model = new BasePresentationModel("1", [])
+        def attribute1 = new MyAttribute("name", null, Tag.VALUE)
+        def attribute2 = new MyAttribute("name", null, Tag.VALUE)
+
+        when:
+        model._internal_addAttribute(attribute1)
+        model._internal_addAttribute(attribute2)
+
+        then:
+        thrown IllegalStateException
+    }
+
 
     def "attributes are accessible as properties"() {
         given:

@@ -62,8 +62,14 @@ public class BasePresentationModel extends AbstractObservable implements Present
 
     public void _internal_addAttribute(Attribute attribute) {
         if (null == attribute || attributes.contains(attribute)) return;
+        if (null != findAttributeByPropertyNameAndTag(attribute.getPropertyName(), attribute.getTag())) {
+            throw  new IllegalStateException("There already is an attribute with property name '"
+                    + attribute.getPropertyName()
+                    + "' and tag '" + attribute.getTag()
+                    + "' in presentation model with id '" + this.id + "'.");
+        }
         if (attribute.getQualifier() != null && this.findAttributeByQualifier(attribute.getQualifier()) != null) {
-            throw  new IllegalArgumentException("There already is an attribute with qualifier '" + attribute.getQualifier()
+            throw  new IllegalStateException("There already is an attribute with qualifier '" + attribute.getQualifier()
                     + "' in presentation model with id '" + this.id + "'.");
         }
         ((BaseAttribute)attribute).setPresentationModel(this);

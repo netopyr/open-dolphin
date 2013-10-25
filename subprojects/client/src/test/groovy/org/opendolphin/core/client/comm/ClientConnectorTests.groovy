@@ -157,14 +157,14 @@ class ClientConnectorTests extends GroovyTestCase {
     }
 
     void testAddTwoAttributesWithSameQualifierToSamePMIsNotAllowed() {
-        shouldFail(IllegalArgumentException) {
+        shouldFail(IllegalStateException) {
             ClientPresentationModel presentationModel  = clientConnector.clientDolphin.presentationModel("1", new ClientAttribute("a", "0", "QUAL"))
             clientConnector.clientDolphin.addAttributeToModel(presentationModel, new ClientAttribute("c", "0", "QUAL"))
         }
     }
 
     void testAddTwoAttributesInConstructorWithSameQualifierToSamePMIsNotAllowed() {
-        shouldFail(IllegalArgumentException) {
+        shouldFail(IllegalStateException) {
             clientConnector.clientDolphin.presentationModel("1", new ClientAttribute("a", "0", "QUAL"), new ClientAttribute("b", "0", "QUAL"))
         }
     }
