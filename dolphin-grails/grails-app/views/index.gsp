@@ -87,7 +87,7 @@
 			<ul>
 				<li>App version: <g:meta name="app.version"/></li>
 				<li>Grails version: <g:meta name="app.grails.version"/></li>
-				<li>Groovy version: ${org.codehaus.groovy.runtime.InvokerHelper.getVersion()}</li>
+				<li>Groovy version: ${GroovySystem.version} </li>
 				<li>JVM version: ${System.getProperty('java.version')}</li>
 				<li>Reloading active: ${grails.util.Environment.reloadingAgentEnabled}</li>
 				<li>Controllers: ${grailsApplication.controllerClasses.size()}</li>
@@ -115,6 +115,14 @@
 					<g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
 						<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
 					</g:each>
+				</ul>
+        <h2>Dolphin.js test pages:</h2>
+				<ul>
+						<li class="controller"><g:link uri="/manyEvents?times=10&sleep=20"> Many events starter</g:link></li>
+						<li class="controller"><g:link uri="/index.html">     index.html</g:link></li>
+						<li class="controller"><g:link uri="/push.html">      push.html</g:link></li>
+						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
+						<li class="controller"><g:link uri="/test.html">      test.html</g:link></li>
 				</ul>
 			</div>
 		</div>
