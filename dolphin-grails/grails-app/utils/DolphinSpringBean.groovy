@@ -5,6 +5,7 @@ import org.opendolphin.demo.DemoTitlePurposeAction
 import org.opendolphin.demo.ManyEventsAction
 import org.opendolphin.demo.PerformanceAction
 import org.opendolphin.demo.SharedTachoAction
+import org.opendolphin.demo.TutorialAction
 import org.opendolphin.demo.VehiclePushActions
 import org.opendolphin.demo.SmallFootprintAction
 import org.opendolphin.demo.crud.CrudActions
@@ -41,6 +42,9 @@ class DolphinSpringBean {
         dolphin.register(new SharedTachoAction().subscribedTo(tachoBus))
         dolphin.register(new ManyEventsAction().subscribedTo(manyEventsBus))
         dolphin.register(new SmallFootprintAction().subscribedTo(smallFootprintBus))
+
+        // for the dolphin.js demos
+        dolphin.register(new TutorialAction())
 
     }
 }
