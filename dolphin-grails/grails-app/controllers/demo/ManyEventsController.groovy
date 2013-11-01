@@ -12,7 +12,7 @@ class ManyEventsController {
         soMany.times {
             for (speed in 1..100) {
                 manyEventsBus.publish(null, [speed, color])
-                sleep (params.sleep.toInteger() ?: 20)
+                sleep (params.sleep?.toInteger() ?: 20)
             }
             color++
         }
