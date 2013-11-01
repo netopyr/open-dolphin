@@ -9,6 +9,9 @@ class DolphinController {
 
     def index() {
         def requestJson = request.inputStream.text
+        if (! requestJson) {
+            requestJson = request.parameters.keySet().toList()[0] // when sent from browser the input comes as the first param key
+        }
         log.debug "received json: $requestJson"
         def commands = serverConnector.codec.decode(requestJson)
         def results = new LinkedList()
