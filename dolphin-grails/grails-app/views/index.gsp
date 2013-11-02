@@ -119,7 +119,7 @@
         <h2>Dolphin.js test pages:</h2>
 				<ul>
 						<li class="controller"><g:link uri="/manyEvents?times=10&sleep=20"> Many events starter</g:link></li>
-						<li class="controller"><g:link uri="/index.html">     index.html</g:link></li>
+						<li class="controller"><g:link uri="/djs/simple">     simple page</g:link></li>
 						<li class="controller"><g:link uri="/push.html">      push.html</g:link></li>
 						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
 						<li class="controller"><g:link uri="/test.html">      test.html</g:link></li>

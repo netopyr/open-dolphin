@@ -15,7 +15,7 @@ class DolphinController {
         log.debug "received json: $requestJson"
         def commands = serverConnector.codec.decode(requestJson)
         def results = new LinkedList()
-        commands.each {
+        commands?.each {
             log.debug "processing $it"
             results.addAll serverConnector.receive(it)
         }

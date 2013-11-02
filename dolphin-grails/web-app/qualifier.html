@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Dolphin.js Tutorial</title>
+        <script src="libs/require.js"></script>
+        <script src="config.js"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="#">Dolphin.js</a>
+
+                    <ul class="nav">
+                        <li class="active"><a href="#">Step 1</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <h1>Dolphin.js Tutorial</h1>
+
+            <fieldset>
+                <legend>Step 2</legend>
+                <span class="help-block">Type something in the input text to test the binding with the label.</span>
+                <input id="tempInput" type="text" placeholder="Temperature..."/>
+                <input id="humidityInput" type="text" placeholder="Humidity..."/>
+                <button id="addButton" class="btn btn-primary">Add</button>
+                <div id="list"></div>
+            </fieldset>
+
+            <pre id="showCode" class="prettyprint" data-script-id="dolphinCode">
+                <!-- The code snippet will be shown here -->
+            </pre>
+        </div>
+
+        <script id="dolphinCode">
+            require([
+                'Dolphin',
+                'comm/ClientAttribute'
+            ], function (Dolphin, ClientAttribute) {
+
+                const serverUrl = "http://localhost:8080/myFirstDolphin/tutorial/";
+                const actionId = "step_7.TutorialConstants.LogOnServer";
+
+                var dolphin = new Dolphin(serverUrl);
+
+                var tempAttr = new ClientAttribute("tempId");
+                var humAttr = new ClientAttribute("humId");
+                console.log("INIT PM");
+                dolphin.getClientDolphin().presentationModel(
+                        "weatherMold",
+                        "weather",
+                        tempAttr, humAttr
+                );
+
+                var tempInput = document.getElementById("tempInput");
+                var humidityInput = document.getElementById("humidityInput");
+
+                tempInput.addEventListener("input", function () {
+                    var value = tempInput.value;
+                    tempAttr.setValue(value);
+                });
+
+                tempAttr.on("valueChange", function(data) {
+                    tempInput.value = data.newValue;
+                });
+
+                humidityInput.addEventListener("input", function () {
+                    var value = humidityInput.value;
+                    humAttr.setValue(value);
+                });
+
+                humAttr.on("valueChange", function(data) {
+                    humidityInput.value = data.newValue;
+                });
+
+
+                var addButton = document.getElementById("addButton");
+                var list = document.getElementById("list");
+                addButton.addEventListener("click", function () {
+                    dolphin.getClientDolphin().send("step_7.TutorialConstants.add", function (models) {
+                        console.log("NEW models", models);
+                        models.forEach(function (model) {
+                            var element = document.createElement("div");
+                            element.id = model.id;
+                            var myTempAttr = model.attributes[0];
+                            var myHumAttr = model.attributes[1];
+                            element.innerHTML = model.presentationModelType + ": " + myTempAttr.value + "/" + myHumAttr.value;
+                            element.addEventListener("click", function() {
+                                var tempValue = myTempAttr.value;
+                                tempAttr.qualifier = myTempAttr.qualifier;
+                                tempAttr.setValue(tempValue);
+
+                                var humValue = myHumAttr.value;
+                                humAttr.qualifier = myHumAttr.qualifier;
+                                humAttr.setValue(humValue);
+                            });
+
+                            myTempAttr.on("valueChange", function(data) {
+                                element.innerHTML = model.presentationModelType + ": " + myTempAttr.value + "/" + myHumAttr.value;
+                            });
+
+                            myHumAttr.on("valueChange", function(data) {
+                                element.innerHTML = model.presentationModelType + ": " + myTempAttr.value + "/" + myHumAttr.value;
+                            });
+
+                            list.appendChild(element);
+                        })
+                    });
+                });
+
+            });
+        </script>
+
+        <script>
+            var showCode = document.getElementById("showCode");
+            var scriptId = showCode.getAttribute("data-script-id");
+            var script = document.getElementById(scriptId);
+            showCode.innerHTML = script.innerHTML;
+        </script>
+        <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sunburst"></script>
+    </body>
+</html>

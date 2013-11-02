@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Dolphin.js Tutorial</title>
+        <script src="libs/require.js"></script>
+        <script src="config.js"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="#">Dolphin.js</a>
+
+                    <ul class="nav">
+                        <li class="active"><a href="#">Step 1</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <h1>Dolphin.js Push</h1>
+
+            <!--<form>-->
+                <fieldset>
+                    <p>Speed: <span id="speedLabel"></span></p>
+                    <p>Color: <span id="colorLabel"></span></p>
+                    <button id="startButton" class="btn btn-primary">Start</button>
+                </fieldset>
+            <!--</form>-->
+
+            <canvas height="200" width="200" id="gauge"></canvas>
+        </div>
+
+        <script src="libs/steelseries-min.js"></script>
+        <script src="libs/tween-min.js"></script>
+        <script>
+            var sections = [
+                steelseries.Section(0, 25, 'rgba(0, 0, 220, 0.3)'),
+                steelseries.Section(25, 50, 'rgba(0, 220, 0, 0.3)'),
+                steelseries.Section(50, 75, 'rgba(220, 220, 0, 0.3)')
+            ];
+
+            var areas = [steelseries.Section(75, 100, 'rgba(220, 0, 0, 0.3)')];
+
+            document.gauge = new steelseries.Radial('gauge', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sections,
+                area: areas,
+                titleString: "Title",
+                unitString: "Unit",
+                threshold: 50,
+                lcdVisible: true
+            });
+        </script>
+
+        <script>
+            require([
+                'Dolphin',
+                'comm/ClientAttribute'
+            ], function (Dolphin, ClientAttribute) {
+
+                const serverUrl = "http://10.0.1.39:8080/dolphin-grails/dolphin";
+                const pmId = "ManyEvents";
+
+                var dolphin = new Dolphin(serverUrl);
+
+                var speedAttr = new ClientAttribute("speed");
+                speedAttr.setValue("0");
+                speedAttr.qualifier = "test";
+                var colorAttr = new ClientAttribute("color");
+                colorAttr.setValue("0");
+                colorAttr.qualifier = "test";
+
+                console.log("INIT PM");
+                dolphin.getClientDolphin().presentationModel(
+                        pmId,
+                        undefined,
+                        speedAttr, colorAttr
+                );
+
+                var speedLabel = document.getElementById("speedLabel");
+                var colorLabel = document.getElementById("colorLabel");
+                var startButton = document.getElementById("startButton");
+
+                startButton.addEventListener("click", function () {
+                    speedAttr.setValue(50);
+//                    function longPoll() {
+//                        dolphin.getClientDolphin().send("many.events", longPoll);
+//                    }
+//                    longPoll();
+                });
+
+                speedAttr.on("valueChange", function (data) {
+                    speedLabel.innerHTML = data.newValue;
+//                    document.gauge.setValue(Number(data.newValue));
+                });
+
+                colorAttr.on("valueChange", function (data) {
+                    colorLabel.innerHTML = data.newValue;
+                });
+
+            });
+        </script>
+    </body>
+</html>

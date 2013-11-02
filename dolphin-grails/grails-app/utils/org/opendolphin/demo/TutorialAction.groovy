@@ -14,17 +14,22 @@ import java.util.List
 
 public class TutorialAction extends DolphinServerAction {
 
+    public static final String CMD_ECHO     = "org.opendolphin.demo.Tutorial.echo"
+    public static final String PM_ID_MODEL  = 'org.opendolphin.demo.Tutorial.modelId'
+    public static final String ATTR_ID      = "attrId"
+    public static final String CMD_ADD      = "org.opendolphin.demo.Tutorial.add"
+
     private int count = 0
 
     public void registerIn(ActionRegistry actionRegistry) {
-        actionRegistry.register("org.opendolphin.demo.Tutorial.echo", new CommandHandler<Command>() {
+        actionRegistry.register(CMD_ECHO, new CommandHandler<Command>() {
             public void handleCommand(Command command, List<Command> response) {
 
                 println getServerDolphin().listPresentationModelIds()
 
-                final ServerPresentationModel presentationModel = getServerDolphin().getAt('org.opendolphin.demo.Tutorial.modelId')
+                final ServerPresentationModel presentationModel = getServerDolphin().getAt(PM_ID_MODEL)
                 println presentationModel
-                final ServerAttribute attribute = presentationModel["attrId"]
+                final ServerAttribute attribute = presentationModel[ATTR_ID]
                 println attribute
 
                 changeValue attribute, "Server: ${attribute.value}"
@@ -37,7 +42,7 @@ public class TutorialAction extends DolphinServerAction {
             }
         })
 
-        actionRegistry.register("org.opendolphin.demo.Tutorial.add", new CommandHandler<Command>() {
+        actionRegistry.register(CMD_ADD, new CommandHandler<Command>() {
             public void handleCommand(Command command, List<Command> response) {
                 count++
                 presentationModel("weather.$count", "weather", new DTO(

@@ -63,6 +63,14 @@ grails.hibernate.cache.queries = true
 environments {
     development {
         //grails.logging.jul.usebridge = true
+
+
+        // This is needed for external clients like smartphones and tablets to connect.
+        // You can find the ip with ifconfig or http://www.whatismyip.com.
+
+//        externalDolphinUrl = "http://localhost:8080/dolphin-grails/dolphin/"
+//        externalDolphinUrl = "http://10.0.1.3:8080/dolphin-grails/dolphin/"
+
     }
     production {
         //grails.logging.jul.usebridge = true
