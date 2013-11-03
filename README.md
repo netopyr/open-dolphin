@@ -14,7 +14,8 @@ Twitter: @OpenDolphin
 
 Prerequisites
 -------------
-If you use Java 7u6 or later, you are all set.
+If you use Java 7u6 or a later update, you are all set.
+Building with Java 8 is currently not supported.
 Otherwise, JAVAFX_HOME must be set to a 2.1.0 version. (Version 2.2 also works fine.)
 
 Running an initial "Push" demo
