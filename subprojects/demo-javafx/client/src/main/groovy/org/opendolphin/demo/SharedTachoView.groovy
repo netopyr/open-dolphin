@@ -16,6 +16,8 @@
 
 package org.opendolphin.demo
 
+import jfxtras.labs.scene.control.gauge.ColorDef
+import jfxtras.labs.scene.control.gauge.Gauge
 import org.opendolphin.core.client.ClientDolphin
 import jfxtras.labs.scene.control.gauge.Radial
 import jfxtras.labs.scene.control.gauge.StyleModel
@@ -41,7 +43,7 @@ class SharedTachoView {
 
         start { app ->
             def gauge = new Radial(
-                styleModel: new StyleModel(frameDesign: CHROME),
+                styleModel: new StyleModel(frameDesign: CHROME, pointerType: Gauge.PointerType.TYPE4),
                 title: "km/h",
                 prefWidth: 250, prefHeight: 250,
                 valueAnimationEnabled: false,
