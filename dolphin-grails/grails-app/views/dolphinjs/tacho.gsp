@@ -4,7 +4,7 @@
   author: dierk.koenig
 --%>
 
-<%@ page import="org.opendolphin.demo.crud.PortfolioConstants; org.opendolphin.demo.TutorialAction" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.opendolphin.demo.TutorialAction" contentType="text/html;charset=UTF-8" %>
 
 <%
   dolphinUrl      = createLink(controller: 'dolphin', absolute: true) - 'index'
@@ -15,7 +15,7 @@
   pmId            = "Train"
   showCode        = "showCode"
   dolphinCode     = "dolphinCode"
-
+  range           = "range"
 %>
 
 <!DOCTYPE html>
@@ -47,8 +47,9 @@
     <fieldset>
       <legend>Step 2 - Instant updates across channels</legend>
       <span class="help-block">
-        Change the velocity in a JavaFX view and see it updated instantly<br>
-        across various channel like in this web page on your desktop or mobile device.
+        Change the velocity in a JavaFX view, on a mobile client with device orientation, or <br>
+        through <a href="velocity">the slider in a second browser</a> and see it updated instantly<br>
+        across various channels like in this web page on your desktop or mobile device.
       </span>
 
       <canvas height="200" width="200" id="${gauge}"></canvas>
