@@ -8,3 +8,5 @@ dolphin-grails/.idea
 dist
 out
 gradle-app.setting
+*.js.map
+
