@@ -1,4 +1,5 @@
 import cpm = require("../../js/dolphin/ClientPresentationModel")
+import bus = require("../../js/dolphin/EventBus")
 
 export module dolphin {
 
@@ -7,22 +8,12 @@ export module dolphin {
         newValue;
     }
 
-    class EventBus<EventType> {
-        private eventHandlers = [];
-        onEvent(eventHandler: (event : EventType) => void ) {
-            this.eventHandlers.push(eventHandler);
-        }
-        trigger(event : EventType ) {
-            this.eventHandlers.forEach( handle => handle(event));
-        }
-    }
-
     var clientAttributeInstanceCount = 0;
     export class ClientAttribute {
         id                : number;
         value             : any;
         presentationModel : cpm.dolphin.ClientPresentationModel;
-        private valueChangeBus : EventBus<ValueChangedEvent>;
+        private valueChangeBus : bus.dolphin.EventBus<ValueChangedEvent>;
 
         constructor(
             public propertyName  : string,
@@ -30,14 +21,14 @@ export module dolphin {
             public tag           : string = "VALUE"
             ) {
             this.id = clientAttributeInstanceCount++;
-            this.valueChangeBus = new EventBus;
+            this.valueChangeBus = new bus.dolphin.EventBus;
         }
 
         setValue(newValue) {
             if (this.value === newValue) return;
             var oldValue = this.value;
-            this.value = newValue
-            this.valueChangeBus.trigger( { 'oldValue': oldValue, 'newValue': newValue } )
+            this.value = newValue;
+            this.valueChangeBus.trigger( { 'oldValue': oldValue, 'newValue': newValue } );
         }
 
         // todo:  immediate value update on registration?

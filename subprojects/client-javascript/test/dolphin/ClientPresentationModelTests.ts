@@ -30,5 +30,17 @@ export module dolphin {
             this.areIdentical(pm1.attributes.length, 1);
             this.areIdentical(pm1.attributes[0], firstAttribute);
         }
+
+        invalidateClientPresentationModelEvent(){
+            var pm1 = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
+            var clientAttribute =new ca.dolphin.ClientAttribute("prop","qual");
+            pm1.addAttribute(clientAttribute);
+            var source;
+            pm1.onInvalidated((event:cpm.dolphin.InvalidationEvent) => {
+                source=event.source;
+            });
+            clientAttribute.setValue("newValue");
+            this.areIdentical(pm1,source);
+        }
     }
 }
