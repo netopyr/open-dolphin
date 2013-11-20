@@ -89,12 +89,14 @@ class AttributeTagView {
             }
 
             // binding meta properties
-            model[NAME].addPropertyChangeListener('dirty',
-                { putStyle(sgb.nameLabel, it.newValue, 'dirty') } as PropertyChangeListener)
-            model[LASTNAME].addPropertyChangeListener('dirty',
-                { putStyle(sgb.lastnameLabel, it.newValue, 'dirty') } as PropertyChangeListener)
-            bindInfo DIRTY_PROPERTY of model           to FX.TITLE        of primaryStage , { it ? '** DIRTY **': '' }
-            bindInfo DIRTY_PROPERTY of model           to FX.DISABLE     of reset        , { !it }
+            model[NAME].addPropertyChangeListener        DIRTY_PROPERTY, {
+                putStyle sgb.nameLabel,     it.newValue, DIRTY_PROPERTY
+            }
+            model[LASTNAME].addPropertyChangeListener    DIRTY_PROPERTY, {
+                putStyle sgb.lastnameLabel, it.newValue, DIRTY_PROPERTY
+            }
+            bindInfo DIRTY_PROPERTY of model to FX.TITLE    of primaryStage , { it ? '** DIRTY **': '' }
+            bindInfo DIRTY_PROPERTY of model to FX.DISABLE  of reset        , { !it }
 
             primaryStage.show()
         }
