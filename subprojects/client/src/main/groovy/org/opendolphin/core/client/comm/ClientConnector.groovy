@@ -16,7 +16,6 @@
 
 package org.opendolphin.core.client.comm
 
-import com.sun.org.apache.bcel.internal.generic.NEW
 import groovyx.gpars.dataflow.KanbanFlow
 import groovyx.gpars.dataflow.KanbanTray
 import groovyx.gpars.dataflow.ProcessingNode
@@ -32,8 +31,6 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 import org.codehaus.groovy.runtime.StackTraceUtils
 
-import java.beans.PropertyChangeEvent
-import java.beans.PropertyChangeListener
 import java.util.logging.Level
 
 @Log
@@ -73,17 +70,18 @@ abstract class ClientConnector {
             }
 
             def answer = null
-            doExceptionSafe(
-                { answer = transmit(commands) },
-                { trayOut << [response: answer, request: commandsAndHandlers] })
+
+            Runnable transmitter = { answer = transmit(commands) }
+            Runnable postWorker  = { trayOut << [response: answer, request: commandsAndHandlers] }
+            doExceptionSafe(transmitter, postWorker)
         }
 
         def worker = ProcessingNode.node { KanbanTray trayIn ->
             Map got = trayIn.take()
             if (got.response == null) return // we cannot ignore empty responses. They may have an onFinished handler
-            insideUiThread {
-                processResults(got.response, got.request)
-            }
+
+            Runnable postWork = { processResults(got.response, got.request) }
+            doSafelyInsideUiThread postWork
         }
 
         KanbanFlow flow = new KanbanFlow()
@@ -146,15 +144,16 @@ abstract class ClientConnector {
     }
 
     @CompileStatic
-    void insideUiThread(Runnable processing, Runnable atLeast = null) {
-        doExceptionSafe ({
+    void doSafelyInsideUiThread(Runnable whatToDo) {
+        Runnable doInside = {
             if (uiThreadHandler) {
-                uiThreadHandler.executeInsideUiThread(processing)
+                uiThreadHandler.executeInsideUiThread whatToDo
             } else {
-                println("please provide howToProcessInsideUI handler")
-                processing.run()
+                println "please provide howToProcessInsideUI handler"
+                whatToDo.run()
             }
-        }, atLeast)
+        }
+        doExceptionSafe doInside
     }
 
     def handle(Command serverCommand) {

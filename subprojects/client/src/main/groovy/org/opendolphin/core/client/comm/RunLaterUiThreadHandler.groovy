@@ -9,6 +9,6 @@ class RunLaterUiThreadHandler implements UiThreadHandler{
 
     @Override
     void executeInsideUiThread(Runnable runnable) {
-        runner << runnable
+        runner << { runnable.run() }
     }
 }

@@ -92,8 +92,10 @@ public class ClientDolphin extends Dolphin {
     /** both java- and groovy-friendly convenience method to send an empty command, which will have no
      * presentation models nor data in the callback */
     void sync(Runnable runnable) {
+        println "in sync"
         clientConnector.send(new EmptyNotification(), new OnFinishedHandlerAdapter() {
             void onFinished(List<ClientPresentationModel> presentationModels) {
+               println "about to run the runnable"
                runnable.run()
            }
         })
