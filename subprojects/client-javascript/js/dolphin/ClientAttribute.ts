@@ -12,7 +12,7 @@ export module dolphin {
     export class ClientAttribute {
         id                : number;
         value             : any;
-        presentationModel : cpm.dolphin.ClientPresentationModel;
+       // presentationModel : cpm.dolphin.ClientPresentationModel;
         private valueChangeBus : bus.dolphin.EventBus<ValueChangedEvent>;
 
         constructor(
@@ -21,7 +21,7 @@ export module dolphin {
             public tag           : string = "VALUE"
             ) {
             this.id = clientAttributeInstanceCount++;
-            this.valueChangeBus = new bus.dolphin.EventBus;
+            this.valueChangeBus = new bus.dolphin.EventBus();
         }
 
         setValue(newValue) {

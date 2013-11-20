@@ -13,7 +13,9 @@ export module dolphin {
 
         valueListenersAreCalled() {
             var attr = new ca.dolphin.ClientAttribute("prop", "qual");
+
             attr.setValue(0);
+
             var spoofedOld = -1;
             var spoofedNew = -1;
             attr.onValueChange( (evt: ca.dolphin.ValueChangedEvent) => {
