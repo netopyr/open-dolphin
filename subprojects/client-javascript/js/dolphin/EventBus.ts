@@ -6,7 +6,7 @@ export module dolphin {
             this.eventHandlers.push(eventHandler);
         }
         trigger(event : T ) {
-            this.eventHandlers.forEach( handle => handle(event));
+            this.eventHandlers.forEach(handle => handle(event));
         }
 
     }
