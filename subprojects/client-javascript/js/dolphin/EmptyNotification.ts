@@ -4,7 +4,6 @@ export module dolphin {
     export class EmptyNotification extends cmd.dolphin.Command{
 
         className:string;
-
         constructor(){
             super();
             this.id = "Empty";

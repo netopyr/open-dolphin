@@ -7,7 +7,7 @@ import createPMCmd     = require("../../js/dolphin/CreatePresentationModelComman
 export module dolphin {
     export class CreatePresentationModelCommandTests extends tsUnit.tsUnit.TestClass {
 
-        CreatePresentationModelCommandWithGivenParameter(){
+        createPresentationModelCommandWithGivenParameter(){
             var pm = new cpm.dolphin.ClientPresentationModel("MyId","MyType");
             var clientAttribute1 =new ca.dolphin.ClientAttribute("prop1","qual1");
             var clientAttribute2 =new ca.dolphin.ClientAttribute("prop2","qual2");
