@@ -1,10 +1,9 @@
-import pm = require("../../js/dolphin/ClientPresentationModel")
-import cd = require("../../js/dolphin/ClientDolphin")
-import cc = require("../../js/dolphin/HttpClientConnector")
-import createPMCmd     = require("../../js/dolphin/CreatePresentationModelCommand")
-import ca = require("../../js/dolphin/ClientAttribute");
-import valueChangedCmd     = require("../../js/dolphin/ValueChangedCommand")
-import attr     = require("../../js/dolphin/Attribute")
+import pm               = require("../../js/dolphin/ClientPresentationModel")
+import cd               = require("../../js/dolphin/ClientDolphin")
+import cc               = require("../../js/dolphin/HttpClientConnector")
+import createPMCmd      = require("../../js/dolphin/CreatePresentationModelCommand")
+import ca               = require("../../js/dolphin/ClientAttribute");
+import valueChangedCmd  = require("../../js/dolphin/ValueChangedCommand")
 
 export module dolphin {
 
