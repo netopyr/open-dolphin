@@ -1,5 +1,5 @@
 import namedCmd = require("../../js/dolphin/NamedCommand")
-import emptyNotification = require("../../js/dolphin/EmptyNotification")
+import emptyNot= require("../../js/dolphin/EmptyNotification")
 import pm = require("../../js/dolphin/ClientPresentationModel")
 import cms = require("../../js/dolphin/ClientModelStore")
 import cc = require("../../js/dolphin/HttpClientConnector")
@@ -27,20 +27,20 @@ export module dolphin {
         }
 
         send(commandName:string, onFinished:any){
-            //this.clientConnector.send(new namedCmd.dolphin.NamedCommand(commandName),onFinished);
+            this.clientConnector.send(new namedCmd.dolphin.NamedCommand(commandName),onFinished);
         }
         sendEmpty(onFinished:any){
-
+            this.clientConnector.send(new emptyNot.dolphin.EmptyNotification(),onFinished);
         }
 
-        presentationModel=(id:string , type:string, ...attributes:ca.dolphin.ClientAttribute[]) => {
-           var model:pm.dolphin.ClientPresentationModel = new pm.dolphin.ClientPresentationModel(id,type);
+        presentationModel(id:string , type:string, ...attributes:ca.dolphin.ClientAttribute[]) {
+            var model:pm.dolphin.ClientPresentationModel = new pm.dolphin.ClientPresentationModel(id,type);
             if(attributes && attributes.length > 0){
                 attributes.forEach( (attribute :ca.dolphin.ClientAttribute) => {
                     model.addAttribute(attribute);
                 });
             }
-           // this.clientModelStore.add(model);
+            this.clientModelStore.add(model);
             return model;
         }
     }

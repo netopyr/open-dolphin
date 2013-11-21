@@ -7,13 +7,13 @@ export module dolphin {
         oldValue;
         newValue;
     }
-
     var clientAttributeInstanceCount = 0;
     export class ClientAttribute {
         id                : number;
         value             : any;
-       // presentationModel : cpm.dolphin.ClientPresentationModel;
+        // presentationModel : cpm.dolphin.ClientPresentationModel;
         private valueChangeBus : bus.dolphin.EventBus<ValueChangedEvent>;
+        private qualifierChangeBus : bus.dolphin.EventBus<ValueChangedEvent>;
 
         constructor(
             public propertyName  : string,
@@ -34,6 +34,9 @@ export module dolphin {
         // todo:  immediate value update on registration?
         onValueChange(eventHandler: (event : ValueChangedEvent) => void ){
             this.valueChangeBus.onEvent(eventHandler);
+        }
+        onQualifierChange(eventHandler: (event : ValueChangedEvent) => void ){
+            this.qualifierChangeBus.onEvent(eventHandler);
         }
     }
 }

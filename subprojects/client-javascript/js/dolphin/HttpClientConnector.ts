@@ -6,8 +6,10 @@ export module dolphin {
 
     export class HttpClientConnector {
 
-        send(command:cmd.dolphin.Command, onFinished:any){
+        //declare send(command:any)
+        send(command:any, onFinished:any){
 
         }
+
     }
 }
