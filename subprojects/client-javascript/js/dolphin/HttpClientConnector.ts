@@ -2,19 +2,21 @@ import cmd = require("../../js/dolphin/Command")
 import cc  = require("../../js/dolphin/ClientConnector")
 export module dolphin {
 
-    export class HttpTransmitter implements cc.dolphin.Transmitter {
+    export class HttpClientConnector extends cc.dolphin.ClientConnector {
 
         http = new XMLHttpRequest();
 
         transmit(commands:cmd.dolphin.Command[], onDone: (result: cmd.dolphin.Command[]) => void  ) : void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                alert("could not fetch http://localhost:8080/dolphin-grails/moreTime/index " + evt.message);
+                alert(evt.message);
             }
 
             this.http.onloadend = (evt:ProgressEvent) => {
-                console.log("transmission ended")
-                onDone( [] );
+
+                alert("this alert should only come ones, but it sometimes comes twice! ")
+
+                //onDone( [] ); // commented such we are not even progressing!
             }
 
             this.http.open('POST', 'http://localhost:8080/dolphin-grails/moreTime/index', true);
