@@ -13,10 +13,19 @@ export module dolphin {
         handler : OnFinishedAdapter;
     }
 
+    export interface Transmitter {
+        transmit(commands:cmd.dolphin.Command[], onDone: (result: cmd.dolphin.Command[]) => void ) : void ;
+    }
+
     export class ClientConnector {
 
         private commandQueue : CommandAndHandler[] = [];
         private currentlySending : boolean = false;
+        private transmitter: Transmitter;
+
+        constructor(transmitter:Transmitter) {
+            this.transmitter = transmitter;
+        }
 
         send(command: cmd.dolphin.Command, onFinished: OnFinishedAdapter) {
             this.commandQueue.push( {command: command, handler: onFinished } );
@@ -25,20 +34,20 @@ export module dolphin {
         }
 
         private doSendNext() {
-            if (this.commandQueue.length < 1) return;
+            if (this.commandQueue.length < 1) {
+                this.currentlySending = false;
+                return;
+            }
             this.currentlySending = true;
             var cmdAndHandler = this.commandQueue.shift();
-            this.transmit([cmdAndHandler.command], (result: cmd.dolphin.Command[]) => {
+            this.transmitter.transmit([cmdAndHandler.command], (result: cmd.dolphin.Command[]) => {
+                console.log("in onDone ")
+
                 // handle the result
-                // call the next in line
-                this.doSendNext();
-                this.currentlySending = false;
+
+                this.doSendNext();  // recursive call: fetch the next in line
             });
         }
 
-        // abstract
-        transmit(commands:cmd.dolphin.Command[], onDone: (result: cmd.dolphin.Command[]) => void ) : void {
-            throw Error;// to be implemented in subclass
-        }
     }
 }

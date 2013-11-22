@@ -2,7 +2,7 @@ import namedCmd = require("../../js/dolphin/NamedCommand")
 import emptyNot= require("../../js/dolphin/EmptyNotification")
 import pm = require("../../js/dolphin/ClientPresentationModel")
 import cms = require("../../js/dolphin/ClientModelStore")
-import cc = require("../../js/dolphin/HttpClientConnector")
+import cc = require("../../js/dolphin/ClientConnector")
 import ca = require("../../js/dolphin/ClientAttribute");
 
 export module dolphin {
@@ -10,7 +10,7 @@ export module dolphin {
     export class ClientDolphin{
 
         private clientModelStore:cms.dolphin.ClientModelStore;
-        private clientConnector:cc.dolphin.HttpClientConnector;
+        private clientConnector:cc.dolphin.ClientConnector;
 
         setClientModelStore(clientModelStore:cms.dolphin.ClientModelStore){
             this.clientModelStore = clientModelStore;
@@ -19,10 +19,10 @@ export module dolphin {
             return this.clientModelStore;
         }
 
-        setClientConnector(clientConnector:cc.dolphin.HttpClientConnector){
+        setClientConnector(clientConnector:cc.dolphin.ClientConnector){
             this.clientConnector = clientConnector;
         }
-        getClientConnector(){
+        getClientConnector() : cc.dolphin.ClientConnector {
             return this.clientConnector;
         }
 

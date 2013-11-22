@@ -1,6 +1,6 @@
 import pm               = require("../../js/dolphin/ClientPresentationModel")
 import cd               = require("../../js/dolphin/ClientDolphin")
-import cc               = require("../../js/dolphin/HttpClientConnector")
+import cc               = require("../../js/dolphin/ClientConnector")
 import createPMCmd      = require("../../js/dolphin/CreatePresentationModelCommand")
 import ca               = require("../../js/dolphin/ClientAttribute");
 import valueChangedCmd  = require("../../js/dolphin/ValueChangedCommand")
@@ -21,7 +21,7 @@ export module dolphin {
         }
 
         registerModel(model:pm.dolphin.ClientPresentationModel){
-            var connector:cc.dolphin.HttpClientConnector = this.clientDolphin.getClientConnector();
+            var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();
             var createPMCommand:createPMCmd.dolphin.CreatePresentationModelCommand = new createPMCmd.dolphin.CreatePresentationModelCommand(model);
             console.log("about to send create presentation model command", createPMCommand);
             connector.send(createPMCommand,null);

@@ -45,7 +45,6 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.open-dolphin/dolphin-demo-javafx-server/jars/dolphin-demo-javafx-server-1.0-SNAPSHOT.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.servlet/servlet-api/jars/servlet-api-2.5.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.open-dolphin/dolphin-server/jars/dolphin-server-1.0-SNAPSHOT.jar!/" />
-          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.codehaus.groovy/groovy-all/jars/groovy-all-2.1.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.open-dolphin/dolphin-shared/jars/dolphin-shared-1.0-SNAPSHOT.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/net.sf.opencsv/opencsv/jars/opencsv-2.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/com.xlson.groovycsv/groovycsv/jars/groovycsv-1.0.jar!/" />
@@ -131,6 +130,10 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/com.googlecode.json-simple/json-simple/jars/json-simple-1.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/com.google.protobuf/protobuf-java/jars/protobuf-java-2.4.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.springframework.uaa/org.springframework.uaa.client/bundles/org.springframework.uaa.client-1.0.1.RELEASE.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.codehaus.groovy/groovy-all/jars/groovy-all-2.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.springframework.security/spring-security-web/jars/spring-security-web-3.0.7.RELEASE.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/commons-logging/commons-logging/jars/commons-logging-1.1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.grails/ivy-cache/org.springframework.security/spring-security-core/jars/spring-security-core-3.0.7.RELEASE.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
