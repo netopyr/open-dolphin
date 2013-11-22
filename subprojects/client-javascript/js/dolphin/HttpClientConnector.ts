@@ -1,13 +1,14 @@
 import cmd = require("../../js/dolphin/Command")
-import emptyNotification = require("../../js/dolphin/EmptyNotification")
-import pm = require("../../js/dolphin/ClientPresentationModel")
-import cms = require("../../js/dolphin/ClientModelStore")
+import cc  = require("../../js/dolphin/ClientConnector")
 export module dolphin {
 
-    export class HttpClientConnector {
+    export class HttpClientConnector extends cc.dolphin.ClientConnector {
 
-        //declare send(command:any)
-        send(command:any, onFinished:any){
+        transmit(commands:cmd.dolphin.Command[], onDone: (result: cmd.dolphin.Command[]) => void  ) : void {
+            // do the XmlHttpRequest here
+
+
+            // connect( ..., { ..., onDone(result) }, {...., onDone( null ) })
 
         }
 

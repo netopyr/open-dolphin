@@ -10,9 +10,9 @@ export module dolphin {
             super()
         }
 
-        transmit(commands:cmd.dolphin.Command[]) : cmd.dolphin.Command[] {
+        transmit(commands:cmd.dolphin.Command[], onDone: (result: cmd.dolphin.Command[]) => void ) : void {
             this.clientCommands = commands;
-            return this.serverCommands;
+            onDone(this.serverCommands);
         }
     }
 
@@ -26,6 +26,19 @@ export module dolphin {
 
             this.areIdentical( clientConnector.clientCommands.length, 1)
             this.areIdentical( clientConnector.clientCommands[0], singleCommand)
+        }
+
+        sendingMultipleCommands() {
+            var singleCommand   = new cmd.dolphin.Command();
+            var lastCommand   = new cmd.dolphin.Command();
+            var clientConnector = new TestClientConnector(undefined, undefined)
+
+            clientConnector.send(singleCommand, undefined)
+            clientConnector.send(singleCommand, undefined)
+            clientConnector.send(lastCommand, undefined)
+
+            this.areIdentical( clientConnector.clientCommands.length, 1)
+            this.areIdentical( clientConnector.clientCommands[0], lastCommand)
         }
 
     }
