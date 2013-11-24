@@ -4,6 +4,7 @@ apply from: 'scripts/docsDependencies.gradle'
 
 repositories {
     mavenCentral()
+    // it's gonna be maven() in the near future
     mavenRepo name: 'SpringSource', url: 'http://repository.springsource.com/maven/bundles/release'
     mavenRepo name: 'JavaNet', url: 'http://download.java.net/maven/2/'
 }

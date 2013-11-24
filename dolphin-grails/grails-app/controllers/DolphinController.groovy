@@ -2,6 +2,8 @@ import org.opendolphin.core.server.comm.ServerConnector
 
 class DolphinController {
 
+    static scope = 'session'
+
     ServerConnector serverConnector
     DolphinSpringBean dolphinBean  // must be here in order to trigger creation (?)
 

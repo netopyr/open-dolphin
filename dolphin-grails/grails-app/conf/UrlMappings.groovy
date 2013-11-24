@@ -1,16 +1,16 @@
 class UrlMappings {
 
 	static mappings = {
-		"/$controller/$action?/$id?"{
-			constraints {
-				// apply constraints here
-			}
-		}
+        "/$controller/$action?/$id?(.${format})?"{
+            constraints {
+                // apply constraints here
+            }
+        }
         "/djs/$pageName" (
             controller : 'dolphinjs',
             view : { params.pageName }
         )
-		"/"(view:"/index")
-		"500"(view:'/error')
+        "/"(view:"/index")
+        "500"(view:'/error')
 	}
 }

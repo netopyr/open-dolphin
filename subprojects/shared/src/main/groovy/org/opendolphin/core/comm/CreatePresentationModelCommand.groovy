@@ -48,5 +48,5 @@ class CreatePresentationModelCommand extends Command {
         return result
     }
 
-    String toString() {super.toString()+ " pmId $pmId pmType $pmType ${ clientSideOnly ? 'CLIENT-SIDE-ONLY!': '' } attributes $attributes"}
+    String toString() {"${super.toString()} pmId $pmId pmType $pmType ${ clientSideOnly ? 'CLIENT-SIDE-ONLY!': '' } attributes $attributes"}
 }
