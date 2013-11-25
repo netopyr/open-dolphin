@@ -1,0 +1,14 @@
+import cmd = require("../../js/dolphin/Command");
+export module dolphin {
+
+    export class BaseValueChangeCommand extends cmd.dolphin.Command {
+
+        className:string;
+
+        constructor(public attributeId:string) {
+            super();
+            this.id = 'BaseValueChanged';
+            this.className = "org.opendolphin.core.comm.BaseValueChangedCommand";
+        }
+    }
+}
