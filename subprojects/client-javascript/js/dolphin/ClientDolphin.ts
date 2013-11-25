@@ -28,11 +28,11 @@ export module dolphin {
             return this.clientConnector;
         }
 
-        send(commandName:string, onFinished:any) {
+        send(commandName:string, onFinished:cc.dolphin.OnFinishedAdapter) {
             this.clientConnector.send(new namedCmd.dolphin.NamedCommand(commandName), onFinished);
         }
 
-        sendEmpty(onFinished:any) {
+        sendEmpty(onFinished:cc.dolphin.OnFinishedAdapter) {
             this.clientConnector.send(new emptyNot.dolphin.EmptyNotification(), onFinished);
         }
 
