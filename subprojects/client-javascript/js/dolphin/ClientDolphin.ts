@@ -36,6 +36,10 @@ export module dolphin {
             this.clientConnector.send(new emptyNot.dolphin.EmptyNotification(), onFinished);
         }
 
+        delete(modelToDelete:pm.dolphin.ClientPresentationModel) {
+            //this.clientModelStore.
+        }
+
         presentationModel(id:string, type:string, ...attributes:ca.dolphin.ClientAttribute[]) {
             var model:pm.dolphin.ClientPresentationModel = new pm.dolphin.ClientPresentationModel(id, type);
             if (attributes && attributes.length > 0) {

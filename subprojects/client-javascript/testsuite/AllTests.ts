@@ -8,6 +8,7 @@ import emptyNt              = require('../test/dolphin/EmptyNotificationTests');
 import createPMCmdt         = require('../test/dolphin/CreatePresentationModelCommandTests');
 import cdt                  = require('../test/dolphin/ClientDolphinTests');
 import cct                  = require('../test/dolphin/ClientConnectorTests');
+import mt                  = require('../test/dolphin/MapTest');
 
 
 // new instance of tsUnit
@@ -23,6 +24,7 @@ test.addTestClass(new emptyNt.dolphin.EmptyNotificationTests(), "EmptyNotificati
 test.addTestClass(new createPMCmdt.dolphin.CreatePresentationModelCommandTests(), "CreatePresentationModelCommandTests");
 test.addTestClass(new cdt.dolphin.ClientDolphinTests(), "ClientDolphinTests");
 test.addTestClass(new cct.dolphin.ClientConnectorTests(), "ClientConnector");
+test.addTestClass(new mt.dolphin.MapTest(), "MapTest");
 
 // Use the built in results display
 test.showResults(document.getElementById('results'), test.run());

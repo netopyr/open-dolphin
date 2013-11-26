@@ -14,18 +14,19 @@ export module dolphin {
             var clientDolphin:cd.dolphin.ClientDolphin = new cd.dolphin.ClientDolphin();
             var clientModelStore:cms.dolphin.ClientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
             clientDolphin.setClientModelStore(clientModelStore);
-            clientDolphin.setClientConnector(new cc.dolphin.ClientConnector({transmit: (result: cmd.dolphin.Command[]) => {} }));
+            clientDolphin.setClientConnector(new cc.dolphin.ClientConnector({transmit: (result:cmd.dolphin.Command[]) => {
+            } }));
 
-            var pm1:cpm.dolphin.ClientPresentationModel=clientDolphin.presentationModel("myId","myType");
-            this.areIdentical(pm1.id,"myId");
-            this.areIdentical(pm1.attributes.length,0);
+            var pm1:cpm.dolphin.ClientPresentationModel = clientDolphin.presentationModel("myId1", "myType");
+            this.areIdentical(pm1.id, "myId1");
+            this.areIdentical(pm1.attributes.length, 0);
 
-            var ca1 = new ca.dolphin.ClientAttribute("prop","qual","tag");
-            var ca2 = new ca.dolphin.ClientAttribute("prop","qual","tag");
+            var ca1 = new ca.dolphin.ClientAttribute("prop", "qual", "tag");
+            var ca2 = new ca.dolphin.ClientAttribute("prop", "qual", "tag");
 
-            var pm2:cpm.dolphin.ClientPresentationModel=clientDolphin.presentationModel("myId","myType",ca1,ca2);
-            this.areIdentical(pm2.id,"myId");
-            this.areIdentical(pm2.attributes.length,2);
+            var pm2:cpm.dolphin.ClientPresentationModel = clientDolphin.presentationModel("myId2", "myType", ca1, ca2);
+            this.areIdentical(pm2.id, "myId2");
+            this.areIdentical(pm2.attributes.length, 2);
         }
 
     }

@@ -6,16 +6,23 @@ import ca               = require("../../js/dolphin/ClientAttribute");
 import valueChangedCmd  = require("../../js/dolphin/ValueChangedCommand")
 import changeAttMD      = require("../../js/dolphin/ChangeAttributeMetadataCommand")
 import attr             = require("../../js/dolphin/Attribute")
+import map              = require("../../js/dolphin/Map")
 
 export module dolphin {
 
     export class ClientModelStore {
 
+        private presentationModels:map.dolphin.Map<string,pm.dolphin.ClientPresentationModel>;
+        private presentationModelsPerType:map.dolphin.Map<string,pm.dolphin.ClientPresentationModel[]>;
+
+
         private clientDolphin:cd.dolphin.ClientDolphin;
-        models : pm.dolphin.ClientPresentationModel[] = [];
+
 
         constructor(clientDolphin:cd.dolphin.ClientDolphin){
             this.clientDolphin = clientDolphin;
+            this.presentationModels = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel>();
+            this.presentationModelsPerType = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel[]>();
         }
 
         getClientDolphin(){
@@ -49,15 +56,25 @@ export module dolphin {
                 })
             });
         }
-        add(model:pm.dolphin.ClientPresentationModel){
-            this.models.push(model);
-            this.registerModel(model);
+
+        add(model:pm.dolphin.ClientPresentationModel):boolean {
+            if (this.presentationModels.containsKey(model.id)) {
+                alert("There already is a PM with id " + model.id);
+            }
+            var added:boolean = false;
+            if (!this.presentationModels.containsKey(model.id)) {
+                this.presentationModels.put(model.id, model);
+                this.registerModel(model);
+                added = true;
+            }
+
             console.log("client presentation model added and registered");
+            return added;
         }
 
         findAttributesByFilter(filter: (atr:ca.dolphin.ClientAttribute) => boolean){
             var matches:ca.dolphin.ClientAttribute[] = [];
-            this.models.forEach((model:pm.dolphin.ClientPresentationModel)=>{
+            this.presentationModels.forEach((key:string, model:pm.dolphin.ClientPresentationModel) => {
                 model.attributes.forEach((attr) =>{
                     if(filter(attr)){
                         matches.push(attr);
