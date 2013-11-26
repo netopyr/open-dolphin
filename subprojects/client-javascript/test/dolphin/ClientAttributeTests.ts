@@ -30,6 +30,21 @@ export module dolphin {
 
         }
 
+        attributeListenersAreCalled() {
+            var attr = new ca.dolphin.ClientAttribute("prop", "qual");
+
+            var spoofedOldQfr;
+            var spoofedNewQfr;
+            attr.onQualifierChange((evt:ca.dolphin.ValueChangedEvent) => {
+                spoofedOldQfr = evt.oldValue;
+                spoofedNewQfr = evt.newValue;
+            })
+            attr.setQualifier("qual_change");
+
+            this.areIdentical(spoofedOldQfr, "qual")
+            this.areIdentical(spoofedNewQfr, "qual_change")
+        }
+
         valueListenersDoNotInterfere() {
             var attr1 = new ca.dolphin.ClientAttribute("prop", "qual1");
             var attr2 = new ca.dolphin.ClientAttribute("prop", "qual2");

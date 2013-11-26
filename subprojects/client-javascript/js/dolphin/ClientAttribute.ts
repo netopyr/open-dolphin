@@ -36,7 +36,7 @@ export module dolphin {
             if (this.qualifier === newQualifier) return;
             var oldQualifier = this.qualifier;
             this.qualifier = newQualifier;
-            this.valueChangeBus.trigger({ 'oldValue': oldQualifier, 'newValue': newQualifier });
+            this.qualifierChangeBus.trigger({ 'oldValue': oldQualifier, 'newValue': newQualifier });
         }
 
         // todo:  immediate value update on registration?
