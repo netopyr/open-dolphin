@@ -1,8 +1,8 @@
-import tsUnit = require("../../testsuite/tsUnit")
-import changedAttrMDCmd     = require("../../js/dolphin/ChangeAttributeMetadataCommand")
-import ca     = require("../../js/dolphin/ClientAttribute")
-import cpm    = require("../../js/dolphin/ClientPresentationModel")
-import map    = require("../../js/dolphin/Map")
+import tsUnit            = require("../../testsuite/tsUnit")
+import changedAttrMDCmd  = require("../../js/dolphin/ChangeAttributeMetadataCommand")
+import ca                = require("../../js/dolphin/ClientAttribute")
+import cpm               = require("../../js/dolphin/ClientPresentationModel")
+import map               = require("../../js/dolphin/Map")
 
 export module dolphin {
     export class MapTest extends tsUnit.tsUnit.TestClass {
