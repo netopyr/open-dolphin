@@ -22,6 +22,7 @@ export module dolphin {
             ) {
             this.id = clientAttributeInstanceCount++;
             this.valueChangeBus = new bus.dolphin.EventBus();
+            this.qualifierChangeBus = new bus.dolphin.EventBus();
         }
 
         setValue(newValue) {
@@ -29,6 +30,13 @@ export module dolphin {
             var oldValue = this.value;
             this.value = newValue;
             this.valueChangeBus.trigger( { 'oldValue': oldValue, 'newValue': newValue } );
+        }
+
+        setQualifier(newQualifier) {
+            if (this.qualifier === newQualifier) return;
+            var oldQualifier = this.qualifier;
+            this.qualifier = newQualifier;
+            this.valueChangeBus.trigger({ 'oldValue': oldQualifier, 'newValue': newQualifier });
         }
 
         // todo:  immediate value update on registration?

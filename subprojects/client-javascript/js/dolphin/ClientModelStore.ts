@@ -4,6 +4,8 @@ import cc               = require("../../js/dolphin/ClientConnector")
 import createPMCmd      = require("../../js/dolphin/CreatePresentationModelCommand")
 import ca               = require("../../js/dolphin/ClientAttribute");
 import valueChangedCmd  = require("../../js/dolphin/ValueChangedCommand")
+import changeAttMD      = require("../../js/dolphin/ChangeAttributeMetadataCommand")
+import attr             = require("../../js/dolphin/Attribute")
 
 export module dolphin {
 
@@ -38,9 +40,13 @@ export module dolphin {
                             attr.setValue(attribute.value);
                         })
                     }
-                })
+                });
 
-                //TODO qualifier change
+                attribute.onQualifierChange((evt:ca.dolphin.ValueChangedEvent)=> {
+                    var changeAttrMetadataCmd:changeAttMD.dolphin.ChangeAttributeMetadataCommand =
+                        new changeAttMD.dolphin.ChangeAttributeMetadataCommand(attribute.id.toString(), attr.dolphin.Attribute.QUALIFIER_PROPERTY, evt.newValue);
+                    connector.send(changeAttrMetadataCmd, null);
+                })
             });
         }
         add(model:pm.dolphin.ClientPresentationModel){

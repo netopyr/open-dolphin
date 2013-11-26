@@ -4,7 +4,9 @@ import cmd = require("../../js/dolphin/Command");
 export module dolphin {
 
     export class OnFinishedAdapter {
-        onFinished(models: cpm.dolphin.ClientPresentationModel) : void { }
+        onFinished(models:cpm.dolphin.ClientPresentationModel[]):void {
+        }
+
         onFinishedData(listOfData: any[]) : void { }
     }
 
