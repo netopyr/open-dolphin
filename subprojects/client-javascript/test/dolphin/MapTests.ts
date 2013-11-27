@@ -1,11 +1,10 @@
 import tsUnit            = require("../../testsuite/tsUnit")
-import changedAttrMDCmd  = require("../../js/dolphin/ChangeAttributeMetadataCommand")
 import ca                = require("../../js/dolphin/ClientAttribute")
 import cpm               = require("../../js/dolphin/ClientPresentationModel")
 import map               = require("../../js/dolphin/Map")
 
 export module dolphin {
-    export class MapTest extends tsUnit.tsUnit.TestClass {
+    export class MapTests extends tsUnit.tsUnit.TestClass {
 
         testMap() {
             var pm1 = new cpm.dolphin.ClientPresentationModel(undefined, "type1");
@@ -26,6 +25,12 @@ export module dolphin {
 
             this.isFalse(testMap.containsKey('dummy'))
 
+            testMap.remove(pm1.id)
+            this.isFalse(testMap.containsKey(pm1.id))
+
+            testMap.put(pm1.id, pm1);
+            this.isTrue(testMap.containsKey(pm1.id))
+
             var keys:string[] = [];
             var values:cpm.dolphin.ClientPresentationModel[] = [];
             testMap.forEach((key:string, value:cpm.dolphin.ClientPresentationModel) => {
@@ -35,6 +40,7 @@ export module dolphin {
 
             this.areIdentical(keys.length, 2);
             this.areIdentical(values.length, 2);
+
 
         }
 

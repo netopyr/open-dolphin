@@ -12,6 +12,7 @@ export module dolphin {
 
         attributes:ca.dolphin.ClientAttribute[] = [];
         private invalidBus:bus.dolphin.EventBus<InvalidationEvent>;
+        isClientSideOnly:boolean = false;
 
         constructor(public id:string, public presentationModelType:string) {
             if (typeof id !== 'undefined') { // even an empty string is a valid id
