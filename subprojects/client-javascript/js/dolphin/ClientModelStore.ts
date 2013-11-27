@@ -46,6 +46,7 @@ export module dolphin {
                     connector.send(valueChangeCommand,null);
 
                     if(attribute.qualifier){
+                        this.addAttributeByQualifier(attribute);
                         var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) =>{
                             return attr !== attribute && attr.qualifier === attribute.qualifier;
                         })
@@ -93,6 +94,7 @@ export module dolphin {
                 model.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
                     //todo property change listener
                     this.removeAttributeById(attribute);
+                    this.removeAttributeByQualifier(attribute);
                 })
 
 
