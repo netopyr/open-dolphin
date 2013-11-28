@@ -55,7 +55,7 @@ export module dolphin {
 
             this.isFalse(clientModelStore.containsPresentationModel("id1"));
         }
-        
+
         addAndRemovePresentationModelByType() {
             var pm1 = new cpm.dolphin.ClientPresentationModel("id1", "type");
             var pm2 = new cpm.dolphin.ClientPresentationModel("id2", "type");

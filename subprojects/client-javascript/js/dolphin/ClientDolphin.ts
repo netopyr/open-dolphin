@@ -4,21 +4,13 @@ import pm       = require("../../js/dolphin/ClientPresentationModel")
 import cms      = require("../../js/dolphin/ClientModelStore")
 import cc       = require("../../js/dolphin/ClientConnector")
 import ca       = require("../../js/dolphin/ClientAttribute");
+import dol      = require("../../js/dolphin/Dolphin")
 
 export module dolphin {
 
-    export class ClientDolphin {
+    export class ClientDolphin extends dol.dolphin.Dolphin {
 
-        private clientModelStore:cms.dolphin.ClientModelStore;
         private clientConnector:cc.dolphin.ClientConnector;
-
-        setClientModelStore(clientModelStore:cms.dolphin.ClientModelStore) {
-            this.clientModelStore = clientModelStore;
-        }
-
-        getClientModelStore() {
-            return this.clientModelStore;
-        }
 
         setClientConnector(clientConnector:cc.dolphin.ClientConnector) {
             this.clientConnector = clientConnector;
@@ -37,7 +29,11 @@ export module dolphin {
         }
 
         delete(modelToDelete:pm.dolphin.ClientPresentationModel) {
-            //this.clientModelStore.
+            this.getClientModelStore().delete(modelToDelete, false);
+        }
+
+        deleteAllPresentationModelOfType(presentationModelType:string) {
+            this.getClientModelStore().deleteAllPresentationModelOfType(presentationModelType);
         }
 
         presentationModel(id:string, type:string, ...attributes:ca.dolphin.ClientAttribute[]) {
@@ -47,9 +43,11 @@ export module dolphin {
                     model.addAttribute(attribute);
                 });
             }
-            this.clientModelStore.add(model);
+            this.getClientModelStore().add(model);
             return model;
         }
+
+
     }
 
 }

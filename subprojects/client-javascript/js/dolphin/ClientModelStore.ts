@@ -7,6 +7,7 @@ import valueChangedCmd  = require("../../js/dolphin/ValueChangedCommand")
 import changeAttMD      = require("../../js/dolphin/ChangeAttributeMetadataCommand")
 import attr             = require("../../js/dolphin/Attribute")
 import map              = require("../../js/dolphin/Map")
+
 import dpmoftn          = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeNotification")
 
 export module dolphin {
@@ -23,6 +24,7 @@ export module dolphin {
 
 
         constructor(clientDolphin:cd.dolphin.ClientDolphin){
+
             this.clientDolphin = clientDolphin;
             this.presentationModels = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel>();
             this.presentationModelsPerType = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel[]>();
@@ -151,7 +153,7 @@ export module dolphin {
         }
 
         listPresentationModelIds():string[] {
-            return this.presentationModels.keySet();
+            return this.presentationModels.keySet().slice(0);
         }
 
         listPresentationModels():pm.dolphin.ClientPresentationModel[] {
