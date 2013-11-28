@@ -154,11 +154,11 @@ export module dolphin {
             return this.presentationModels.keySet();
         }
 
-        listPresentationModel():pm.dolphin.ClientPresentationModel[] {
+        listPresentationModels():pm.dolphin.ClientPresentationModel[] {
             return this.presentationModels.values();
         }
 
-        findPresentationModelById(id:string) {
+        findPresentationModelById(id:string):pm.dolphin.ClientPresentationModel {
             return this.presentationModels.get(id);
         }
 
@@ -166,7 +166,7 @@ export module dolphin {
             if (!type || !this.presentationModelsPerType.containsKey(type)) {
                 return [];
             }
-            return this.presentationModelsPerType.get(type);
+            return this.presentationModelsPerType.get(type).slice(0);// slice is used to clone the array
         }
 
         deleteAllPresentationModelOfType(presentationModelType:string) {
@@ -242,6 +242,13 @@ export module dolphin {
             if (attributes.length === 0) {
                 this.attributesPerQualifier.remove(attribute.qualifier);
             }
+        }
+
+        findAllAttributeByQualifier(qualifier:string):ca.dolphin.ClientAttribute[] {
+            if (!qualifier || !this.attributesPerQualifier.containsKey(qualifier)) {
+                return [];
+            }
+            return this.attributesPerQualifier.get(qualifier).slice(0);// slice is used to clone the array
         }
     }
 }
