@@ -294,4 +294,9 @@ abstract class ClientConnector {
         return null
     }
 
+    ClientPresentationModel handle(CallNamedActionCommand serverCommand) {
+        clientDolphin.send(serverCommand.actionName)
+        return null
+    }
+
 }
