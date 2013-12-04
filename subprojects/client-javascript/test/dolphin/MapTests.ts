@@ -40,9 +40,6 @@ export module dolphin {
 
             this.areIdentical(keys.length, 2);
             this.areIdentical(values.length, 2);
-
-
         }
-
     }
 }

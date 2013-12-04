@@ -6,15 +6,15 @@ export module dolphin {
 
         http = new XMLHttpRequest();
 
-        transmit(commands:cmd.dolphin.Command[], onDone: (result: cmd.dolphin.Command[]) => void  ) : void {
+        transmit(commands:cmd.dolphin.Command[], onDone:(result:cmd.dolphin.Command[]) => void):void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                alert("could not fetch http://localhost:8080/dolphin-grails/moreTime/index " + evt.message);
+                //  alert("could not fetch http://localhost:8080/dolphin-grails/moreTime/index " + evt.message);
             }
 
             this.http.onloadend = (evt:ProgressEvent) => {
                 console.log("transmission ended")
-                onDone( [] );
+                onDone([]);
             }
 
             this.http.open('POST', 'http://localhost:8080/dolphin-grails/moreTime/index', true);

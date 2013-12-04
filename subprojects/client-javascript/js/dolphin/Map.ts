@@ -2,27 +2,27 @@ export module dolphin {
     export class Map<K,V> {
 
         private keys:K[];
-        private data:any;
+        private data:V[];
 
         constructor() {
-            this.keys = new Array;
-            this.data = new Object();
+            this.keys = [];
+            this.data = [];
         }
 
         put(key:K, value:V) {
-            if (this.data[key] == null) {
+            if (!(this.keys.indexOf(key) > -1)) {
                 this.keys.push(key);
             }
-            this.data[key] = value;
+            this.data[this.keys.indexOf(key)] = value;
         }
 
-        get(key:K) {
-            return this.data[key];
+        get(key:K):V {
+            return this.data[this.keys.indexOf(key)];
         }
 
-        remove(key:K) {
+        remove(key:K):void {
             if (this.containsKey(key)) {
-                this.data[key] = undefined;
+                this.data.splice(this.keys.indexOf(key), 1);
                 this.keys.splice(this.keys.indexOf(key), 1);
             }
         }
@@ -37,7 +37,7 @@ export module dolphin {
 
         forEach(handler:(key:K, value:V) => void) {
             for (var i = 0; i < this.keys.length; i++) {
-                handler(this.keys[i], this.data[this.keys[i]]);
+                handler(this.keys[i], this.data[i]);
             }
         }
 
@@ -45,16 +45,16 @@ export module dolphin {
             return this.keys.indexOf(key) > -1;
         }
 
+        containsValue(value:V):boolean {
+            return this.data.indexOf(value) > -1;
+        }
+
         values():V[] {
-            var valueArr:V[] = [];
-            for (var i = 0; i < this.keys.length; i++) {
-                valueArr.push(this.data[this.keys[i]]);
-            }
-            return valueArr;
+            return this.data.slice(0);
         }
 
         keySet():K[] {
-            return this.keys;
+            return this.keys.slice(0);
         }
 
     }
