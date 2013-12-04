@@ -10,7 +10,7 @@ export module dolphin {
         }
 
         put(key:K, value:V) {
-            if (!(this.keys.indexOf(key) > -1)) {
+            if (!this.containsKey(key)) {
                 this.keys.push(key);
             }
             this.data[this.keys.indexOf(key)] = value;
@@ -20,11 +20,14 @@ export module dolphin {
             return this.data[this.keys.indexOf(key)];
         }
 
-        remove(key:K):void {
+        remove(key:K):boolean {
             if (this.containsKey(key)) {
-                this.data.splice(this.keys.indexOf(key), 1);
-                this.keys.splice(this.keys.indexOf(key), 1);
+                var index:number = this.keys.indexOf(key);
+                this.keys.splice(index, 1);
+                this.data.splice(index, 1);
+                return true;
             }
+            return false;
         }
 
         isEmpty():boolean {
