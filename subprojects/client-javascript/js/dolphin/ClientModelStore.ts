@@ -62,7 +62,7 @@ export module dolphin {
 
                 attribute.onQualifierChange((evt:ca.dolphin.ValueChangedEvent)=> {
                     var changeAttrMetadataCmd:changeAttMD.dolphin.ChangeAttributeMetadataCommand =
-                        new changeAttMD.dolphin.ChangeAttributeMetadataCommand(attribute.id.toString(), attr.dolphin.Attribute.QUALIFIER_PROPERTY, evt.newValue);
+                        new changeAttMD.dolphin.ChangeAttributeMetadataCommand(attribute.id, attr.dolphin.Attribute.QUALIFIER_PROPERTY, evt.newValue);
                     connector.send(changeAttrMetadataCmd, null);
                 })
             });
