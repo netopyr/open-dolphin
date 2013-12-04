@@ -17,7 +17,7 @@ export module dolphin {
                 onDone([]);
             }
 
-            this.http.open('POST', 'http://localhost:8080/dolphin-grails/moreTime/index', true);
+            this.http.open('POST', 'http://localhost:8080/dolphin-grails/dolphin/', true);
             this.http.send();
 
         }

@@ -8,8 +8,8 @@ import emptyNt              = require('../test/dolphin/EmptyNotificationTests');
 import createPMCmdt         = require('../test/dolphin/CreatePresentationModelCommandTests');
 import cdt                  = require('../test/dolphin/ClientDolphinTests');
 import cct                  = require('../test/dolphin/ClientConnectorTests');
-import mt                  = require('../test/dolphin/MapTests');
-import cmst                  = require('../test/dolphin/ClientModelStoreTests');
+import mt                   = require('../test/dolphin/MapTests');
+import cmst                 = require('../test/dolphin/ClientModelStoreTests');
 
 
 // new instance of tsUnit

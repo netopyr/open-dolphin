@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basic Functional Tests</title>
+    <script src="../libs/require.js"></script>
+</head>
+<body>
+<h1>Basic Functional Tests</h1>
+
+<p>Enter text here to see the instant update of the label:<br>
+    <input id="instant-update-input" type="text"></p>
+
+<p>Instantly updated label: <br>
+
+<div id="instant-update-label">unchanged</div>
+</p>
+
+<script>
+
+    require([
+                '../js/dolphin/ClientAttribute',
+                '../js/dolphin/ClientDolphin',
+                '../js/dolphin/ClientModelStore',
+                '../js/dolphin/ClientConnector',
+                '../js/dolphin/HttpTransmitter'
+            ],
+            function (cat, dol, mst, cc, htm) {
+
+                // setting up the dolphin
+                // to later set into the transmitter
+                // var dolphinUrl = "http://localhost:8080/dolphin-grails/dolphin/";
+                var dolphin = new dol.dolphin.ClientDolphin();
+                var connector = new cc.dolphin.ClientConnector(new htm.dolphin.HttpTransmitter());
+                dolphin.setClientConnector(connector);
+                dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
+
+                // make a presentation model
+                var instantUpdateAttribute = new cat.dolphin.ClientAttribute("instant-update", undefined);
+
+                console.log("INIT PM");
+                dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
+
+                // binding
+                var instantUpdateInput = document.getElementById("instant-update-input");
+                var instantUpdateLabel = document.getElementById("instant-update-label");
+
+                instantUpdateInput.oninput = function (event) {
+                    instantUpdateAttribute.setValue(instantUpdateInput.value);
+                };
+                instantUpdateAttribute.onValueChange(function (event) {
+                    instantUpdateLabel.innerHTML = event.newValue;
+                });
+            });
+
+
+</script>
+
+
+</body>
+</html>
