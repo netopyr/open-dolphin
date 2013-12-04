@@ -2,14 +2,12 @@ import cat = require('../js/dolphin/ClientAttribute');
 import dol = require('../js/dolphin/ClientDolphin');
 import mst = require('../js/dolphin/ClientModelStore');
 import cc  = require('../js/dolphin/ClientConnector');
-import htm = require('../js/dolphin/HttpTransmitter');
+import ntm = require('../js/dolphin/NoTransmitter');
 
 // setting up the dolphin
 
-// to later set into the transmitter
-// var dolphinUrl = "http://localhost:8080/dolphin-grails/dolphin/";
 var dolphin   = new dol.dolphin.ClientDolphin();
-var connector = new cc.dolphin.ClientConnector(new htm.dolphin.HttpTransmitter());
+var connector = new cc.dolphin.ClientConnector(new ntm.dolphin.NoTransmitter());
 dolphin.setClientConnector(connector);
 dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
 
@@ -18,7 +16,6 @@ dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
 var instantUpdateAttribute = new cat.dolphin.ClientAttribute("instant-update",  "same-qualifier");
 var qualifiedAttribute     = new cat.dolphin.ClientAttribute("qualified-update","same-qualifier");
 
-console.log("INIT PM");
 dolphin.presentationModel(undefined, undefined, instantUpdateAttribute );
 dolphin.presentationModel(undefined, undefined, qualifiedAttribute );
 
@@ -28,7 +25,7 @@ var instantUpdateInput = <HTMLInputElement> document.getElementById("instant-upd
 var instantUpdateLabel = <HTMLDivElement>   document.getElementById("instant-update-label");
 var qualifiedLabel     = <HTMLDivElement>   document.getElementById("qualified-label");
 
-instantUpdateInput.oninput =  (event: Event) => {
+instantUpdateInput.oninput = (event: Event) => {
     instantUpdateAttribute.setValue(instantUpdateInput.value);
 };
 instantUpdateAttribute.onValueChange( (event: cat.dolphin.ValueChangedEvent) => {
