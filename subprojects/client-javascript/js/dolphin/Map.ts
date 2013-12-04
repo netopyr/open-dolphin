@@ -16,11 +16,11 @@ export module dolphin {
             this.data[this.keys.indexOf(key)] = value;
         }
 
-        get(key:K) {
+        get(key:K):V {
             return this.data[this.keys.indexOf(key)];
         }
 
-        remove(key:K) {
+        remove(key:K):void {
             if (this.containsKey(key)) {
                 this.data.splice(this.keys.indexOf(key), 1);
                 this.keys.splice(this.keys.indexOf(key), 1);
@@ -43,6 +43,10 @@ export module dolphin {
 
         containsKey(key:K):boolean {
             return this.keys.indexOf(key) > -1;
+        }
+
+        containsValue(value:V):boolean {
+            return this.data.indexOf(value) > -1;
         }
 
         values():V[] {
