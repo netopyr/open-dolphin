@@ -5,7 +5,7 @@ export module dolphin {
 
         className:string;
 
-        constructor(public attributeId:string, public metadataName:string, public value:any) {
+        constructor(public attributeId:number, public metadataName:string, public value:any) {
             super();
             this.id = 'AttributeMetadataChanged';
             this.className = "org.opendolphin.core.comm.AttributeMetadataChangedCommand";
