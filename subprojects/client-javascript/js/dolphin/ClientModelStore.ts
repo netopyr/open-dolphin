@@ -40,7 +40,9 @@ export module dolphin {
             var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();
             var createPMCommand:createPMCmd.dolphin.CreatePresentationModelCommand = new createPMCmd.dolphin.CreatePresentationModelCommand(model);
             console.log("about to send create presentation model command", createPMCommand);
-            connector.send(createPMCommand,null);
+            if (!model.isClientSideOnly) {
+                connector.send(createPMCommand, null);
+            }
             model.attributes.forEach( (attribute :ca.dolphin.ClientAttribute) => {
                 this.addAttributeById(attribute);
                 attribute.onValueChange((evt: ca.dolphin.ValueChangedEvent)=>{
@@ -74,7 +76,7 @@ export module dolphin {
                 alert("There already is a PM with id " + model.id);
             }
             var added:boolean = false;
-            if (!this.presentationModels.containsKey(model.id)) {
+            if (!this.presentationModels.containsValue(model)) {
                 this.presentationModels.put(model.id, model);
                 this.addPresentationModelByType(model);
                 this.registerModel(model);
