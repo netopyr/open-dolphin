@@ -3,12 +3,14 @@ import bus = require("../../js/dolphin/EventBus")
 
 export module dolphin {
 
+
     export interface ValueChangedEvent {
         oldValue;
         newValue;
     }
     var clientAttributeInstanceCount = 0;
     export class ClientAttribute {
+        private SUPPORTED_VALUE_TYPES:string[] = ["string", "number", "boolean"];
         id:number;
         value:any;
         private dirty:boolean = false;
@@ -47,10 +49,11 @@ export module dolphin {
         }
 
         setValue(newValue) {
-            if (this.value === newValue) return;
+            var verifiedValue = this.checkValue(newValue);
+            if (this.value === verifiedValue) return;
             var oldValue = this.value;
-            this.value = newValue;
-            this.valueChangeBus.trigger({ 'oldValue': oldValue, 'newValue': newValue });
+            this.value = verifiedValue;
+            this.valueChangeBus.trigger({ 'oldValue': oldValue, 'newValue': verifiedValue });
         }
 
         setDirty(dirty:boolean) {
@@ -84,6 +87,27 @@ export module dolphin {
         reset() {
             this.setValue(this.baseValue);
             this.setDirty(false);
+        }
+
+        // todo: verify the logic
+        checkValue(value:any) {
+            if (!value) {
+                return;
+            }
+            var result = value;
+            if (result instanceof ClientAttribute) {
+                console.log("An Attribute may not itself contain an attribute as a value. Assuming you forgot to call value.")
+                result = this.checkValue((<ClientAttribute>value).value);
+            }
+            var ok:boolean = false;
+            if (this.SUPPORTED_VALUE_TYPES.indexOf(typeof result) > -1 || result instanceof Date) {
+                ok = true;
+            }
+            if (!ok) {
+                alert("Attribute values of this type are not allowed: " + typeof value);
+            }
+            return result;
+
         }
 
         // todo:  immediate value update on registration?
