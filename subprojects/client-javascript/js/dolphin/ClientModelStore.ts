@@ -23,7 +23,7 @@ export module dolphin {
         private clientDolphin:cd.dolphin.ClientDolphin;
 
 
-        constructor(clientDolphin:cd.dolphin.ClientDolphin){
+        constructor(clientDolphin:cd.dolphin.ClientDolphin) {
 
             this.clientDolphin = clientDolphin;
             this.presentationModels = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel>();
@@ -32,29 +32,30 @@ export module dolphin {
             this.attributesPerQualifier = new map.dolphin.Map<string,ca.dolphin.ClientAttribute[]>();
         }
 
-        getClientDolphin(){
+        getClientDolphin() {
             return this.clientDolphin;
         }
 
-        registerModel(model:pm.dolphin.ClientPresentationModel){
+        registerModel(model:pm.dolphin.ClientPresentationModel) {
+            if (!model.isClientSideOnly) {
+                return;
+            }
             var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();
             var createPMCommand:createPMCmd.dolphin.CreatePresentationModelCommand = new createPMCmd.dolphin.CreatePresentationModelCommand(model);
             console.log("about to send create presentation model command", createPMCommand);
-            if (!model.isClientSideOnly) {
-                connector.send(createPMCommand, null);
-            }
-            model.attributes.forEach( (attribute :ca.dolphin.ClientAttribute) => {
+            connector.send(createPMCommand, null);
+            model.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
                 this.addAttributeById(attribute);
-                attribute.onValueChange((evt: ca.dolphin.ValueChangedEvent)=>{
-                    var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand= new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id.toString(),evt.oldValue,evt.newValue);
-                    connector.send(valueChangeCommand,null);
+                attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
+                    var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id.toString(), evt.oldValue, evt.newValue);
+                    connector.send(valueChangeCommand, null);
 
-                    if(attribute.qualifier){
+                    if (attribute.qualifier) {
                         this.addAttributeByQualifier(attribute);
-                        var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) =>{
+                        var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) => {
                             return attr !== attribute && attr.qualifier === attribute.qualifier;
                         })
-                        attrs.forEach((attr:ca.dolphin.ClientAttribute) =>{
+                        attrs.forEach((attr:ca.dolphin.ClientAttribute) => {
                             attr.setValue(attribute.value);
                         })
                     }
@@ -107,11 +108,11 @@ export module dolphin {
             return removed;
         }
 
-        findAttributesByFilter(filter: (atr:ca.dolphin.ClientAttribute) => boolean){
+        findAttributesByFilter(filter:(atr:ca.dolphin.ClientAttribute) => boolean) {
             var matches:ca.dolphin.ClientAttribute[] = [];
             this.presentationModels.forEach((key:string, model:pm.dolphin.ClientPresentationModel) => {
-                model.attributes.forEach((attr) =>{
-                    if(filter(attr)){
+                model.attributes.forEach((attr) => {
+                    if (filter(attr)) {
                         matches.push(attr);
                     }
                 })

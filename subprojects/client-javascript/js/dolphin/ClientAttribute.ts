@@ -11,16 +11,20 @@ export module dolphin {
     export class ClientAttribute {
         id:number;
         value:any;
-        private dirty:boolean
+        private dirty:boolean = false;
         private baseValue:any
         private presentationModel:cpm.dolphin.ClientPresentationModel;
         private valueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
         private qualifierChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
+        private dirtyValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
+        private baseValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
 
         constructor(public propertyName:string, public qualifier:string, public tag:string = "VALUE") {
             this.id = clientAttributeInstanceCount++;
             this.valueChangeBus = new bus.dolphin.EventBus();
             this.qualifierChangeBus = new bus.dolphin.EventBus();
+            this.dirtyValueChangeBus = new bus.dolphin.EventBus();
+            this.baseValueChangeBus = new bus.dolphin.EventBus();
         }
 
         isDirty():boolean {
@@ -29,10 +33,6 @@ export module dolphin {
 
         getBaseValue() {
             return this.baseValue;
-        }
-
-        setBaseValue(baseValue:any) {
-            //todo- to be implemented
         }
 
         setPresentationModel(presentationModel:cpm.dolphin.ClientPresentationModel) {
@@ -53,11 +53,37 @@ export module dolphin {
             this.valueChangeBus.trigger({ 'oldValue': oldValue, 'newValue': newValue });
         }
 
+        setDirty(dirty:boolean) {
+            this.dirtyValueChangeBus.trigger({ 'oldValue': this.dirty, 'newValue': dirty });
+        }
+
         setQualifier(newQualifier) {
             if (this.qualifier === newQualifier) return;
             var oldQualifier = this.qualifier;
             this.qualifier = newQualifier;
             this.qualifierChangeBus.trigger({ 'oldValue': oldQualifier, 'newValue': newQualifier });
+        }
+
+        // todo: verify the logic
+        setBaseValue(baseValue:any) {
+            if (!this.baseValue) {
+                this.setDirty(this.value != null);
+            } else {
+                this.setDirty(this.baseValue != baseValue)
+            }
+            if (this.baseValue === baseValue) return;
+            var oldBaseValue = this.baseValue;
+            this.baseValue = baseValue;
+            this.baseValueChangeBus.trigger({ 'oldValue': oldBaseValue, 'newValue': baseValue });
+        }
+
+        rebase() {
+            this.setBaseValue(this.value);
+        }
+
+        reset() {
+            this.setValue(this.baseValue);
+            this.setDirty(false);
         }
 
         // todo:  immediate value update on registration?
@@ -67,6 +93,14 @@ export module dolphin {
 
         onQualifierChange(eventHandler:(event:ValueChangedEvent) => void) {
             this.qualifierChangeBus.onEvent(eventHandler);
+        }
+
+        onDirty(eventHandler:(event:ValueChangedEvent) => void) {
+            this.dirtyValueChangeBus.onEvent(eventHandler);
+        }
+
+        onBaseValueChange(eventHandler:(event:ValueChangedEvent) => void) {
+            this.baseValueChangeBus.onEvent(eventHandler);
         }
 
         syncWith(sourceAttribute:ClientAttribute) {
