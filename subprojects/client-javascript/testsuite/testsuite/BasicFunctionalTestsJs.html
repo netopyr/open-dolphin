@@ -18,24 +18,13 @@
 
 <script>
 
-require([
-        '../js/dolphin/ClientAttribute',
-        '../js/dolphin/ClientDolphin',
-        '../js/dolphin/ClientModelStore',
-        '../js/dolphin/ClientConnector',
-        '../js/dolphin/NoTransmitter'
-    ],
-    function (cat, dol, mst, cc, ntm) {
+require([ '../js/dolphin/All' ], function (dol) {
 
     // setting up the dolphin
-    var dolphin = new dol.dolphin.ClientDolphin();
-    var connector = new cc.dolphin.ClientConnector(new ntm.dolphin.NoTransmitter());
-    dolphin.setClientConnector(connector);
-    dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
-
+    var dolphin = dol.dolphin;
     // make a presentation model
-    var instantUpdateAttribute = new cat.dolphin.ClientAttribute("instant-update", "same-qualifier");
-    var qualifiedAttribute = new cat.dolphin.ClientAttribute("qualified-update", "same-qualifier");
+    var instantUpdateAttribute = dol.attribute("instant-update",   "same-qualifier");
+    var qualifiedAttribute     = dol.attribute("qualified-update", "same-qualifier");
 
     dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
     dolphin.presentationModel(undefined, undefined, qualifiedAttribute);
@@ -43,7 +32,7 @@ require([
     // binding
     var instantUpdateInput = document.getElementById("instant-update-input");
     var instantUpdateLabel = document.getElementById("instant-update-label");
-    var qualifiedLabel = document.getElementById("qualified-label");
+    var qualifiedLabel     = document.getElementById("qualified-label");
 
     instantUpdateInput.oninput = function (event) {
         instantUpdateAttribute.setValue(instantUpdateInput.value);
