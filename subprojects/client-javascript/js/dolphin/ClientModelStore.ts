@@ -36,7 +36,7 @@ export module dolphin {
         }
 
         registerModel(model:pm.dolphin.ClientPresentationModel) {
-            if (!model.isClientSideOnly) {
+            if (model.isClientSideOnly) {
                 return;
             }
             var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();
