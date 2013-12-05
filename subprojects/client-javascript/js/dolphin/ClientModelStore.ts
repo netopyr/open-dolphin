@@ -47,7 +47,7 @@ export module dolphin {
             model.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
                 this.addAttributeById(attribute);
                 attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
-                    var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id.toString(), evt.oldValue, evt.newValue);
+                    var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id, evt.oldValue, evt.newValue);
                     connector.send(valueChangeCommand, null);
 
                     if (attribute.qualifier) {
@@ -191,7 +191,7 @@ export module dolphin {
                     return;
                 }
                 var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();
-                connector.send(new dpmoftn.dolphin.DeleteAllPresentationModelsOfTypeNotification(model.presentationModelType), undefined);
+                connector.send(new dpmoftn.dolphin.DeletedAllPresentationModelsOfTypeNotification(model.presentationModelType), undefined);
 
             }
         }

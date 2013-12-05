@@ -4,14 +4,14 @@ export module tsUnit {
     }
 
     export class Test {
-        private tests: TestDefintion[] = [];
-        private testClass: TestClass = new TestClass();
+        private tests:TestDefintion[] = [];
+        private testClass:TestClass = new TestClass();
 
-        addTestClass(testClass: ITestClass, name: string = 'Tests'): void {
+        addTestClass(testClass:ITestClass, name:string = 'Tests'):void {
             this.tests.push(new TestDefintion(testClass, name));
         }
 
-        isReservedFunctionName(functionName: string): boolean {
+        isReservedFunctionName(functionName:string):boolean {
             for (var prop in this.testClass) {
                 if (prop === functionName) {
                     return true;
@@ -50,7 +50,7 @@ export module tsUnit {
             return testResult;
         }
 
-        showResults(target: HTMLElement, result: TestResult) {
+        showResults(target:HTMLElement, result:TestResult) {
             var template = '<article>' +
                 '<h1>' + this.getTestResult(result) + '</h1>' +
                 '<p>' + this.getTestSummary(result) + '</p>' +
@@ -67,17 +67,17 @@ export module tsUnit {
             target.innerHTML = template;
         }
 
-        private getTestResult(result: TestResult) {
+        private getTestResult(result:TestResult) {
             return result.errors.length === 0 ? 'Test Passed' : 'Test Failed';
         }
 
-        private getTestSummary(result: TestResult) {
+        private getTestSummary(result:TestResult) {
             return 'Total tests: <span id="tsUnitTotalCout">' + (result.passes.length + result.errors.length).toString() + '</span>. ' +
                 'Passed tests: <span id="tsUnitPassCount" class="good">' + result.passes.length + '</span>. ' +
                 'Failed tests: <span id="tsUnitFailCount" class="bad">' + result.errors.length + '</span>.';
         }
 
-        private getTestResultList(testResults: TestDescription[]) {
+        private getTestResultList(testResults:TestDescription[]) {
             var list = '';
             var group = '';
             var isFirst = true;
@@ -97,9 +97,9 @@ export module tsUnit {
             return list + '</ul>';
         }
 
-        private encodeHtmlEntities(input: string) {
+        private encodeHtmlEntities(input:string) {
             var entitiesToReplace = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-            input.replace(/[&<>]/g, function (entity) { return entitiesToReplace[entity] || entity; });
+//            input.replace(/[&<>]/g, function (entity) { return entitiesToReplace[entity] || entity; });
             return input;
         }
     }
@@ -111,7 +111,7 @@ export module tsUnit {
         tearDown() {
         }
 
-        areIdentical(a: any, b: any): void {
+        areIdentical(a:any, b:any):void {
             if (a !== b) {
                 throw 'areIdentical failed when passed ' +
                     '{' + (typeof a) + '} "' + a + '" and ' +
@@ -119,7 +119,7 @@ export module tsUnit {
             }
         }
 
-        areNotIdentical(a: any, b: any): void {
+        areNotIdentical(a:any, b:any):void {
             if (a === b) {
                 throw 'areNotIdentical failed when passed ' +
                     '{' + (typeof a) + '} "' + a + '" and ' +
@@ -127,35 +127,36 @@ export module tsUnit {
             }
         }
 
-        isTrue(a: boolean) {
+        isTrue(a:boolean) {
             if (!a) {
                 throw 'isTrue failed when passed ' +
                     '{' + (typeof a) + '} "' + a + '"';
             }
         }
 
-        isFalse(a: boolean) {
+        isFalse(a:boolean) {
             if (a) {
                 throw 'isFalse failed when passed ' +
                     '{' + (typeof a) + '} "' + a + '"';
             }
         }
 
-        isTruthy(a: any) {
+        isTruthy(a:any) {
             if (!a) {
                 throw 'isTrue failed when passed ' +
                     '{' + (typeof a) + '} "' + a + '"';
             }
         }
 
-        isFalsey(a: any) {
+        isFalsey(a:any) {
             if (a) {
                 throw 'isFalse failed when passed ' +
                     '{' + (typeof a) + '} "' + a + '"';
             }
         }
 
-        throws(a: { (): void; }) {
+        throws(a:{ (): void;
+        }) {
             var isThrown = false;
             try {
                 a();
@@ -177,51 +178,54 @@ export module tsUnit {
     }
 
     export class FakeFunction {
-        constructor(public name: string, public delgate: { (...args: any[]): any; }) {
+        constructor(public name:string, public delgate:{ (...args:any[]): any;
+        }) {
         }
     }
 
     export class Fake {
-        constructor(obj: any) {
+        constructor(obj:any) {
             for (var prop in obj) {
                 if (typeof obj[prop] === 'function') {
-                    this[prop] = function () { };
+                    this[prop] = function () {
+                    };
                 } else {
                     this[prop] = null;
                 }
             }
         }
 
-        create(): any {
+        create():any {
             return this;
         }
 
-        addFunction(name: string, delegate: { (...args: any[]): any; }) {
+        addFunction(name:string, delegate:{ (...args:any[]): any;
+        }) {
             this[name] = delegate;
         }
 
-        addProperty(name: string, value: any) {
+        addProperty(name:string, value:any) {
             this[name] = value;
         }
     }
 
     class TestDefintion {
-        constructor(public testClass: ITestClass, public name: string) {
+        constructor(public testClass:ITestClass, public name:string) {
         }
     }
 
     class TestError implements Error {
-        constructor(public name: string, public message: string) {
+        constructor(public name:string, public message:string) {
         }
     }
 
     export class TestDescription {
-        constructor(public testName: string, public funcName: string, public message: string) {
+        constructor(public testName:string, public funcName:string, public message:string) {
         }
     }
 
     export class TestResult {
-        public passes: TestDescription[] = [];
-        public errors: TestDescription[] = [];
+        public passes:TestDescription[] = [];
+        public errors:TestDescription[] = [];
     }
 }
