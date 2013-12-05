@@ -1,12 +1,12 @@
-import cmd = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeNotification");
+import cmd = require("../../js/dolphin/Command");
 export module dolphin {
 
-    export class DeleteAllPresentationModelsOfTypeCommand extends cmd.dolphin.DeleteAllPresentationModelsOfTypeNotification {
+    export class DeleteAllPresentationModelsOfTypeCommand extends cmd.dolphin.Command {
 
         className:string;
 
-        constructor(pmType:string) {
-            super(pmType);
+        constructor(public pmType:string) {
+            super();
             this.id = 'DeleteAllPresentationModelsOfTypeCommand';
             this.className = "org.opendolphin.core.comm.DeleteAllPresentationModelsOfTypeCommand";
         }

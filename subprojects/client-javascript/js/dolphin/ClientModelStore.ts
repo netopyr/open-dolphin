@@ -8,7 +8,7 @@ import changeAttMD      = require("../../js/dolphin/ChangeAttributeMetadataComma
 import attr             = require("../../js/dolphin/Attribute")
 import map              = require("../../js/dolphin/Map")
 
-import dpmoftn          = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeNotification")
+import dpmoftn          = require("DeletedAllPresentationModelsOfTypeNotification")
 
 export module dolphin {
 

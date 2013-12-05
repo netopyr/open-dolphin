@@ -10,6 +10,7 @@ import cdt                  = require('../test/dolphin/ClientDolphinTests');
 import cct                  = require('../test/dolphin/ClientConnectorTests');
 import mt                   = require('../test/dolphin/MapTests');
 import cmst                 = require('../test/dolphin/ClientModelStoreTests');
+import codect               = require('../test/dolphin/CodecTest')
 
 
 // new instance of tsUnit
@@ -27,6 +28,7 @@ test.addTestClass(new cdt.dolphin.ClientDolphinTests(), "ClientDolphinTests");
 test.addTestClass(new cct.dolphin.ClientConnectorTests(), "ClientConnector");
 test.addTestClass(new mt.dolphin.MapTests(), "MapTests");
 test.addTestClass(new cmst.dolphin.ClientModelStoreTests(), "ClientModelStoreTests");
+test.addTestClass(new codect.dolphin.CodecTest(), "CodecTest");
 
 // Use the built in results display
 test.showResults(document.getElementById('results'), test.run());

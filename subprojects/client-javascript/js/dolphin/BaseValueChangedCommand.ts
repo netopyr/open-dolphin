@@ -1,7 +1,7 @@
 import cmd = require("../../js/dolphin/Command");
 export module dolphin {
 
-    export class BaseValueChangeCommand extends cmd.dolphin.Command {
+    export class BaseValueChangedCommand extends cmd.dolphin.Command {
 
         className:string;
 

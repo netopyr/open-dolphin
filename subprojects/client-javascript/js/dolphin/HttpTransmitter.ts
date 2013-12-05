@@ -4,7 +4,11 @@ export module dolphin {
 
     export class HttpTransmitter implements cc.dolphin.Transmitter {
 
-        http = new XMLHttpRequest();
+        http:XMLHttpRequest;
+
+        constructor(public url:string) {
+            this.http = new XMLHttpRequest();
+        }
 
         transmit(commands:cmd.dolphin.Command[], onDone:(result:cmd.dolphin.Command[]) => void):void {
 
