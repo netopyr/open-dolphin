@@ -10,7 +10,7 @@ export module dolphin {
     }
     var clientAttributeInstanceCount = 0;
     export class ClientAttribute {
-        private SUPPORTED_VALUE_TYPES:string[] = ["string", "number", "boolean"];
+        private static SUPPORTED_VALUE_TYPES:string[] = ["string", "number", "boolean"];
         id:number;
         value:any;
         private dirty:boolean = false;
@@ -49,7 +49,7 @@ export module dolphin {
         }
 
         setValue(newValue) {
-            var verifiedValue = this.checkValue(newValue);
+            var verifiedValue = ClientAttribute.checkValue(newValue);
             if (this.value === verifiedValue) return;
             var oldValue = this.value;
             this.value = verifiedValue;
@@ -90,11 +90,14 @@ export module dolphin {
         }
 
         // todo: verify the logic
-        checkValue(value:any) {
-            if (!value) {
+        static checkValue(value:any) {
+            if (value == null) {
                 return;
             }
             var result = value;
+            if (result instanceof String || result instanceof Boolean || result instanceof Number) {
+                result = value.valueOf();
+            }
             if (result instanceof ClientAttribute) {
                 console.log("An Attribute may not itself contain an attribute as a value. Assuming you forgot to call value.")
                 result = this.checkValue((<ClientAttribute>value).value);
@@ -104,7 +107,7 @@ export module dolphin {
                 ok = true;
             }
             if (!ok) {
-                alert("Attribute values of this type are not allowed: " + typeof value);
+                throw new Error("Attribute values of this type are not allowed: " + typeof value);
             }
             return result;
 

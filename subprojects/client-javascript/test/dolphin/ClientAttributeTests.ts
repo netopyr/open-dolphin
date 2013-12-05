@@ -1,5 +1,6 @@
 import tsUnit = require("../../testsuite/tsUnit")
 import ca     = require("../../js/dolphin/ClientAttribute")
+import pm     = require("../../js/dolphin/ClientPresentationModel")
 
 
 export module dolphin {
@@ -64,6 +65,50 @@ export module dolphin {
             this.areIdentical(spoofedNew1, 1)
             this.areIdentical(spoofedNew2, 2)
 
+        }
+
+        dirtyValueListenerAreCalled() {
+            var attr = new ca.dolphin.ClientAttribute("prop", "qual1");
+
+            var value = false;
+            attr.onDirty((evt:ca.dolphin.ValueChangedEvent) => {
+                value = evt.newValue;
+            });
+
+            attr.setDirty(true);
+            this.isTrue(value);
+
+            attr.setDirty(false);
+            this.isFalse(value);
+            this.isFalse(attr.isDirty());
+
+        }
+
+        checkValue() {
+            //valid values
+            this.areIdentical(5, ca.dolphin.ClientAttribute.checkValue(5));
+            this.areIdentical(0, ca.dolphin.ClientAttribute.checkValue(0));
+            this.areIdentical("test", ca.dolphin.ClientAttribute.checkValue("test"));
+
+            var date = new Date();
+            // this.areIdentical(date,ca.dolphin.ClientAttribute.checkValue(date));
+
+            var attr = new ca.dolphin.ClientAttribute("prop", "qual1");
+            attr.setValue(15);
+            this.areIdentical(15, ca.dolphin.ClientAttribute.checkValue(attr));
+
+            //Wrapper classes
+            this.areIdentical("test", ca.dolphin.ClientAttribute.checkValue(new String("test")));
+            this.areIdentical(false, ca.dolphin.ClientAttribute.checkValue(new Boolean(false)));
+            this.areIdentical(15, ca.dolphin.ClientAttribute.checkValue(new Number(15)));
+
+            //invalid values
+            this.areIdentical(undefined, ca.dolphin.ClientAttribute.checkValue(null));
+            try {
+                ca.dolphin.ClientAttribute.checkValue(new pm.dolphin.ClientPresentationModel(undefined, "type"))
+            } catch (error) {
+                this.isTrue(error instanceof Error);
+            }
         }
     }
 }
