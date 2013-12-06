@@ -25,7 +25,7 @@ export module dolphin {
                 onDone([]);
             }
 
-            this.http.open('POST', 'http://localhost:8080/dolphin-grails/dolphin/', true);
+            this.http.open('POST', this.url, true);
             this.http.send(this.codec.encode(commands));
 
         }

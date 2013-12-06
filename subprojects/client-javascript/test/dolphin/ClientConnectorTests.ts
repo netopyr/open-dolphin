@@ -46,7 +46,7 @@ export module dolphin {
         tryCanoo() {
             var singleCommand   = new cmd.dolphin.Command();
             var lastCommand     = new cmd.dolphin.Command();
-            var transmitter     = new hcc.dolphin.HttpTransmitter();
+            var transmitter = new hcc.dolphin.HttpTransmitter('http://localhost:8080/dolphin-grails/dolphin/');
 
             var clientConnector = new cc.dolphin.ClientConnector(transmitter);
 
