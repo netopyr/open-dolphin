@@ -115,21 +115,18 @@ class PortfolioEditor {
                 switch (event.type){
                     case ModelStoreEvent.Type.ADDED:
                         observableListOfPositions << position
-                        position[WEIGHT].addPropertyChangeListener(FX.VALUE, {
-                            setCurrentPortfolio()
-                            clientDolphin.send UPDATE
-                        } as PropertyChangeListener)
+                        position[WEIGHT].addPropertyChangeListener FX.VALUE, { sendUpdate() }
                         def pieDataPoint = new PieChart.Data("",0)
                         bind INSTRUMENT of position to FX.NAME     of pieDataPoint
                         bind WEIGHT     of position to FX.PIE_VALUE of pieDataPoint, { it.toDouble() }
 
-                        position[INSTRUMENT].addPropertyChangeListener(FX.VALUE, { // Workaround for http://javafx-jira.kenai.com/browse/RT-26845
+                        position[INSTRUMENT].addPropertyChangeListener FX.VALUE, { // Workaround for http://javafx-jira.kenai.com/browse/RT-26845
                             def index = chart.data.indexOf pieDataPoint
                             def newDataPoint = new PieChart.Data(it.newValue, pieDataPoint.pieValue)
                             bind INSTRUMENT of position to FX.NAME     of newDataPoint
                             bind WEIGHT     of position to FX.PIE_VALUE of newDataPoint, { it.toDouble() }
                             chart.data[index] = newDataPoint       // consider unbinding pieDataPoint
-                        } as PropertyChangeListener)
+                        }
 
                         chart.data.add pieDataPoint
                         break
@@ -142,9 +139,8 @@ class PortfolioEditor {
             }
 
             plus.onAction {
-                setCurrentPortfolio()
                 clientDolphin.presentationModel(null, POSITION, instrument:'changeme', weight:10, portfolioId:portfolioPM[DOMAIN_ID].value)
-                clientDolphin.send UPDATE
+                sendUpdate()
             }
 
             minus.onAction {
@@ -152,8 +148,7 @@ class PortfolioEditor {
                 if (! position) return
                 clientDolphin.delete(position)
                 positions.selectionModel.clearSelection() // this may become a server decision
-                setCurrentPortfolio()
-                clientDolphin.send UPDATE
+                sendUpdate()
             }
         }
     }
@@ -172,5 +167,10 @@ class PortfolioEditor {
     def void setCurrentPortfolio() {
         def visiblePortfolio = clientDolphin.findPresentationModelById(SELECTED)
         visiblePortfolio[PORTFOLIO_ID].value = portfolioPM.id
+    }
+
+    def sendUpdate() {
+        setCurrentPortfolio()
+        clientDolphin.send UPDATE
     }
 }
