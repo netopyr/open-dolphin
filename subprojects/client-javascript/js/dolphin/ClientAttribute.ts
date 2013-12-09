@@ -77,13 +77,13 @@ export module dolphin {
         private setBaseValue(baseValue:any) {
 
             if (this.baseValue === baseValue) return;
+            var oldBaseValue = this.baseValue;
+            this.baseValue = baseValue;
             if (this.baseValue == null) {
                 this.setDirty(this.value != null);
             } else {
                 this.setDirty(baseValue != this.value)
             }
-            var oldBaseValue = this.baseValue;
-            this.baseValue = baseValue;
             this.baseValueChangeBus.trigger({ 'oldValue': oldBaseValue, 'newValue': baseValue });
         }
 

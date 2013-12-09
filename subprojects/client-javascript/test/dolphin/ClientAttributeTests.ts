@@ -67,7 +67,7 @@ export module dolphin {
 
         }
 
-        checkDirty() {
+        checkDirtyWhenValueAndBaseValueAreUndefinedOrNull() {
             var attr = new ca.dolphin.ClientAttribute("prop", "qual1");
 
             var dirtyValue = false;
@@ -81,23 +81,27 @@ export module dolphin {
             attr.setValue(null);
             this.isFalse(attr.isDirty());
             this.areIdentical(false, dirtyValue);
+        }
 
+        checkDirtyWhenValueAndBaseValueAreDifferent() {
+            var attr = new ca.dolphin.ClientAttribute("prop", "qual1");
+
+            var dirtyValue = false;
+            attr.onDirty((evt:ca.dolphin.ValueChangedEvent) => {
+                dirtyValue = evt.newValue;
+            });
             // value and baseValue are different
             attr.setValue(5);
             this.isTrue(attr.isDirty());
             this.areIdentical(true, dirtyValue);
 
+        }
+
+        checkDirtyAfterRebase() {
+            var attr = new ca.dolphin.ClientAttribute("prop", "qual1");
+            attr.setValue(5);
             attr.rebase();// Make base value 5
-
-            // value and baseValue are different
-            attr.setValue(15);
-            this.isTrue(attr.isDirty());
-            this.areIdentical(true, dirtyValue);
-
-            // value and baseValue should be same
-            attr.setValue(5);
             this.isFalse(attr.isDirty());
-            this.areIdentical(false, dirtyValue);
         }
 
         checkValue() {
