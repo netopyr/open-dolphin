@@ -114,8 +114,12 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     // todo dk: think about specific method versions for each allowed type
     public void setValue(Object value) {
         value = checkValue(value);
-        setDirty(baseValue == null ? value != null : !baseValue.equals(value));
+        setDirty(calculateDirty(baseValue, value));
         firePropertyChange(VALUE, this.value, this.value = value);
+    }
+
+    private boolean calculateDirty(Object baseValue, Object value) {
+        return baseValue == null ? value != null : !baseValue.equals(value);
     }
 
     private void setDirty(boolean dirty) {
@@ -123,7 +127,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     private void setBaseValue(Object baseValue) {
-        setDirty(baseValue == null ? value != null : !baseValue.equals(value));
+        setDirty(calculateDirty(baseValue, value));
         firePropertyChange(BASE_VALUE, this.baseValue, this.baseValue = baseValue);
     }
 
