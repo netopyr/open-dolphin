@@ -92,7 +92,7 @@ export module dolphin {
         }
 
         static checkValue(value:any) : any {
-            if (value == null) {
+            if (value == null || value == undefined) {
                 return null;
             }
             var result = value;

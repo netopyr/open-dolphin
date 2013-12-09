@@ -74,14 +74,7 @@ export module dolphin {
             attr.onDirty((evt:ca.dolphin.ValueChangedEvent) => {
                 value = evt.newValue;
             });
-
-            attr.setDirty(true);
-            this.isTrue(value);
-
-            attr.setDirty(false);
             this.isFalse(value);
-            this.isFalse(attr.isDirty());
-
         }
 
         checkValue() {
@@ -104,7 +97,7 @@ export module dolphin {
 
             //invalid values
             this.areIdentical(null, ca.dolphin.ClientAttribute.checkValue(null));
-            this.areIdentical(undefined, ca.dolphin.ClientAttribute.checkValue(null)); // null is treated as undefined
+            this.areIdentical(null, ca.dolphin.ClientAttribute.checkValue(undefined)); // null is treated as undefined
             try {
                 ca.dolphin.ClientAttribute.checkValue(new pm.dolphin.ClientPresentationModel(undefined, "type"))
                 this.fail()

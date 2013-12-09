@@ -60,7 +60,7 @@ export module dolphin {
             clientModelStore.remove(pm1);
             this.areIdentical(type, cms.dolphin.Type.REMOVED);
             this.areIdentical(pm, pm1);
-            
+
             var ids:string[] = clientModelStore.listPresentationModelIds();
             this.areIdentical(ids.length, 1);
             this.areIdentical(ids[0], "id2");
