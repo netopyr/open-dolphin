@@ -91,7 +91,7 @@ export module dolphin {
             this.areIdentical("test", ca.dolphin.ClientAttribute.checkValue("test"));
 
             var date = new Date();
-            // this.areIdentical(date,ca.dolphin.ClientAttribute.checkValue(date));
+            this.areIdentical(date,ca.dolphin.ClientAttribute.checkValue(date));
 
             var attr = new ca.dolphin.ClientAttribute("prop", "qual1");
             attr.setValue(15);
