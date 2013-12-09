@@ -56,8 +56,10 @@ export module dolphin {
             this.valueChangeBus.trigger({ 'oldValue': oldValue, 'newValue': verifiedValue });
         }
 
-        setDirty(dirty:boolean) {
-            this.dirtyValueChangeBus.trigger({ 'oldValue': this.dirty, 'newValue': dirty });
+        private setDirty(dirty:boolean) {
+            var oldVal = this.dirty;
+            this.dirty = dirty;
+            this.dirtyValueChangeBus.trigger({ 'oldValue': oldVal, 'newValue': this.dirty });
         }
 
         setQualifier(newQualifier) {
@@ -68,7 +70,7 @@ export module dolphin {
         }
 
         // todo: verify the logic
-        setBaseValue(baseValue:any) {
+        private setBaseValue(baseValue:any) {
             if (!this.baseValue) {
                 this.setDirty(this.value != null);
             } else {
