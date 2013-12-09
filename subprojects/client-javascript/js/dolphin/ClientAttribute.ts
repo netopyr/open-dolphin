@@ -51,14 +51,18 @@ export module dolphin {
         setValue(newValue) {
             var verifiedValue = ClientAttribute.checkValue(newValue);
             if (this.value === verifiedValue) return;
-            if (this.baseValue == null) {
-                this.setDirty(verifiedValue != null)
-            } else {
-                this.setDirty(this.baseValue != verifiedValue)
-            }
             var oldValue = this.value;
             this.value = verifiedValue;
+            this.setDirty(this.calculateDirty(this.baseValue, verifiedValue));
             this.valueChangeBus.trigger({ 'oldValue': oldValue, 'newValue': verifiedValue });
+        }
+
+        private calculateDirty(baseValue:any, value:any):boolean {
+            if (baseValue == null) {
+                return value != null;
+            } else {
+                return baseValue != value;
+            }
         }
 
         private setDirty(dirty:boolean) {
@@ -75,15 +79,10 @@ export module dolphin {
         }
 
         private setBaseValue(baseValue:any) {
-
             if (this.baseValue === baseValue) return;
             var oldBaseValue = this.baseValue;
             this.baseValue = baseValue;
-            if (this.baseValue == null) {
-                this.setDirty(this.value != null);
-            } else {
-                this.setDirty(baseValue != this.value)
-            }
+            this.setDirty(this.calculateDirty(baseValue, this.value));
             this.baseValueChangeBus.trigger({ 'oldValue': oldBaseValue, 'newValue': baseValue });
         }
 
