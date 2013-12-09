@@ -103,9 +103,11 @@ export module dolphin {
             this.areIdentical(15, ca.dolphin.ClientAttribute.checkValue(new Number(15)));
 
             //invalid values
-            this.areIdentical(undefined, ca.dolphin.ClientAttribute.checkValue(null));
+            this.areIdentical(null, ca.dolphin.ClientAttribute.checkValue(null));
+            this.areIdentical(undefined, ca.dolphin.ClientAttribute.checkValue(null)); // null is treated as undefined
             try {
                 ca.dolphin.ClientAttribute.checkValue(new pm.dolphin.ClientPresentationModel(undefined, "type"))
+                this.fail()
             } catch (error) {
                 this.isTrue(error instanceof Error);
             }

@@ -89,10 +89,9 @@ export module dolphin {
             this.setDirty(false);
         }
 
-        // todo: verify the logic
-        static checkValue(value:any) {
+        static checkValue(value:any) : any {
             if (value == null) {
-                return;
+                return null;
             }
             var result = value;
             if (result instanceof String || result instanceof Boolean || result instanceof Number) {
