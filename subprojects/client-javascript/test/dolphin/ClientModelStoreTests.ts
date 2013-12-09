@@ -7,6 +7,7 @@ import cms    = require("../../js/dolphin/ClientModelStore")
 import ca     = require("../../js/dolphin/ClientAttribute")
 import cmd    = require("../../js/dolphin/Command")
 
+
 export module dolphin {
 
     class TestTransmitter implements cc.dolphin.Transmitter {
@@ -27,10 +28,22 @@ export module dolphin {
             clientDolphin.setClientConnector(clientConnector);
             var clientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
 
+            var type:cms.dolphin.Type;
+            var pm:cpm.dolphin.ClientPresentationModel;
+            clientModelStore.onModelStoreChange((evt:cms.dolphin.ModelStoreEvent) => {
+                type = evt.eventType;
+                pm = evt.clientPresentationModel;
+            })
+
             var pm1 = new cpm.dolphin.ClientPresentationModel("id1", "type");
             var pm2 = new cpm.dolphin.ClientPresentationModel("id2", "type");
             clientModelStore.add(pm1);
+            this.areIdentical(type, cms.dolphin.Type.ADDED);
+            this.areIdentical(pm, pm1);
+
             clientModelStore.add(pm2);
+            this.areIdentical(type, cms.dolphin.Type.ADDED);
+            this.areIdentical(pm, pm2);
 
             var ids:string[] = clientModelStore.listPresentationModelIds();
             this.areIdentical(ids.length, 2);
@@ -45,6 +58,9 @@ export module dolphin {
             this.isTrue(clientModelStore.containsPresentationModel("id1"));
 
             clientModelStore.remove(pm1);
+            this.areIdentical(type, cms.dolphin.Type.REMOVED);
+            this.areIdentical(pm, pm1);
+            
             var ids:string[] = clientModelStore.listPresentationModelIds();
             this.areIdentical(ids.length, 1);
             this.areIdentical(ids[0], "id2");
