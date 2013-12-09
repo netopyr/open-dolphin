@@ -67,14 +67,37 @@ export module dolphin {
 
         }
 
-        dirtyValueListenerAreCalled() {
+        checkDirty() {
             var attr = new ca.dolphin.ClientAttribute("prop", "qual1");
 
-            var value = false;
+            var dirtyValue = false;
             attr.onDirty((evt:ca.dolphin.ValueChangedEvent) => {
-                value = evt.newValue;
+                dirtyValue = evt.newValue;
             });
-            this.isFalse(value);
+            // value and baseValue are undefined
+            this.isFalse(attr.isDirty());
+
+            // value and baseValue are null
+            attr.setValue(null);
+            this.isFalse(attr.isDirty());
+            this.areIdentical(false, dirtyValue);
+
+            // value and baseValue are different
+            attr.setValue(5);
+            this.isTrue(attr.isDirty());
+            this.areIdentical(true, dirtyValue);
+
+            attr.rebase();// Make base value 5
+
+            // value and baseValue are different
+            attr.setValue(15);
+            this.isTrue(attr.isDirty());
+            this.areIdentical(true, dirtyValue);
+
+            // value and baseValue should be same
+            attr.setValue(5);
+            this.isFalse(attr.isDirty());
+            this.areIdentical(false, dirtyValue);
         }
 
         checkValue() {
@@ -105,5 +128,7 @@ export module dolphin {
                 this.isTrue(error instanceof Error);
             }
         }
+
+
     }
 }

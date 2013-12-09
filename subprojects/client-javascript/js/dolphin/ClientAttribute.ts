@@ -51,6 +51,11 @@ export module dolphin {
         setValue(newValue) {
             var verifiedValue = ClientAttribute.checkValue(newValue);
             if (this.value === verifiedValue) return;
+            if (this.baseValue == null) {
+                this.setDirty(verifiedValue != null)
+            } else {
+                this.setDirty(this.baseValue != verifiedValue)
+            }
             var oldValue = this.value;
             this.value = verifiedValue;
             this.valueChangeBus.trigger({ 'oldValue': oldValue, 'newValue': verifiedValue });
@@ -69,14 +74,14 @@ export module dolphin {
             this.qualifierChangeBus.trigger({ 'oldValue': oldQualifier, 'newValue': newQualifier });
         }
 
-        // todo: verify the logic
         private setBaseValue(baseValue:any) {
-            if (!this.baseValue) {
+
+            if (this.baseValue === baseValue) return;
+            if (this.baseValue == null) {
                 this.setDirty(this.value != null);
             } else {
-                this.setDirty(this.baseValue != baseValue)
+                this.setDirty(baseValue != this.value)
             }
-            if (this.baseValue === baseValue) return;
             var oldBaseValue = this.baseValue;
             this.baseValue = baseValue;
             this.baseValueChangeBus.trigger({ 'oldValue': oldBaseValue, 'newValue': baseValue });
