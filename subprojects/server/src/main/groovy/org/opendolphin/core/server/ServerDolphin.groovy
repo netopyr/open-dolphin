@@ -182,15 +182,15 @@ class ServerDolphin extends Dolphin {
 
     /**
      * Convenience method to change an attribute value on the server side.
+     * @param response must not be null or the method silently ignores the call
+     * @param attribute must not be null
      */
     static void changeValue(List<Command>response, ServerAttribute attribute, value){
         if (null == response) return
         if (null == attribute) {
-            // todo dk: shouldn't this rather throw an exception?
             log.severe("Cannot change value on a null attribute to '$value'")
             return
         }
-        if (attribute.value == value) return // standard bean check // todo dk: this makes no sense on the server side since the value may have changed on the client meanwhile.
         forceChangeValue(value, response, attribute)
     }
 

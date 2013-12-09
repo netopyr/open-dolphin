@@ -1,5 +1,8 @@
 package org.opendolphin.demo.crud
 
+import org.opendolphin.core.ModelStoreEvent
+import org.opendolphin.core.PresentationModel
+import org.opendolphin.core.comm.ValueChangedCommand
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.action.DolphinServerAction
 import org.opendolphin.core.server.comm.ActionRegistry
@@ -19,6 +22,9 @@ class CrudActions extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
 
+        /*
+         * Pull all portfolios from service lookup
+         */
         serverDolphin.action PortfolioConstants.CMD.PULL, { cmd, response ->
             def portfolios = crudService.listPortfolios(1L) // fixed value until we have users
             portfolios.eachWithIndex { portfolioDTO, index ->
@@ -26,6 +32,9 @@ class CrudActions extends DolphinServerAction {
             }
         }
 
+        /*
+         * Pull all positions for the selected portfolio from service lookup
+         */
         serverDolphin.action PositionConstants.CMD.PULL, { cmd, response ->
             def visiblePortfolio  = serverDolphin.findPresentationModelById(SELECTED)
             def selectedPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[PORTFOLIO_ID].value as String)
@@ -36,16 +45,38 @@ class CrudActions extends DolphinServerAction {
             }
         }
 
-        serverDolphin.action PortfolioConstants.CMD.UPDATE, { cmd, response ->
-            def visiblePortfolio = serverDolphin.findPresentationModelById(SELECTED)
-            def currentPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[PORTFOLIO_ID].value)
+        /*
+         * Whenever a position is added or removed or its weight is changed, we need to update the total
+         */
 
-            def portfolioDomainId = currentPortfolio[DOMAIN_ID].value
-            def allPositions = serverDolphin.findAllPresentationModelsByType(POSITION)
-            def positions = allPositions.findAll { it[PORTFOLIO_ID].value == portfolioDomainId }
-            def sum = positions.sum { it[WEIGHT].value }
-
-            changeValue(currentPortfolio[TOTAL], sum)
+        serverDolphin.addModelStoreListener POSITION, { ModelStoreEvent event ->
+            recalculateTotal(event.presentationModel)
         }
+
+        registry.register(ValueChangedCommand) { ValueChangedCommand cmd, resp ->
+            // make sure we have a value change for a position weight
+            def attribute = serverDolphin.serverModelStore.findAttributeById(cmd.attributeId)
+            if (! attribute) return
+            if (WEIGHT   != attribute.propertyName) return
+            def position = attribute.presentationModel
+            if (POSITION != position.presentationModelType) return
+            recalculateTotal(position)
+        }
+    }
+
+    protected void recalculateTotal(PresentationModel position) {
+
+        def portfolioDomainId = position[PORTFOLIO_ID].value
+        def allPortfolios     = serverDolphin.findAllPresentationModelsByType(PORTFOLIO);
+        def currentPortfolio  = allPortfolios.find { it[DOMAIN_ID].value == portfolioDomainId }
+        if (! currentPortfolio) {
+            println "cannot find portfolio for position ${position.dump()}"
+            return
+        }
+        def allPositions = serverDolphin.findAllPresentationModelsByType(POSITION)
+        def positions    = allPositions.findAll { it[PORTFOLIO_ID].value == portfolioDomainId }
+        def total        = positions.sum { it[WEIGHT].value }
+
+        changeValue(currentPortfolio[TOTAL], total)
     }
 }
