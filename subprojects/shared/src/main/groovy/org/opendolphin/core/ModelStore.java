@@ -107,7 +107,7 @@ public class ModelStore {
                 attribute.addPropertyChangeListener(Attribute.QUALIFIER_PROPERTY, ATTRIBUTE_WORKER);
                 if (!StringUtil.isBlank(attribute.getQualifier())) addAttributeByQualifier(attribute);
             }
-            if (!modelStoreListeners.isEmpty()) fireModelStoreChangedEvent(model, ModelStoreEvent.Type.ADDED);
+            fireModelStoreChangedEvent(model, ModelStoreEvent.Type.ADDED);
             added = true;
         }
         return added;
