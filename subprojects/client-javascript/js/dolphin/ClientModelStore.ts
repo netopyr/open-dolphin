@@ -8,8 +8,18 @@ import changeAttMD      = require("../../js/dolphin/ChangeAttributeMetadataComma
 import attr             = require("../../js/dolphin/Attribute")
 import map              = require("../../js/dolphin/Map")
 import dpmoftn          = require("../../js/dolphin/DeletedAllPresentationModelsOfTypeNotification")
+import bus              = require("../../js/dolphin/EventBus")
+import cpm              = require("../../js/dolphin/ClientPresentationModel")
 
 export module dolphin {
+
+    export enum Type{
+        ADDED, REMOVED
+    }
+    export interface ModelStoreEvent {
+        eventType:Type;
+        clientPresentationModel:cpm.dolphin.ClientPresentationModel;
+    }
 
     export class ClientModelStore {
 
@@ -18,6 +28,7 @@ export module dolphin {
         private attributesPerId:map.dolphin.Map<number,ca.dolphin.ClientAttribute>;
         private attributesPerQualifier:map.dolphin.Map<string,ca.dolphin.ClientAttribute[]>;
 
+        private modelStoreChangeBus:bus.dolphin.EventBus<ModelStoreEvent>;
 
         private clientDolphin:cd.dolphin.ClientDolphin;
 
@@ -29,6 +40,7 @@ export module dolphin {
             this.presentationModelsPerType = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel[]>();
             this.attributesPerId = new map.dolphin.Map<number,ca.dolphin.ClientAttribute>();
             this.attributesPerQualifier = new map.dolphin.Map<string,ca.dolphin.ClientAttribute[]>();
+            this.modelStoreChangeBus = new bus.dolphin.EventBus();
         }
 
         getClientDolphin() {
@@ -80,6 +92,8 @@ export module dolphin {
                 this.presentationModels.put(model.id, model);
                 this.addPresentationModelByType(model);
                 this.registerModel(model);
+
+                this.modelStoreChangeBus.trigger({'eventType': Type.ADDED, 'clientPresentationModel': model});
                 added = true;
             }
 
@@ -98,10 +112,13 @@ export module dolphin {
                 model.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
                     //todo property change listener
                     this.removeAttributeById(attribute);
-                    this.removeAttributeByQualifier(attribute);
+                    if (attribute.qualifier) {
+                        this.removeAttributeByQualifier(attribute);
+                    }
+
                 })
 
-
+                this.modelStoreChangeBus.trigger({'eventType': Type.REMOVED, 'clientPresentationModel': model});
                 removed = true;
             }
             return removed;
@@ -253,6 +270,10 @@ export module dolphin {
                 return [];
             }
             return this.attributesPerQualifier.get(qualifier).slice(0);// slice is used to clone the array
+        }
+
+        onModelStoreChange(eventHandler:(event:ModelStoreEvent) => void) {
+            this.modelStoreChangeBus.onEvent(eventHandler);
         }
     }
 }
