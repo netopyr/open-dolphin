@@ -2,37 +2,29 @@
 <html>
 <head>
     <title>Basic Functional Tests</title>
-    <script data-main="../config.js" src="../require.js"></script>
+    <script src="../libs/require.js"></script>
 </head>
 <body>
 <h1>Basic Functional Tests written with inline JavaScript</h1>
 
 <p>Enter text here to see the instant update of the connected labels:<br>
-    <input id="instant-update-input" type="text" value=""></p>
-<input id="rebase-button" value="rebase" disabled='true' type="button">
-<input id="reset-button" value="reset" disabled='true' type="button">
-</br>
-IsDirty <input id="dirty-status" type="checkbox"/>
+<input id="instant-update-input" type="text"></p>
 
 <p>Instantly updated label from the same Attribute: <br>
-
-<div id="instant-update-label" style="font-size: 1.2em;">unchanged</div>
-</p>
+<div id="instant-update-label" style="font-size: 1.2em;">unchanged</div></p>
 
 <p>Instantly updated label from an Attribute with the same qualifier: <br>
-
-<div id="qualified-label" style="font-size: 1.2em;">unchanged</div>
-</p>
+<div id="qualified-label" style="font-size: 1.2em;">unchanged</div></p>
 
 <script>
 
-    require([ 'subprojects/client-javascript/js/dolphin/All' ], function (dol) {
+require([ '../js/dolphin/All' ], function (dol) {
 
-        // setting up the dolphin
-        var dolphin = dol.dolphin;
-        // make a presentation model
-        var instantUpdateAttribute = dol.attribute("instant-update", "same-qualifier", "");
-        var qualifiedAttribute = dol.attribute("qualified-update", "same-qualifier");
+    // setting up the dolphin
+    var dolphin = dol.dolphin(null, false);
+    // make a presentation model
+    var instantUpdateAttribute = dol.attribute("instant-update",   "same-qualifier");
+    var qualifiedAttribute     = dol.attribute("qualified-update", "same-qualifier");
 
         dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
         dolphin.presentationModel(undefined, undefined, qualifiedAttribute);
@@ -72,7 +64,9 @@ IsDirty <input id="dirty-status" type="checkbox"/>
         resetButton.onclick = function () {
             instantUpdateAttribute.reset();
         };
-    });
+   
+    
+});
 </script>
 
 
