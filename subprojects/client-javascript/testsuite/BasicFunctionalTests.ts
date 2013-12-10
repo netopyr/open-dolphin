@@ -13,8 +13,8 @@ dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
 
 // make a presentation model
 
-var instantUpdateAttribute = new cat.dolphin.ClientAttribute("instant-update",  "same-qualifier");
-var qualifiedAttribute     = new cat.dolphin.ClientAttribute("qualified-update","same-qualifier");
+var instantUpdateAttribute = new cat.dolphin.ClientAttribute("instant-update",  "same-qualifier","");
+var qualifiedAttribute     = new cat.dolphin.ClientAttribute("qualified-update","same-qualifier","");
 
 dolphin.presentationModel(undefined, undefined, instantUpdateAttribute );
 dolphin.presentationModel(undefined, undefined, qualifiedAttribute );
