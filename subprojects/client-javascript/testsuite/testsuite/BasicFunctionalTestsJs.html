@@ -21,7 +21,7 @@
 require([ '../js/dolphin/All' ], function (dol) {
 
     // setting up the dolphin
-    var dolphin = dol.dolphin;
+    var dolphin = dol.dolphin(null, false);
     // make a presentation model
     var instantUpdateAttribute = dol.attribute("instant-update",   "same-qualifier");
     var qualifiedAttribute     = dol.attribute("qualified-update", "same-qualifier");

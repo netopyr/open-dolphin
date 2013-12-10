@@ -9,7 +9,7 @@ export module dolphin {
         http:XMLHttpRequest;
         codec:cod.dolphin.Codec
 
-        constructor(public url:string) {
+        constructor(public url: string) {
             this.http = new XMLHttpRequest();
             this.codec = new cod.dolphin.Codec();
         }
