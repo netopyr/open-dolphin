@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Basic Functional Tests</title>s
+    <title>Basic Functional Tests</title>
     <script data-main="../config.js" src="../require.js"></script>
 </head>
 <body>
 <h1>Basic Functional Tests written with inline JavaScript</h1>
 
 <p>Enter text here to see the instant update of the connected labels:<br>
-    <input id="instant-update-input" type="text" value=""></p>
-<input id="rebase-button" value="rebase" disabled='true' type="button">
-<input id="reset-button" value="reset" disabled='true' type="button">
+<input id="instant-update-input" type="text"   value=""></p>
+<input id="rebase-button"        type="button" value="rebase" disabled='true' >
+<input id="reset-button"         type="button" value="reset"  disabled='true' >
 </br>
-IsDirty <input id="dirty-status" type="checkbox"/>
+IsDirty
+<input id="dirty-status"         type="checkbox"/>
 
 <p>Instantly updated label from the same Attribute: <br>
-
 <div id="instant-update-label" style="font-size: 1.2em;">unchanged</div>
 </p>
 
 <p>Instantly updated label from an Attribute with the same qualifier: <br>
-
-<div id="qualified-label" style="font-size: 1.2em;">unchanged</div>
+<div id="qualified-label"      style="font-size: 1.2em;">unchanged</div>
 </p>
 
 <script>
@@ -30,37 +29,42 @@ IsDirty <input id="dirty-status" type="checkbox"/>
 
         // setting up the dolphin
         var dolphin = dol.dolphin(null, false);
-        // make a presentation model
-        var instantUpdateAttribute = dol.attribute("instant-update", "same-qualifier", "");
-        var qualifiedAttribute = dol.attribute("qualified-update", "same-qualifier");
-
+        // make two attributes
+        var instantUpdateAttribute = dol.attribute("instant-update",   "same-qualifier", "");
+        var qualifiedAttribute     = dol.attribute("qualified-update", "same-qualifier");
+        // and put each into its own presentation model
         dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
         dolphin.presentationModel(undefined, undefined, qualifiedAttribute);
 
-        // binding
-        var instantUpdateInput = document.getElementById("instant-update-input");
-        var rebaseButton = document.getElementById("rebase-button");
-        var resetButton = document.getElementById("reset-button");
-        var dirtyStatus = document.getElementById("dirty-status");
-        var instantUpdateLabel = document.getElementById("instant-update-label");
-        var qualifiedLabel = document.getElementById("qualified-label");
+        // html elements to bind against
+        var instantUpdateInput  = document.getElementById("instant-update-input");
+        var rebaseButton        = document.getElementById("rebase-button");
+        var resetButton         = document.getElementById("reset-button");
+        var dirtyStatus         = document.getElementById("dirty-status");
+        var instantUpdateLabel  = document.getElementById("instant-update-label");
+        var qualifiedLabel      = document.getElementById("qualified-label");
 
-
+        // bind input of textfield to attribute
         instantUpdateInput.oninput = function (event) {
             instantUpdateAttribute.setValue(instantUpdateInput.value);
         };
+        // bind dirty of attribute to value of checkbox
         instantUpdateAttribute.onDirty(function (event) {
-            dirtyStatus.checked = event.newValue;
+            dirtyStatus.checked   = event.newValue;
         });
+        // bind dirty of attribute to enabled of rebaseButton
         instantUpdateAttribute.onDirty(function (event) {
             rebaseButton.disabled = !event.newValue;
-            resetButton.disabled = !event.newValue;
         });
-
+        // bind dirty of attribute to enabled of resetButton
+        instantUpdateAttribute.onDirty(function (event) {
+            resetButton.disabled  = !event.newValue;
+        });
+        // bind value of attribute to value of instantUpdateLabel
         instantUpdateAttribute.onValueChange(function (event) {
             instantUpdateLabel.innerHTML = event.newValue;
         });
-
+        // bind qualified attribute to value of qualifiedLabel
         qualifiedAttribute.onValueChange(function (event) {
             qualifiedLabel.innerHTML = event.newValue;
         });
