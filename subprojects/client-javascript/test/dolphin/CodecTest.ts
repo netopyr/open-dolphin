@@ -27,8 +27,8 @@ export module dolphin {
 
         testCodingCreatePresentationModel() {
             var pm = new cpm.dolphin.ClientPresentationModel("MyId", "MyType");
-            var clientAttribute1 = new ca.dolphin.ClientAttribute("prop1", "qual1");
-            var clientAttribute2 = new ca.dolphin.ClientAttribute("prop2", "qual2");
+            var clientAttribute1 = new ca.dolphin.ClientAttribute("prop1", "qual1", 0);
+            var clientAttribute2 = new ca.dolphin.ClientAttribute("prop2", "qual2", 0);
             pm.addAttribute(clientAttribute1);
             pm.addAttribute(clientAttribute2);
             var createPMCommand = new createPMCmd.dolphin.CreatePresentationModelCommand(pm);

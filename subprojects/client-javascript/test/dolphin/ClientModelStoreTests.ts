@@ -101,8 +101,8 @@ export module dolphin {
             var clientDolphin = new cd.dolphin.ClientDolphin();
             var clientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
 
-            var attr1 = new ca.dolphin.ClientAttribute("prop1", "qual1");
-            var attr2 = new ca.dolphin.ClientAttribute("prop2", "qual2");
+            var attr1 = new ca.dolphin.ClientAttribute("prop1", "qual1", 0);
+            var attr2 = new ca.dolphin.ClientAttribute("prop2", "qual2", 0);
 
             clientModelStore.addAttributeById(attr1);
             clientModelStore.addAttributeById(attr2);
@@ -120,11 +120,11 @@ export module dolphin {
         }
 
         addAndRemoveClientAttributeByQualifier() {
-            var attr1 = new ca.dolphin.ClientAttribute("prop1", "qual1");
-            var attr2 = new ca.dolphin.ClientAttribute("prop2", "qual2");
+            var attr1 = new ca.dolphin.ClientAttribute("prop1", "qual1", 0);
+            var attr2 = new ca.dolphin.ClientAttribute("prop2", "qual2", 0);
 
-            var attr3 = new ca.dolphin.ClientAttribute("prop3", "qual1");
-            var attr4 = new ca.dolphin.ClientAttribute("prop4", "qual2");
+            var attr3 = new ca.dolphin.ClientAttribute("prop3", "qual1", 0);
+            var attr4 = new ca.dolphin.ClientAttribute("prop4", "qual2", 0);
 
             var clientDolphin = new cd.dolphin.ClientDolphin();
             var clientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);

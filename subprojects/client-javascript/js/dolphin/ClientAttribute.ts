@@ -12,7 +12,7 @@ export module dolphin {
     export class ClientAttribute {
         private static SUPPORTED_VALUE_TYPES:string[] = ["string", "number", "boolean"];
         id:number;
-        value:any;
+        private value:any;
         private dirty:boolean = false;
         private baseValue:any
         private presentationModel:cpm.dolphin.ClientPresentationModel;
@@ -21,12 +21,14 @@ export module dolphin {
         private dirtyValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
         private baseValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
 
-        constructor(public propertyName:string, public qualifier:string, public tag:string = "VALUE") {
+        constructor(public propertyName:string, public qualifier:string, value:any, public tag:string = "VALUE") {
             this.id = clientAttributeInstanceCount++;
             this.valueChangeBus = new bus.dolphin.EventBus();
             this.qualifierChangeBus = new bus.dolphin.EventBus();
             this.dirtyValueChangeBus = new bus.dolphin.EventBus();
             this.baseValueChangeBus = new bus.dolphin.EventBus();
+            this.setValue(value);
+            this.setBaseValue(value);
         }
 
         isDirty():boolean {
@@ -48,9 +50,13 @@ export module dolphin {
             return this.presentationModel;
         }
 
+        getValue():any {
+            return this.value;
+        }
+
         setValue(newValue) {
             var verifiedValue = ClientAttribute.checkValue(newValue);
-            if (this.value === verifiedValue) return;
+            if (this.value == verifiedValue) return;
             var oldValue = this.value;
             this.value = verifiedValue;
             this.setDirty(this.calculateDirty(this.baseValue, verifiedValue));
@@ -72,14 +78,14 @@ export module dolphin {
         }
 
         setQualifier(newQualifier) {
-            if (this.qualifier === newQualifier) return;
+            if (this.qualifier == newQualifier) return;
             var oldQualifier = this.qualifier;
             this.qualifier = newQualifier;
             this.qualifierChangeBus.trigger({ 'oldValue': oldQualifier, 'newValue': newQualifier });
         }
 
         private setBaseValue(baseValue:any) {
-            if (this.baseValue === baseValue) return;
+            if (this.baseValue == baseValue) return;
             var oldBaseValue = this.baseValue;
             this.baseValue = baseValue;
             this.setDirty(this.calculateDirty(baseValue, this.value));
@@ -121,6 +127,8 @@ export module dolphin {
         // todo:  immediate value update on registration?
         onValueChange(eventHandler:(event:ValueChangedEvent) => void) {
             this.valueChangeBus.onEvent(eventHandler);
+            eventHandler({"oldValue": this.value, "newValue": this.value});
+
         }
 
         onQualifierChange(eventHandler:(event:ValueChangedEvent) => void) {

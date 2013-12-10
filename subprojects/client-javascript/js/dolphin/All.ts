@@ -15,8 +15,8 @@ dolphin.setClientConnector(connector);
 dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
 
 // factory method for attributes
-export function attribute(propertyName, qualifier) {
-    return new cat.dolphin.ClientAttribute(propertyName, qualifier);
+export function attribute(propertyName, qualifier, value) {
+    return new cat.dolphin.ClientAttribute(propertyName, qualifier, value);
 }
 
 

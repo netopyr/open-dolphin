@@ -25,7 +25,7 @@ export module dolphin {
         addingClientAttributes() {
             var pm1 = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
             this.areIdentical(pm1.attributes.length, 0);
-            var firstAttribute = new ca.dolphin.ClientAttribute("prop","qual");
+            var firstAttribute = new ca.dolphin.ClientAttribute("prop", "qual", 0);
             pm1.addAttribute(firstAttribute);
             this.areIdentical(pm1.attributes.length, 1);
             this.areIdentical(pm1.attributes[0], firstAttribute);
@@ -33,7 +33,7 @@ export module dolphin {
 
         invalidateClientPresentationModelEvent(){
             var pm1 = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
-            var clientAttribute =new ca.dolphin.ClientAttribute("prop","qual");
+            var clientAttribute = new ca.dolphin.ClientAttribute("prop", "qual", 0);
             pm1.addAttribute(clientAttribute);
             var source;
             pm1.onInvalidated((event:cpm.dolphin.InvalidationEvent) => {
