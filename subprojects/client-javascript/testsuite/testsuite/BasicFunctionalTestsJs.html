@@ -48,6 +48,11 @@ IsDirty
         instantUpdateInput.oninput = function (event) {
             instantUpdateAttribute.setValue(instantUpdateInput.value);
         };
+        // bind other direction as well (e.g. for rebase)
+        instantUpdateAttribute.onValueChange(function (event) {
+            instantUpdateInput.value = event.newValue;
+        });
+
         // bind dirty of attribute to value of checkbox
         instantUpdateAttribute.onDirty(function (event) {
             dirtyStatus.checked   = event.newValue;
@@ -68,12 +73,14 @@ IsDirty
         qualifiedAttribute.onValueChange(function (event) {
             qualifiedLabel.innerHTML = event.newValue;
         });
+
         //rebase
         rebaseButton.onclick = function () {
             instantUpdateAttribute.rebase();
         };
         //reset
         resetButton.onclick = function () {
+            console.log("in reset on click")
             instantUpdateAttribute.reset();
         };
     });

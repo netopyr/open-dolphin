@@ -98,7 +98,7 @@ export module dolphin {
 
         reset() {
             this.setValue(this.baseValue);
-            this.setDirty(false);
+            this.setDirty(false); // todo dk: this may be superfluous.
         }
 
         static checkValue(value:any) : any {
