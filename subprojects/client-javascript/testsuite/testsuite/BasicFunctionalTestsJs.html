@@ -2,48 +2,77 @@
 <html>
 <head>
     <title>Basic Functional Tests</title>
-    <script src="../libs/require.js"></script>
+    <script data-main="../config.js" src="../require.js"></script>
 </head>
 <body>
 <h1>Basic Functional Tests written with inline JavaScript</h1>
 
 <p>Enter text here to see the instant update of the connected labels:<br>
-<input id="instant-update-input" type="text"></p>
+    <input id="instant-update-input" type="text" value=""></p>
+<input id="rebase-button" value="rebase" disabled='true' type="button">
+<input id="reset-button" value="reset" disabled='true' type="button">
+</br>
+IsDirty <input id="dirty-status" type="checkbox"/>
 
 <p>Instantly updated label from the same Attribute: <br>
-<div id="instant-update-label" style="font-size: 1.2em;">unchanged</div></p>
+
+<div id="instant-update-label" style="font-size: 1.2em;">unchanged</div>
+</p>
 
 <p>Instantly updated label from an Attribute with the same qualifier: <br>
-<div id="qualified-label" style="font-size: 1.2em;">unchanged</div></p>
+
+<div id="qualified-label" style="font-size: 1.2em;">unchanged</div>
+</p>
 
 <script>
 
-require([ '../js/dolphin/All' ], function (dol) {
+    require([ 'subprojects/client-javascript/js/dolphin/All' ], function (dol) {
 
-    // setting up the dolphin
-    var dolphin = dol.dolphin;
-    // make a presentation model
-    var instantUpdateAttribute = dol.attribute("instant-update",   "same-qualifier");
-    var qualifiedAttribute     = dol.attribute("qualified-update", "same-qualifier");
+        // setting up the dolphin
+        var dolphin = dol.dolphin;
+        // make a presentation model
+        var instantUpdateAttribute = dol.attribute("instant-update", "same-qualifier", "");
+        var qualifiedAttribute = dol.attribute("qualified-update", "same-qualifier");
 
-    dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
-    dolphin.presentationModel(undefined, undefined, qualifiedAttribute);
+        dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
+        dolphin.presentationModel(undefined, undefined, qualifiedAttribute);
 
-    // binding
-    var instantUpdateInput = document.getElementById("instant-update-input");
-    var instantUpdateLabel = document.getElementById("instant-update-label");
-    var qualifiedLabel     = document.getElementById("qualified-label");
+        // binding
+        var instantUpdateInput = document.getElementById("instant-update-input");
+        var rebaseButton = document.getElementById("rebase-button");
+        var resetButton = document.getElementById("reset-button");
+        var dirtyStatus = document.getElementById("dirty-status");
+        var instantUpdateLabel = document.getElementById("instant-update-label");
+        var qualifiedLabel = document.getElementById("qualified-label");
 
-    instantUpdateInput.oninput = function (event) {
-        instantUpdateAttribute.setValue(instantUpdateInput.value);
-    };
-    instantUpdateAttribute.onValueChange(function (event) {
-        instantUpdateLabel.innerHTML = event.newValue;
+
+        instantUpdateInput.oninput = function (event) {
+            instantUpdateAttribute.setValue(instantUpdateInput.value);
+        };
+        instantUpdateAttribute.onDirty(function (event) {
+            dirtyStatus.checked = event.newValue;
+        });
+        instantUpdateAttribute.onDirty(function (event) {
+            rebaseButton.disabled = !event.newValue;
+            resetButton.disabled = !event.newValue;
+        });
+
+        instantUpdateAttribute.onValueChange(function (event) {
+            instantUpdateLabel.innerHTML = event.newValue;
+        });
+
+        qualifiedAttribute.onValueChange(function (event) {
+            qualifiedLabel.innerHTML = event.newValue;
+        });
+        //rebase
+        rebaseButton.onclick = function () {
+            instantUpdateAttribute.rebase();
+        };
+        //reset
+        resetButton.onclick = function () {
+            instantUpdateAttribute.reset();
+        };
     });
-    qualifiedAttribute.onValueChange(function (event) {
-        qualifiedLabel.innerHTML = event.newValue;
-    });
-});
 </script>
 
 
