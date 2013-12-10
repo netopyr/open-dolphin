@@ -3,24 +3,35 @@
 <head>
     <title>Basic Functional Tests</title>
     <script data-main="../config.js" src="../require.js"></script>
+    <style>
+        .label { font-size: 1.2em; color: wheat}
+        body {
+            font-family: Arial, Verdana, Tahoma;
+            color: #ffffff;
+            background-color: #4a87a9;
+            padding-top:  20px;
+            padding-left: 50px;
+        }
+    </style>
 </head>
 <body>
 <h1>Basic Functional Tests written with inline JavaScript</h1>
 
-<p>Enter text here to see the instant update of the connected labels:<br>
-<input id="instant-update-input" type="text"   value=""></p>
-<input id="rebase-button"        type="button" value="rebase" disabled='true' >
-<input id="reset-button"         type="button" value="reset"  disabled='true' >
-</br>
+<p>Enter text here to see the instant update of the connected labels:</p><p>
+<input id="instant-update-input" type="text" value=""></p><p>
+<button id="rebase-button"  disabled='true' >Rebase</button>
+<button id="reset-button"   disabled='true' >Reset </button>
+</p><p>
 IsDirty
 <input id="dirty-status"         type="checkbox"/>
-
-<p>Instantly updated label from the same Attribute: <br>
-<div id="instant-update-label" style="font-size: 1.2em;">unchanged</div>
 </p>
 
-<p>Instantly updated label from an Attribute with the same qualifier: <br>
-<div id="qualified-label"      style="font-size: 1.2em;">unchanged</div>
+<p>Instantly updated label from the same Attribute:
+<div id="instant-update-label" class="label">unchanged</div>
+</p>
+
+<p>Instantly updated label from an Attribute with the same qualifier:
+<div id="qualified-label"      class="label">unchanged</div>
 </p>
 
 <script>
