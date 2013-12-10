@@ -124,6 +124,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     private void setDirty(boolean dirty) {
         firePropertyChange(DIRTY_PROPERTY, this.dirty, this.dirty = dirty);
+        if (null != presentationModel) presentationModel.updateDirty();
     }
 
     private void setBaseValue(Object baseValue) {

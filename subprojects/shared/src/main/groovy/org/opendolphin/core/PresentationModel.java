@@ -56,4 +56,5 @@ public interface PresentationModel extends Observable {
     void _internal_addAttribute(Attribute attribute);
 
     boolean isDirty();
+    void    updateDirty();
 }

@@ -357,10 +357,23 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testPmReset() {
         def myPm = clientDolphin.presentationModel("myPm", null, a:1)
+        assert ! myPm.dirty
         myPm.a.value = 2
         assert myPm.dirty
         myPm.reset()
+        assert myPm.a.value == 1
+        assert ! myPm.dirty
         myPm.a.value = 1
+        assert ! myPm.dirty
+        context.assertionsDone()
+    }
+
+    void testPmRebase() {
+        def myPm = clientDolphin.presentationModel("myPm", null, a:1)
+        myPm.a.value = 2
+        assert myPm.dirty
+        myPm.rebase()
+        assert myPm.a.value == 2
         assert ! myPm.dirty
         context.assertionsDone()
     }

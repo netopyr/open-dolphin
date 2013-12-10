@@ -34,21 +34,8 @@ import java.util.List;
 public class BasePresentationModel extends AbstractObservable implements PresentationModel {
     protected final List<Attribute> attributes = new LinkedList<Attribute>();
     private final String id;
-    private String presentationModelType;
+    private       String presentationModelType;
     private boolean dirty = false;
-
-    protected final PropertyChangeListener DIRTY_FLAG_CHECKER = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            for (Attribute attr : attributes) {
-                if (attr.getTag() == Tag.VALUE && attr.isDirty()) {
-                    setDirty(true);
-                    return;
-                }
-            }
-            setDirty(false);
-        }
-    };
 
     /**
      * @throws AssertionError if the list of attributes is null or empty
@@ -60,13 +47,23 @@ public class BasePresentationModel extends AbstractObservable implements Present
         }
     }
 
+    public void updateDirty() {
+        for (Attribute attr : attributes) {
+            if (attr.getTag() == Tag.VALUE && attr.isDirty()) {
+                setDirty(true);
+                return;
+            }
+        }
+        setDirty(false);
+    }
+
     public void _internal_addAttribute(Attribute attribute) {
         if (null == attribute || attributes.contains(attribute)) return;
         if (null != findAttributeByPropertyNameAndTag(attribute.getPropertyName(), attribute.getTag())) {
-            throw  new IllegalStateException("There already is an attribute with property name '"
-                    + attribute.getPropertyName()
-                    + "' and tag '" + attribute.getTag()
-                    + "' in presentation model with id '" + this.id + "'.");
+            throw new IllegalStateException("There already is an attribute with property name '"
+                                            + attribute.getPropertyName()
+                                            + "' and tag '" + attribute.getTag()
+                                            + "' in presentation model with id '" + this.id + "'.");
         }
         if (attribute.getQualifier() != null && this.findAttributeByQualifier(attribute.getQualifier()) != null) {
             throw  new IllegalStateException("There already is an attribute with qualifier '" + attribute.getQualifier()
@@ -74,9 +71,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
         }
         ((BaseAttribute)attribute).setPresentationModel(this);
         attributes.add(attribute);
-        if (attribute.getTag() == Tag.VALUE) { // only promote value changes as dirty upwards
-            attribute.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, DIRTY_FLAG_CHECKER);
-        }
+        if (attribute.getTag() == Tag.VALUE) updateDirty(); // the new attribute may be dirty
     }
 
     public String getId() {
