@@ -67,7 +67,7 @@ export module dolphin {
                             return attr !== attribute && attr.qualifier === attribute.qualifier;
                         })
                         attrs.forEach((attr:ca.dolphin.ClientAttribute) => {
-                            attr.setValue(attribute.value);
+                            attr.setValue(attribute.getValue());
                         })
                     }
                 });
