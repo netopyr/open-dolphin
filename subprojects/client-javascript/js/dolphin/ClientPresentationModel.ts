@@ -33,15 +33,16 @@ export module dolphin {
             }
             if(this.findAttributeByPropertyNameAndTag(attribute.propertyName,attribute.tag)){
                 throw new Error("There already is an attribute with property name: " + attribute.propertyName
-                +" and tag: "+attribute.tag + " in presentation model with id: "+ this.id);
+                    +" and tag: "+attribute.tag + " in presentation model with id: "+ this.id);
             }
             if(attribute.qualifier && this.findAttributeByQualifier(attribute.qualifier)){
                 throw new Error("There already is an attribute with qualifier: " + attribute.qualifier
                     +" in presentation model with id: "+ this.id);
             }
-            // attribute.setPresentationModel(this);
+            //attribute.setPresentationModel(this);
             this.attributes.push(attribute);
             this.updateDirty(); //todo : check for TAG
+
             attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
                 this.invalidBus.trigger({source: this});
             });
@@ -99,7 +100,7 @@ export module dolphin {
 
         findAllAttributesByPropertyName(propertyName: string): ca.dolphin.ClientAttribute[]{
             var result:ca.dolphin.ClientAttribute[] = [];
-            if(!propertyName) return;
+            if(!propertyName) return null;
             this.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
                 if(attribute.propertyName == propertyName){
                     result.push(attribute);
@@ -109,30 +110,32 @@ export module dolphin {
         }
 
         findAttributeByPropertyNameAndTag(propertyName:string, tag:string): ca.dolphin.ClientAttribute{
-            if(!propertyName || !tag) return;
+            if(!propertyName || !tag) return null;
             this.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
-                if(attribute.propertyName == propertyName && attribute.tag == tag){
+                if((attribute.propertyName == propertyName) && (attribute.tag == tag)){
                     return attribute;
                 }
             });
             return null;
         }
         findAttributeByQualifier(qualifier:string): ca.dolphin.ClientAttribute{
-            if(!qualifier) return;
+            if(!qualifier) return null;
             this.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
                 if(attribute.qualifier == qualifier){
-                    return attribute;
+                      return attribute;
                 }
             });
+            return null;
         }
 
         findAttributeById(id:number): ca.dolphin.ClientAttribute{
-            if(!id) return;
+            if(!id) return null;
             this.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
                 if(attribute.id == id){
                     return attribute;
                 }
             });
+            return null;
         }
 
         syncWith(sourcePresentationModel: ClientPresentationModel): void{
