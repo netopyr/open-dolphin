@@ -42,7 +42,7 @@ IsDirty
         var dolphin = dol.dolphin(null, false);
         // make two attributes
         var instantUpdateAttribute = dol.attribute("instant-update",   "same-qualifier", "");
-        var qualifiedAttribute     = dol.attribute("qualified-update", "same-qualifier");
+        var qualifiedAttribute     = dol.attribute("qualified-update", "same-qualifier","");
         // and put each into its own presentation model
         dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
         dolphin.presentationModel(undefined, undefined, qualifiedAttribute);

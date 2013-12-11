@@ -75,6 +75,7 @@ export module dolphin {
             var oldVal = this.dirty;
             this.dirty = dirty;
             this.dirtyValueChangeBus.trigger({ 'oldValue': oldVal, 'newValue': this.dirty });
+            if (this.presentationModel) this.presentationModel.updateDirty();
         }
 
         setQualifier(newQualifier) {
