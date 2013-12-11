@@ -42,5 +42,70 @@ export module dolphin {
             clientAttribute.setValue("newValue");
             this.areIdentical(pm1,source);
         }
+
+        checkPresentationModelIsDirty(){
+            var pm = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
+            var ca1 = new ca.dolphin.ClientAttribute("prop1","qual1","value1","VALUE");
+            var ca2 = new ca.dolphin.ClientAttribute("prop2","qual2","value2","VALUE");
+
+            pm.addAttribute(ca1);
+            pm.addAttribute(ca2);
+            // attributes are not dirty
+            this.areIdentical(ca1.isDirty(),false);
+            this.areIdentical(ca2.isDirty(),false);
+            //PM is not dirty
+            this.areIdentical(pm.isDirty(),false);
+            // attribute1 is dirty
+            ca1.setValue("anotherValue");
+            this.areIdentical(ca1.isDirty(),true);
+
+            //PM should be dirty
+            this.areIdentical(pm.isDirty(),true);
+        }
+
+        checkPresentationModelIsDirtyAfterRebase(){
+            var pm = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
+            var ca1 = new ca.dolphin.ClientAttribute("prop1","qual1","value1","VALUE");
+            var ca2 = new ca.dolphin.ClientAttribute("prop2","qual2","value2","VALUE");
+
+            pm.addAttribute(ca1);
+            pm.addAttribute(ca2);
+            // attribute1 is dirty
+            ca1.setValue("anotherValue");
+            this.areIdentical(ca1.isDirty(),true);
+
+            //PM should be dirty
+            this.areIdentical(pm.isDirty(),true);
+
+            pm.rebase();
+            // attributes should not be dirty
+            this.areIdentical(ca1.isDirty(),false);
+            this.areIdentical(ca2.isDirty(),false);
+            //PM should not be dirty
+            this.areIdentical(pm.isDirty(),false);
+        }
+
+        checkPresentationModelIsDirtyAfterReset(){
+            var pm = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
+            var ca1 = new ca.dolphin.ClientAttribute("prop1","qual1","value1","VALUE");
+            var ca2 = new ca.dolphin.ClientAttribute("prop2","qual2","value2","VALUE");
+
+            pm.addAttribute(ca1);
+            pm.addAttribute(ca2);
+
+            // attribute1 is dirty
+            ca1.setValue("anotherValue");
+            this.areIdentical(ca1.isDirty(),true);
+
+            //PM should be dirty
+            this.areIdentical(pm.isDirty(),true);
+
+            pm.reset();
+            // attributes should not be dirty
+            this.areIdentical(ca1.isDirty(),false);
+            this.areIdentical(ca2.isDirty(),false);
+            //PM should not be dirty
+            this.areIdentical(pm.isDirty(),false);
+        }
     }
 }

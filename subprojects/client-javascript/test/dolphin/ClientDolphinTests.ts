@@ -21,8 +21,8 @@ export module dolphin {
             this.areIdentical(pm1.id, "myId1");
             this.areIdentical(pm1.attributes.length, 0);
 
-            var ca1 = new ca.dolphin.ClientAttribute("prop", "qual", "tag");
-            var ca2 = new ca.dolphin.ClientAttribute("prop", "qual", "tag");
+            var ca1 = new ca.dolphin.ClientAttribute("prop1", "qual1", "val");
+            var ca2 = new ca.dolphin.ClientAttribute("prop2", "qual2", "val");
 
             var pm2:cpm.dolphin.ClientPresentationModel = clientDolphin.presentationModel("myId2", "myType", ca1, ca2);
             this.areIdentical(pm2.id, "myId2");
