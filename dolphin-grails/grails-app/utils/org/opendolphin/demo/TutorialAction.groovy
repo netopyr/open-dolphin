@@ -25,20 +25,10 @@ public class TutorialAction extends DolphinServerAction {
         actionRegistry.register(CMD_ECHO, new CommandHandler<Command>() {
             public void handleCommand(Command command, List<Command> response) {
 
-                println getServerDolphin().listPresentationModelIds()
-
                 final ServerPresentationModel presentationModel = getServerDolphin().getAt(PM_ID_MODEL)
-                println presentationModel
                 final ServerAttribute attribute = presentationModel[ATTR_ID]
-                println attribute
 
                 changeValue attribute, "Server: ${attribute.value}"
-            }
-        })
-
-        actionRegistry.register(ValueChangedCommand, new CommandHandler<Command>() {
-            public void handleCommand(Command command, List<Command> response) {
-                println command
             }
         })
 

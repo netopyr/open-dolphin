@@ -8,7 +8,7 @@ export module dolphin {
         pmId:string;
         className:string;
         pmType:string;
-        attributes:ca.dolphin.ClientAttribute[] = [];
+        attributes:any[] = [];
 
         constructor(presentationModel:cpm.dolphin.ClientPresentationModel) {
             super();
@@ -16,9 +16,18 @@ export module dolphin {
             this.className = "org.opendolphin.core.comm.CreatePresentationModelCommand";
             this.pmId = presentationModel.id;
             this.pmType = presentationModel.presentationModelType;
-            presentationModel.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
-                this.attributes.push(attribute);
+
+            var attrs = this.attributes
+            presentationModel.attributes.forEach(function(attr) {
+                attrs.push({
+                    propertyName:   attr.propertyName,
+                    id:             attr.id,
+                    qualifier:      attr.qualifier,
+                    value:          attr.getValue(),
+                    tag:            attr.tag
+                });
             });
+
         }
     }
 }

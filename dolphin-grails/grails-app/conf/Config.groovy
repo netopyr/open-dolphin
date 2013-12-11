@@ -117,3 +117,12 @@ log4j = {
 
     //info   "org.opendolphin.core.server"
 }
+
+cors.header = [
+     "Access-Control-Allow-Origin"        : "",
+     "Access-Control-Allow-Credentials"   : "true",
+     "Access-Control-Allow-Methods"       : "OPTIONS, POST, GET",
+     "Access-Control-Allow-Headers"       : "X-Requested-With,X-Prototype-Version,Content-Type,Cache-Control,Pragma,Origin",
+     "Access-Control-Max-Age"             : "600",
+     "Access-Control-Expose-Headers"      : "Access-Control-Allow-Origin",
+]

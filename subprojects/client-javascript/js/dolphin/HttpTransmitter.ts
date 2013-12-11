@@ -11,18 +11,26 @@ export module dolphin {
 
         constructor(public url: string) {
             this.http = new XMLHttpRequest();
+            this.http.withCredentials = true;
             this.codec = new cod.dolphin.Codec();
+
+            this.invalidate(); // ATM creating a new HttpTransmitter will invalidate the current session
         }
 
         transmit(commands:cmd.dolphin.Command[], onDone:(result:cmd.dolphin.Command[]) => void):void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                //  alert("could not fetch http://localhost:8080/dolphin-grails/moreTime/index " + evt.message);
+                alert("could not fetch " + this.url + ", message: " + evt.message);
+                onDone([]);
             }
 
             this.http.onloadend = (evt:ProgressEvent) => {
-                console.log("transmission ended")
-                onDone([]);
+                //console.log("transmission ended")
+                var responseText = this.http.responseText;
+                console.log("got: "+responseText);
+                var responseCommands = this.codec.decode(responseText);
+                console.log("cmds: " + responseCommands);
+                onDone(responseCommands);
             }
 
             this.http.open('POST', this.url, true);
@@ -30,5 +38,11 @@ export module dolphin {
 
         }
 
+        invalidate() {
+            this.http.open('POST', this.url + 'invalidate', true);
+            this.http.send();
+        }
+
     }
+
 }

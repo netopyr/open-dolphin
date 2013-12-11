@@ -9,10 +9,19 @@ class DolphinController {
 
     static allowedMethods = ['POST']
 
+    def invalidate() {
+        session.invalidate()
+    }
+
     def index() {
         def requestJson = request.inputStream.text
         if (! requestJson) {
             requestJson = request.parameters.keySet().toList()[0] // when sent from browser the input comes as the first param key
+        }
+        if (!requestJson) {
+            log.debug "There was no request content (most likely a CORS OPTIONS request)."
+            render text: "[]"
+            return
         }
         log.debug "received json: $requestJson"
         def commands = serverConnector.codec.decode(requestJson)

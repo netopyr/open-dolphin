@@ -31,7 +31,7 @@ class JsonCodec implements Codec {
             log.finest "encoding command $cmd"
             def entry = cmd.properties
             ['class','metaClass'].each { entry.remove it }
-            entry.className = cmd.class.name        // todo dk: is this needed?
+            entry.className = cmd.class.name
             entry.each { key, value ->              // prepare against invalid entries
                 if (value instanceof List) {        // some commands may have collective values
                     for (Map entryMap in value) {
