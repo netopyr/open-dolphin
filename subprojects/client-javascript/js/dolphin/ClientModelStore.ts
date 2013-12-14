@@ -48,14 +48,14 @@ export module dolphin {
         }
 
         registerModel(model:pm.dolphin.ClientPresentationModel) {
-            if (model.isClientSideOnly) {
+            if (model.clientSideOnly) {
                 return;
             }
             var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();
             var createPMCommand:createPMCmd.dolphin.CreatePresentationModelCommand = new createPMCmd.dolphin.CreatePresentationModelCommand(model);
             console.log("about to send create presentation model command", createPMCommand);
             connector.send(createPMCommand, null);
-            model.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
+            model.getAttributes().forEach((attribute:ca.dolphin.ClientAttribute) => {
                 this.addAttributeById(attribute);
                 attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
                     var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id, evt.oldValue, evt.newValue);
@@ -109,7 +109,7 @@ export module dolphin {
             if (this.presentationModels.containsKey(model.id)) {
                 this.removePresentationModelByType(model);
                 this.presentationModels.remove(model.id);
-                model.attributes.forEach((attribute:ca.dolphin.ClientAttribute) => {
+                model.getAttributes().forEach((attribute:ca.dolphin.ClientAttribute) => {
                     //todo property change listener
                     this.removeAttributeById(attribute);
                     if (attribute.qualifier) {
@@ -127,7 +127,7 @@ export module dolphin {
         findAttributesByFilter(filter:(atr:ca.dolphin.ClientAttribute) => boolean) {
             var matches:ca.dolphin.ClientAttribute[] = [];
             this.presentationModels.forEach((key:string, model:pm.dolphin.ClientPresentationModel) => {
-                model.attributes.forEach((attr) => {
+                model.getAttributes().forEach((attr) => {
                     if (filter(attr)) {
                         matches.push(attr);
                     }
@@ -203,7 +203,7 @@ export module dolphin {
             }
             if (this.containsPresentationModel(model.id)) {
                 this.remove(model);
-                if (!notify || model.isClientSideOnly) {
+                if (!notify || model.clientSideOnly) {
                     return;
                 }
                 var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();

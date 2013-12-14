@@ -24,11 +24,11 @@ export module dolphin {
 
         addingClientAttributes() {
             var pm1 = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
-            this.areIdentical(pm1.attributes.length, 0);
+            this.areIdentical(pm1.getAttributes().length, 0);
             var firstAttribute = new ca.dolphin.ClientAttribute("prop", "qual", 0);
             pm1.addAttribute(firstAttribute);
-            this.areIdentical(pm1.attributes.length, 1);
-            this.areIdentical(pm1.attributes[0], firstAttribute);
+            this.areIdentical(pm1.getAttributes().length, 1);
+            this.areIdentical(pm1.getAttributes()[0], firstAttribute);
         }
 
         invalidateClientPresentationModelEvent(){
@@ -135,8 +135,10 @@ export module dolphin {
         findAttributeByPropertyNameAndTag(){
             var pm = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
             var ca1 = new ca.dolphin.ClientAttribute("prop1","qual1","value1","VALUE");
+            var ca2 = new ca.dolphin.ClientAttribute("prop2", "qual", 0);
 
             pm.addAttribute(ca1);
+            pm.addAttribute(ca2);
             var result = pm.findAttributeByPropertyNameAndTag("prop1","VALUE");
             this.areIdentical(ca1,result);
             // find by invalid property name
