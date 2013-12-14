@@ -4,8 +4,6 @@ import org.opendolphin.core.Tag;
 
 public class JFXBinder {
 
-    static { /* only to fool cobertura */ }
-
     public static JFXBindOfAble bind(String sourcePropertyName) {
         return new JFXBindOfAble(sourcePropertyName, Tag.VALUE);
     }

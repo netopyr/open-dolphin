@@ -45,6 +45,7 @@ public class JFXBinderJavaTest {
         Label targetLabel = new Label();
         assertEquals("", targetLabel.getText());
 
+        Class binder = org.opendolphin.binding.JFXBinder.class; // only to make cobertura mark the class as covered
         JFXBinder.bind("text").of(sourceLabel).to("text").of(targetLabel);
 
         assertEquals(initialValue, targetLabel.getText());
