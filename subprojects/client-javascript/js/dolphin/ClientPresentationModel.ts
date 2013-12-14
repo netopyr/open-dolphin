@@ -47,7 +47,7 @@ export module dolphin {
             }
             attribute.setPresentationModel(this);
             this.attributes.push(attribute);
-            if(attribute.tag == "VALUE"){
+            if(attribute.tag == "VALUE"){ // the consideration here is that only VALUE changes can make a PM dirty. TODO: consistency check with Java client.
                 this.updateDirty();
             }
             attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
