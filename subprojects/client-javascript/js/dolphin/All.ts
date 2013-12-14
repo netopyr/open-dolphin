@@ -19,7 +19,7 @@ export function dolphin(url : string, reset : boolean) : dol.dolphin.ClientDolph
     } else {
         transmitter = new ntm.dolphin.NoTransmitter();
     }
-    dolphin.setClientConnector(new cc.dolphin.ClientConnector(transmitter));
+    dolphin.setClientConnector(new cc.dolphin.ClientConnector(transmitter,dolphin));
     dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
     return dolphin;
 }

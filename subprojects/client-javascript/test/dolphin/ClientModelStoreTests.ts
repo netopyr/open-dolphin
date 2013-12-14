@@ -23,10 +23,11 @@ export module dolphin {
 
         addAndRemovePresentationModel() {
             var transmitter = new TestTransmitter(undefined, undefined)
-            var clientConnector = new cc.dolphin.ClientConnector(transmitter);
             var clientDolphin = new cd.dolphin.ClientDolphin();
-            clientDolphin.setClientConnector(clientConnector);
+            var clientConnector = new cc.dolphin.ClientConnector(transmitter,clientDolphin);
             var clientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
+            clientDolphin.setClientConnector(clientConnector);
+            clientDolphin.setClientModelStore(clientModelStore);
 
             var type:cms.dolphin.Type;
             var pm:cpm.dolphin.ClientPresentationModel;

@@ -7,8 +7,7 @@ import ntm = require('../js/dolphin/NoTransmitter');
 // setting up the dolphin
 
 var dolphin   = new dol.dolphin.ClientDolphin();
-var connector = new cc.dolphin.ClientConnector(new ntm.dolphin.NoTransmitter());
-dolphin.setClientConnector(connector);
+var connector = new cc.dolphin.ClientConnector(new ntm.dolphin.NoTransmitter(),dolphin);
 dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
 
 // make a presentation model
