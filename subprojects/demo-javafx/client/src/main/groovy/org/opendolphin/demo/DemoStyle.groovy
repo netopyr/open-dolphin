@@ -41,8 +41,6 @@ class DemoStyle {
 
         GridPane grid = scene.root
         grid.styleClass << 'form'
-        grid.hgap = 5  // for some reason, the gaps are not taken from the css
-        grid.vgap = 10
         grid.columnConstraints << sgb.columnConstraints(halignment: RIGHT, hgrow: ALWAYS)
         grid.columnConstraints << sgb.columnConstraints(halignment: LEFT,  hgrow: ALWAYS)
 

@@ -27,6 +27,7 @@ import static org.opendolphin.core.ModelStoreEvent.Type.ADDED
 import static org.opendolphin.core.ModelStoreEvent.Type.REMOVED
 import static org.opendolphin.demo.DemoStyle.blueStyle
 import static groovyx.javafx.GroovyFX.start
+import static org.opendolphin.demo.DemoStyle.style
 
 /**
  * Measuring the response time when requesting so-many presentation models
@@ -43,7 +44,7 @@ class PerformanceView {
             SceneGraphBuilder sgb = delegate
             stage title: 'Measure Dolphin Response Times', {
                 scene width: 400, height: 250, {
-                    gridPane padding: 20, vgap:10, hgap:10, {
+                    gridPane {
                         label "Number of PMs", row:0, column:0
                         textField id:'number', row:0, column:1, text:'1'
 
@@ -75,7 +76,7 @@ class PerformanceView {
 
             bind 'time' of input to 'text' of time
 
-            blueStyle sgb
+            style sgb
 
             dolphin.addModelStoreListener { event ->
                 if (event.type == ADDED)   store.text = store.text.toInteger() + 1

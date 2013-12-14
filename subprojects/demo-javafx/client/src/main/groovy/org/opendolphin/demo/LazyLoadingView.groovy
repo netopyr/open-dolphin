@@ -68,7 +68,7 @@ class LazyLoadingView {
                 scene width: 750, height: 500, {
                     borderPane {
                         center margin:10, {
-                            gridPane hgap:10, vgap:12, padding: 20, {
+                            gridPane styleClass:"form", {
                                 columnConstraints  halignment: "right"
                                 columnConstraints  halignment: "left"
                                 label     row: 0, column: 0, 'Name'

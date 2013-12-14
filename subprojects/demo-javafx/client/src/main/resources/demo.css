@@ -1,6 +1,3 @@
-.label {
-    -fx-text-fill: white;
-}
 
 .tooltip {
     -fx-background-color:firebrick;
@@ -18,8 +15,15 @@
 .form {
     -fx-padding: 25 25 25 25;
     -fx-alignment: top-center;
-    -fx-hgap: 5;  /* doesn't work */
-    -fx-vgap: 10; /* doesn't work */
+    -fx-hgap: 5;
+    -fx-vgap: 10;
+}
+
+/* the > selects only direct label children in the form */
+.form  > .label{
+    -fx-text-fill:   white;
+    -fx-font-weight: bold;
+    -fx-font-size:   14;
 }
 
 .tab-pane *.tab-header-background {

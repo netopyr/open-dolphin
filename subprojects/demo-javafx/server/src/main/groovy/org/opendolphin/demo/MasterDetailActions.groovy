@@ -54,7 +54,7 @@ public class MasterDetailActions extends DolphinServerAction {
     private List<SoccerPlayer> getSoccerPlayerData() {
         def soccerPlayerList = new ArrayList<SoccerPlayer>()
 
-        def resourceString = MasterDetailActions.getResource("soccerplayers/SoccerPlayer.csv").text
+        def resourceString = MasterDetailActions.getResource("soccerplayers/SoccerPlayer.csv").getText('UTF-8')
 
         def data = parseCsv(resourceString, autoDetect: true)
         for (line in data) {

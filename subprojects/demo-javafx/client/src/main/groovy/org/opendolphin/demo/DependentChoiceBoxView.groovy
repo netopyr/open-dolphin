@@ -44,7 +44,7 @@ class DependentChoiceBoxView {
             SceneGraphBuilder sgb = delegate
             stage {
                 scene width: 200, height: 200, {
-                    gridPane padding:5, vgap: 5, hgap: 5, {
+                    gridPane styleClass:'form', {
                         label "First", row:0, column:0
                         choiceBox id:'first'  ,row:0, column:1, items: [], {
                             onSelect { control, item -> selectedFirst.syncWith(item.pm) }

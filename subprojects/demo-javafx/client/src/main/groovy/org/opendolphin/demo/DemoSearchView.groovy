@@ -45,7 +45,7 @@ class DemoSearchView {
                 scene width: 500, height: 500, {
                     borderPane {
                         top margin:10, {
-                            gridPane vgap: 5, hgap:5, {
+                            gridPane styleClass:"form", {
                                 label       'One first choice', row:0, column:0
                                 choiceBox   id:'gvf',           row:0, column:1, items: FXCollections.observableArrayList(), opacity: 0.2
                                 label       'Another one',      row:1, column:0
