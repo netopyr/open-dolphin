@@ -262,7 +262,13 @@ abstract class ClientConnector {
             presentationModel.setPresentationModelType(serverCommand.pmType)
             clientModelStore.add(presentationModel)
         }
-        clientDolphin.addAttributeToModel(presentationModel, attribute)
+        // if we already have the attribute, just update the value
+        def existingAtt = presentationModel.getAt(serverCommand.propertyName, serverCommand.tag)
+        if (existingAtt) {
+            existingAtt.value = attribute.value
+        } else {
+            clientDolphin.addAttributeToModel(presentationModel, attribute)
+        }
         clientDolphin.updateQualifiers(presentationModel)
         return presentationModel // todo dk: check and test
     }

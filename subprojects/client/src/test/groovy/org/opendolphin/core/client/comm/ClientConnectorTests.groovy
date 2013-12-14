@@ -227,6 +227,14 @@ class ClientConnectorTests extends GroovyTestCase {
 
 	}
 
+	void testHandle_InitializeAttribut_ExistingAttributeValueIsSet() {
+		clientConnector.handle(new InitializeAttributeCommand('p1', 'prop', null, 'initialValue'))
+		clientConnector.handle(new InitializeAttributeCommand('p1', 'prop', null, 'updatedValue'))
+		assert dolphin.getAt('p1')
+		assert dolphin.getAt('p1').getAt('prop')
+		assert 'updatedValue' == dolphin.getAt('p1').getAt('prop').value
+	}
+
 	void testHandle_InitializeAttribute_NewValueNotSet() {
 		def syncedAttribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(syncedAttribute)
