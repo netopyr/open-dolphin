@@ -9,6 +9,7 @@ export module dolphin {
         className:string;
         pmType:string;
         attributes:any[] = [];
+        clientSideOnly:boolean = false;
 
         constructor(presentationModel:cpm.dolphin.ClientPresentationModel) {
             super();
@@ -18,7 +19,7 @@ export module dolphin {
             this.pmType = presentationModel.presentationModelType;
 
             var attrs = this.attributes
-            presentationModel.attributes.forEach(function(attr) {
+            presentationModel.getAttributes().forEach(function(attr) {
                 attrs.push({
                     propertyName:   attr.propertyName,
                     id:             attr.id,
