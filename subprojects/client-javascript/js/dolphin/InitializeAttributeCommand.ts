@@ -8,7 +8,7 @@ export module dolphin {
 
         className:string;
 
-        constructor(public pmId:string, public propertyName:string, public qualifier:string, public newValue:any, public pmType:string, public tag:string = "VALUE") {
+        constructor(public pmId:string, public pmType:string, public propertyName:string, public qualifier:string, public newValue:any, public tag:string = "VALUE") {
             super();
             this.id = 'InitializeAttribute';
             this.className = "org.opendolphin.core.comm.InitializeAttributeCommand";
