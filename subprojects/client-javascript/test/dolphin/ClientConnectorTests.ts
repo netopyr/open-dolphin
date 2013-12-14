@@ -59,19 +59,6 @@ export module dolphin {
             this.areIdentical( transmitter.clientCommands[0], lastCommand)
         }
 
-        tryCanoo() {
-//            var singleCommand   = new cmd.dolphin.Command();
-//            var lastCommand     = new cmd.dolphin.Command();
-//            var transmitter = new hcc.dolphin.HttpTransmitter('http://localhost:8080/dolphin-grails/dolphin/');
-//
-//            var clientConnector = new cc.dolphin.ClientConnector(transmitter,null);
-//
-//            clientConnector.send(singleCommand, undefined)
-//            clientConnector.send(singleCommand, undefined)
-//            clientConnector.send(lastCommand, undefined)
-
-        }
-
         handleDeletePresentationModelCommand(){
             TestHelper.initialize();
             var serverCommand:dpmc.dolphin.DeletePresentationModelCommand = new dpmc.dolphin.DeletePresentationModelCommand("pmId1")
