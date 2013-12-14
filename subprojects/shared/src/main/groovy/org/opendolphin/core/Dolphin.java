@@ -91,7 +91,7 @@ public abstract class Dolphin {
         for (Attribute source : presentationModel.getAttributes()) {
             if (null == source.getQualifier()) continue;
             for (Attribute target : getModelStore().findAllAttributesByQualifier(source.getQualifier())) {
-                if (target.getTag() != target.getTag()) continue;
+                if (target.getTag() != source.getTag()) continue;
                 target.setValue(source.getValue());
             }
         }
