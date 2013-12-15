@@ -6,6 +6,7 @@ import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.GetPresentationModelCommand
 import org.opendolphin.core.comm.ValueChangedCommand
 
+import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
 class BlindCommandBatcherTest extends GroovyTestCase {
@@ -113,7 +114,6 @@ class BlindCommandBatcherTest extends GroovyTestCase {
     }
 
     void testDropMultipleGetPmCommands() {
-
         Command cmd1 = new GetPresentationModelCommand(pmId: 1)
         Command cmd2 = new GetPresentationModelCommand(pmId: 1)
         OnFinishedHandler sameHandler = [onFinished: { /* do nothing*/ }] as OnFinishedHandler
@@ -130,6 +130,26 @@ class BlindCommandBatcherTest extends GroovyTestCase {
         assert nextBatch.size() == 1
         assert nextBatch[0].command instanceof GetPresentationModelCommand
         assert batcher.empty
+    }
+
+    void testVeryManyGetPmCommands() {
+        def list = []
+        300.times {
+            Command cmd1 = new GetPresentationModelCommand(pmId: it)
+            Command cmd2 = new GetPresentationModelCommand(pmId: it)
+            list << new CommandAndHandler(command: cmd1, handler: null) // will be batched
+            list << new CommandAndHandler(command: cmd2, handler: null) // will be dropped
+        }
+
+        list.each { commandAndHandler -> batcher.batch(commandAndHandler) }
+
+        def resultCount = 0
+        def nextBatch = batcher.waitingBatches.getVal(1, TimeUnit.SECONDS)
+        while (nextBatch ) {
+            resultCount += nextBatch.size()
+            nextBatch = batcher.waitingBatches.getVal(100, TimeUnit.MILLISECONDS)
+        }
+        assert resultCount == 300
     }
 
 }
