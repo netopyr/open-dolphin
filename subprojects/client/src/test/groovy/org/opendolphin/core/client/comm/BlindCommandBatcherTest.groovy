@@ -1,7 +1,9 @@
 package org.opendolphin.core.client.comm
 
 import org.opendolphin.LogConfig
+import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
+import org.opendolphin.core.comm.GetPresentationModelCommand
 import org.opendolphin.core.comm.ValueChangedCommand
 
 import java.util.logging.Level
@@ -108,6 +110,26 @@ class BlindCommandBatcherTest extends GroovyTestCase {
         assert nextBatch[1].command instanceof CreatePresentationModelCommand
         assert batcher.empty
 
+    }
+
+    void testDropMultipleGetPmCommands() {
+
+        Command cmd1 = new GetPresentationModelCommand(pmId: 1)
+        Command cmd2 = new GetPresentationModelCommand(pmId: 1)
+        OnFinishedHandler sameHandler = [onFinished: { /* do nothing*/ }] as OnFinishedHandler
+
+        def list = [
+          new CommandAndHandler(command: cmd1, handler: sameHandler),
+          new CommandAndHandler(command: cmd2, handler: sameHandler), // same handler can be dropped
+          new CommandAndHandler(command: cmd2, handler: null),        // null handler can be dropped
+        ]
+
+        list.each { commandAndHandler -> batcher.batch(commandAndHandler) }
+
+        def nextBatch = batcher.waitingBatches.val
+        assert nextBatch.size() == 1
+        assert nextBatch[0].command instanceof GetPresentationModelCommand
+        assert batcher.empty
     }
 
 }

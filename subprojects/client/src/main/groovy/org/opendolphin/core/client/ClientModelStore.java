@@ -84,24 +84,27 @@ public class ClientModelStore extends ModelStore {
     }
 
     public void withPresentationModel(final String requestedPmId, final WithPresentationModelHandler withPmHandler) {
+        if (withPresentationModelFromStore(requestedPmId, withPmHandler)) return;
+        // when the PM is not in the store, we have to fetch it
+        GetPresentationModelCommand cmd = new GetPresentationModelCommand();
+        cmd.setPmId(requestedPmId);
+        getClientConnector().send(cmd); // sending with null handler to allow optimizations
+
+        clientDolphin.sync( new Runnable() {
+            @Override
+            public void run() {
+                withPresentationModelFromStore(requestedPmId, withPmHandler);
+            }
+        });
+    }
+
+    private boolean withPresentationModelFromStore(String requestedPmId, WithPresentationModelHandler withPmHandler) {
         ClientPresentationModel result = (ClientPresentationModel) findPresentationModelById(requestedPmId);
         if (result != null) {
             withPmHandler.onFinished(result);
-            return;
+            return true;
         }
-
-        GetPresentationModelCommand cmd = new GetPresentationModelCommand();
-        cmd.setPmId(requestedPmId);
-
-        OnFinishedHandler callBack = new OnFinishedHandlerAdapter() {
-            @Override
-            public void onFinished(List<ClientPresentationModel> presentationModels) {
-                ClientPresentationModel theOnlyOne = presentationModels.get(0);
-                assert theOnlyOne.getId().equals(requestedPmId); // sanity check
-                withPmHandler.onFinished(theOnlyOne);
-            }
-        };
-        getClientConnector().send(cmd, callBack);
+        return false;
     }
 
     public void delete(ClientPresentationModel model) {

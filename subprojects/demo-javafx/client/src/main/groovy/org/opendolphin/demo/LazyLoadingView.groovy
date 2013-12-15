@@ -81,7 +81,7 @@ class LazyLoadingView {
                                 label     row: 3, column: 1, id:'tableSizeField'
                                 label     row: 4, column: 0, 'lazily loaded:'
                                 label     row: 4, column: 1, id:"lazilyLoadedField"
-                                label     row: 5, column: 0, 'selected index:'
+                                label     row: 5, column: 0, 'index:'
                                 label     row: 5, column: 1, id:"selectedIndexField"
                                 node      row: 6, column: 1, gauge
                             }

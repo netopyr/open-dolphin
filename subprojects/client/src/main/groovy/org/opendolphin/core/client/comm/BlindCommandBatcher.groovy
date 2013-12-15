@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 import groovyx.gpars.agent.Agent
 import groovyx.gpars.dataflow.Dataflow
+import org.opendolphin.core.comm.GetPresentationModelCommand
 import org.opendolphin.core.comm.ValueChangedCommand
 
 import java.util.concurrent.atomic.AtomicBoolean
@@ -31,8 +32,19 @@ class BlindCommandBatcher extends CommandBatcher {
     protected boolean shallWeEvenTryToMerge      = false // do not even try if there is no value change cmd in the batch
 
     @Override
+    boolean isEmpty() {
+        return waitingBatches.length() < 1
+    }
+
+    @Override
     void batch(CommandAndHandler commandWithHandler) {
         log.finest "batching $commandWithHandler.command with${commandWithHandler.handler ? '' : 'out' } handler"
+
+        if (canBeDropped(commandWithHandler)) {
+            log.finest "dropping duplicate GetPresentationModelCommand"
+            return
+        }
+
         agent << { List<CommandAndHandler> commandsAndHandlers ->
             commandsAndHandlers << commandWithHandler
         }
@@ -43,6 +55,27 @@ class BlindCommandBatcher extends CommandBatcher {
         } else {
             processBatch()
         }
+    }
+
+    protected final int MAX_GET_PM_CMD_CACHE_SIZE = 50
+    protected List<CommandAndHandler> cacheGetPmCmds = new LinkedList()
+
+    // the only command we can safely drop is a GetPmCmd where a second one for the same
+    // pmId is already in the batch with the exact same onFinished handler or no handler at all
+    protected boolean canBeDropped(CommandAndHandler commandWithHandler ) {
+        if (! (commandWithHandler.command instanceof GetPresentationModelCommand)) return false
+        def pmId = ((GetPresentationModelCommand)commandWithHandler.command).pmId
+        def handler = commandWithHandler.handler
+        def found = cacheGetPmCmds.any { CommandAndHandler it ->
+            ((GetPresentationModelCommand) it.command).pmId == pmId &&
+            ((handler == null) || handler.is(it.handler))
+        }
+        if (!found) {
+            cacheGetPmCmds << commandWithHandler
+            if (cacheGetPmCmds.size() > MAX_GET_PM_CMD_CACHE_SIZE) cacheGetPmCmds.clear()
+        }
+        return found
+
     }
 
     protected void processDeferred() {
