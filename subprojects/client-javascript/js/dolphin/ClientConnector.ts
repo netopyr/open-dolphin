@@ -18,15 +18,14 @@ import cpmc   = require("../../js/dolphin/CreatePresentationModelCommand");
 
 export module dolphin {
 
-    // todo dk: this interface may disappear
-    export interface OnFinishedAdapter {
+    export interface OnFinishedHandler {
         onFinished(models:cpm.dolphin.ClientPresentationModel[]):void
         onFinishedData(listOfData:any[]):void
     }
 
     interface CommandAndHandler {
         command : cmd.dolphin.Command;
-        handler : OnFinishedAdapter;
+        handler : OnFinishedHandler;
     }
 
     export interface Transmitter {
@@ -48,7 +47,7 @@ export module dolphin {
             this.codec = new cod.dolphin.Codec();
         }
 
-        send(command:cmd.dolphin.Command, onFinished:OnFinishedAdapter) {
+        send(command:cmd.dolphin.Command, onFinished:OnFinishedHandler) {
             this.commandQueue.push({command: command, handler: onFinished });
             if (this.currentlySending) return;
             this.doSendNext();
@@ -70,7 +69,7 @@ export module dolphin {
                     if (touched) touchedPMs.push(touched);
                 });
 
-                var callback = cmdAndHandler.handler;
+                var callback : OnFinishedHandler = cmdAndHandler.handler;
                 if (callback) {
                     callback.onFinished(touchedPMs); // todo: make them unique?
                 }
