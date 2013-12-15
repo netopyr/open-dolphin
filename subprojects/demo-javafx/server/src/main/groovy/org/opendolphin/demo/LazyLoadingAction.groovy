@@ -2,7 +2,8 @@ package org.opendolphin.demo
 
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.GetPresentationModelCommand
-import org.opendolphin.core.comm.InitializeAttributeCommand
+import org.opendolphin.core.server.DTO
+import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.action.DolphinServerAction
 import org.opendolphin.core.server.comm.ActionRegistry
 import org.opendolphin.core.server.comm.CommandHandler
@@ -51,16 +52,14 @@ public class LazyLoadingAction extends DolphinServerAction {
 
     private void initPresentationModel(String pmId, List<Command> response) {
         Address address = addressList.get(pmId.toInteger())
-        response.add(createInitializeAttributeCommand(pmId, ID, pmId))
-        response.add(createInitializeAttributeCommand(pmId, FIRST, address.first))
-        response.add(createInitializeAttributeCommand(pmId, LAST, address.last))
-        response.add(createInitializeAttributeCommand(pmId, FIRST_LAST, address.first + " " + address.last))
-        response.add(createInitializeAttributeCommand(pmId, LAST_FIRST, address.last + ", " + address.first))
-        response.add(createInitializeAttributeCommand(pmId, CITY, address.city))
-        response.add(createInitializeAttributeCommand(pmId, PHONE, address.phone))
-    }
-
-    private InitializeAttributeCommand createInitializeAttributeCommand(String pmId, String attributeName, Object attributeValue) {
-        return new InitializeAttributeCommand(pmId, attributeName, null, attributeValue, LAZY)
+        presentationModel(pmId, LAZY, new DTO(
+            new Slot( ID,           pmId),
+            new Slot( FIRST,        address.first),
+            new Slot( LAST,         address.last),
+            new Slot( FIRST_LAST,   address.first + " " + address.last),
+            new Slot( LAST_FIRST,   address.last + ", " + address.first),
+            new Slot( CITY,         address.city),
+            new Slot( PHONE,        address.phone),
+        ))
     }
 }

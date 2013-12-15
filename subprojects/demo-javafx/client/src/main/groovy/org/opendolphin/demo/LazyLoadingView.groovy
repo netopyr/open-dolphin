@@ -15,7 +15,9 @@
  */
 
 package org.opendolphin.demo
+
 import org.opendolphin.core.ModelStoreEvent
+import org.opendolphin.core.ModelStoreListener
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.WithPresentationModelHandler
@@ -25,6 +27,7 @@ import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.util.Callback
+import org.opendolphin.core.comm.GetPresentationModelCommand
 
 import static org.opendolphin.binding.JFXBinder.bind
 import static org.opendolphin.demo.DemoStyle.blueStyle
@@ -98,30 +101,38 @@ class LazyLoadingView {
             table.items = observableList
 
             // all the bindings ...
-            bind ID of dataMold to FX.TEXT of selectedIndexField
+            bind ID         of dataMold to FX.TEXT of selectedIndexField
             bind FIRST_LAST of dataMold to FX.TEXT of nameField
-            bind CITY of dataMold to FX.TEXT of cityField
-            bind PHONE of dataMold to FX.TEXT of phoneField
+            bind CITY       of dataMold to FX.TEXT of cityField
+            bind PHONE      of dataMold to FX.TEXT of phoneField
+
+            Map<String, SimpleStringProperty> nameProps = [:].withDefault { new SimpleStringProperty("...") }
+            Map<String, SimpleStringProperty> cityProps = [:].withDefault { new SimpleStringProperty("...") }
+
+            dolphin.addModelStoreListener(LazyLoadingConstants.TYPE.LAZY, new ModelStoreListener() {
+                @Override
+                void modelStoreChanged(ModelStoreEvent event) {
+                    assert event.type == ModelStoreEvent.Type.ADDED // sanity check. we only have adding events anyway
+                    nameProps[event.presentationModel.id].setValue(event.presentationModel[LAST_FIRST]?.value)
+                    cityProps[event.presentationModel.id].setValue(event.presentationModel[CITY]?.value)
+                }
+            })
 
             // cell values are lazily requested from JavaFX and must return an observable value
             nameCol.cellValueFactory = {
                 String lazyId = it.value['id']
-                def placeholder = new SimpleStringProperty("...")
-                dolphin.clientModelStore.withPresentationModel(lazyId, new WithPresentationModelHandler() {
-                    void onFinished(ClientPresentationModel presentationModel) {
-                        placeholder.setValue( presentationModel.getAt(LAST_FIRST).value ) // fill async lazily
-                    }
-                } )
+                def placeholder = nameProps[lazyId]
+                if (placeholder.value == "...") {
+                    dolphin.clientConnector.send(new GetPresentationModelCommand(pmId: lazyId))
+                }
                 return placeholder
             } as Callback
             cityCol.cellValueFactory = {
                 String lazyId = it.value['id']
-                def placeholder = new SimpleStringProperty("...")
-                dolphin.clientModelStore.withPresentationModel(lazyId, new WithPresentationModelHandler() {
-                    void onFinished(ClientPresentationModel presentationModel) {
-                        placeholder.setValue( presentationModel.getAt(CITY).value ) // fill async lazily
-                    }
-                } )
+                def placeholder = cityProps[lazyId]
+                if (placeholder.value == "...") {
+                    dolphin.clientConnector.send(new GetPresentationModelCommand(pmId: lazyId))
+                }
                 return placeholder
             } as Callback
 
@@ -134,22 +145,22 @@ class LazyLoadingView {
                 } )
             } as ChangeListener )
 
-            // count the number of lazily loaded pms by listing to the model store
+            // count the number of lazily loaded pms by listing to the model store to update the counter field
             int count = 0
-            dolphin.addModelStoreListener("LAZY") { ModelStoreEvent evt ->
+            dolphin.addModelStoreListener(LazyLoadingConstants.TYPE.LAZY) { ModelStoreEvent evt ->
                 if (evt.type == ModelStoreEvent.Type.ADDED) {
                     lazilyLoadedField.text = ++count
                 }
             }
-            // count the number of lazily loaded pms by listing to the model store
-            dolphin.addModelStoreListener("LAZY") { ModelStoreEvent evt ->
+            // count the number of lazily loaded pms by listing to the model store to update the gauge LCD
+            dolphin.addModelStoreListener(LazyLoadingConstants.TYPE.LAZY) { ModelStoreEvent evt ->
                 if (evt.type == ModelStoreEvent.Type.ADDED) {
                     gauge.value = 100d * count / observableList.size()
                 }
             }
 
             // when starting, first fill the table with pm ids
-            dolphin.data "fullDataRequest", { data ->
+            dolphin.data LazyLoadingConstants.CMD.PULL, { data ->
                 for (map in data) {
                     observableList << map
                 }

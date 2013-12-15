@@ -16,14 +16,19 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.LogConfig
+
 def numEntries = 10000;
 
 def config = new JavaFxInMemoryConfig()
 def serverDolphin = config.serverDolphin
 def clientDolphin = config.clientDolphin
 clientDolphin.clientConnector.sleepMillis = 0
+clientDolphin.clientConnector.commandBatcher.deferMillis = 30
 
-serverDolphin.action "fullDataRequest", new FullDataRequestCommandHandler(numEntries)
+serverDolphin.action   LazyLoadingConstants.CMD.PULL, new FullDataRequestCommandHandler(numEntries)
 serverDolphin.register new LazyLoadingAction(numEntries)
+
+LogConfig.noLogs()
 
 LazyLoadingView.show clientDolphin

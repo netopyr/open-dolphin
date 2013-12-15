@@ -57,7 +57,7 @@ class BlindCommandBatcher extends CommandBatcher {
         }
     }
 
-    protected final int MAX_GET_PM_CMD_CACHE_SIZE = 50
+    protected final int MAX_GET_PM_CMD_CACHE_SIZE = 200
     protected List<CommandAndHandler> cacheGetPmCmds = new LinkedList()
 
     // the only command we can safely drop is a GetPmCmd where a second one for the same
@@ -71,11 +71,10 @@ class BlindCommandBatcher extends CommandBatcher {
             ((handler == null) || handler.is(it.handler))
         }
         if (!found) {
-            cacheGetPmCmds << commandWithHandler
-            if (cacheGetPmCmds.size() > MAX_GET_PM_CMD_CACHE_SIZE) cacheGetPmCmds.clear()
+            cacheGetPmCmds.add 0, commandWithHandler // front adding makes lookup faster
+            if (cacheGetPmCmds.size() > MAX_GET_PM_CMD_CACHE_SIZE) cacheGetPmCmds.remove(MAX_GET_PM_CMD_CACHE_SIZE)
         }
         return found
-
     }
 
     protected void processDeferred() {
