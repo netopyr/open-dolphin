@@ -25,11 +25,9 @@ export module dolphin {
             }
 
             this.http.onloadend = (evt:ProgressEvent) => {
-                //console.log("transmission ended")
                 var responseText = this.http.responseText;
                 console.log("got: "+responseText);
                 var responseCommands = this.codec.decode(responseText);
-                console.log("cmds: " + responseCommands);
                 onDone(responseCommands);
             }
 

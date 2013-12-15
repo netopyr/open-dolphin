@@ -96,7 +96,7 @@ export module dolphin {
         getAttributes(): ca.dolphin.ClientAttribute[]{
             return this.attributes.slice(0);
         }
-        getAt(propertyName:string, tag:string):ca.dolphin.ClientAttribute{
+        getAt(propertyName:string, tag:string = "VALUE"):ca.dolphin.ClientAttribute{
             return this.findAttributeByPropertyNameAndTag(propertyName, tag);
         }
 

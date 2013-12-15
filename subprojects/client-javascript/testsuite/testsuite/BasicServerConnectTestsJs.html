@@ -26,10 +26,12 @@
 <div id="instant-update-label" class="label">unchanged</div>
 </p>
 
-<p>List of entries coming from the server:
+<p>List of weather entries (temp, humidity) coming from the server:
 
 <button id="add-from-server-button"  >Add from server</button>
-<div id="add-label"      class="label">unchanged</div>
+<ul id="add-list" class="label">
+
+</ul>
 </p>
 
 <script>
@@ -54,6 +56,7 @@
         var instantUpdateLabel  = document.getElementById("instant-update-label");
         var sendButton          = document.getElementById("send-to-server-button");
         var addButton           = document.getElementById("add-from-server-button");
+        var addList             = document.getElementById("add-list");
 
         // bind input of textfield to attribute
         instantUpdateInput.oninput = function (event) {
@@ -75,9 +78,15 @@
 
         // request new server PM to add
         addButton.onclick = function () {
-            dolphin.send(CMD_ADD, function(models) {
+            dolphin.send(CMD_ADD, { onFinished: function(models) {
                 console.log("models: " + models);
-            })
+                console.log("model: " + models[0]);
+                console.log("temp: " + models[0].getAt("temperature"));
+                console.log("val: " + models[0].getAt("temperature").getValue());
+                var newItem = document.createElement("li");
+                newItem.innerText = models[0].getAt("temperature").getValue() + " : " + models[0].getAt("humidity").getValue();
+                addList.appendChild(newItem);
+            }})
         };
     });
 </script>

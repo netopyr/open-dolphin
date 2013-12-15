@@ -18,12 +18,10 @@ import cpmc   = require("../../js/dolphin/CreatePresentationModelCommand");
 
 export module dolphin {
 
-    export class OnFinishedAdapter {
-        onFinished(models:cpm.dolphin.ClientPresentationModel[]):void {
-        }
-
-        onFinishedData(listOfData:any[]):void {
-        }
+    // todo dk: this interface may disappear
+    export interface OnFinishedAdapter {
+        onFinished(models:cpm.dolphin.ClientPresentationModel[]):void
+        onFinishedData(listOfData:any[]):void
     }
 
     interface CommandAndHandler {
@@ -63,10 +61,19 @@ export module dolphin {
             }
             this.currentlySending = true;
             var cmdAndHandler = this.commandQueue.shift();
-            this.transmitter.transmit([cmdAndHandler.command], (result:cmd.dolphin.Command[]) => {
-                console.log("in onDone ")
+            this.transmitter.transmit([cmdAndHandler.command], (response:cmd.dolphin.Command[]) => {
+                console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
 
-                // handle the result
+                var touchedPMs : cpm.dolphin.ClientPresentationModel[] = []
+                response.forEach((command:cmd.dolphin.Command) => {
+                    var touched = this.handle(command);
+                    if (touched) touchedPMs.push(touched);
+                });
+
+                var callback = cmdAndHandler.handler;
+                if (callback) {
+                    callback.onFinished(touchedPMs); // todo: make them unique?
+                }
 
                 this.doSendNext();  // recursive call: fetch the next in line
             });
@@ -81,10 +88,10 @@ export module dolphin {
             if(command instanceof dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand){
                 return this.handleDeleteAllPresentationModelOfTypeCommand(<dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand>command);
             }
-            if(command instanceof cpmc.dolphin.CreatePresentationModelCommand){
+            if(command.id == "CreatePresentationModel"){
                 return this.handleCreatePresentationModelCommand(<cpmc.dolphin.CreatePresentationModelCommand>command);
             }
-            if(command instanceof vcc.dolphin.ValueChangedCommand){
+            if(command.id == "ValueChanged"){
                 return this.handleValueChangedCommand(<vcc.dolphin.ValueChangedCommand>command);
             }
             if(command instanceof bvcc.dolphin.BaseValueChangedCommand){
@@ -129,8 +136,8 @@ export module dolphin {
                 throw new Error("There already is a presentation model with id "+serverCommand.pmId+"  known to the client.");
             }
             var attributes:ca.dolphin.ClientAttribute[] = [];
-            serverCommand.attributes.forEach((attr:ca.dolphin.ClientAttribute) =>{
-                var clientAttribute = new ca.dolphin.ClientAttribute(attr.propertyName,attr.qualifier,attr.getValue, attr.tag?attr.tag:"VALUE");
+            serverCommand.attributes.forEach((attr) =>{
+                var clientAttribute = new ca.dolphin.ClientAttribute(attr.propertyName,attr.qualifier,attr.value, attr.tag?attr.tag:"VALUE");
                 attributes.push(clientAttribute);
             });
             var clientPm = new cpm.dolphin.ClientPresentationModel(serverCommand.pmId, serverCommand.pmType);
@@ -143,6 +150,7 @@ export module dolphin {
             return clientPm;
         }
         private handleValueChangedCommand(serverCommand:vcc.dolphin.ValueChangedCommand):cpm.dolphin.ClientPresentationModel{
+            console.log("in value change")
             var clientAttribute: ca.dolphin.ClientAttribute = this.clientDolphin.getClientModelStore().findAttributeById(serverCommand.attributeId);
             if(!clientAttribute){
                 console.log("attribute with id "+serverCommand.attributeId+" not found, cannot update old value "+serverCommand.oldValue+" to new value "+serverCommand.newValue);
