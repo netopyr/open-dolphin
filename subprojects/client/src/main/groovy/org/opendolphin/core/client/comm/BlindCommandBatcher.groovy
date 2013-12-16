@@ -58,7 +58,7 @@ class BlindCommandBatcher extends CommandBatcher {
     }
 
     protected final int MAX_GET_PM_CMD_CACHE_SIZE = 200
-    protected List<CommandAndHandler> cacheGetPmCmds = new LinkedList()
+    protected LinkedList<CommandAndHandler> cacheGetPmCmds = new LinkedList()
 
     // the only command we can safely drop is a GetPmCmd where a second one for the same
     // pmId is already in the batch with the exact same onFinished handler or no handler at all
@@ -71,8 +71,8 @@ class BlindCommandBatcher extends CommandBatcher {
             ((handler == null) || handler.is(it.handler))
         }
         if (!found) {
-            cacheGetPmCmds.add 0, commandWithHandler // front adding makes lookup faster
-            if (cacheGetPmCmds.size() > MAX_GET_PM_CMD_CACHE_SIZE) cacheGetPmCmds.remove(MAX_GET_PM_CMD_CACHE_SIZE)
+            cacheGetPmCmds.push commandWithHandler // front adding makes lookup faster
+            if (cacheGetPmCmds.size() > MAX_GET_PM_CMD_CACHE_SIZE) cacheGetPmCmds.removeLast()
         }
         return found
     }
