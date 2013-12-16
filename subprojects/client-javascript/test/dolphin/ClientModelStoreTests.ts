@@ -22,7 +22,8 @@ export module dolphin {
     export class ClientModelStoreTests extends tsUnit.tsUnit.TestClass {
 
         addAndRemovePresentationModel() {
-            var transmitter = new TestTransmitter(undefined, undefined)
+            var serverCommand:cmd.dolphin.Command[]=[];//to test
+            var transmitter = new TestTransmitter(undefined, serverCommand);
             var clientDolphin = new cd.dolphin.ClientDolphin();
             var clientConnector = new cc.dolphin.ClientConnector(transmitter,clientDolphin);
             var clientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);

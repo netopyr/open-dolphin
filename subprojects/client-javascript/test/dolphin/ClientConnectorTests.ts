@@ -36,7 +36,8 @@ export module dolphin {
 
         sendingOneCommandMustCallTheTransmission() {
             var singleCommand   = new cmd.dolphin.Command();
-            var transmitter     = new TestTransmitter(undefined, undefined)
+            var serverCommand:cmd.dolphin.Command[]=[];
+            var transmitter     = new TestTransmitter(singleCommand, serverCommand)
             var clientConnector = new cc.dolphin.ClientConnector(transmitter,null);
 
             clientConnector.send(singleCommand, undefined)
@@ -47,8 +48,9 @@ export module dolphin {
 
         sendingMultipleCommands() {
             var singleCommand   = new cmd.dolphin.Command();
+            var serverCommand:cmd.dolphin.Command[]=[];
             var lastCommand     = new cmd.dolphin.Command();
-            var transmitter     = new TestTransmitter(undefined, undefined)
+            var transmitter     = new TestTransmitter(undefined, serverCommand)
             var clientConnector = new cc.dolphin.ClientConnector(transmitter,null);
 
             clientConnector.send(singleCommand, undefined)
@@ -240,7 +242,8 @@ export module dolphin {
         static attr3:ca.dolphin.ClientAttribute;// to access for id
 
         static initialize(){
-            this.transmitter = new TestTransmitter(undefined, undefined)
+            var serverCommand:cmd.dolphin.Command[]=[];//to test
+            this.transmitter = new TestTransmitter(undefined, serverCommand);
             this.clientDolphin = new cd.dolphin.ClientDolphin();
             this.clientConnector = new cc.dolphin.ClientConnector(this.transmitter,this.clientDolphin);
             this.clientModelStore = new cms.dolphin.ClientModelStore(this.clientDolphin);
