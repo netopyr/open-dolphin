@@ -42,7 +42,7 @@ export module dolphin {
 
         addAttributeToModel(presentationModel:pm.dolphin.ClientPresentationModel, clientAttribute: ca.dolphin.ClientAttribute){
             presentationModel.addAttribute(clientAttribute);
-            //todo: clientModelStore.registerAttribute
+            this.getClientModelStore().registerAttribute(clientAttribute);
             if(!presentationModel.clientSideOnly){
                 this.clientConnector.send(new acn.dolphin.AttributeCreatedNotification(
                                                     presentationModel.id,

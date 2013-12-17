@@ -55,11 +55,17 @@ export module dolphin {
             var createPMCommand:createPMCmd.dolphin.CreatePresentationModelCommand = new createPMCmd.dolphin.CreatePresentationModelCommand(model);
             console.log("about to send create presentation model command", createPMCommand);
             connector.send(createPMCommand, null);
-            model.getAttributes().forEach((attribute:ca.dolphin.ClientAttribute) => {
+            model.getAttributes().forEach(attribute => {
+                this.registerAttribute(attribute);
+            });
+
+        }
+
+        registerAttribute(attribute:ca.dolphin.ClientAttribute){
                 this.addAttributeById(attribute);
                 attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
                     var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id, evt.oldValue, evt.newValue);
-                    connector.send(valueChangeCommand, null);
+                    this.clientDolphin.getClientConnector().send(valueChangeCommand, null);
 
                     if (attribute.qualifier) {
                         this.addAttributeByQualifier(attribute);
@@ -75,11 +81,10 @@ export module dolphin {
                 attribute.onQualifierChange((evt:ca.dolphin.ValueChangedEvent)=> {
                     var changeAttrMetadataCmd:changeAttMD.dolphin.ChangeAttributeMetadataCommand =
                         new changeAttMD.dolphin.ChangeAttributeMetadataCommand(attribute.id, attr.dolphin.Attribute.QUALIFIER_PROPERTY, evt.newValue);
-                    connector.send(changeAttrMetadataCmd, null);
-                })
-            });
-        }
+                    this.clientDolphin.getClientConnector().send(changeAttrMetadataCmd, null);
+                });
 
+        }
         add(model:pm.dolphin.ClientPresentationModel):boolean {
             if (!model) {
                 return false;
