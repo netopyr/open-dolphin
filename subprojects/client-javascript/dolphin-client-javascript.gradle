@@ -11,7 +11,7 @@ buildscript {
 // Invoke the plugin
 apply plugin: 'js'
 
-// Declare your sources
+// Declare the js sources
 javascript.source {
     dev {
         js {
@@ -38,5 +38,38 @@ minifyJs {
     dest = file("${buildDir}/dolphin-min.js")
     closure {
         warningLevel = 'QUIET'
+    }
+}
+
+// does not work with Java 8 !
+requireJs {
+    source = javascript.source.dev.js.files
+    dest = "${buildDir}/dolphin-all.js"
+    //ignoreExitCode = true
+    requirejs.options = [
+        name: "all",
+        baseUrl: "js/dolphin",
+        uglify: false
+    ]
+}
+
+task updateGrailsJs << {
+    ant.delete dir: '../../dolphin-grails/web-app/js/dolphin'
+    copy {
+        from 'js'
+        into '../../dolphin-grails/web-app/js'
+    }
+    copy {
+        from 'libs'
+        into '../../dolphin-grails/web-app/libs'
+    }
+}
+
+task jsZip (type: Zip) {
+    archiveName    = 'dolphin.js.zip'
+    destinationDir = buildDir
+    from '.', {
+        include 'js/**'
+        include 'libs/**'
     }
 }
