@@ -81,38 +81,30 @@ export module dolphin {
 
 
         handle(command:cmd.dolphin.Command): cpm.dolphin.ClientPresentationModel{
-            if(command instanceof dpmc.dolphin.DeletePresentationModelCommand){
+            if(command.id == "DeletePresentationModelCommand"){
                 return this.handleDeletePresentationModelCommand(<dpmc.dolphin.DeletePresentationModelCommand>command);
-            }
-            if(command instanceof dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand){
+            }else if(command.id == "DeleteAllPresentationModelsOfTypeCommand"){
                 return this.handleDeleteAllPresentationModelOfTypeCommand(<dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand>command);
-            }
-            if(command.id == "CreatePresentationModel"){
+            }else if(command.id == "CreatePresentationModel"){
                 return this.handleCreatePresentationModelCommand(<cpmc.dolphin.CreatePresentationModelCommand>command);
-            }
-            if(command.id == "ValueChanged"){
+            }else if(command.id == "ValueChanged"){
                 return this.handleValueChangedCommand(<vcc.dolphin.ValueChangedCommand>command);
-            }
-            if(command instanceof bvcc.dolphin.BaseValueChangedCommand){
+            }else if(command.id == "BaseValueChangedCommand"){
                 return this.handleBaseValueChangedCommand(<bvcc.dolphin.BaseValueChangedCommand>command);
-            }
-            if(command instanceof spmc.dolphin.SwitchPresentationModelCommand){
+            }else if(command.id == "SwitchPresentationModelCommand"){
                 return this.handleSwitchPresentationModelCommand(<spmc.dolphin.SwitchPresentationModelCommand>command);
-            }
-            if(command instanceof iac.dolphin.InitializeAttributeCommand){
+            }else if(command.id == "InitializeAttributeCommand"){
                 return this.handleInitializeAttributeCommand(<iac.dolphin.InitializeAttributeCommand>command);
-            }
-            if(command instanceof spmn.dolphin.SavedPresentationModelNotification){
+            }else if(command.id == "SavedPresentationModelNotification"){
                 return this.handleSavedPresentationModelNotification(<spmn.dolphin.SavedPresentationModelNotification>command);
-            }
-            if(command instanceof pmrc.dolphin.PresentationModelResetedCommand){
+            }else if(command.id == "PresentationModelResetedCommand"){
                 return this.handlePresentationModelResetedCommand(<pmrc.dolphin.PresentationModelResetedCommand>command);
-            }
-            if(command instanceof amdcc.dolphin.AttributeMetadataChangedCommand){
+            }else if(command.id == "AttributeMetadataChangedCommand"){
                 return this.handleAttributeMetadataChangedCommand(<amdcc.dolphin.AttributeMetadataChangedCommand>command);
-            }
-            if(command instanceof cna.dolphin.CallNamedActionCommand){
+            }else if(command.id == "CallNamedActionCommand"){
                 return this.handleCallNamedActionCommand(<cna.dolphin.CallNamedActionCommand>command);
+            }else{
+                console.log("Cannot handle, unknown command "+command);
             }
 
             return null;
