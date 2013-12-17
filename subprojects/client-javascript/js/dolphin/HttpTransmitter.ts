@@ -9,12 +9,13 @@ export module dolphin {
         http:XMLHttpRequest;
         codec:cod.dolphin.Codec
 
-        constructor(public url: string) {
+        constructor(public url: string, reset: boolean = true) {
             this.http = new XMLHttpRequest();
 //            this.http.withCredentials = true;
             this.codec = new cod.dolphin.Codec();
-
-            this.invalidate(); // ATM creating a new HttpTransmitter will invalidate the current session
+            if (reset) {
+                this.invalidate();
+            }
         }
 
         transmit(commands:cmd.dolphin.Command[], onDone:(result:cmd.dolphin.Command[]) => void):void {
