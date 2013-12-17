@@ -29,7 +29,7 @@ export module dolphin {
             return this.getClientModelStore().findPresentationModelById(id);
         }
         delete(modelToDelete:pm.dolphin.ClientPresentationModel) {
-            this.getClientModelStore().delete(modelToDelete, false);
+            this.getClientModelStore().deletePresentationModel(modelToDelete, false);
         }
 
         deleteAllPresentationModelOfType(presentationModelType:string) {

@@ -193,11 +193,11 @@ export module dolphin {
         deleteAllPresentationModelOfType(presentationModelType:string) {
             var presentationModels:pm.dolphin.ClientPresentationModel[] = this.findAllPresentationModelByType(presentationModelType);
             presentationModels.forEach(pm => {
-                this.delete(pm, false);
+                this.deletePresentationModel(pm, false);
             })
         }
 
-        delete(model:pm.dolphin.ClientPresentationModel, notify:boolean) {
+        deletePresentationModel(model:pm.dolphin.ClientPresentationModel, notify:boolean) {
             if (!model) {
                 return;
             }

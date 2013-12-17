@@ -123,7 +123,7 @@ export module dolphin {
         private handleDeletePresentationModelCommand(serverCommand:dpmc.dolphin.DeletePresentationModelCommand):cpm.dolphin.ClientPresentationModel{
             var model:cpm.dolphin.ClientPresentationModel =  this.clientDolphin.findPresentationModelById(serverCommand.pmId);
             if(!model) return null;
-            this.clientDolphin.getClientModelStore().delete(model, true);
+            this.clientDolphin.getClientModelStore().deletePresentationModel(model, true);
             return model;
         }
         private handleDeleteAllPresentationModelOfTypeCommand(serverCommand:dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand){
