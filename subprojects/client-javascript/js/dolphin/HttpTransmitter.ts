@@ -37,7 +37,7 @@ export module dolphin {
         }
 
         invalidate() {
-            this.http.open('POST', this.url + 'invalidate', true);
+            this.http.open('POST', this.url + 'invalidate', false);
             this.http.send();
         }
 

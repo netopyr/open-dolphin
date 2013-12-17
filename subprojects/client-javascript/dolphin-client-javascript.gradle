@@ -45,11 +45,9 @@ minifyJs {
 requireJs {
     source = javascript.source.dev.js.files
     dest = "${buildDir}/dolphin-all.js"
-    //ignoreExitCode = true
     requirejs.options = [
         name: "all",
-        baseUrl: "js/dolphin",
-        uglify: false
+        baseUrl: "js/dolphin"
     ]
 }
 
