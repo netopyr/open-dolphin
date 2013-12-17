@@ -11,7 +11,7 @@ export module dolphin {
 
         constructor(public url: string) {
             this.http = new XMLHttpRequest();
-            this.http.withCredentials = true;
+//            this.http.withCredentials = true;
             this.codec = new cod.dolphin.Codec();
 
             this.invalidate(); // ATM creating a new HttpTransmitter will invalidate the current session

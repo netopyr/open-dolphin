@@ -81,27 +81,27 @@ export module dolphin {
 
 
         handle(command:cmd.dolphin.Command): cpm.dolphin.ClientPresentationModel{
-            if(command.id == "DeletePresentationModelCommand"){
+            if(command.id == "DeletePresentationModel"){
                 return this.handleDeletePresentationModelCommand(<dpmc.dolphin.DeletePresentationModelCommand>command);
-            }else if(command.id == "DeleteAllPresentationModelsOfTypeCommand"){
+            }else if(command.id == "DeleteAllPresentationModelsOfType"){
                 return this.handleDeleteAllPresentationModelOfTypeCommand(<dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand>command);
             }else if(command.id == "CreatePresentationModel"){
                 return this.handleCreatePresentationModelCommand(<cpmc.dolphin.CreatePresentationModelCommand>command);
             }else if(command.id == "ValueChanged"){
                 return this.handleValueChangedCommand(<vcc.dolphin.ValueChangedCommand>command);
-            }else if(command.id == "BaseValueChangedCommand"){
+            }else if(command.id == "BaseValueChanged"){
                 return this.handleBaseValueChangedCommand(<bvcc.dolphin.BaseValueChangedCommand>command);
-            }else if(command.id == "SwitchPresentationModelCommand"){
+            }else if(command.id == "SwitchPresentationModel"){
                 return this.handleSwitchPresentationModelCommand(<spmc.dolphin.SwitchPresentationModelCommand>command);
-            }else if(command.id == "InitializeAttributeCommand"){
+            }else if(command.id == "InitializeAttribute"){
                 return this.handleInitializeAttributeCommand(<iac.dolphin.InitializeAttributeCommand>command);
-            }else if(command.id == "SavedPresentationModelNotification"){
+            }else if(command.id == "SavedPresentationModel"){
                 return this.handleSavedPresentationModelNotification(<spmn.dolphin.SavedPresentationModelNotification>command);
-            }else if(command.id == "PresentationModelResetedCommand"){
+            }else if(command.id == "PresentationModelReseted"){
                 return this.handlePresentationModelResetedCommand(<pmrc.dolphin.PresentationModelResetedCommand>command);
-            }else if(command.id == "AttributeMetadataChangedCommand"){
+            }else if(command.id == "AttributeMetadataChanged"){
                 return this.handleAttributeMetadataChangedCommand(<amdcc.dolphin.AttributeMetadataChangedCommand>command);
-            }else if(command.id == "CallNamedActionCommand"){
+            }else if(command.id == "CallNamedAction"){
                 return this.handleCallNamedActionCommand(<cna.dolphin.CallNamedActionCommand>command);
             }else{
                 console.log("Cannot handle, unknown command "+command);

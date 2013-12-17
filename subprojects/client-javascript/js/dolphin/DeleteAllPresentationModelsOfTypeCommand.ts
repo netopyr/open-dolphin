@@ -7,7 +7,7 @@ export module dolphin {
 
         constructor(public pmType:string) {
             super();
-            this.id = 'DeleteAllPresentationModelsOfTypeCommand';
+            this.id = 'DeleteAllPresentationModelsOfType';
             this.className = "org.opendolphin.core.comm.DeleteAllPresentationModelsOfTypeCommand";
         }
     }
