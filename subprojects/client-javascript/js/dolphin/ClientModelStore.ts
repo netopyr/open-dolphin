@@ -10,6 +10,7 @@ import map              = require("../../js/dolphin/Map")
 import dpmoftn          = require("../../js/dolphin/DeletedAllPresentationModelsOfTypeNotification")
 import bus              = require("../../js/dolphin/EventBus")
 import cpm              = require("../../js/dolphin/ClientPresentationModel")
+import dpmn              = require("../../js/dolphin/DeletedPresentationModelNotification")
 
 export module dolphin {
 
@@ -198,11 +199,12 @@ export module dolphin {
         deleteAllPresentationModelOfType(presentationModelType:string) {
             var presentationModels:pm.dolphin.ClientPresentationModel[] = this.findAllPresentationModelByType(presentationModelType);
             presentationModels.forEach(pm => {
-                this.delete(pm, false);
-            })
+                this.deletePresentationModel(pm, false);
+            });
+            this.clientDolphin.getClientConnector().send(new dpmoftn.dolphin.DeletedAllPresentationModelsOfTypeNotification(presentationModelType), undefined);
         }
 
-        delete(model:pm.dolphin.ClientPresentationModel, notify:boolean) {
+        deletePresentationModel(model:pm.dolphin.ClientPresentationModel, notify:boolean) {
             if (!model) {
                 return;
             }
@@ -211,8 +213,8 @@ export module dolphin {
                 if (!notify || model.clientSideOnly) {
                     return;
                 }
-                var connector:cc.dolphin.ClientConnector = this.clientDolphin.getClientConnector();
-                connector.send(new dpmoftn.dolphin.DeletedAllPresentationModelsOfTypeNotification(model.presentationModelType), undefined);
+                this.clientDolphin.getClientConnector().send(new dpmn.dolphin.DeletedPresentationModelNotification(model.id),null);
+
 
             }
         }

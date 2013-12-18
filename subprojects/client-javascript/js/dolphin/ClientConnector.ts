@@ -15,6 +15,7 @@ import dapm   = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeComma
 import dapmc  = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeCommand");
 import dpmc   = require("../../js/dolphin/DeletePresentationModelCommand");
 import cpmc   = require("../../js/dolphin/CreatePresentationModelCommand");
+import dcmd   = require("../../js/dolphin/DataCommand");
 
 export module dolphin {
 
@@ -81,7 +82,9 @@ export module dolphin {
 
 
         handle(command:cmd.dolphin.Command): cpm.dolphin.ClientPresentationModel{
-            if(command.id == "DeletePresentationModel"){
+            if(command.id == "Data"){
+                return this.handleDataCommand(<dcmd.dolphin.DataCommand>command);
+            }else if(command.id == "DeletePresentationModel"){
                 return this.handleDeletePresentationModelCommand(<dpmc.dolphin.DeletePresentationModelCommand>command);
             }else if(command.id == "DeleteAllPresentationModelsOfType"){
                 return this.handleDeleteAllPresentationModelOfTypeCommand(<dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand>command);
@@ -109,13 +112,13 @@ export module dolphin {
 
             return null;
         }
-        private handleDataCommand(){
-            //todo: to be implement
+        private handleDataCommand(serverCommand: dcmd.dolphin.DataCommand): any{
+            return serverCommand.data;
         }
         private handleDeletePresentationModelCommand(serverCommand:dpmc.dolphin.DeletePresentationModelCommand):cpm.dolphin.ClientPresentationModel{
             var model:cpm.dolphin.ClientPresentationModel =  this.clientDolphin.findPresentationModelById(serverCommand.pmId);
             if(!model) return null;
-            this.clientDolphin.getClientModelStore().delete(model, true);
+            this.clientDolphin.getClientModelStore().deletePresentationModel(model, true);
             return model;
         }
         private handleDeleteAllPresentationModelOfTypeCommand(serverCommand:dapmc.dolphin.DeleteAllPresentationModelsOfTypeCommand){
