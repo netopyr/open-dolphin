@@ -2,17 +2,8 @@
 <html>
 <head>
     <title>Basic Functional Form Tests with form data</title>
-    <script data-main="../config.js" src="../require.js"></script>
-    <style>
-        .label { font-size: 1.2em; color: wheat}
-        body {
-            font-family: Arial, Verdana, Tahoma;
-            color: #ffffff;
-            background-color: #4a87a9;
-            padding-top:  20px;
-            padding-left: 50px;
-        }
-    </style>
+    <script data-main="../../js/dolphin/"  src="../require.js"></script>
+    <link href="functional_tests.css" rel="stylesheet">
 </head>
 <body>
     <h1>Basic Functional Form Tests written with inline JavaScript</h1>
@@ -51,7 +42,7 @@
     </table>
 
 <script>
-    require([ 'subprojects/client-javascript/js/dolphin/All' ], function (dol) {
+    require([ 'All' ], function (dol) {
 
         // setting up the dolphin
         var dolphin = dol.dolphin(null, false);

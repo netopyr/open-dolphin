@@ -20,25 +20,6 @@ javascript.source {
             exclude "**/*.min.js"
         }
     }
-    prod {
-        js {
-            srcDir "js"
-            include "**/*.min.js"
-        }
-    }
-}
-
-combineJs {
-    source = javascript.source.dev.js.files
-    dest = file("${buildDir}/dolphin-one.js")
-}
-
-minifyJs {
-    source = combineJs
-    dest = file("${buildDir}/dolphin-min.js")
-    closure {
-        warningLevel = 'QUIET'
-    }
 }
 
 // does not work with Java 8 !

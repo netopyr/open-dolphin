@@ -2,20 +2,18 @@
 <html>
 <head>
     <title>Basic Server Connect Tests</title>
-    <script data-main="../config.js" src="../require.js"></script>
-    <style>
-        .label { font-size: 1.2em; color: wheat}
-        body {
-            font-family: Arial, Verdana, Tahoma;
-            color: #ffffff;
-            background-color: #4a87a9;
-            padding-top:  20px;
-            padding-left: 50px;
-        }
-    </style>
+    <script data-main="../../js/dolphin/"  src="../require.js"></script>
+    <link href="functional_tests.css" rel="stylesheet">
 </head>
 <body>
 <h1>Basic Server Connect Tests with inline JavaScript</h1>
+
+<p>Please make sure you have the server running. If not start via<br>
+<pre>
+    cd dolphin-grails
+    grailsw run-app
+</pre>
+</p>
 
 <p>Enter text here and click "send" to see the server-side change (prefix "server:")</p><p>
 <input id="instant-update-input" type="text" value=""></p><p>
@@ -35,7 +33,7 @@
 </p>
 
 <script>
-    require([ 'subprojects/client-javascript/js/dolphin/All' ], function (dol) {
+    require([ 'All' ], function (dol) {
 
         const SERVER_URL   = "http://localhost:8080/dolphin-grails/dolphin/";
 

@@ -2,17 +2,8 @@
 <html>
 <head>
     <title>Basic Functional Tests</title>
-    <script data-main="../config.js" src="../require.js"></script>
-    <style>
-        .label { font-size: 1.2em; color: wheat}
-        body {
-            font-family: Arial, Verdana, Tahoma;
-            color: #ffffff;
-            background-color: #4a87a9;
-            padding-top:  20px;
-            padding-left: 50px;
-        }
-    </style>
+    <script data-main="../../js/dolphin/" src="../../libs/require.js"></script>
+    <link href="functional_tests.css" rel="stylesheet">
 </head>
 <body>
 <h1>Basic Functional Tests written with inline JavaScript</h1>
@@ -23,7 +14,7 @@
 <button id="reset-button"   disabled='true' >Reset </button>
 </p><p>
 IsDirty
-<input id="dirty-status"         type="checkbox"/>
+<input id="dirty-status"    type="checkbox"/>
 </p>
 
 <p>Instantly updated label from the same Attribute:
@@ -36,7 +27,7 @@ IsDirty
 
 <script>
 
-    require([ 'subprojects/client-javascript/js/dolphin/All' ], function (dol) {
+    require([ 'All' ], function (dol) {
 
         // setting up the dolphin
         var dolphin = dol.dolphin(null, false);
