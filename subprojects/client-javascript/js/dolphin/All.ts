@@ -14,8 +14,7 @@ export function dolphin(url : string, reset : boolean) : dol.dolphin.ClientDolph
     var dolphin = new dol.dolphin.ClientDolphin();
     var transmitter ;
     if (url != null && url.length > 0) {
-        // todo dk: delete the session cookie if reset is true
-        transmitter = new htm.dolphin.HttpTransmitter(url);
+        transmitter = new htm.dolphin.HttpTransmitter(url, reset);
     } else {
         transmitter = new ntm.dolphin.NoTransmitter();
     }
