@@ -227,7 +227,6 @@ export module dolphin {
             model.reset();
             return model;
         }
-        //todo: verify the logic
         private handleAttributeMetadataChangedCommand(serverCommand: amdcc.dolphin.AttributeMetadataChangedCommand): cpm.dolphin.ClientPresentationModel{
             var clientAttribute = this.clientDolphin.getClientModelStore().findAttributeById(serverCommand.attributeId);
             if(!clientAttribute) return null;
