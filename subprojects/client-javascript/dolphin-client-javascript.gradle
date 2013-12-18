@@ -25,16 +25,16 @@ javascript.source {
 // does not work with Java 8 !
 requireJs {
     source = javascript.source.dev.js.files
-    dest = "${buildDir}/raw-all.js"
+    dest = "${buildDir}/raw-opendolphin.js"
     requirejs.options = [
-        name: "all",
+        name: "opendolphin",
         baseUrl: "js/dolphin"
     ]
 } << {
     copy {
-        from   "${buildDir}/raw-all.js"
+        from   "${buildDir}/raw-opendolphin.js"
         into   buildDir
-        rename ".*", "all.js"
+        rename ".*", "opendolphin.js"
         filter { String line -> line.replaceAll(/\.{2}\/\.{2}\/js\/dolphin\//, '')}
     }
 }
@@ -50,13 +50,13 @@ task updateGrailsJs << {
         into '../../dolphin-grails/web-app/libs'
     }
     copy {
-        from "${buildDir}/all.js"
+        from "${buildDir}/opendolphin.js"
         into '../../dolphin-grails/web-app/dolphin'
     }
 }
 
 task jsZip (type: Zip) {
-    archiveName    = 'dolphin.js.zip'
+    archiveName    = 'opendolphin.js.zip'
     destinationDir = buildDir
     from '.', {
         include 'js/**'

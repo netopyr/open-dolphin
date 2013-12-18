@@ -8,7 +8,7 @@
 <body>
 <h1>Basic Server Connect Tests with inline JavaScript</h1>
 
-<p>Please make sure you have the server running. If not start via<br>
+<p>Please make sure you have the server running. If not, start via<br>
 <pre>
     cd dolphin-grails
     grailsw run-app
@@ -33,7 +33,7 @@
 </p>
 
 <script>
-    require([ 'All' ], function (dol) {
+    require([ 'opendolphin' ], function (dol) {
 
         const SERVER_URL   = "http://localhost:8080/dolphin-grails/dolphin/";
 
@@ -77,10 +77,6 @@
         // request new server PM to add
         addButton.onclick = function () {
             dolphin.send(CMD_ADD, { onFinished: function(models) {
-                console.log("models: " + models);
-                console.log("model: " + models[0]);
-                console.log("temp: " + models[0].getAt("temperature"));
-                console.log("val: " + models[0].getAt("temperature").getValue());
                 var newItem = document.createElement("li");
                 newItem.innerText = models[0].getAt("temperature").getValue() + " : " + models[0].getAt("humidity").getValue();
                 addList.appendChild(newItem);
