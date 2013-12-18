@@ -44,11 +44,18 @@ minifyJs {
 // does not work with Java 8 !
 requireJs {
     source = javascript.source.dev.js.files
-    dest = "${buildDir}/dolphin-all.js"
+    dest = "${buildDir}/raw-all.js"
     requirejs.options = [
         name: "all",
         baseUrl: "js/dolphin"
     ]
+} << {
+    copy {
+        from   "${buildDir}/raw-all.js"
+        into   buildDir
+        rename ".*", "all.js"
+        filter { String line -> line.replaceAll(/\.{2}\/\.{2}\/js\/dolphin\//, '')}
+    }
 }
 
 task updateGrailsJs << {
@@ -61,6 +68,10 @@ task updateGrailsJs << {
         from 'libs'
         into '../../dolphin-grails/web-app/libs'
     }
+    copy {
+        from "${buildDir}/all.js"
+        into '../../dolphin-grails/web-app/dolphin'
+    }
 }
 
 task jsZip (type: Zip) {
@@ -71,3 +82,5 @@ task jsZip (type: Zip) {
         include 'libs/**'
     }
 }
+
+task all (dependsOn: [jsZip, requireJs, updateGrailsJs])
