@@ -28,7 +28,8 @@ requireJs {
     dest = "${buildDir}/raw-opendolphin.js"
     requirejs.options = [
         name: "opendolphin",
-        baseUrl: "js/dolphin"
+        baseUrl: "js/dolphin",
+        optimize: "none"            // comment this line for full ugly minification
     ]
 } << {
     copy {
@@ -64,4 +65,4 @@ task jsZip (type: Zip) {
     }
 }
 
-task all (dependsOn: [jsZip, requireJs, updateGrailsJs])
+task install (dependsOn: [jsZip, requireJs, updateGrailsJs])

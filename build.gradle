@@ -240,7 +240,7 @@ subprojects.each { proj ->
             into distDir
         }
     }
-    proj.tasks.add(name: 'sourceZip', type: Zip) {
+    proj.tasks.create(name: 'sourceZip', type: Zip) {
         classifier = 'src'
         destinationDir = distDir
         from proj.sourceSets*.allSource
@@ -248,7 +248,7 @@ subprojects.each { proj ->
 }
 
 task wrap(type: Wrapper, description: "create a gradlew") {
-    gradleVersion = '1.9'
+    gradleVersion = '1.10'
 }
 
 apply {

@@ -17,10 +17,8 @@
 include 'shared'
 include 'server'
 include 'client'
-// include 'client-common'
 include 'client-javafx'
-// include 'client-swing'
-// include 'client-swt'
+include 'client-javascript'
 
 include 'combined'
 
