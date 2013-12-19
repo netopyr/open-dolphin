@@ -103,28 +103,34 @@
 			</ul>
 		</div>
 		<div id="page-body" role="main">
-			<h1>Welcome to Grails</h1>
-			<p>Congratulations, you have successfully started your first Grails application! At the moment
-			   this is the default page, feel free to modify it to either redirect to a controller or display whatever
-			   content you may choose. Below is a list of controllers that are currently deployed in this application,
-			   click on each to execute its default action:</p>
+			<h1>OpenDolphin server home</h1>
 
 			<div id="controller-list" role="navigation">
-				<h2>Available Controllers:</h2>
+
+        <h2>Dolphin.js grails GSP pages:</h2>
 				<ul>
-					<g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-						<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
-					</g:each>
-				</ul>
-        <h2>Dolphin.js test pages:</h2>
-				<ul>
-						<li class="controller"><g:link uri="/manyEvents?times=10&sleep=20"> Many events starter</g:link></li>
 						<li class="controller"><g:link uri="/djs/simple">     simple page</g:link></li>
 						<li class="controller"><g:link uri="/djs/tacho">      tacho  page</g:link></li>
-						<li class="controller"><g:link uri="/push.html">      push.html</g:link></li>
-						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
-						<li class="controller"><g:link uri="/test.html">      test.html</g:link></li>
 				</ul>
+        <h2>Dolphin.js static pages:</h2>
+				<ul>
+
+%{--						<li class="controller"><g:link uri="/push.html">      push.html</g:link></li>
+						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
+						<li class="controller"><g:link uri="/test.html">      test.html</g:link></li>--}%
+				</ul>
+
+        <hr>
+        <h2>Dolphin.js admin pages:</h2>
+				<ul>
+						<li class="controller"><g:link uri="/manyEvents?times=10&sleep=20"> Many events starter</g:link></li>
+				</ul>
+        <h2>All Controllers:</h2>
+        <ul>
+          <g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName }}">
+            <li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
+          </g:each>
+        </ul>
 			</div>
 		</div>
 	</body>

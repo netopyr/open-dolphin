@@ -3,9 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <title>Dolphin.js Tutorial</title>
-        <script src="libs/require.js"></script>
+        <script src="../../libs/require.js"></script>
         <script src="config.js"></script>
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -35,7 +35,7 @@
                     <p class="btn btn-primary">...and use Bootstrap!</p>
                 </div>
                 <a href="http://open-dolphin.org">
-                    <img class="span3 pull-right" src="img/open_dolphin_logo.png" alt="Open Dolphin">
+                    <img class="span3 pull-right" src="../../img/open_dolphin_logo.png" alt="Open Dolphin">
                 </a>
             </div>
 
@@ -60,7 +60,7 @@
                     <div class="row">
                         <button class="btn pull-left" ng-click="isCollapsed = !isCollapsed">{{caption}} Code</button>
                         <a href="http://www.canoo.com">
-                            <img class="pull-right" src="img/canoo_logo.png" alt="Canoo Engineering AG">
+                            <img class="pull-right" src="../../img/canoo_logo.png" alt="Canoo Engineering AG">
                         </a>
                     </div>
                     <div class="row" collapse="isCollapsed">
@@ -74,7 +74,7 @@
 
         <script id="dolphinCode">
             require([
-                'Dolphin',
+                '../.',
                 'comm/ClientAttribute'
             ], function (Dolphin, ClientAttribute) {
 
@@ -139,8 +139,8 @@
         <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sunburst"></script>
 
         <!-- Use AngularJS directives for Bootstrap to make the code snippet collapsible -->
-        <script src="libs/angular-1.0.5.min.js"></script>
-        <script src="libs/ui-bootstrap-tpls-0.2.0.min.js"></script>
+        <script src="../../libs/angular-1.0.5.min.js"></script>
+        <script src="../../libs/ui-bootstrap-tpls-0.2.0.min.js"></script>
         <script>
             angular.module('dolphinJsTutorial', ['ui.bootstrap']);
 

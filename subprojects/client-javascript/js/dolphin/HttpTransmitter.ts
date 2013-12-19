@@ -11,7 +11,7 @@ export module dolphin {
 
         constructor(public url: string, reset: boolean = true) {
             this.http = new XMLHttpRequest();
-//            this.http.withCredentials = true;
+//            this.http.withCredentials = true; // not supported in all browsers
             this.codec = new cod.dolphin.Codec();
             if (reset) {
                 this.invalidate();

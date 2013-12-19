@@ -2,9 +2,9 @@
 <html lang="en">
     <head>
         <title>Dolphin.js Tutorial</title>
-        <script src="libs/require.js"></script>
+        <script src="../../libs/require.js"></script>
         <script src="config.js"></script>
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -38,8 +38,8 @@
             <canvas height="200" width="200" id="gauge"></canvas>
         </div>
 
-        <script src="libs/steelseries-min.js"></script>
-        <script src="libs/tween-min.js"></script>
+        <script src="../../libs/steelseries-min.js"></script>
+        <script src="../../libs/tween-min.js"></script>
         <script>
             var sections = [
                 steelseries.Section(0, 25, 'rgba(0, 0, 220, 0.3)'),
@@ -62,7 +62,7 @@
 
         <script>
             require([
-                'Dolphin',
+                '../.',
                 'comm/ClientAttribute'
             ], function (Dolphin, ClientAttribute) {
 
