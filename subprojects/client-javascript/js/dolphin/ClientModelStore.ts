@@ -16,7 +16,8 @@ import bvcc             = require("../../js/dolphin/BaseValueChangedCommand")
 export module dolphin {
 
     export enum Type{
-        ADDED, REMOVED
+        ADDED = <any>'ADDED',
+        REMOVED =  <any>'REMOVED'
     }
     export interface ModelStoreEvent {
         eventType:Type;
