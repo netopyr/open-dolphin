@@ -119,6 +119,10 @@
 						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
 						<li class="controller"><g:link uri="/test.html">      test.html</g:link></li>--}%
 				</ul>
+        <h2>Dolphin.js with Angular:</h2>
+				<ul>
+						<li class="controller"><g:link uri="/demo/angular/AngularTable.html"> Angular Table Demo</g:link></li>
+				</ul>
 
         <hr>
         <h2>Dolphin.js admin pages:</h2>
