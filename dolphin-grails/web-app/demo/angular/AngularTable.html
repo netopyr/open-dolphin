@@ -1,0 +1,65 @@
+<html ng-app="weatherApp">
+<head>
+  <script data-main="../../dolphin/opendolphin.js" src="../../libs/require.js"></script>
+  <script src="lib/angular.min.js"></script>
+  <link  href="../../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body ng-controller="WeatherTableController">
+
+<div class="container">
+    <div class="offset1 span4">
+        <h3>Weather Observations</h3>
+        <button id="addButton" class="btn btn-primary"> + </button>
+        <table class="table table-bordered table-condensed span4">
+            <thead> <tr>
+                <th>Temperature</th>
+                <th>Humidity</th>
+            </tr> </thead>
+            <tbody>
+            <tr ng-repeat="measurement in measurements">
+                <td>{{measurement.temp}}</td>
+                <td>{{measurement.humid}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <a href="https://github.com/canoo/open-dolphin/blob/master/dolphin-grails/web-app/demo/angular/AngularTable.html">source code</a>
+</div>
+</body>
+<script>
+
+    // angular binding to from widget model to view
+
+    var weatherApp = angular.module('weatherApp', []);
+    weatherApp.controller('WeatherTableController', function ($scope) {
+        $scope.measurements = [];
+
+        $scope.addRow = function (measurement) {
+            $scope.measurements.push(measurement);
+            $scope.$apply()
+        };
+
+        // dolphin binding from presentation model to widget model
+
+        require([ 'opendolphin' ], function (dol) {
+            var dolphin = dol.dolphin("http://localhost:8080/dolphin-grails/dolphin/", true);
+            var addButton = document.getElementById("addButton");
+            addButton.addEventListener("click", function () {
+              dolphin.send("org.opendolphin.demo.Tutorial.add", {onFinished: function (models) {
+                models.forEach(function (model) {
+                    $scope.addRow( {
+                        temp : model.getAt("temperature").getValue(),
+                        humid: model.getAt("humidity").getValue()
+                    })
+                })
+              }});
+            });
+        });
+
+    });
+</script>
+
+
+</html>
+
