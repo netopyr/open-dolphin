@@ -65,7 +65,7 @@ export module dolphin {
             return this.getClientModelStore().findPresentationModelById(id);
         }
         deletePresentationModel(modelToDelete:pm.dolphin.ClientPresentationModel) {
-            this.getClientModelStore().deletePresentationModel(modelToDelete, false);
+            this.getClientModelStore().deletePresentationModel(modelToDelete, true);
         }
 
         deleteAllPresentationModelOfType(presentationModelType:string) {
