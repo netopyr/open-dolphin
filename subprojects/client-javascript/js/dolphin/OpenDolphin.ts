@@ -6,7 +6,12 @@ import ntm = require('../../js/dolphin/NoTransmitter');
 import htm = require('../../js/dolphin/HttpTransmitter');
 
 /**
- * JS-friendly facade to avoid too many dependencies in plain JS code
+ * JS-friendly facade to avoid too many dependencies in plain JS code.
+ * The name of this file is also used for the initial lookup of the
+ * one javascript file that contains all the dolphin code.
+ * Changing the name requires the build support and all users
+ * to be updated as well.
+ * Dierk Koenig
  */
 
 // factory method for the initialized dolphin

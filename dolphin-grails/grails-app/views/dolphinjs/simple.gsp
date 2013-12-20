@@ -1,6 +1,11 @@
 <%--
-  A simple page that works together with dolphin.js for showcasing the use of OpenDolphin in a
-  single-page javascript application.
+  A simple page that works together with opendolphin.js for showcasing the use of OpenDolphin in a
+  single-page javascript application that is delivered from a grails GSP.
+  The benefit here is that one can share references between the worlds of Java, Html, and JavaScript.
+  The Java application code is in TutorialAction and we use its constants in JavaScript to
+  relate to IDs, commands, and attribute names.
+  We share references between Html and JavaScript by using the same ids for Html elements
+  and JavaScript lookup code.
   author: dierk.koenig
 --%>
 
@@ -24,11 +29,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Dolphin.js Simple Page</title>
-  <script src="${resource(dir: 'libs',    file: 'require.js')}"></script>
-  <script src="${resource(dir: 'dolphin', file: 'config.js')}"></script>
-  <link  href="${resource(dir: 'css',     file: 'bootstrap.min.css')}" rel="stylesheet">
+  <meta name="layout" content="demo"> <%-- links to opendolphin.js, require.js, and bootstrap --%>
+  <title>Dolphin.js Simple Page from GSP</title>
 </head>
 
 <body>
@@ -66,46 +68,29 @@
       <span class="help-block">
         Click to get new content from the server side, bound to a list.
       </span>
-      <button id="${addButton}"       class="btn btn-primary">Add Server Data</button>
+      <button id="${addButton}" class="btn btn-primary">Add Server Data</button>
       <div id="${list}"></div>
 
     </fieldset>
-    </div>
-  </div>
-  <hr>
 
-  <!-- Collapsible area to show the code snippet, this is only for illustration. Dolphin does not depend on angular. -->
-  <div ng-app="dolphinJsTutorial">
-    <div ng-controller="CollapseController">
-      <div class="row">
-        <div class="offset1"><button class="btn" ng-click="isCollapsed = !isCollapsed">{{caption}} Code</button></div>
-        <div class ="offset8 span2"><a href="http://www.canoo.com" >
-          <img  src="${resource(dir: 'img', file: 'canoo_logo.png')}" alt="Canoo Engineering AG">
-        </a></div>
-      </div>
-
-      <div class="row" collapse="isCollapsed">
-        <pre id="${showCode}" class="prettyprint" data-script-id="${dolphinCode}">
-          <!-- The code snippet will be shown here -->
-        </pre>
-      </div>
+    <hr>
+    <a href="https://github.com/canoo/open-dolphin/blob/master/dolphin-grails/grails-app/views/dolphinjs/simple.gsp">source code</a>
     </div>
+
   </div>
 </div>
 
-<script id="${dolphinCode}">
-  require([
-    'Dolphin',
-    'comm/ClientAttribute'
-  ], function (Dolphin, ClientAttribute) {
+<script>
+  require([ 'opendolphin' ], function (dol) {
 
-    var dolphin = new Dolphin("${dolphinUrl}");
+    // setting up the dolphin
+    var dolphin = dol.dolphin("${dolphinUrl}", true);
 
     // create named PM with attribute on the client side
-    var textAttribute  = new ClientAttribute("${TutorialAction.ATTR_ID}");
-    var rangeAttribute = new ClientAttribute("${range}");
-    console.log("INIT PM");
-    dolphin.getClientDolphin().presentationModel(
+    var textAttribute  = dol.attribute("${TutorialAction.ATTR_ID}", null, '');
+    var rangeAttribute = dol.attribute("${range}", null, '');
+
+    dolphin.presentationModel(
       "${TutorialAction.PM_ID_MODEL}", undefined,
       textAttribute, rangeAttribute
     );
@@ -113,7 +98,7 @@
     // send echo command on button click
     var logActionButton = document.getElementById("${logActionButton}");
     logActionButton.addEventListener("click", function () {
-      dolphin.getClientDolphin().send("${TutorialAction.CMD_ECHO}");
+      dolphin.send("${TutorialAction.CMD_ECHO}");
     });
 
     // bind text input field to pm textAttribute bidirectionally
@@ -121,13 +106,13 @@
     textInput.addEventListener("input", function () {
       textAttribute.setValue(textInput.value);
     });
-    textAttribute.on("valueChange", function (data) {
+    textAttribute.onValueChange(function (data) {
       textInput.value = data.newValue;
     });
 
     // bind label to textAttribute
     var label = document.getElementById("${label}");
-    textAttribute.on("valueChange", function (data) {
+    textAttribute.onValueChange(function (data) {
       label.innerHTML = data.newValue;
     });
 
@@ -137,7 +122,7 @@
     rangeInput.addEventListener("input", function () {
       rangeAttribute.setValue(rangeInput.value);
     });
-    rangeAttribute.on("valueChange", function (data) {
+    rangeAttribute.onValueChange(function (data) {
       rangeOutput.innerHTML = data.newValue;
     });
 
@@ -145,41 +130,18 @@
     var addButton = document.getElementById("${addButton}");
     var list      = document.getElementById("${list}");
     addButton.addEventListener("click", function () {
-      dolphin.getClientDolphin().send("${TutorialAction.CMD_ADD}", function (models) {
-        console.log("NEW models", models);
+      dolphin.send("${TutorialAction.CMD_ADD}", {onFinished: function (models) {
         models.forEach(function (model) {
+          console.log(model)
           var element = document.createElement("div");
           element.innerHTML = model.presentationModelType + ": " + model.attributes[0].value;
           list.appendChild(element);
         })
-      });
+      }});
     });
 
   });
 </script>
 
-<!-- Copy the content of the application script into an html container and Use prettify to show the code snippet -->
-<script>
-  var showCode = document.getElementById("${showCode}");
-  var script   = document.getElementById("${dolphinCode}");
-  showCode.innerHTML = script.innerHTML;
-</script>
-<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sunburst"></script>
-
-<!-- Use AngularJS directives for Bootstrap to make the code snippet collapsible -->
-<script src="${resource(dir: 'libs', file: 'angular-1.0.5.min.js')}"></script>
-<script src="${resource(dir: 'libs', file: 'ui-bootstrap-tpls-0.2.0.min.js')}"></script>
-<script>
-  angular.module('dolphinJsTutorial', ['ui.bootstrap']);
-
-  function CollapseController($scope) {
-    $scope.isCollapsed = true;
-    $scope.caption = "Show";
-
-    $scope.$watch("isCollapsed", function (newValue) {
-      $scope.caption = newValue ? "Show" : "Hide";
-    });
-  }
-</script>
 </body>
 </html>
