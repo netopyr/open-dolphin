@@ -157,5 +157,43 @@ export module dolphin {
 
         }
 
+        checkAttributeBaseValueChangeForSameQualifier(){
+            var serverCommand:cmd.dolphin.Command[]=[];//to test
+            var transmitter = new TestTransmitter(undefined, serverCommand);
+            var clientDolphin = new cd.dolphin.ClientDolphin();
+            var clientConnector = new cc.dolphin.ClientConnector(transmitter,clientDolphin);
+            var clientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
+            clientDolphin.setClientConnector(clientConnector);
+            clientDolphin.setClientModelStore(clientModelStore);
+
+            var pm1 = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
+            var clientAttr1 = new ca.dolphin.ClientAttribute("property1","same-qualifier","value1","VALUE");
+
+            var pm2 = new cpm.dolphin.ClientPresentationModel(undefined,undefined);
+            var clientAttr2 = new ca.dolphin.ClientAttribute("property2","same-qualifier","value2","VALUE");
+
+            pm1.addAttribute(clientAttr1);
+            pm2.addAttribute(clientAttr2);
+
+            clientModelStore.add(pm1);
+            clientModelStore.add(pm2);
+
+            clientAttr1.setValue("Test");
+            this.areIdentical(clientAttr1.getBaseValue(), "value1");
+            this.isTrue(clientAttr1.isDirty());
+            clientAttr1.rebase();
+
+            this.areIdentical(clientAttr1.getValue(), "Test");
+            this.areIdentical(clientAttr1.getBaseValue(), "Test");
+            this.isFalse(clientAttr1.isDirty());
+
+
+            this.areIdentical(clientAttr2.getValue(), "Test");
+            this.areIdentical(clientAttr2.getBaseValue(), "Test");
+            this.isFalse(clientAttr2.isDirty());
+
+
+        }
+
     }
 }

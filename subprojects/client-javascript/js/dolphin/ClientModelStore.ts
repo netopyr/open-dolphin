@@ -10,7 +10,8 @@ import map              = require("../../js/dolphin/Map")
 import dpmoftn          = require("../../js/dolphin/DeletedAllPresentationModelsOfTypeNotification")
 import bus              = require("../../js/dolphin/EventBus")
 import cpm              = require("../../js/dolphin/ClientPresentationModel")
-import dpmn              = require("../../js/dolphin/DeletedPresentationModelNotification")
+import dpmn             = require("../../js/dolphin/DeletedPresentationModelNotification")
+import bvcc             = require("../../js/dolphin/BaseValueChangedCommand")
 
 export module dolphin {
 
@@ -62,28 +63,42 @@ export module dolphin {
 
         }
 
-        registerAttribute(attribute:ca.dolphin.ClientAttribute){
-                this.addAttributeById(attribute);
-                attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
-                    var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id, evt.oldValue, evt.newValue);
-                    this.clientDolphin.getClientConnector().send(valueChangeCommand, null);
+        registerAttribute(attribute:ca.dolphin.ClientAttribute) {
+            this.addAttributeById(attribute);
+            this.addAttributeByQualifier(attribute);
 
-                    if (attribute.qualifier) {
-                        this.addAttributeByQualifier(attribute);
-                        var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) => {
-                            return attr !== attribute && attr.qualifier === attribute.qualifier;
-                        })
-                        attrs.forEach((attr:ca.dolphin.ClientAttribute) => {
-                            attr.setValue(attribute.getValue());
-                        })
-                    }
-                });
+            attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
+                var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id, evt.oldValue, evt.newValue);
+                this.clientDolphin.getClientConnector().send(valueChangeCommand, null);
 
-                attribute.onQualifierChange((evt:ca.dolphin.ValueChangedEvent)=> {
-                    var changeAttrMetadataCmd:changeAttMD.dolphin.ChangeAttributeMetadataCommand =
-                        new changeAttMD.dolphin.ChangeAttributeMetadataCommand(attribute.id, attr.dolphin.Attribute.QUALIFIER_PROPERTY, evt.newValue);
-                    this.clientDolphin.getClientConnector().send(changeAttrMetadataCmd, null);
-                });
+                if (attribute.qualifier) {
+                    var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) => {
+                        return attr !== attribute && attr.qualifier === attribute.qualifier;
+                    })
+                    attrs.forEach((attr:ca.dolphin.ClientAttribute) => {
+                        attr.setValue(attribute.getValue());
+                    })
+                }
+            });
+
+            attribute.onBaseValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
+                var baseValueChangeCommand:bvcc.dolphin.BaseValueChangedCommand = new bvcc.dolphin.BaseValueChangedCommand(attribute.id);
+                this.clientDolphin.getClientConnector().send(baseValueChangeCommand, null);
+                if (attribute.qualifier) {
+                    var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) => {
+                        return attr !== attribute && attr.qualifier === attribute.qualifier;
+                    })
+                    attrs.forEach((attr:ca.dolphin.ClientAttribute) => {
+                        attr.rebase();
+                    })
+                }
+            });
+
+            attribute.onQualifierChange((evt:ca.dolphin.ValueChangedEvent)=> {
+                var changeAttrMetadataCmd:changeAttMD.dolphin.ChangeAttributeMetadataCommand =
+                    new changeAttMD.dolphin.ChangeAttributeMetadataCommand(attribute.id, attr.dolphin.Attribute.QUALIFIER_PROPERTY, evt.newValue);
+                this.clientDolphin.getClientConnector().send(changeAttrMetadataCmd, null);
+            });
 
         }
         add(model:pm.dolphin.ClientPresentationModel):boolean {
