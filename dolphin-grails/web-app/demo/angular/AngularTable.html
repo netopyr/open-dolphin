@@ -44,19 +44,22 @@
 
         require([ 'opendolphin' ], function (dol) {
             var dolphin = dol.dolphin("http://localhost:8080/dolphin-grails/dolphin/", true);
+
             var addButton = document.getElementById("addButton");
             addButton.addEventListener("click", function () {
-              dolphin.send("org.opendolphin.demo.Tutorial.add", {onFinished: function (models) {
-                models.forEach(function (model) {
-                    $scope.addRow( {
-                        temp : model.getAt("temperature").getValue(),
-                        humid: model.getAt("humidity").getValue()
-                    })
+              dolphin.send("org.opendolphin.demo.Tutorial.add", null);
+            });
+
+            dolphin.getClientModelStore().onModelStoreChange(function (modelStoreEvent) {
+                if (modelStoreEvent.eventType != 'ADDED') return;
+                var cpm = modelStoreEvent.clientPresentationModel
+                if (cpm.presentationModelType != "weather") return;
+                $scope.addRow( {
+                    temp : cpm.getAt("temperature").getValue(),
+                    humid: cpm.getAt("humidity").getValue()
                 })
-              }});
             });
         });
-
     });
 </script>
 
