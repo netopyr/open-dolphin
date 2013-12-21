@@ -115,8 +115,8 @@
         <h2>Dolphin.js static pages:</h2>
 				<ul>
 
-%{--						<li class="controller"><g:link uri="/push.html">      push.html</g:link></li>
-						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
+					<li class="controller"><g:link uri="/demo/js/teammember/TeamMemberDetails.html">Teammembers</g:link></li>
+%{--						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
 						<li class="controller"><g:link uri="/test.html">      test.html</g:link></li>--}%
 				</ul>
         <h2>Dolphin.js with Angular:</h2>

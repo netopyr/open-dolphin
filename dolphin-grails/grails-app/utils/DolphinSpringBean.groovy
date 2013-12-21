@@ -45,6 +45,7 @@ class DolphinSpringBean {
 
         // for the dolphin.js demos
         dolphin.register(new TutorialAction())
+        dolphin.register(new org.opendolphin.demo.teammember.TeamMemberActions())
 
     }
 }

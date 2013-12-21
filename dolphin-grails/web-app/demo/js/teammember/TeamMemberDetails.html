@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Basic Server Connect Tests</title>
+<script data-main="../../../dolphin/opendolphin.js" src="../../../libs/require.js"></script>
+<link href="../../../css/bootstrap.min.css" rel="stylesheet"><style>
+    .button-add{
+        background-image: url(images/plus.png);
+        background-color: transparent;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        height: 38px;
+        width: 38px;
+        vertical-align: middle;
+        border-radius:5px;
+        margin-bottom: 10px;
+
+    }
+    .button-delete{
+        background-image: url(images/delete.png);
+        background-color: transparent;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        height: 28px;
+        width: 28px;
+        vertical-align: middle;
+        border-radius:5px;
+        margin-right: 10px;"
+
+    }
+    body {
+        font-family: Arial, Verdana, Tahoma;
+        padding-top: 10px;
+        padding-left: 10px;
+    }
+</style>
+</head>
+<body>
+<div>
+    <div style="float: left; width: 650px">
+        <button id="add-teammember" class="button-add" title="add a row for team member"></button>
+        <table id="list" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Function</th>
+                <th>Available</th>
+                <th>Contractor</th>
+                <th>Workload(%)</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody id="team-records"></tbody>
+        </table>
+    </div>
+    <div id="teammember-form" hidden="true" style="float: left; margin-left:20px; margin-top: 40px;border-radius:25px; border: 1px solid green;">
+        <table style="margin: 20px;">
+            <tr>
+                <td align="right"><strong>First Name:</strong> &nbsp; </td>
+                <td align="right"><input id="firstName" type="text"	placeholder="FirstName..." /></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>Last Name:</strong> &nbsp; </td>
+                <td align="right"><input id="lastName" type="text"	placeholder="LastName..." /></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>Function:</strong>&nbsp;</td>
+                <td align="left"><select id="function">
+                    <option value="" selected="selected"></option>
+                    <option value="Engineer">Engineer</option>
+                    <option value="Architect">Architect</option>
+                    <option value="Administrator">Administrator</option>
+                    <option value="Consultant">Consultant</option>
+                    <option value="CFO">CFO</option>
+                    <option value="CTO">CTO</option>
+                    <option value="CEO">CEO</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>Available:</strong> &nbsp;</td>
+                <td>
+                    Yes
+                    <input type="radio" id="availableYes" name="available" value="yes" />
+                    &nbsp;No
+                    <input type="radio"	id="availableNo" name="available" value="no"/>
+                </td>
+            </tr>
+            <tr>
+                <td />
+            </tr>
+            <tr>
+                <td align="right"><strong>Contractor: </strong> &nbsp; </td>
+                <td> <input id="contractor" type="checkbox" value="true" /></td>
+            </tr>
+            <tr>
+                <td/>
+            </tr>
+            <tr>
+                <td/>
+            </tr>
+            <tr>
+                <td align="right"><strong>Workload:</strong> &nbsp;</td>
+                <td align="left"><select id="workLoad"">
+                    <option value="" selected="selected"></option>
+                    <option value="25">25%</option>
+                    <option value="50">50%</option>
+                    <option value="75">75%</option>
+                    <option value="100">100%</option>
+                    </select></td>
+            </tr>
+            <tr>
+                <td />
+            </tr>
+            <tr>
+                <td />
+            </tr>
+            <tr>
+                <td align="right">
+                    <button id="save-button" disabled="true">Save</button>
+                </td>
+                <td align="right">
+                    <button id="reset-button"disabled="true">Reset</button>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    require([ 'opendolphin' ], function (dol) {
+
+        const SERVER_URL = "http://localhost:8080/dolphin-grails/dolphin/";
+
+        const PM_ID_MODEL = "teamMemberMold";
+        const PM_TYPE_MODEL = "teamMember";
+
+        // setting up the dolphin
+        var dolphin = dol.dolphin(SERVER_URL, false);
+
+        // Create PM
+        var firstNameAttr = dol.attribute("firstName", null, "");
+        var lastNameAttr = dol.attribute("lastName", null, "");
+        var functionNameAttr = dol.attribute("function", null, "");
+        var isAvailableAttr = dol.attribute("available", null, "");
+        var isContractorAttr = dol.attribute("contractor", null, "");
+        var workloadAttr = dol.attribute("workLoad", null, "");
+        var teamMemberPM = dolphin.presentationModel(
+                PM_ID_MODEL,
+                PM_TYPE_MODEL,
+                firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
+        );
+
+        //Add a row
+        var addTeamMemberBtn = document.getElementById("add-teammember");
+        var teamMemberForm = document.getElementById("teammember-form");
+
+        // send add command to create an empty pm
+        addTeamMemberBtn.onclick = function () {
+            dolphin.send("add");
+        }
+        // save the pm
+        var saveTeamMemberBtn = document.getElementById("save-button");
+        saveTeamMemberBtn.onclick = function () {
+            dolphin.send("save", { onFinished: function (models) {
+                teamMemberForm.style.border = "1px solid green";
+            }});
+        }
+
+        // Register ModelStore change event to add and remove row in view
+        dolphin.getClientModelStore().onModelStoreChange(function (modelStoreEvent) {
+            if (modelStoreEvent.eventType == 'ADDED') {
+                createTableRow(modelStoreEvent.clientPresentationModel);
+            } else {
+                removeTableRow();
+            }
+        });
+        //Add row from server
+        var table = document.getElementById("team-records");
+        var selectedRowIndex = '0';
+        //Create table row
+        var createTableRow = function (model) {
+            var row = document.createElement("tr");
+            row.dataset.id = model.id;
+            row.addEventListener("click", function (event) {
+                selectedRowIndex = row.rowIndex - 1;
+                if (event.target.name == 'delete-button') {
+                    deletePresentationModel(row.dataset.id);
+                } else {
+                    teamMemberForm.hidden = false;
+                    teamMemberPM.syncWith(model);
+                }
+            });
+
+            row.appendChild(createTableDataAndRegisterValueChange(model.findAttributeByPropertyName("firstName")));
+            row.appendChild(createTableDataAndRegisterValueChange(model.findAttributeByPropertyName("lastName")));
+            row.appendChild(createTableDataAndRegisterValueChange(model.findAttributeByPropertyName("function")));
+            row.appendChild(createTableDataAndRegisterValueChange(model.findAttributeByPropertyName("available")));
+            row.appendChild(createTableDataAndRegisterValueChange(model.findAttributeByPropertyName("contractor")));
+            row.appendChild(createTableDataAndRegisterValueChange(model.findAttributeByPropertyName("workLoad")));
+            row.appendChild(appendDeleteButton(model.id));
+            table.appendChild(row);
+        };
+        //remove table row
+        var removeTableRow = function () {
+            table.deleteRow(selectedRowIndex);
+        }
+
+        function createTableDataAndRegisterValueChange(attribute) {
+            var td = document.createElement("td");
+            td.dataset.role = attribute.propertyName;
+            attribute.onValueChange(function (event) {
+                td.innerHTML = attribute.getValue();
+            });
+            return td
+        }
+
+        function appendDeleteButton(modelId) {
+            var td = document.createElement("td");
+            td.align = 'right';
+            td.innerHTML = "<button id=" + modelId + " name=\"delete-button\" class=\"button-delete\"></button>";
+            return td
+        }
+
+        function deletePresentationModel(modelId) {
+            dolphin.deletePresentationModel(dolphin.findPresentationModelById(modelId));
+            var models = dolphin.findAllPresentationModelByType("teamMember");
+            if (models.length > 1) {
+                teamMemberPM.syncWith(models[1]);
+            } else {
+                teamMemberForm.hidden = true;
+            }
+        }
+
+        // html elements to bind against
+        var firstName    = document.getElementById("firstName");
+        var lastName     = document.getElementById("lastName");
+        var functionName = document.getElementById("function");
+        var availableYes = document.getElementById("availableYes");
+        var availableNo  = document.getElementById("availableNo");
+        var isContractor = document.getElementById("contractor");
+        var workload     = document.getElementById("workLoad");
+
+        // bind firstName textfield to firstNameAttr bidirectional
+        firstName.oninput = function (event) {
+            firstNameAttr.setValue(firstName.value);
+        };
+        firstNameAttr.onValueChange(function (event) {
+            firstName.value = event.newValue;
+        });
+        // bind lastName textfield to lastNameAttr bidirectional
+        lastName.oninput = function (event) {
+            lastNameAttr.setValue(lastName.value);
+        };
+        lastNameAttr.onValueChange(function (event) {
+            lastName.value = event.newValue;
+        });
+        // bind functionName textfield to functionNameAttr bidirectional
+        functionName.onclick = function (event) {
+            functionNameAttr.setValue(functionName.value);
+        };
+        functionNameAttr.onValueChange(function (event) {
+            functionName.value = event.newValue;
+        });
+        // availableYes binding with isAvailableAttr
+        availableYes.onclick = function (event) {
+            isAvailableAttr.setValue(availableYes.value);
+        };
+        // availableYes binding with isAvailableAttr
+        availableNo.onclick = function (event) {
+            isAvailableAttr.setValue(availableNo.value);
+        };
+        isAvailableAttr.onValueChange(function (event) {
+            if (event.newValue == 'yes') {
+                availableYes.checked = true;
+            } else if (event.newValue == 'no') {
+                availableNo.checked = true;
+            } else {
+                availableYes.checked = false;
+                availableNo.checked = false;
+            }
+        });
+        // isContractor binding with isContractorAttr
+        isContractor.onclick = function (event) {
+            isContractorAttr.setValue(isContractor.checked);
+        };
+        isContractorAttr.onValueChange(function (event) {
+            isContractor.checked = event.newValue;
+        });
+        // workload binding with workloadAttr
+        workload.onclick = function (event) {
+            workloadAttr.setValue(workload.value);
+        };
+        workloadAttr.onValueChange(function (event) {
+            workload.value = event.newValue;
+        });
+
+        //bind save button with personPM
+        teamMemberPM.onDirty(function (event) {
+            saveTeamMemberBtn.disabled = !event.newValue;
+        });
+
+        //bind reset button with PM dirty
+        var resetButton = document.getElementById("reset-button");
+        teamMemberPM.onDirty(function (event) {
+            resetButton.disabled = !event.newValue;
+        });
+        //reset
+        resetButton.onclick = function () {
+            teamMemberPM.reset();
+        };
+        teamMemberPM.onDirty(function (event) {
+            if (event.newValue) {
+                teamMemberForm.style.border = "1px solid red";
+            } else {
+                teamMemberForm.style.border = "1px solid green";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
