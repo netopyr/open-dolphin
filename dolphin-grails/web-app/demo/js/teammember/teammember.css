@@ -7,6 +7,11 @@
     background-color: #fff7e8;
 }
 
+.dirty-field {
+    font-style:  italic;
+    font-weight: bold;
+}
+
 .clean {
     border-color: green;
 }
@@ -23,9 +28,12 @@
     border-width: 1px;
     border-style: solid;
     float: left;
-    margin-left: 20px;
     margin-top: 40px;
     border-radius: 10px;
+}
+
+#selected-row {
+    background: lightsteelblue;
 }
 
 body {

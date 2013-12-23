@@ -125,11 +125,9 @@ export module dolphin {
 
         }
 
-        // todo:  immediate value update on registration?
         onValueChange(eventHandler:(event:ValueChangedEvent) => void) {
             this.valueChangeBus.onEvent(eventHandler);
             eventHandler({"oldValue": this.value, "newValue": this.value});
-
         }
 
         onQualifierChange(eventHandler:(event:ValueChangedEvent) => void) {

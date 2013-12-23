@@ -7,10 +7,10 @@
 <link href="teammember.css" rel="stylesheet"/>
 </head>
 <body>
-<div>
-    <div style="float: left; width: 650px">
+<div class="container">
+    <div class="col-lg-8">
         <button id="add-teammember" class="btn btn-default btn-sm button-add" title="add a row for a new team member"> + </button>
-        <table id="list" class="table table-bordered table-hover table-condensed">
+        <table id="list" class="table table-bordered table-condensed">
             <thead>
             <tr>
                 <th>First Name</th>
@@ -18,27 +18,29 @@
                 <th>Function</th>
                 <th>Available</th>
                 <th>Contractor</th>
-                <th>Workload(%)</th>
+                <th>Workload&nbsp;(%)</th>
                 <th>Delete</th>
             </tr>
             </thead>
             <tbody id="team-records"></tbody>
         </table>
     </div>
-    <div id="teammember-form" class="detail-form unselected">
+
+    <div class="col-lg-4">
+        <div id="teammember-form" class="detail-form unselected">
         <table style="margin: 20px;">
             <tr>
-                <td align="right"><strong>First Name:</strong> &nbsp; </td>
-                <td align="right"><input id="firstName" type="text"	placeholder="FirstName..." /></td>
+                <td align="right"><strong>First&nbsp;Name:</strong>&nbsp;</td>
+                <td align="right"><input id="firstName" type="text"	placeholder="e.g. John" /></td>
             </tr>
             <tr>
-                <td align="right"><strong>Last Name:</strong> &nbsp; </td>
-                <td align="right"><input id="lastName" type="text"	placeholder="LastName..." /></td>
+                <td align="right"><strong>Last&nbsp;Name:</strong>&nbsp;</td>
+                <td align="right"><input id="lastName" type="text"	placeholder="e.g. Doe" /></td>
             </tr>
             <tr>
                 <td align="right"><strong>Function:</strong>&nbsp;</td>
                 <td align="left"><select id="function">
-                    <option value="" selected="selected"></option>
+                    <option value="" selected=""></option>
                     <option value="Engineer">Engineer</option>
                     <option value="Architect">Architect</option>
                     <option value="Administrator">Administrator</option>
@@ -85,36 +87,63 @@
             </tr>
         </table>
     </div>
+    </div>
 </div>
 
 
 <script>
     require([ 'opendolphin' ], function (dol) {
 
-        const SERVER_URL    = "http://localhost:8080/dolphin-grails/dolphin/";
+        // html elements to bind against
+        var firstName           = document.getElementById("firstName");
+        var lastName            = document.getElementById("lastName");
+        var functionName        = document.getElementById("function");
+        var availableYes        = document.getElementById("availableYes");
+        var availableNo         = document.getElementById("availableNo");
+        var isContractor        = document.getElementById("contractor");
+        var workload            = document.getElementById("workLoad");
+        var resetButton         = document.getElementById("reset-button");
+        var addTeamMemberBtn    = document.getElementById("add-teammember");
+        var teamMemberForm      = document.getElementById("teammember-form");
+        var table               = document.getElementById("team-records");
 
+        // setting up the dolphin
+
+        const SERVER_URL    = "http://localhost:8080/dolphin-grails/dolphin/";
         const PM_ID_MODEL   = "teamMemberMold";
         const PM_TYPE_MODEL = "teamMember";
 
-        // setting up the dolphin
-        var dolphin = dol.dolphin(SERVER_URL, true);
+        var dolphin         = dol.dolphin(SERVER_URL, true);
 
-        // Create PM
+        // Create teammember PM for stable binding of the detail view, represents the current selection
         var firstNameAttr       = dol.attribute("firstName",    null, "");
         var lastNameAttr        = dol.attribute("lastName",     null, "");
         var functionNameAttr    = dol.attribute("function",     null, "");
         var isAvailableAttr     = dol.attribute("available",    null, "");
         var isContractorAttr    = dol.attribute("contractor",   null, "");
         var workloadAttr        = dol.attribute("workLoad",     null, "");
+
         var teamMemberPM        = dolphin.presentationModel(
                 PM_ID_MODEL,
                 PM_TYPE_MODEL,
                 firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
         );
 
-        //Add a row
-        var addTeamMemberBtn = document.getElementById("add-teammember");
-        var teamMemberForm   = document.getElementById("teammember-form");
+        // there is no selection model for html tables, so we need to create one ourselves (client side only)
+        var selectedRow    = dol.attribute("row",  null, -1);   /* -1 for no selection */
+        var selectedPmId   = dol.attribute("pmId", null, null); /* null for no selection*/
+
+        // whenever the selected presentation model changes, make sure we update the detail view
+        selectedPmId.onValueChange(function(event) {
+            var selectedPm = dolphin.getAt(event.newValue); // this may be null
+            if (selectedPm) {
+                teamMemberForm.className = "detail-form selected";
+                teamMemberPM.syncWith(selectedPm);
+            } else {
+                teamMemberForm.className = "detail-form unselected";
+                // consider nulling-out the form, including qualifiers. syncWith(null) could do that.
+            }
+        });
 
         // send add command to create an empty pm
         addTeamMemberBtn.onclick = function () {
@@ -126,83 +155,89 @@
             dolphin.send("save");
         }
 
-        // Register ModelStore change event to add and remove row in view
+        // Register ModelStore change event to reflect newly available team members in the master view (table)
         dolphin.getClientModelStore().onModelStoreChange(function (modelStoreEvent) {
             if (modelStoreEvent.eventType == 'ADDED') {
                 createTableRow(modelStoreEvent.clientPresentationModel);
-            } else {
-                removeTableRow();
+            }
+            if (modelStoreEvent.eventType == 'REMOVED') {
+                removeTableRow(modelStoreEvent.clientPresentationModel);
             }
         });
-        //Add row from server
-        var table = document.getElementById("team-records");
-        var selectedRowIndex = '0';
+
         //Create table row
         var createTableRow = function (model) {
             var row = document.createElement("tr");
             row.dataset.id = model.id;
+            // whenever the selected model changes, make sure we update the row accordingly
+            selectedPmId.onValueChange(function() {
+               row.id = ( selectedRow.getValue() == (row.rowIndex - 1) ? "selected-row" : "");
+            });
+            model.onDirty( function(event) {
+                row.className = (event.newValue ? "dirty" : "clean");
+            });
             row.addEventListener("click", function (event) {
-                selectedRowIndex = row.rowIndex - 1;
-                if (event.target.name == 'delete-button') {
-                    deletePresentationModel(row.dataset.id);
-                } else {
-                    teamMemberForm.className = "detail-form selected";
-                    teamMemberPM.syncWith(model);
-                }
-                model.onDirty( function(event) {
-                    row.className = (event.newValue ? "dirty" : "clean");
-                });
+                if (event.target.name == "delete-button") return; // clicking a button also counts as clicking on the row
+                selectRow(row.rowIndex - 1); // row indexes start at 1
             });
 
-            row.appendChild(createTableDataAndRegisterValueChange(model,"firstName"));
-            row.appendChild(createTableDataAndRegisterValueChange(model,"lastName"));
-            row.appendChild(createTableDataAndRegisterValueChange(model,"function"));
-            row.appendChild(createTableDataAndRegisterValueChange(model,"available"));
-            row.appendChild(createTableDataAndRegisterValueChange(model,"contractor"));
-            row.appendChild(createTableDataAndRegisterValueChange(model,"workLoad"));
+            row.appendChild(createSelfUpdatingTDs(model,"firstName"));
+            row.appendChild(createSelfUpdatingTDs(model,"lastName"));
+            row.appendChild(createSelfUpdatingTDs(model,"function"));
+            row.appendChild(createSelfUpdatingTDs(model,"available"));
+            row.appendChild(createSelfUpdatingTDs(model,"contractor"));
+            row.appendChild(createSelfUpdatingTDs(model,"workLoad"));
             row.appendChild(appendDeleteButton(model.id));
             table.appendChild(row);
+            // right after creation, select the newly created row
+            selectRow(row.rowIndex - 1); // row indexes start at 1
         };
-        //remove table row
-        var removeTableRow = function () {
-            table.deleteRow(selectedRowIndex);
+
+        // find the tr of the to-be-removed model, remove it, and set the selection to the trailer if possible or one up otherwise
+        var removeTableRow = function (model) {
+            var found = -1;
+            for (i=0; found < 0 && i < table.children.length; i++) {
+                if (table.children[i].dataset.id == model.id) { found = i};
+            }
+            if (found < 0) { return; } // should never happen, but better be safe than sorry
+            table.deleteRow(found);
+            selectRow((table.children.length > found) ? found : found - 1 );
         }
 
-        function createTableDataAndRegisterValueChange(model, propertyName) {
+        var selectRow = function(rowNumber) { // starting at 0
+            selectedRow.setValue(rowNumber);
+            var row  = table.children[rowNumber];
+            var pmId = (row ? row.dataset.id : null);
+            selectedPmId.setValue(pmId);
+        }
+
+        function createSelfUpdatingTDs(model, propertyName) {
             var attribute = model.findAttributeByPropertyName(propertyName)
             var td = document.createElement("td");
             td.dataset.role = attribute.propertyName;
             attribute.onValueChange(function (event) {
-                td.innerHTML = attribute.getValue();
+                td.innerHTML = event.newValue;
+            });
+            attribute.onDirty( function(event) {
+                td.className = (event.newValue ? "dirty-field" : "clean");
             });
             return td
         }
 
         function appendDeleteButton(modelId) {
-            var td = document.createElement("td");
+            var td   = document.createElement("td");
+            var btn  = document.createElement("button");
+            btn.id   = modelId;
+            btn.name = 'delete-button';
+            btn.className = 'btn btn-default btn-xs'
+            btn.innerHTML = '&nbsp;-&nbsp;'
+            btn.onclick   = function() {
+                dolphin.deletePresentationModel(dolphin.findPresentationModelById(modelId))
+            }
             td.align = 'center';
-            td.innerHTML = "<button id=" + modelId + " name='delete-button' class='btn btn-default btn-xs'>&nbsp;-&nbsp;</button>";
+            td.appendChild(btn);
             return td
         }
-
-        function deletePresentationModel(modelId) {
-            dolphin.deletePresentationModel(dolphin.findPresentationModelById(modelId));
-            var models = dolphin.findAllPresentationModelByType("teamMember");
-            if (models.length > 1) {
-                teamMemberPM.syncWith(models[1]);
-            } else {
-                teamMemberForm.className = "detail-form unselected";
-            }
-        }
-
-        // html elements to bind against
-        var firstName    = document.getElementById("firstName");
-        var lastName     = document.getElementById("lastName");
-        var functionName = document.getElementById("function");
-        var availableYes = document.getElementById("availableYes");
-        var availableNo  = document.getElementById("availableNo");
-        var isContractor = document.getElementById("contractor");
-        var workload     = document.getElementById("workLoad");
 
         // bind firstName textfield to firstNameAttr bidirectional
         firstName.oninput = function (event) {
@@ -264,7 +299,6 @@
         });
 
         //bind reset button with PM dirty
-        var resetButton = document.getElementById("reset-button");
         teamMemberPM.onDirty(function (event) {
             resetButton.disabled = !event.newValue;
         });
