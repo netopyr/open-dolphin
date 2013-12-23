@@ -63,7 +63,7 @@ export module dolphin {
             this.currentlySending = true;
             var cmdAndHandler = this.commandQueue.shift();
             this.transmitter.transmit([cmdAndHandler.command], (response:cmd.dolphin.Command[]) => {
-                console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
+                // console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
 
                 var touchedPMs : cpm.dolphin.ClientPresentationModel[] = []
                 response.forEach((command:cmd.dolphin.Command) => {
@@ -145,13 +145,12 @@ export module dolphin {
             return clientPm;
         }
         private handleValueChangedCommand(serverCommand:vcc.dolphin.ValueChangedCommand):cpm.dolphin.ClientPresentationModel{
-            console.log("in value change")
             var clientAttribute: ca.dolphin.ClientAttribute = this.clientDolphin.getClientModelStore().findAttributeById(serverCommand.attributeId);
             if(!clientAttribute){
                 console.log("attribute with id "+serverCommand.attributeId+" not found, cannot update old value "+serverCommand.oldValue+" to new value "+serverCommand.newValue);
                 return null;
             }
-            console.log("updating "+clientAttribute.propertyName +" id "+serverCommand.attributeId+" from "+clientAttribute.getValue()+" to "+serverCommand.newValue);
+            // console.log("updating "+clientAttribute.propertyName +" id "+serverCommand.attributeId+" from "+clientAttribute.getValue()+" to "+serverCommand.newValue);
             clientAttribute.setValue(serverCommand.newValue);
             return null;
         }
@@ -161,7 +160,7 @@ export module dolphin {
                 console.log("attribute with id "+serverCommand.attributeId+" not found, cannot set initial value.");
                 return null;
             }
-            console.log("updating id "+serverCommand.attributeId+" setting initial value to "+clientAttribute.getValue());
+            // console.log("updating id "+serverCommand.attributeId+" setting initial value to "+clientAttribute.getValue());
             clientAttribute.rebase();
             return null;
         }
