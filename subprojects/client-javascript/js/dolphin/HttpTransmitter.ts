@@ -27,7 +27,6 @@ export module dolphin {
 
             this.http.onloadend = (evt:ProgressEvent) => {
                 var responseText = this.http.responseText;
-                console.log("got: "+responseText);
                 var responseCommands = this.codec.decode(responseText);
                 onDone(responseCommands);
             }
@@ -38,7 +37,7 @@ export module dolphin {
         }
 
         invalidate() {
-            this.http.open('POST', this.url + 'invalidate', false);
+            this.http.open('POST', this.url + 'invalidate?', false);
             this.http.send();
         }
 

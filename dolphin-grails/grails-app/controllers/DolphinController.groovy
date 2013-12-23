@@ -11,6 +11,7 @@ class DolphinController {
 
     def invalidate() {
         session.invalidate()
+        render text: 'new session'
     }
 
     def index() {
