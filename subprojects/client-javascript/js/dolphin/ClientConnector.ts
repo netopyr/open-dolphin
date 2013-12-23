@@ -16,6 +16,7 @@ import dapmc  = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeComma
 import dpmc   = require("../../js/dolphin/DeletePresentationModelCommand");
 import cpmc   = require("../../js/dolphin/CreatePresentationModelCommand");
 import dcmd   = require("../../js/dolphin/DataCommand");
+import tags  = require("../../js/dolphin/Tag")
 
 export module dolphin {
 
@@ -131,7 +132,7 @@ export module dolphin {
             }
             var attributes:ca.dolphin.ClientAttribute[] = [];
             serverCommand.attributes.forEach((attr) =>{
-                var clientAttribute = new ca.dolphin.ClientAttribute(attr.propertyName,attr.qualifier,attr.value, attr.tag?attr.tag:"VALUE");
+                var clientAttribute = new ca.dolphin.ClientAttribute(attr.propertyName,attr.qualifier,attr.value, attr.tag?attr.tag:tags.dolphin.Tag.value());
                 attributes.push(clientAttribute);
             });
             var clientPm = new cpm.dolphin.ClientPresentationModel(serverCommand.pmId, serverCommand.pmType);

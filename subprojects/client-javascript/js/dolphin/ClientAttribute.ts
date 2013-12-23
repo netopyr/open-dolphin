@@ -1,5 +1,6 @@
-import cpm = require("../../js/dolphin/ClientPresentationModel")
-import bus = require("../../js/dolphin/EventBus")
+import cpm  = require("../../js/dolphin/ClientPresentationModel")
+import bus  = require("../../js/dolphin/EventBus")
+import tags = require("../../js/dolphin/Tag")
 
 export module dolphin {
 
@@ -21,7 +22,7 @@ export module dolphin {
         private dirtyValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
         private baseValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
 
-        constructor(public propertyName:string, public qualifier:string, value:any, public tag:string = "VALUE") {
+        constructor(public propertyName:string, public qualifier:string, value:any, public tag:string = tags.dolphin.Tag.value()) {
             this.id = clientAttributeInstanceCount++;
             this.valueChangeBus = new bus.dolphin.EventBus();
             this.qualifierChangeBus = new bus.dolphin.EventBus();
