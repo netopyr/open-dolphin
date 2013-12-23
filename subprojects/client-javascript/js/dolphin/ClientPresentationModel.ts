@@ -1,6 +1,6 @@
-import ca  = require("../../js/dolphin/ClientAttribute");
-import bus = require("../../js/dolphin/EventBus")
-
+import ca   = require("../../js/dolphin/ClientAttribute");
+import bus  = require("../../js/dolphin/EventBus")
+import tags = require("../../js/dolphin/Tag")
 
 export module dolphin {
 
@@ -47,7 +47,7 @@ export module dolphin {
             }
             attribute.setPresentationModel(this);
             this.attributes.push(attribute);
-            if(attribute.tag == "VALUE"){ // the consideration here is that only VALUE changes can make a PM dirty. TODO: consistency check with Java client.
+            if(attribute.tag == tags.dolphin.Tag.value()){ // the consideration here is that only VALUE changes can make a PM dirty. TODO: consistency check with Java client.
                 this.updateDirty();
             }
             attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
@@ -96,12 +96,12 @@ export module dolphin {
         getAttributes(): ca.dolphin.ClientAttribute[]{
             return this.attributes.slice(0);
         }
-        getAt(propertyName:string, tag:string = "VALUE"):ca.dolphin.ClientAttribute{
+        getAt(propertyName:string, tag:string = tags.dolphin.Tag.value()):ca.dolphin.ClientAttribute{
             return this.findAttributeByPropertyNameAndTag(propertyName, tag);
         }
 
         findAttributeByPropertyName(propertyName: string): ca.dolphin.ClientAttribute{
-            return this.findAttributeByPropertyNameAndTag(propertyName, "VALUE");
+            return this.findAttributeByPropertyNameAndTag(propertyName, tags.dolphin.Tag.value());
         }
 
         findAllAttributesByPropertyName(propertyName: string): ca.dolphin.ClientAttribute[]{
