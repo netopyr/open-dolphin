@@ -1,28 +1,5 @@
 .button-add {
-    background-image: url(images/plus.png);
-    background-color: transparent;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    height: 38px;
-    width: 38px;
-    vertical-align: middle;
-    border-radius: 5px;
     margin-bottom: 10px;
-
-}
-
-.button-delete {
-    background-image: url(images/delete.png);
-    background-color: transparent;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    height: 28px;
-    width: 28px;
-    vertical-align: middle;
-    border-radius: 5px;
-    margin-right: 10px;
-"
-
 }
 
 .dirty {

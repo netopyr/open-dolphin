@@ -9,8 +9,8 @@
 <body>
 <div>
     <div style="float: left; width: 650px">
-        <button id="add-teammember" class="button-add" title="add a row for team member"></button>
-        <table id="list" class="table table-bordered table-hover">
+        <button id="add-teammember" class="btn btn-default btn-sm button-add" title="add a row for a new team member"> + </button>
+        <table id="list" class="table table-bordered table-hover table-condensed">
             <thead>
             <tr>
                 <th>First Name</th>
@@ -72,28 +72,16 @@
             </tr>
             <tr>
                 <td align="right"><strong>Workload:</strong> &nbsp;</td>
-                <td align="left"><select id="workLoad">
-                    <option value="" selected="selected"></option>
-                    <option value="25">25%</option>
-                    <option value="50">50%</option>
-                    <option value="75">75%</option>
-                    <option value="100">100%</option>
-                    </select></td>
+                <td align="left"><input type="range" min="0" max="100" id="workLoad"/></td>
             </tr>
+            <tr> <td/> </tr>
+            <tr> <td/> </tr>
             <tr>
-                <td />
-            </tr>
-            <tr>
-                <td />
-            </tr>
-            <tr>
-                <td align="right">
+                <td ></td>
+                <td >
                     <button id="save-button" disabled="true">Save</button>
-                </td>
-                <td align="right">
                     <button id="reset-button"disabled="true">Reset</button>
                 </td>
-
             </tr>
         </table>
     </div>
@@ -181,7 +169,7 @@
         }
 
         function createTableDataAndRegisterValueChange(model, propertyName) {
-            model.findAttributeByPropertyName(propertyName)
+            var attribute = model.findAttributeByPropertyName(propertyName)
             var td = document.createElement("td");
             td.dataset.role = attribute.propertyName;
             attribute.onValueChange(function (event) {
@@ -192,8 +180,8 @@
 
         function appendDeleteButton(modelId) {
             var td = document.createElement("td");
-            td.align = 'right';
-            td.innerHTML = "<button id=" + modelId + " name=\"delete-button\" class=\"button-delete\"></button>";
+            td.align = 'center';
+            td.innerHTML = "<button id=" + modelId + " name='delete-button' class='btn btn-default btn-xs'>&nbsp;-&nbsp;</button>";
             return td
         }
 
@@ -263,7 +251,7 @@
             isContractor.checked = event.newValue;
         });
         // workload binding with workloadAttr
-        workload.onclick = function (event) {
+        workload.oninput = function (event) {
             workloadAttr.setValue(workload.value);
         };
         workloadAttr.onValueChange(function (event) {
