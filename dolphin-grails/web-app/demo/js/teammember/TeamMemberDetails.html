@@ -103,6 +103,7 @@
         var isContractor        = document.getElementById("contractor");
         var workload            = document.getElementById("workLoad");
         var resetButton         = document.getElementById("reset-button");
+        var saveTeamMemberBtn   = document.getElementById("save-button");
         var addTeamMemberBtn    = document.getElementById("add-teammember");
         var teamMemberForm      = document.getElementById("teammember-form");
         var table               = document.getElementById("team-records");
@@ -115,7 +116,7 @@
 
         var dolphin         = dol.dolphin(SERVER_URL, true);
 
-        // Create teammember PM for stable binding of the detail view, represents the current selection
+        // Create detail PM for stable binding of the detail view, representing the current selection
         var firstNameAttr       = dol.attribute("firstName",    null, "");
         var lastNameAttr        = dol.attribute("lastName",     null, "");
         var functionNameAttr    = dol.attribute("function",     null, "");
@@ -123,7 +124,7 @@
         var isContractorAttr    = dol.attribute("contractor",   null, "");
         var workloadAttr        = dol.attribute("workLoad",     null, "");
 
-        var teamMemberPM        = dolphin.presentationModel(
+        var detailPM            = dolphin.presentationModel(
                 PM_ID_MODEL,
                 PM_TYPE_MODEL,
                 firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
@@ -138,7 +139,7 @@
             var selectedPm = dolphin.getAt(event.newValue); // this may be null
             if (selectedPm) {
                 teamMemberForm.className = "detail-form selected";
-                teamMemberPM.syncWith(selectedPm);
+                detailPM.syncWith(selectedPm);
             } else {
                 teamMemberForm.className = "detail-form unselected";
                 // consider nulling-out the form, including qualifiers. syncWith(null) could do that.
@@ -150,10 +151,13 @@
             dolphin.send("add");
         }
         // save the pm
-        var saveTeamMemberBtn = document.getElementById("save-button");
         saveTeamMemberBtn.onclick = function () {
             dolphin.send("save");
         }
+        // reset
+        resetButton.onclick = function () {
+            detailPM.reset();
+        };
 
         // Register ModelStore change event to reflect newly available team members in the master view (table)
         dolphin.getClientModelStore().onModelStoreChange(function (modelStoreEvent) {
@@ -253,7 +257,7 @@
         lastNameAttr.onValueChange(function (event) {
             lastName.value = event.newValue;
         });
-        // bind functionName textfield to functionNameAttr bidirectional
+        // bind functionName combobox to functionNameAttr bidirectional
         functionName.onclick = function (event) {
             functionNameAttr.setValue(functionName.value);
         };
@@ -264,7 +268,7 @@
         availableYes.onclick = function (event) {
             isAvailableAttr.setValue(availableYes.value);
         };
-        // availableYes binding with isAvailableAttr
+        // availableNo binding with isAvailableAttr
         availableNo.onclick = function (event) {
             isAvailableAttr.setValue(availableNo.value);
         };
@@ -293,21 +297,18 @@
             workload.value = event.newValue;
         });
 
-        //bind save button with personPM
-        teamMemberPM.onDirty(function (event) {
+        // enable save button only if detail PM is dirty
+        detailPM.onDirty(function (event) {
             saveTeamMemberBtn.disabled = !event.newValue;
         });
 
-        //bind reset button with PM dirty
-        teamMemberPM.onDirty(function (event) {
+        // enable reset button only if detail PM is dirty
+        detailPM.onDirty(function (event) {
             resetButton.disabled = !event.newValue;
         });
-        //reset
-        resetButton.onclick = function () {
-            teamMemberPM.reset();
-        };
-        // bind the pm's dirty state to the view style class
-        teamMemberPM.onDirty( function(event) {
+
+        // bind the pm's dirty state to the detail view style class
+        detailPM.onDirty( function(event) {
             teamMemberForm.className = "detail-form selected " + (event.newValue ? "dirty" : "clean");
         });
 
