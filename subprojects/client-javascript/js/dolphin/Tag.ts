@@ -14,7 +14,7 @@ export module dolphin {
 
         /** If the attribute represent tooltip**/
         static tooltip = () =>{
-            return "TOOPTIP";
+            return "TOOLTIP";
         };
 
         /** "true" or "false", maps to Grails constraint nullable:false */

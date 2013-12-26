@@ -53,6 +53,10 @@ export module dolphin {
             return this.getClientModelStore().listPresentationModelIds();
         }
 
+        listPresentationModels(): pm.dolphin.ClientPresentationModel[]{
+            return this.getClientModelStore().listPresentationModels();
+        }
+
         findAllPresentationModelByType(presentationModelType:string):pm.dolphin.ClientPresentationModel[] {
             return this.getClientModelStore().findAllPresentationModelByType(presentationModelType);
         }
@@ -81,6 +85,13 @@ export module dolphin {
                 });
             });
         }
+
+        tag(presentationModel: pm.dolphin.ClientPresentationModel,propertyName:string,value:any, tag:string):  ca.dolphin.ClientAttribute{
+            var clientAttribute: ca.dolphin.ClientAttribute = new ca.dolphin.ClientAttribute(propertyName, null, value, tag);
+            this.addAttributeToModel(presentationModel, clientAttribute);
+            return clientAttribute;
+        }
+
         addAttributeToModel(presentationModel:pm.dolphin.ClientPresentationModel, clientAttribute: ca.dolphin.ClientAttribute){
             presentationModel.addAttribute(clientAttribute);
             this.getClientModelStore().registerAttribute(clientAttribute);

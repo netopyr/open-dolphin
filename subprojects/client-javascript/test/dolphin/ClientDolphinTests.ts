@@ -5,6 +5,7 @@ import cd     = require("../../js/dolphin/ClientDolphin")
 import cms    = require("../../js/dolphin/ClientModelStore")
 import cc     = require("../../js/dolphin/ClientConnector")
 import cmd    = require("../../js/dolphin/Command")
+import tag    = require("../../js/dolphin/Tag")
 
 
 export module dolphin {
@@ -29,5 +30,19 @@ export module dolphin {
             this.areIdentical(pm2.getAttributes().length, 2);
         }
 
+        tagTheAttribute(){
+            var clientDolphin:cd.dolphin.ClientDolphin = new cd.dolphin.ClientDolphin();
+            var clientModelStore:cms.dolphin.ClientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
+            clientDolphin.setClientModelStore(clientModelStore);
+            clientDolphin.setClientConnector(new cc.dolphin.ClientConnector({transmit: (result:cmd.dolphin.Command[]) => {
+            } },clientDolphin));
+
+            var pm:cpm.dolphin.ClientPresentationModel = clientDolphin.presentationModel("myId", "myType");
+            this.areIdentical(pm.getAttributes().length, 0);
+
+            clientDolphin.tag(pm,"property","value",tag.dolphin.Tag.tooltip());
+            this.areIdentical(pm.getAttributes().length, 1);
+            this.areIdentical(pm.getAttributes()[0].tag, "TOOLTIP");
+        }
     }
 }
