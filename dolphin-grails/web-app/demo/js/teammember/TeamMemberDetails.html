@@ -34,8 +34,14 @@
                 <td align="left"><input id="firstName" type="text"	placeholder="e.g. John" /></td>
             </tr>
             <tr>
+                <td />
+            </tr>
+            <tr>
                 <td align="right"><strong>Last&nbsp;Name:</strong>&nbsp;</td>
                 <td align="left"><input id="lastName" type="text"	placeholder="e.g. Doe" /></td>
+            </tr>
+            <tr>
+                <td />
             </tr>
             <tr>
                 <td align="right"><strong>Function:</strong>&nbsp;</td>
@@ -49,6 +55,9 @@
                     <option value="CTO">CTO</option>
                     <option value="CEO">CEO</option>
                 </select></td>
+            </tr>
+            <tr>
+                <td />
             </tr>
             <tr>
                 <td align="right"><strong>Available:</strong> &nbsp;</td>
@@ -65,9 +74,6 @@
             <tr>
                 <td align="right"><strong>Contractor: </strong> &nbsp; </td>
                 <td> <input id="contractor" type="checkbox" value="true" /></td>
-            </tr>
-            <tr>
-                <td/>
             </tr>
             <tr>
                 <td/>
@@ -290,7 +296,7 @@
             isContractor.checked = event.newValue;
         });
         // workload binding with workloadAttr
-        workload.oninput = function (event) {
+        workload.onchange = function (event) {
             workloadAttr.setValue(workload.value);
         };
         workloadAttr.onValueChange(function (event) {
