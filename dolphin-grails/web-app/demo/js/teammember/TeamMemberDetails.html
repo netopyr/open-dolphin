@@ -264,7 +264,7 @@
             lastName.value = event.newValue;
         });
         // bind functionName combobox to functionNameAttr bidirectional
-        functionName.onclick = function (event) {
+        functionName.onchange = function (event) {
             functionNameAttr.setValue(functionName.value);
         };
         functionNameAttr.onValueChange(function (event) {
