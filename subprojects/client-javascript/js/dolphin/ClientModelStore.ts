@@ -66,7 +66,9 @@ export module dolphin {
 
         registerAttribute(attribute:ca.dolphin.ClientAttribute) {
             this.addAttributeById(attribute);
-            this.addAttributeByQualifier(attribute);
+            if(attribute.getQualifier()){
+                this.addAttributeByQualifier(attribute);
+            }
 
             attribute.onValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
                 var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id, evt.oldValue, evt.newValue);
@@ -128,16 +130,14 @@ export module dolphin {
                 return false;
             }
             var removed:boolean = false;
-            if (this.presentationModels.containsKey(model.id)) {
+            if (this.presentationModels.containsValue(model)) {
                 this.removePresentationModelByType(model);
                 this.presentationModels.remove(model.id);
                 model.getAttributes().forEach((attribute:ca.dolphin.ClientAttribute) => {
-                    //todo property change listener
                     this.removeAttributeById(attribute);
                     if (attribute.getQualifier()) {
                         this.removeAttributeByQualifier(attribute);
                     }
-
                 })
 
                 this.modelStoreChangeBus.trigger({'eventType': Type.REMOVED, 'clientPresentationModel': model});
