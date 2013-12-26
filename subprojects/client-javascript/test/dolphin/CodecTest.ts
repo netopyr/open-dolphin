@@ -21,6 +21,7 @@ import rsPmCmd          = require("../../js/dolphin/ResetPresentationModelComman
 import savePmNot        = require("../../js/dolphin/SavedPresentationModelNotification")
 import switchPmCmd      = require("../../js/dolphin/SwitchPresentationModelCommand")
 import valChngCmd       = require("../../js/dolphin/ValueChangedCommand")
+import dataCmd          = require("../../js/dolphin/DataCommand")
 
 export module dolphin {
     export class CodecTest extends tsUnit.tsUnit.TestClass {
@@ -54,15 +55,13 @@ export module dolphin {
         }
 
         testCodingCommands() {
-
             this.isTrue(CodecTestHelper.testCodingCommand(new attrCreatedCmd.dolphin.AttributeCreatedNotification("pmId", 5, "prop", "value", "qualifier", "TOOLTIP")))
             this.isTrue(CodecTestHelper.testCodingCommand(new mdcCmd.dolphin.AttributeMetadataChangedCommand(5, "name", "value")))
             this.isTrue(CodecTestHelper.testCodingCommand(new callNameCmd.dolphin.CallNamedActionCommand("some-action")))
-            var pm = new cpm.dolphin.ClientPresentationModel("MyId", "MyType");
-            this.isTrue(CodecTestHelper.testCodingCommand(new createPMCmd.dolphin.CreatePresentationModelCommand(pm)))
+            this.isTrue(CodecTestHelper.testCodingCommand(new createPMCmd.dolphin.CreatePresentationModelCommand(new cpm.dolphin.ClientPresentationModel("MyId", "MyType"))))
             this.isTrue(CodecTestHelper.testCodingCommand(new changeAttrCmd.dolphin.ChangeAttributeMetadataCommand(5, "name", "value")))
             this.isTrue(CodecTestHelper.testCodingCommand(new getPMCmd.dolphin.GetPresentationModelCommand("pmId")))
-//            CodecTestHelper.testCodingCommand(new DataCommand([a:1, b:2]))//todo: to be implement
+            this.isTrue(CodecTestHelper.testCodingCommand(new dataCmd.dolphin.DataCommand("test")));
             this.isTrue(CodecTestHelper.testCodingCommand(new delAllPMCmd.dolphin.DeleteAllPresentationModelsOfTypeCommand("type")))
             this.isTrue(CodecTestHelper.testCodingCommand(new delAllPMTypeNot.dolphin.DeletedAllPresentationModelsOfTypeNotification("type")))
             this.isTrue(CodecTestHelper.testCodingCommand(new delPMNot.dolphin.DeletedPresentationModelNotification("pmId")))
