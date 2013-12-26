@@ -72,9 +72,9 @@ export module dolphin {
                 var valueChangeCommand:valueChangedCmd.dolphin.ValueChangedCommand = new valueChangedCmd.dolphin.ValueChangedCommand(attribute.id, evt.oldValue, evt.newValue);
                 this.clientDolphin.getClientConnector().send(valueChangeCommand, null);
 
-                if (attribute.qualifier) {
+                if (attribute.getQualifier()) {
                     var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) => {
-                        return attr !== attribute && attr.qualifier === attribute.qualifier;
+                        return attr !== attribute && attr.getQualifier() === attribute.getQualifier();
                     })
                     attrs.forEach((attr:ca.dolphin.ClientAttribute) => {
                         attr.setValue(attribute.getValue());
@@ -85,9 +85,9 @@ export module dolphin {
             attribute.onBaseValueChange((evt:ca.dolphin.ValueChangedEvent)=> {
                 var baseValueChangeCommand:bvcc.dolphin.BaseValueChangedCommand = new bvcc.dolphin.BaseValueChangedCommand(attribute.id);
                 this.clientDolphin.getClientConnector().send(baseValueChangeCommand, null);
-                if (attribute.qualifier) {
+                if (attribute.getQualifier()) {
                     var attrs = this.findAttributesByFilter((attr:ca.dolphin.ClientAttribute) => {
-                        return attr !== attribute && attr.qualifier === attribute.qualifier;
+                        return attr !== attribute && attr.getQualifier() === attribute.getQualifier();
                     })
                     attrs.forEach((attr:ca.dolphin.ClientAttribute) => {
                         attr.rebase();
@@ -134,7 +134,7 @@ export module dolphin {
                 model.getAttributes().forEach((attribute:ca.dolphin.ClientAttribute) => {
                     //todo property change listener
                     this.removeAttributeById(attribute);
-                    if (attribute.qualifier) {
+                    if (attribute.getQualifier()) {
                         this.removeAttributeByQualifier(attribute);
                     }
 
@@ -258,13 +258,13 @@ export module dolphin {
         }
 
         addAttributeByQualifier(attribute:ca.dolphin.ClientAttribute) {
-            if (!attribute || !attribute.qualifier) {
+            if (!attribute || !attribute.getQualifier()) {
                 return;
             }
-            var attributes:ca.dolphin.ClientAttribute[] = this.attributesPerQualifier.get(attribute.qualifier);
+            var attributes:ca.dolphin.ClientAttribute[] = this.attributesPerQualifier.get(attribute.getQualifier());
             if (!attributes) {
                 attributes = [];
-                this.attributesPerQualifier.put(attribute.qualifier, attributes);
+                this.attributesPerQualifier.put(attribute.getQualifier(), attributes);
             }
             if (!(attributes.indexOf(attribute) > -1)) {
                 attributes.push(attribute);
@@ -273,10 +273,10 @@ export module dolphin {
         }
 
         removeAttributeByQualifier(attribute:ca.dolphin.ClientAttribute) {
-            if (!attribute || !attribute.qualifier) {
+            if (!attribute || !attribute.getQualifier()) {
                 return;
             }
-            var attributes:ca.dolphin.ClientAttribute[] = this.attributesPerQualifier.get(attribute.qualifier);
+            var attributes:ca.dolphin.ClientAttribute[] = this.attributesPerQualifier.get(attribute.getQualifier());
             if (!attributes) {
                 return;
             }
@@ -284,7 +284,7 @@ export module dolphin {
                 attributes.splice(attributes.indexOf(attribute), 1);
             }
             if (attributes.length === 0) {
-                this.attributesPerQualifier.remove(attribute.qualifier);
+                this.attributesPerQualifier.remove(attribute.getQualifier());
             }
         }
 

@@ -139,19 +139,19 @@ export module dolphin {
             var clientAttrs1:ca.dolphin.ClientAttribute[] = clientModelStore.findAllAttributeByQualifier("qual1");
 
             this.areIdentical(clientAttrs1.length, 2);
-            this.areIdentical(clientAttrs1[0].qualifier, "qual1");
-            this.areIdentical(clientAttrs1[1].qualifier, "qual1");
+            this.areIdentical(clientAttrs1[0].getQualifier(), "qual1");
+            this.areIdentical(clientAttrs1[1].getQualifier(), "qual1");
 
             var clientAttrs2:ca.dolphin.ClientAttribute[] = clientModelStore.findAllAttributeByQualifier("qual2");
 
             this.areIdentical(clientAttrs2.length, 2);
-            this.areIdentical(clientAttrs2[0].qualifier, "qual2");
-            this.areIdentical(clientAttrs2[1].qualifier, "qual2");
+            this.areIdentical(clientAttrs2[0].getQualifier(), "qual2");
+            this.areIdentical(clientAttrs2[1].getQualifier(), "qual2");
 
             clientModelStore.removeAttributeByQualifier(attr1);
             var clientAttrs1:ca.dolphin.ClientAttribute[] = clientModelStore.findAllAttributeByQualifier("qual1");
             this.areIdentical(clientAttrs1.length, 1);
-            this.areIdentical(clientAttrs1[0].qualifier, "qual1");
+            this.areIdentical(clientAttrs1[0].getQualifier(), "qual1");
             this.areIdentical(clientAttrs1[1], undefined);
 
 

@@ -23,7 +23,7 @@ export module dolphin {
                 attrs.push({
                     propertyName:   attr.propertyName,
                     id:             attr.id,
-                    qualifier:      attr.qualifier,
+                    qualifier:      attr.getQualifier(),
                     value:          attr.getValue(),
                     tag:            attr.tag
                 });

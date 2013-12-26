@@ -77,8 +77,8 @@ export module dolphin {
         }
         updateQualifier(presentationModel:pm.dolphin.ClientPresentationModel):void{
             presentationModel.getAttributes().forEach( sourceAttribute =>{
-                if(!sourceAttribute.qualifier) return;
-                var attributes = this.getClientModelStore().findAllAttributeByQualifier(sourceAttribute.qualifier);
+                if(!sourceAttribute.getQualifier()) return;
+                var attributes = this.getClientModelStore().findAllAttributeByQualifier(sourceAttribute.getQualifier());
                 attributes.forEach(targetAttribute => {
                     if(targetAttribute.tag != sourceAttribute.tag) return;
                     targetAttribute.setValue(sourceAttribute.getValue());
@@ -101,7 +101,7 @@ export module dolphin {
                                                     clientAttribute.id,
                                                     clientAttribute.propertyName,
                                                     clientAttribute.getValue(),
-                                                    clientAttribute.qualifier,
+                                                    clientAttribute.getQualifier(),
                                                     clientAttribute.tag
                                                     ), null);
             }

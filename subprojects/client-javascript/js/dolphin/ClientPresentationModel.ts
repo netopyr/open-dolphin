@@ -41,8 +41,8 @@ export module dolphin {
                 throw new Error("There already is an attribute with property name: " + attribute.propertyName
                     +" and tag: "+attribute.tag + " in presentation model with id: "+ this.id);
             }
-            if(attribute.qualifier && this.findAttributeByQualifier(attribute.qualifier)){
-                throw new Error("There already is an attribute with qualifier: " + attribute.qualifier
+            if(attribute.getQualifier() && this.findAttributeByQualifier(attribute.getQualifier())){
+                throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier()
                     +" in presentation model with id: "+ this.id);
             }
             attribute.setPresentationModel(this);
@@ -127,7 +127,7 @@ export module dolphin {
         findAttributeByQualifier(qualifier:string): ca.dolphin.ClientAttribute{
             if(!qualifier) return null;
             for(var i=0;i<this.attributes.length;i++){
-                if(this.attributes[i].qualifier == qualifier){
+                if(this.attributes[i].getQualifier() == qualifier){
                     return this.attributes[i];
                 }
             };

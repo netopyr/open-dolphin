@@ -16,13 +16,14 @@ export module dolphin {
         private value:any;
         private dirty:boolean = false;
         private baseValue:any
+        private qualifier:string
         private presentationModel:cpm.dolphin.ClientPresentationModel;
         private valueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
         private qualifierChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
         private dirtyValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
         private baseValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
 
-        constructor(public propertyName:string, public qualifier:string, value:any, public tag:string = tags.dolphin.Tag.value()) {
+        constructor(public propertyName:string, qualifier:string, value:any, public tag:string = tags.dolphin.Tag.value()) {
             this.id = clientAttributeInstanceCount++;
             this.valueChangeBus = new bus.dolphin.EventBus();
             this.qualifierChangeBus = new bus.dolphin.EventBus();
@@ -30,6 +31,7 @@ export module dolphin {
             this.baseValueChangeBus = new bus.dolphin.EventBus();
             this.setValue(value);
             this.setBaseValue(value);
+            this.setQualifier(qualifier);
         }
 
         isDirty():boolean {
@@ -84,6 +86,10 @@ export module dolphin {
             var oldQualifier = this.qualifier;
             this.qualifier = newQualifier;
             this.qualifierChangeBus.trigger({ 'oldValue': oldQualifier, 'newValue': newQualifier });
+        }
+
+        getQualifier(): string{
+            return this.qualifier;
         }
 
         private setBaseValue(baseValue:any) {
