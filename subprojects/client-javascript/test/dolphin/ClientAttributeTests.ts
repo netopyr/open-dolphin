@@ -150,6 +150,20 @@ export module dolphin {
             }
         }
 
+        simpleCopy() {
+            var ca1 = new ca.dolphin.ClientAttribute("prop","qual","tag");
+            var ca2 = ca1.copy();
+
+            this.areNotIdentical(ca1.id, ca2.id); // id must not be copied
+            this.areIdentical(undefined, ca2.getPresentationModel()); // no pm must be set
+
+            this.areIdentical(ca1.getBaseValue(), ca2.getBaseValue());
+            this.areIdentical(ca1.getValue(),     ca2.getValue());
+            this.areIdentical(ca1.getQualifier(), ca2.getQualifier());
+            this.areIdentical(ca1.tag,            ca2.tag);          // todo dk: for consistency, there should be getTag()
+            this.areIdentical(ca1.propertyName,   ca2.propertyName); // todo dk: for consistency, there should be getPropertyName()
+        }
+
 
     }
 }

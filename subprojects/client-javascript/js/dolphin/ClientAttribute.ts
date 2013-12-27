@@ -4,27 +4,27 @@ import tags = require("../../js/dolphin/Tag")
 
 export module dolphin {
 
-
     export interface ValueChangedEvent {
         oldValue;
         newValue;
     }
-    var clientAttributeInstanceCount = 0;
+
     export class ClientAttribute {
         private static SUPPORTED_VALUE_TYPES:string[] = ["string", "number", "boolean"];
-        id:number;
-        private value:any;
-        private dirty:boolean = false;
-        private baseValue:any
-        private qualifier:string
-        private presentationModel:cpm.dolphin.ClientPresentationModel;
-        private valueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
-        private qualifierChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
-        private dirtyValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
-        private baseValueChangeBus:bus.dolphin.EventBus<ValueChangedEvent>;
+        static clientAttributeInstanceCount : number = 0;
+        id                          : number;
+        private value               : any;
+        private dirty               : boolean = false;
+        private baseValue           : any;
+        private qualifier           : string;
+        private presentationModel   : cpm.dolphin.ClientPresentationModel;
+        private valueChangeBus      : bus.dolphin.EventBus<ValueChangedEvent>;
+        private qualifierChangeBus  : bus.dolphin.EventBus<ValueChangedEvent>;
+        private dirtyValueChangeBus : bus.dolphin.EventBus<ValueChangedEvent>;
+        private baseValueChangeBus  : bus.dolphin.EventBus<ValueChangedEvent>;
 
         constructor(public propertyName:string, qualifier:string, value:any, public tag:string = tags.dolphin.Tag.value()) {
-            this.id = clientAttributeInstanceCount++;
+            this.id = ClientAttribute.clientAttributeInstanceCount++;
             this.valueChangeBus = new bus.dolphin.EventBus();
             this.qualifierChangeBus = new bus.dolphin.EventBus();
             this.dirtyValueChangeBus = new bus.dolphin.EventBus();
@@ -32,6 +32,13 @@ export module dolphin {
             this.setValue(value);
             this.setBaseValue(value);
             this.setQualifier(qualifier);
+        }
+
+        /** a copy constructor with new id and no presentation model */
+        copy() {
+            var result = new ClientAttribute(this.propertyName, this.getQualifier(), this.getValue(), this.tag);
+            result.setBaseValue(this.getBaseValue());
+            return result;
         }
 
         isDirty():boolean {
@@ -92,7 +99,7 @@ export module dolphin {
             return this.qualifier;
         }
 
-        private setBaseValue(baseValue:any) {
+        setBaseValue(baseValue:any) {
             if (this.baseValue == baseValue) return;
             var oldBaseValue = this.baseValue;
             this.baseValue = baseValue;
@@ -129,7 +136,6 @@ export module dolphin {
                 throw new Error("Attribute values of this type are not allowed: " + typeof value);
             }
             return result;
-
         }
 
         onValueChange(eventHandler:(event:ValueChangedEvent) => void) {
@@ -151,9 +157,10 @@ export module dolphin {
 
         syncWith(sourceAttribute:ClientAttribute) {
             if (sourceAttribute) {
+                this.setQualifier(sourceAttribute.qualifier);     // sequence is important
                 this.setBaseValue(sourceAttribute.getBaseValue());
-                this.setQualifier(sourceAttribute.qualifier);
                 this.setValue(sourceAttribute.value);
+                // syncing propertyName and tag is not needed since they must be identical anyway
             }
         }
     }

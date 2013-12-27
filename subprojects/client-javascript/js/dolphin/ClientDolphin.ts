@@ -30,6 +30,12 @@ export module dolphin {
             this.clientConnector.send(new emptyNot.dolphin.EmptyNotification(), onFinished);
         }
 
+        // factory method for attributes
+        attribute(propertyName, qualifier, value, tag) {
+            return new ca.dolphin.ClientAttribute(propertyName, qualifier, value, tag);
+        }
+
+        // factory method for presentation models
         presentationModel(id:string, type:string, ...attributes:ca.dolphin.ClientAttribute[]) {
             var model:pm.dolphin.ClientPresentationModel = new pm.dolphin.ClientPresentationModel(id, type);
             if (attributes && attributes.length > 0) {

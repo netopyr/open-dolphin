@@ -7,7 +7,7 @@ export module dolphin {
     export interface InvalidationEvent {
         source: ClientPresentationModel;
     }
-    var presentationModelInstanceCount = 0;
+    var presentationModelInstanceCount = 0; // todo dk: consider making this static in class
 
     export class ClientPresentationModel {
 
@@ -26,6 +26,18 @@ export module dolphin {
             this.invalidBus = new bus.dolphin.EventBus();
             this.dirtyValueChangeBus = new bus.dolphin.EventBus();
         }
+
+        /** a copy constructor for anything but IDs. Per default, copies are client side only, no automatic update applies. */
+        copy() {
+            var result = new ClientPresentationModel(null, this.presentationModelType);
+            result.clientSideOnly = true;
+            this.getAttributes().forEach( (attribute: ca.dolphin.ClientAttribute) => {
+                var attributeCopy = attribute.copy();
+                result.addAttribute(attributeCopy);
+            });
+            return result;
+        }
+
         //add array of attributes
         addAttributes(attributes:ca.dolphin.ClientAttribute[]){
             if(!attributes || attributes.length < 1) return;
@@ -93,6 +105,7 @@ export module dolphin {
             this.invalidBus.onEvent(handleInvalidate);
         }
 
+        /** returns a copy of the internal state */
         getAttributes(): ca.dolphin.ClientAttribute[]{
             return this.attributes.slice(0);
         }

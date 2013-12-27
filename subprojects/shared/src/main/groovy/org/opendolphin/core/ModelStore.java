@@ -33,10 +33,10 @@ public class ModelStore {
     // - presentation models by id or by type
     // - attributes by id or by qualifier
 
-    private final Map<String, PresentationModel> presentationModels;
-    private final Map<String, List<PresentationModel>> modelsPerType;
-    private final Map<Long, Attribute> attributesPerId;
-    private final Map<String, List<Attribute>> attributesPerQualifier;
+    private final Map<String, PresentationModel>        presentationModels;
+    private final Map<String, List<PresentationModel>>  modelsPerType;
+    private final Map<Long,   Attribute>                attributesPerId;
+    private final Map<String, List<Attribute>>          attributesPerQualifier;
 
     private final Set<ModelStoreListenerWrapper> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper>();
 
@@ -58,10 +58,10 @@ public class ModelStore {
     }
 
     public ModelStore(ModelStoreConfig config) {
-        presentationModels = new HashMap<String, PresentationModel>(config.getPmCapacity());
-        modelsPerType = new HashMap<String, List<PresentationModel>>(config.getTypeCapacity());
-        attributesPerId = new HashMap<Long, Attribute>(config.getAttributeCapacity());
-        attributesPerQualifier = new HashMap<String, List<Attribute>>(config.getQualifierCapacity());
+        presentationModels      = new HashMap<String, PresentationModel>        (config.getPmCapacity());
+        modelsPerType           = new HashMap<String, List<PresentationModel>>  (config.getTypeCapacity());
+        attributesPerId         = new HashMap<Long, Attribute>                  (config.getAttributeCapacity());
+        attributesPerQualifier  = new HashMap<String, List<Attribute>>          (config.getQualifierCapacity());
     }
 
     /**

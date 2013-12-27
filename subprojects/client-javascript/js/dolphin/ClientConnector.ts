@@ -16,7 +16,7 @@ import dapmc  = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeComma
 import dpmc   = require("../../js/dolphin/DeletePresentationModelCommand");
 import cpmc   = require("../../js/dolphin/CreatePresentationModelCommand");
 import dcmd   = require("../../js/dolphin/DataCommand");
-import tags  = require("../../js/dolphin/Tag")
+import tags   = require("../../js/dolphin/Tag");
 
 export module dolphin {
 
@@ -132,7 +132,7 @@ export module dolphin {
             }
             var attributes:ca.dolphin.ClientAttribute[] = [];
             serverCommand.attributes.forEach((attr) =>{
-                var clientAttribute = new ca.dolphin.ClientAttribute(attr.propertyName,attr.qualifier,attr.value, attr.tag?attr.tag:tags.dolphin.Tag.value());
+                var clientAttribute = this.clientDolphin.attribute(attr.propertyName,attr.qualifier,attr.value, attr.tag ? attr.tag : tags.dolphin.Tag.value());
                 attributes.push(clientAttribute);
             });
             var clientPm = new cpm.dolphin.ClientPresentationModel(serverCommand.pmId, serverCommand.pmType);
@@ -150,17 +150,15 @@ export module dolphin {
                 console.log("attribute with id "+serverCommand.attributeId+" not found, cannot update old value "+serverCommand.oldValue+" to new value "+serverCommand.newValue);
                 return null;
             }
-            // console.log("updating "+clientAttribute.propertyName +" id "+serverCommand.attributeId+" from "+clientAttribute.getValue()+" to "+serverCommand.newValue);
             clientAttribute.setValue(serverCommand.newValue);
             return null;
         }
         private handleBaseValueChangedCommand(serverCommand:bvcc.dolphin.BaseValueChangedCommand):cpm.dolphin.ClientPresentationModel{
             var clientAttribute: ca.dolphin.ClientAttribute = this.clientDolphin.getClientModelStore().findAttributeById(serverCommand.attributeId);
             if(!clientAttribute){
-                console.log("attribute with id "+serverCommand.attributeId+" not found, cannot set initial value.");
+                console.log("attribute with id "+serverCommand.attributeId+" not found, cannot set base value.");
                 return null;
             }
-            // console.log("updating id "+serverCommand.attributeId+" setting initial value to "+clientAttribute.getValue());
             clientAttribute.rebase();
             return null;
         }

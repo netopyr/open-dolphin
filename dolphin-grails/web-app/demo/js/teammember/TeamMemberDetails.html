@@ -95,7 +95,8 @@
     </div>
     </div>
 </div>
-
+<hr>
+<a href="https://github.com/canoo/open-dolphin/blob/master/dolphin-grails/web-app/demo/js/teammember/TeamMemberDetails.html">source code</a>
 
 <script>
     require([ 'opendolphin' ], function (dol) {
@@ -114,51 +115,56 @@
         var teamMemberForm      = document.getElementById("teammember-form");
         var table               = document.getElementById("team-records");
 
+        var disableFields = function(disable) {
+            var detailFields = [firstName, lastName, functionName, availableYes, availableNo, isContractor, workload];
+            detailFields.forEach(function(it) { it.disabled = disable;})
+        }
+
         // setting up the dolphin
 
         const SERVER_URL    = "http://localhost:8080/dolphin-grails/dolphin/";
         const PM_ID_MODEL   = "teamMemberMold";
-        const PM_TYPE_MODEL = "teamMember";
+        const PM_TYPE_N0    = null;
 
         var dolphin         = dol.dolphin(SERVER_URL, true);
 
         // Create detail PM for stable binding of the detail view, representing the current selection
-        var firstNameAttr       = dol.attribute("firstName",    null, "");
-        var lastNameAttr        = dol.attribute("lastName",     null, "");
-        var functionNameAttr    = dol.attribute("function",     null, "");
-        var isAvailableAttr     = dol.attribute("available",    null, "");
-        var isContractorAttr    = dol.attribute("contractor",   null, "");
-        var workloadAttr        = dol.attribute("workLoad",     null, "");
+        var firstNameAttr       = dolphin.attribute("firstName",    null, "");
+        var lastNameAttr        = dolphin.attribute("lastName",     null, "");
+        var functionNameAttr    = dolphin.attribute("function",     null, "");
+        var isAvailableAttr     = dolphin.attribute("available",    null, false);
+        var isContractorAttr    = dolphin.attribute("contractor",   null, false);
+        var workloadAttr        = dolphin.attribute("workLoad",     null, 0);
 
-        var detailPM            = dolphin.presentationModel(
-                PM_ID_MODEL,
-                PM_TYPE_MODEL,
-                firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
+        var detailPM            = dolphin.presentationModel( PM_ID_MODEL, PM_TYPE_N0,
+            firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
         );
+        var blankPM = detailPM.copy(); // stored for later use on "unselect"
 
-        // there is no selection model for html tables, so we need to create one ourselves (client side only)
-        var selectedRow    = dol.attribute("row",  null, -1);   /* -1 for no selection */
-        var selectedPmId   = dol.attribute("pmId", null, null); /* null for no selection*/
+        var selectedPmId        = dolphin.attribute("selectedPmId", 'teammember.selected.id', ''); /* empty for no selection*/
+        var selectedTeamMember  = dolphin.presentationModel("selectedTeamMember", null, selectedPmId);
 
         // whenever the selected presentation model changes, make sure we update the detail view
         selectedPmId.onValueChange(function(event) {
             var selectedPm = dolphin.getAt(event.newValue); // this may be null
             if (selectedPm) {
+                disableFields(false);
                 teamMemberForm.className = "detail-form selected";
                 detailPM.syncWith(selectedPm);
             } else {
+                detailPM.syncWith(blankPM);
                 teamMemberForm.className = "detail-form unselected";
-                // consider nulling-out the form, including qualifiers. syncWith(null) could do that.
+                disableFields(true);
             }
         });
 
         // send add command to create an empty pm
         addTeamMemberBtn.onclick = function () {
-            dolphin.send("add");
+            dolphin.send("teamMember.add");
         }
         // save the pm
         saveTeamMemberBtn.onclick = function () {
-            dolphin.send("save");
+            dolphin.send("teamMember.save");
         }
         // reset
         resetButton.onclick = function () {
@@ -180,8 +186,8 @@
             var row = document.createElement("tr");
             row.dataset.id = model.id;
             // whenever the selected model changes, make sure we update the row accordingly
-            selectedPmId.onValueChange(function() {
-               row.id = ( selectedRow.getValue() == (row.rowIndex - 1) ? "selected-row" : "");
+            selectedPmId.onValueChange(function(event) {
+               row.id = ( model.id == event.newValue ? "selected-row" : "");
             });
             model.onDirty( function(event) {
                 row.className = (event.newValue ? "dirty" : "clean");
@@ -209,15 +215,16 @@
             for (i=0; found < 0 && i < table.children.length; i++) {
                 if (table.children[i].dataset.id == model.id) { found = i};
             }
-            if (found < 0) { return; } // should never happen, but better be safe than sorry
+            if (found < 0) {
+                alert("error: could not remove tr");
+                return; } // should never happen, but better be safe than sorry
             table.deleteRow(found);
             selectRow((table.children.length > found) ? found : found - 1 );
         }
 
         var selectRow = function(rowNumber) { // starting at 0
-            selectedRow.setValue(rowNumber);
             var row  = table.children[rowNumber];
-            var pmId = (row ? row.dataset.id : null);
+            var pmId = (row ? row.dataset.id : '');
             selectedPmId.setValue(pmId);
         }
 

@@ -176,14 +176,17 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testBaseValueChange() {
-		ClientAttribute attribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
+		ClientAttribute attribute                  = new ClientAttribute('attr', 'initialValue',       'qualifier')
+		ClientAttribute secondAttWithSameQualifier = new ClientAttribute('attr2', 'otherInitialValue', 'qualifier')
 		attribute.value = 'newValue'
 		assert attribute.baseValue == 'initialValue'
 		dolphin.clientModelStore.registerAttribute(attribute)
-        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, 'old_is_irrelevant', 'new_is_irrelevant'))
+		dolphin.clientModelStore.registerAttribute(secondAttWithSameQualifier)
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, 'old_base_value', 'new_base_value'))
 		syncAndWaitUntilDone()
-		assertCommandsTransmitted(3)
-		assert attribute.baseValue == 'newValue'
+		assertCommandsTransmitted(3 + 1)
+		assert attribute.baseValue                  == 'new_base_value'
+		assert secondAttWithSameQualifier.baseValue == 'new_base_value'
 		assert clientConnector.transmittedCommands.any { it instanceof BaseValueChangedCommand }
 	}
 

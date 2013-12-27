@@ -35,8 +35,8 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     private final String propertyName;
     private       Object value;
     private       Object baseValue;
-    private boolean dirty = false;
-    private final Tag   tag;
+    private      boolean dirty = false;
+    private final Tag    tag;
 
     private PresentationModel presentationModel;
 
@@ -127,7 +127,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         if (null != presentationModel) presentationModel.updateDirty();
     }
 
-    private void setBaseValue(Object baseValue) {
+    public void setBaseValue(Object baseValue) {
         setDirty(calculateDirty(baseValue, value));
         firePropertyChange(BASE_VALUE, this.baseValue, this.baseValue = baseValue);
     }

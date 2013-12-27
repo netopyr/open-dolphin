@@ -30,7 +30,7 @@ class AttributeChangeListener implements PropertyChangeListener {
                 clientConnector.send constructBaseValueChangedCommand(evt)
             }
             List<Attribute> attributes = clientModelStore.findAllAttributesByQualifier(evt.source.qualifier)
-            attributes.each { it.rebase() }
+            attributes.each { it.baseValue = evt.newValue }
         } else {
             // we assume the change is on a metadata property such as qualifier
             if (isSendable(evt)) {

@@ -27,13 +27,3 @@ export function dolphin(url : string, reset : boolean) : dol.dolphin.ClientDolph
     dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
     return dolphin;
 }
-
-// factory method for attributes
-export function attribute(propertyName, qualifier, value) {
-    return new cat.dolphin.ClientAttribute(propertyName, qualifier, value);
-}
-
-
-
-
-

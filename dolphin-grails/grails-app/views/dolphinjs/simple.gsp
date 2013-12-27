@@ -87,8 +87,8 @@
     var dolphin = dol.dolphin("${dolphinUrl}", true);
 
     // create named PM with attribute on the client side
-    var textAttribute  = dol.attribute("${TutorialAction.ATTR_ID}", null, '');
-    var rangeAttribute = dol.attribute("${range}", null, '');
+    var textAttribute  = dolphin.attribute("${TutorialAction.ATTR_ID}", null, '');
+    var rangeAttribute = dolphin.attribute("${range}", null, '');
 
     dolphin.presentationModel(
       "${TutorialAction.PM_ID_MODEL}", undefined,

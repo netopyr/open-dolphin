@@ -40,6 +40,7 @@ public interface Attribute extends Observable {
     boolean isDirty();
 
     Object getBaseValue();
+    void   setBaseValue(Object newValue);
 
     PresentationModel getPresentationModel();
 

@@ -161,5 +161,21 @@ export module dolphin {
             result=pm.findAllAttributesByPropertyName("dummy");
             this.areIdentical(result.length, 0);
         }
+
+        simpleCopy() {
+            var ca1 = new ca.dolphin.ClientAttribute("prop1","qual1","value1","VALUE");
+            var ca2 = new ca.dolphin.ClientAttribute("prop2","qual2","value2","VALUE");
+            var pm1 = new cpm.dolphin.ClientPresentationModel("pmId","pmType");
+            pm1.addAttribute(ca1);
+            pm1.addAttribute(ca2);
+
+            var pm2 = pm1.copy();
+            this.areNotIdentical(pm1.id, pm2.id);
+            this.areIdentical(true, pm2.clientSideOnly);
+
+            this.areIdentical(pm1.presentationModelType, pm2.presentationModelType) // not sure this is a good idea
+            this.areIdentical(pm1.getAttributes().length, pm2.getAttributes().length)
+            this.areIdentical(pm1.getAt('prop2').getValue(), pm2.getAt('prop2').getValue()) // a spy would be nice here
+        }
     }
 }

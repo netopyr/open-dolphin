@@ -31,7 +31,7 @@ class BaseValueChangeAction extends DolphinServerAction {
                 attribute.rebase()
                 log.finest "S: attribute $attribute.id for $attribute.propertyName with value $attribute.value is dirty? : $attribute.dirty"
             }
-            else log.warning("Could not find attribute with id '$command.attributeId' to change its initial value.")
+            else log.warning("Could not find attribute with id '$command.attributeId' to change its base value.")
         }
     }
 }

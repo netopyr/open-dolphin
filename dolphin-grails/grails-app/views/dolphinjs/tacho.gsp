@@ -58,7 +58,7 @@
     <a href="https://github.com/canoo/open-dolphin/blob/master/dolphin-grails/grails-app/views/dolphinjs/tacho.gsp">source code</a>
     </div>
   </div>
-
+</div>
 
 <script src="${resource(dir: 'libs', file: 'steelseries-min.js')}"></script>
 <script src="${resource(dir: 'libs', file: 'tween-min.js')}"></script>
@@ -76,7 +76,7 @@
 
         var dolphin = dol.dolphin("${dolphinUrl}", true);
 
-        var speedAttr = dol.attribute("speed", "train.speed", 0);
+        var speedAttr = dolphin.attribute("speed", "train.speed", 0); // todo dk: put in constants
         dolphin.presentationModel("${pmId}", undefined, speedAttr);
 
         // bind speed of pm to value of gauge
@@ -88,7 +88,7 @@
         var startButton = document.getElementById("${startButton}")
         startButton.addEventListener("click", function () {
             function longPoll() {
-                dolphin.send("poll.train.speed", {onFinished: longPoll});
+                dolphin.send("poll.train.speed", {onFinished: longPoll}); // todo dk: put command name in constants
             }
             longPoll();
         });

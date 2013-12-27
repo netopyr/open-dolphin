@@ -1,3 +1,4 @@
+import org.opendolphin.LogConfig
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.demo.CustomAction
@@ -26,7 +27,7 @@ class DolphinSpringBean {
         EventBus smallFootprintBus
     ) {
 
-        Logger.getLogger("").level = Level.OFF
+        Logger.getLogger("").level = Level.WARNING
 
         log.info "creating new dolphin session"
 

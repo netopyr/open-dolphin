@@ -115,7 +115,8 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    //info   "org.opendolphin.core.server"
+    info  "org.opendolphin.core.server",
+           'org.codehaus.groovy.grails.web.servlet'
 }
 
 cors.header = [
