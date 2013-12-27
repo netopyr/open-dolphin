@@ -147,6 +147,9 @@
 
         var disabledAttr        = dolphin.attribute("disabled", null, true); // a free-standing attribute for the detail form
 
+
+        //////////////// binding to selection changes ////////////////
+
         // whenever the selected presentation model changes, make sure we update the detail view
         selectedPmId.onValueChange(function(event) {
             var selectedPm = dolphin.getAt(event.newValue);
@@ -164,6 +167,9 @@
             teamMemberForm.className = "detail-form " + (evt.newValue ? "unselected" : "selected clean") ;
         });
 
+
+        //////////////// registering button actions ///////////////////
+
         // send add command to create an empty pm
         addTeamMemberBtn.onclick = function () {
             dolphin.send("teamMember.add");
@@ -171,7 +177,7 @@
         // save the pm
         saveTeamMemberBtn.onclick = function () {
             saveTeamMemberBtn.disabled = true;            // double-click protection
-            disabledAttr.setValue(true);                  // no new inputs while save is under way
+            disabledAttr.setValue(true);                  // no new inputs allowed while save is under way
             dolphin.send("teamMember.save", { onFinished: function() {
                 disabledAttr.setValue(false);             // save is done, new input is allowed
             }});
@@ -180,6 +186,9 @@
         resetButton.onclick = function () {
             detailPM.reset();
         };
+
+
+        //////////////// reacting to structural changes ///////////////////
 
         // Register ModelStore change event to reflect newly available team members in the master view (table)
         dolphin.getClientModelStore().onModelStoreChange(function (modelStoreEvent) {
@@ -191,11 +200,14 @@
             }
         });
 
-        //Create table row
+        // Table rows are a dynamic parts of the view. They need to be created or removed and bound.
+        // Even though we create new bindings for the newly created views (TRs and TDs),
+        // these bindings again remain stable throughout the whole program.
+
         var createTableRow = function (model) {
             var row = document.createElement("tr");
             row.dataset.id = model.id;
-            // whenever the selected model changes, make sure we update the row accordingly
+            // whenever the selection model changes, make sure we update the row accordingly
             selectedPmId.onValueChange(function(event) {
                row.id = ( model.id == event.newValue ? "selected-row" : "");
             });
@@ -225,9 +237,7 @@
             for (i=0; found < 0 && i < table.children.length; i++) {
                 if (table.children[i].dataset.id == model.id) { found = i};
             }
-            if (found < 0) {
-                alert("error: could not remove tr");
-                return; } // should never happen, but better be safe than sorry
+            if (found < 0) { return; } // should never happen, but better be safe than sorry
             table.deleteRow(found);
             selectRow((table.children.length > found) ? found : found - 1 );
         }
@@ -266,53 +276,48 @@
             return td
         }
 
-        // bind firstName textfield to firstNameAttr bidirectional
+        ///////////////////// simple stable bindings /////////////////////////
+
+        // bind firstName textfield to firstNameAttr bidirectionally
         firstName.oninput = function (event) {
             firstNameAttr.setValue(firstName.value);
         };
         firstNameAttr.onValueChange(function (event) {
             firstName.value = event.newValue;
         });
-        // bind lastName textfield to lastNameAttr bidirectional
+        // bind lastName textfield to lastNameAttr bidirectionally
         lastName.oninput = function (event) {
             lastNameAttr.setValue(lastName.value);
         };
         lastNameAttr.onValueChange(function (event) {
             lastName.value = event.newValue;
         });
-        // bind functionName combobox to functionNameAttr bidirectional
+        // bind functionName combobox to functionNameAttr bidirectionally
         functionName.onchange = function (event) {
             functionNameAttr.setValue(functionName.value);
         };
         functionNameAttr.onValueChange(function (event) {
             functionName.value = event.newValue;
         });
-        // availableYes binding with isAvailableAttr
+        // availableYes/No binding with isAvailableAttr bidirectionally
         availableYes.onclick = function (event) {
-            isAvailableAttr.setValue(availableYes.value);
+            isAvailableAttr.setValue(availableYes.checked);
         };
-        // availableNo binding with isAvailableAttr
         availableNo.onclick = function (event) {
-            isAvailableAttr.setValue(availableNo.value);
+            isAvailableAttr.setValue(availableYes.checked);
         };
         isAvailableAttr.onValueChange(function (event) {
-            if (event.newValue == 'yes') {
-                availableYes.checked = true;
-            } else if (event.newValue == 'no') {
-                availableNo.checked = true;
-            } else {
-                availableYes.checked = false;
-                availableNo.checked = false;
-            }
+            availableYes.checked =  event.newValue;
+            availableNo.checked  = !event.newValue;
         });
-        // isContractor binding with isContractorAttr
+        // isContractor binding with isContractorAttr bidirectionally
         isContractor.onclick = function (event) {
             isContractorAttr.setValue(isContractor.checked);
         };
         isContractorAttr.onValueChange(function (event) {
             isContractor.checked = event.newValue;
         });
-        // workload binding with workloadAttr
+        // workload binding with workloadAttr bidirectionally
         workload.onchange = function (event) {
             workloadAttr.setValue(workload.value);
         };
