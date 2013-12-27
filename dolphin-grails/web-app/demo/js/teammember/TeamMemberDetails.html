@@ -136,28 +136,32 @@
         var isAvailableAttr     = dolphin.attribute("available",    null, false);
         var isContractorAttr    = dolphin.attribute("contractor",   null, false);
         var workloadAttr        = dolphin.attribute("workLoad",     null, 0);
-        var disabledAttr        = dolphin.attribute("disabled",     null, true);
 
         var detailPM            = dolphin.presentationModel( PM_ID_MODEL, PM_TYPE_N0,
             firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
         );
         var blankPM = detailPM.copy(); // stored for later use on "unselect"
 
-        var selectedPmId        = dolphin.attribute("selectedPmId", 'teammember.selected.id', ''); /* empty for no selection*/
+        var selectedPmId        = dolphin.attribute("selectedPmId", 'teammember.selected.id', null); /* null for no selection*/
         var selectedTeamMember  = dolphin.presentationModel("selectedTeamMember", null, selectedPmId);
+
+        var disabledAttr        = dolphin.attribute("disabled", null, true); // a free-standing attribute for the detail form
 
         // whenever the selected presentation model changes, make sure we update the detail view
         selectedPmId.onValueChange(function(event) {
-            var selectedPm = dolphin.getAt(event.newValue); // this may be null
+            var selectedPm = dolphin.getAt(event.newValue);
             if (selectedPm) {
                 disabledAttr.setValue(false);
-                teamMemberForm.className = "detail-form selected";
                 detailPM.syncWith(selectedPm);
             } else {
                 detailPM.syncWith(blankPM);
-                teamMemberForm.className = "detail-form unselected";
                 disabledAttr.setValue(true);
             }
+        });
+
+        // only when the detail PM _changes_ the enabled state, the style of the detail view needs update
+        disabledAttr.onValueChange(function(evt) {
+            teamMemberForm.className = "detail-form " + (evt.newValue ? "unselected" : "selected clean") ;
         });
 
         // send add command to create an empty pm
@@ -230,7 +234,7 @@
 
         var selectRow = function(rowNumber) { // starting at 0
             var row  = table.children[rowNumber];
-            var pmId = (row ? row.dataset.id : '');
+            var pmId = (row ? row.dataset.id : null);
             selectedPmId.setValue(pmId);
         }
 
