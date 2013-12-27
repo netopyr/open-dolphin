@@ -8,6 +8,7 @@
 </head>
 <body>
 <div class="container">
+    <div class="row">
     <div class="col-lg-8">
         <button id="add-teammember" class="btn btn-default btn-sm button-add" title="add a row for a new team member"> + </button>
         <table id="list" class="table table-bordered table-condensed">
@@ -94,9 +95,14 @@
         </table>
     </div>
     </div>
+    </div>
+    <div class="row">
+    <div class="col-lg-12">
+        <hr>
+        <a href="https://github.com/canoo/open-dolphin/blob/master/dolphin-grails/web-app/demo/js/teammember/TeamMemberDetails.html">source code</a>
+    </div>
+    </div>
 </div>
-<hr>
-<a href="https://github.com/canoo/open-dolphin/blob/master/dolphin-grails/web-app/demo/js/teammember/TeamMemberDetails.html">source code</a>
 
 <script>
     require([ 'opendolphin' ], function (dol) {
@@ -115,11 +121,6 @@
         var teamMemberForm      = document.getElementById("teammember-form");
         var table               = document.getElementById("team-records");
 
-        var disableFields = function(disable) {
-            var detailFields = [firstName, lastName, functionName, availableYes, availableNo, isContractor, workload];
-            detailFields.forEach(function(it) { it.disabled = disable;})
-        }
-
         // setting up the dolphin
 
         const SERVER_URL    = "http://localhost:8080/dolphin-grails/dolphin/";
@@ -135,6 +136,7 @@
         var isAvailableAttr     = dolphin.attribute("available",    null, false);
         var isContractorAttr    = dolphin.attribute("contractor",   null, false);
         var workloadAttr        = dolphin.attribute("workLoad",     null, 0);
+        var disabledAttr        = dolphin.attribute("disabled",     null, true);
 
         var detailPM            = dolphin.presentationModel( PM_ID_MODEL, PM_TYPE_N0,
             firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
@@ -148,13 +150,13 @@
         selectedPmId.onValueChange(function(event) {
             var selectedPm = dolphin.getAt(event.newValue); // this may be null
             if (selectedPm) {
-                disableFields(false);
+                disabledAttr.setValue(false);
                 teamMemberForm.className = "detail-form selected";
                 detailPM.syncWith(selectedPm);
             } else {
                 detailPM.syncWith(blankPM);
                 teamMemberForm.className = "detail-form unselected";
-                disableFields(true);
+                disabledAttr.setValue(true);
             }
         });
 
@@ -164,7 +166,11 @@
         }
         // save the pm
         saveTeamMemberBtn.onclick = function () {
-            dolphin.send("teamMember.save");
+            saveTeamMemberBtn.disabled = true;            // double-click protection
+            disabledAttr.setValue(true);                  // no new inputs while save is under way
+            dolphin.send("teamMember.save", { onFinished: function() {
+                disabledAttr.setValue(false);             // save is done, new input is allowed
+            }});
         }
         // reset
         resetButton.onclick = function () {
@@ -308,6 +314,14 @@
         };
         workloadAttr.onValueChange(function (event) {
             workload.value = event.newValue;
+        });
+
+        // bind the disabled attribute to all input fields
+        var detailFields = [firstName, lastName, functionName, availableYes, availableNo, isContractor, workload];
+        detailFields.forEach(function(field) {
+            disabledAttr.onValueChange(function(event){
+                field.disabled = event.newValue;
+            });
         });
 
         // enable save button only if detail PM is dirty
