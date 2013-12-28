@@ -157,7 +157,7 @@ export module dolphin {
 
         syncWith(sourceAttribute:ClientAttribute) {
             if (sourceAttribute) {
-                this.setQualifier(sourceAttribute.qualifier);     // sequence is important
+                this.setQualifier(sourceAttribute.getQualifier());     // sequence is important
                 this.setBaseValue(sourceAttribute.getBaseValue());
                 this.setValue(sourceAttribute.value);
                 // syncing propertyName and tag is not needed since they must be identical anyway
