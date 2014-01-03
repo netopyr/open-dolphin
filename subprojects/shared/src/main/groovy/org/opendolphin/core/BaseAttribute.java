@@ -170,8 +170,9 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     public void syncWith(Attribute source) {
         if (this == source || null == source) return;
-        setBaseValue(source.getBaseValue());
+        //order is important
         setQualifier(source.getQualifier());
+        setBaseValue(source.getBaseValue());
         setValue(source.getValue());
     }
 }
