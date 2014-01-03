@@ -188,7 +188,7 @@
         };
 
 
-        //////////////// reacting to structural changes ///////////////////
+        //////////////// bindings for the master view (table) ///////////////////
 
         // Register ModelStore change event to reflect newly available team members in the master view (table)
         dolphin.getClientModelStore().onModelStoreChange(function (modelStoreEvent) {
@@ -227,8 +227,6 @@
             row.appendChild(createSelfUpdatingTDs(model,"workLoad"));
             row.appendChild(appendDeleteButton(model.id));
             table.appendChild(row);
-            // right after creation, select the newly created row
-            selectRow(row.rowIndex - 1); // row indexes start at 1
         };
 
         // find the tr of the to-be-removed model, remove it, and set the selection to the trailer if possible or one up otherwise
@@ -276,7 +274,7 @@
             return td
         }
 
-        ///////////////////// simple stable bindings /////////////////////////
+        ///////////////////// bindings for the detail view (form) /////////////////////////
 
         // bind firstName textfield to firstNameAttr bidirectionally
         firstName.oninput = function (event) {

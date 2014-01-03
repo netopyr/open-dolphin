@@ -5,6 +5,7 @@ import java.util.List;
 import org.opendolphin.core.comm.Command;
 import org.opendolphin.core.comm.SavedPresentationModelNotification;
 import org.opendolphin.core.server.DTO;
+import org.opendolphin.core.server.ServerAttribute;
 import org.opendolphin.core.server.Slot;
 import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
@@ -29,18 +30,27 @@ public class TeamMemberActions extends DolphinServerAction {
                         new Slot(ATT_CONTRACTOR, false, qualifier(count, ATT_CONTRACTOR)),
                         new Slot(ATT_WORKLOAD,   0,     qualifier(count, ATT_WORKLOAD))
                         );
-                presentationModel(uniqueId(count), TYPE_TEAM_MEMBER, dto);
+                String addedId = uniqueId(count);
+                presentationModel(addedId, TYPE_TEAM_MEMBER, dto);
+
+                // it is a server-side decision that after creating a new team member,
+                // it should be immediately selected
+                changeValue(findSelectedPmAttribute(), addedId);
             }
         });
         
         actionRegistry.register(CMD_SAVE, new CommandHandler<Command>() {
             @Override
             public void handleCommand(Command command, List<Command> response) {
-                String pmIdToSave = (String) getServerDolphin().getAt(PM_ID_SELECTED).getAt(ATT_SEL_PM_ID).getValue();
+                String pmIdToSave = (String) findSelectedPmAttribute().getValue();
                 // saving the model to the database here. We assume all was ok:
                 response.add(new SavedPresentationModelNotification(pmIdToSave) );
             }
         });
         
+    }
+
+    private ServerAttribute findSelectedPmAttribute() {
+        return getServerDolphin().getAt(PM_ID_SELECTED).getAt(ATT_SEL_PM_ID);
     }
 }
