@@ -19,7 +19,7 @@
                 <th>Function</th>
                 <th>Available</th>
                 <th>Contractor</th>
-                <th><div style="width: 4em">Workload %</div></th>
+                <th><div style="width: 4em">Workload&nbsp;%</div></th>
                 <th>Delete</th>
             </tr>
             </thead>
@@ -140,7 +140,7 @@
         var detailPM            = dolphin.presentationModel( PM_ID_MODEL, PM_TYPE_N0,
             firstNameAttr, lastNameAttr, functionNameAttr, isAvailableAttr, isContractorAttr, workloadAttr
         );
-        var blankPM = detailPM.copy(); // stored for later use on "unselect"
+        var blankPM             = detailPM.copy(); // stored for later use on "unselect"
 
         var selectedPmId        = dolphin.attribute("selectedPmId", 'teammember.selected.id', null); /* null for no selection*/
         var selectedTeamMember  = dolphin.presentationModel("selectedTeamMember", null, selectedPmId);
@@ -172,7 +172,7 @@
 
         // send add command to create an empty pm
         addTeamMemberBtn.onclick = function () {
-            dolphin.send("teamMember.add");
+            dolphin.send("teamMember.add");              // server adds new PM and immediately selects it
         }
         // save the pm
         saveTeamMemberBtn.onclick = function () {
@@ -277,54 +277,35 @@
 
         ///////////////////// bindings for the detail view (form) /////////////////////////
 
-        // bind firstName textfield to firstNameAttr bidirectionally
-        firstName.oninput = function (event) {
-            firstNameAttr.setValue(firstName.value);
-        };
-        firstNameAttr.onValueChange(function (event) {
-            firstName.value = event.newValue;
-        });
-        // bind lastName textfield to lastNameAttr bidirectionally
-        lastName.oninput = function (event) {
-            lastNameAttr.setValue(lastName.value);
-        };
-        lastNameAttr.onValueChange(function (event) {
-            lastName.value = event.newValue;
-        });
-        // bind functionName combobox to functionNameAttr bidirectionally
-        functionName.onchange = function (event) {
-            functionNameAttr.setValue(functionName.value);
-        };
-        functionNameAttr.onValueChange(function (event) {
-            functionName.value = event.newValue;
-        });
+        // this helper function for a standard binding of values could later go into Dolphin JsBinder
+        function bindBothValues(type, element, attribute) { // bind element value to attribute value bidirectionally
+            element.addEventListener(type, function () {
+                attribute.setValue(element.value);
+            });
+            attribute.onValueChange(function (event) {
+                element.value = event.newValue;
+            });
+        }
+
+        bindBothValues("input",  firstName,    firstNameAttr);
+        bindBothValues("input",  lastName,     lastNameAttr);
+        bindBothValues("input",  workload,     workloadAttr);
+        bindBothValues("change", functionName, functionNameAttr);
+
         // availableYes/No binding with isAvailableAttr bidirectionally
-        availableYes.onclick = function (event) {
-            isAvailableAttr.setValue(availableYes.checked);
-        };
-        availableNo.onclick = function (event) {
-            isAvailableAttr.setValue(availableYes.checked);
-        };
+        availableYes.onclick = function () { isAvailableAttr.setValue(availableYes.checked); };
+        availableNo.onclick  = function () { isAvailableAttr.setValue(availableYes.checked); }; // :-)
         isAvailableAttr.onValueChange(function (event) {
             availableYes.checked =  event.newValue;
             availableNo.checked  = !event.newValue;
         });
         // isContractor binding with isContractorAttr bidirectionally
-        isContractor.onclick = function (event) {
-            isContractorAttr.setValue(isContractor.checked);
-        };
+        isContractor.onclick = function () { isContractorAttr.setValue(isContractor.checked); };
         isContractorAttr.onValueChange(function (event) {
             isContractor.checked = event.newValue;
         });
-        // workload binding with workloadAttr bidirectionally
-        workload.onchange = function (event) {
-            workloadAttr.setValue(workload.value);
-        };
-        workloadAttr.onValueChange(function (event) {
-            workload.value = event.newValue;
-        });
 
-        // bind the disabled attribute to all input fields
+        // bind the disabled attribute to all input fields; disabling of fieldsets does not work in IE.
         var detailFields = [firstName, lastName, functionName, availableYes, availableNo, isContractor, workload];
         detailFields.forEach(function(field) {
             disabledAttr.onValueChange(function(event){
@@ -332,19 +313,11 @@
             });
         });
 
-        // enable save button only if detail PM is dirty
+        // bind the pm's dirty state to the button's disabled state and the detail view style class
         detailPM.onDirty(function (event) {
             saveTeamMemberBtn.disabled = !event.newValue;
-        });
-
-        // enable reset button only if detail PM is dirty
-        detailPM.onDirty(function (event) {
-            resetButton.disabled = !event.newValue;
-        });
-
-        // bind the pm's dirty state to the detail view style class
-        detailPM.onDirty( function(event) {
-            teamMemberForm.className = "detail-form selected " + (event.newValue ? "dirty" : "clean");
+            resetButton.disabled       = !event.newValue;
+            teamMemberForm.className   = "detail-form selected " + (event.newValue ? "dirty" : "clean");
         });
 
     });
