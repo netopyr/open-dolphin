@@ -1,3 +1,9 @@
+body {
+    font-family: Arial, Verdana, Tahoma;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
 .button-add {
     margin-bottom: 10px;
 }
@@ -36,8 +42,13 @@
     background: lightsteelblue;
 }
 
-body {
-    font-family: Arial, Verdana, Tahoma;
-    padding-top: 10px;
-    padding-left: 10px;
+.td-label {
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
+    padding-right: 1em;
+}
+
+.form {
+    margin: 20px;
 }

@@ -29,23 +29,23 @@
 
     <div class="col-lg-4">
         <div id="teammember-form" class="detail-form unselected">
-        <table style="margin: 20px;">
+        <table class="form">
             <tr>
-                <td align="right"><strong>First&nbsp;Name:</strong>&nbsp;</td>
+                <td class="td-label">First Name</td>
                 <td align="left"><input id="firstName" type="text"	placeholder="e.g. John" maxlength="20"/></td>
             </tr>
             <tr>
                 <td />
             </tr>
             <tr>
-                <td align="right"><strong>Last&nbsp;Name:</strong>&nbsp;</td>
+                <td class="td-label">Last Name</td>
                 <td align="left"><input id="lastName" type="text"	placeholder="e.g. Doe" maxlength="20"/></td>
             </tr>
             <tr>
                 <td />
             </tr>
             <tr>
-                <td align="right"><strong>Function:</strong>&nbsp;</td>
+                <td class="td-label">Function</td>
                 <td align="left"><select id="function">
                     <option value="" selected=""></option>
                     <option value="Engineer">Engineer</option>
@@ -61,7 +61,7 @@
                 <td />
             </tr>
             <tr>
-                <td align="right"><strong>Available:</strong> &nbsp;</td>
+                <td class="td-label">Available</td>
                 <td>
                     Yes
                     <input type="radio" id="availableYes" name="available" value="yes" />
@@ -73,14 +73,14 @@
                 <td />
             </tr>
             <tr>
-                <td align="right"><strong>Contractor: </strong> &nbsp; </td>
+                <td class="td-label">Contractor</td>
                 <td> <input id="contractor" type="checkbox" value="true" /></td>
             </tr>
             <tr>
                 <td/>
             </tr>
             <tr>
-                <td align="right"><strong>Workload:</strong> &nbsp;</td>
+                <td class="td-label">Workload</td>
                 <td align="left"><input type="range" min="0" max="100" id="workLoad"/></td>
             </tr>
             <tr> <td/> </tr>
@@ -219,12 +219,12 @@
                 selectRow(row.rowIndex - 1); // row indexes start at 1
             });
 
-            row.appendChild(createSelfUpdatingTDs(model,"firstName"));
-            row.appendChild(createSelfUpdatingTDs(model,"lastName"));
-            row.appendChild(createSelfUpdatingTDs(model,"function"));
-            row.appendChild(createSelfUpdatingTDs(model,"available"));
-            row.appendChild(createSelfUpdatingTDs(model,"contractor"));
-            row.appendChild(createSelfUpdatingTDs(model,"workLoad"));
+            row.appendChild(createSelfUpdatingTDs(model,"firstName" ,"left"));
+            row.appendChild(createSelfUpdatingTDs(model,"lastName"  ,"left"));
+            row.appendChild(createSelfUpdatingTDs(model,"function"  ,"left"));
+            row.appendChild(createSelfUpdatingTDs(model,"available" ,"center"));
+            row.appendChild(createSelfUpdatingTDs(model,"contractor","center"));
+            row.appendChild(createSelfUpdatingTDs(model,"workLoad"  ,"right"));
             row.appendChild(appendDeleteButton(model.id));
             table.appendChild(row);
         };
@@ -246,9 +246,10 @@
             selectedPmId.setValue(pmId);
         }
 
-        function createSelfUpdatingTDs(model, propertyName) {
+        function createSelfUpdatingTDs(model, propertyName, alignment) {
             var attribute = model.findAttributeByPropertyName(propertyName)
             var td = document.createElement("td");
+            td.align = alignment;
             td.dataset.role = attribute.propertyName;
             attribute.onValueChange(function (event) {
                 td.innerHTML = event.newValue;
