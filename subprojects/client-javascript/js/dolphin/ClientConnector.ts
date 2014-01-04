@@ -42,13 +42,17 @@ export module dolphin {
         private transmitter :       Transmitter;
         private codec :             cod.dolphin.Codec;
         private clientDolphin :     cd.dolphin.ClientDolphin;
-        private commandBatcher:     cb.dolphin.CommandBatcher = new cb.dolphin.BlindCommandBatcher();
+        private commandBatcher:     cb.dolphin.CommandBatcher = new cb.dolphin.BlindCommandBatcher(true);
 
 
         constructor(transmitter:Transmitter, clientDolphin:cd.dolphin.ClientDolphin) {
             this.transmitter = transmitter;
             this.clientDolphin = clientDolphin;
             this.codec = new cod.dolphin.Codec();
+        }
+
+        setCommandBatcher(newBatcher: cb.dolphin.CommandBatcher) {
+            this.commandBatcher = newBatcher;
         }
 
         send(command:cmd.dolphin.Command, onFinished:OnFinishedHandler) {
@@ -67,7 +71,6 @@ export module dolphin {
             var cmdsAndHandlers = this.commandBatcher.batch(this.commandQueue);
             var callback = cmdsAndHandlers[cmdsAndHandlers.length-1].handler;
             var commands = cmdsAndHandlers.map( cah => { return cah.command });
-            console.log("batch size "+commands.length);
             this.transmitter.transmit(commands, (response:cmd.dolphin.Command[]) => {
 
                 // console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
