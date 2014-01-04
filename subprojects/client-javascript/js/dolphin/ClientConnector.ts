@@ -1,5 +1,6 @@
 import cpm    = require("../../js/dolphin/ClientPresentationModel");
 import cmd    = require("../../js/dolphin/Command");
+import cb     = require("../../js/dolphin/CommandBatcher");
 import cod    = require("../../js/dolphin/Codec");
 import cna    = require("../../js/dolphin/CallNamedActionCommand");
 import cd     = require("../../js/dolphin/ClientDolphin");
@@ -25,7 +26,7 @@ export module dolphin {
         onFinishedData(listOfData:any[]):void
     }
 
-    interface CommandAndHandler {
+    export interface CommandAndHandler {
         command : cmd.dolphin.Command;
         handler : OnFinishedHandler;
     }
@@ -36,11 +37,12 @@ export module dolphin {
 
     export class ClientConnector {
 
-        private commandQueue:CommandAndHandler[] = [];
-        private currentlySending:boolean = false;
-        private transmitter:Transmitter;
-        private codec:cod.dolphin.Codec;
-        private clientDolphin:cd.dolphin.ClientDolphin;
+        private commandQueue :      CommandAndHandler[] = [];
+        private currentlySending :  boolean = false;
+        private transmitter :       Transmitter;
+        private codec :             cod.dolphin.Codec;
+        private clientDolphin :     cd.dolphin.ClientDolphin;
+        private commandBatcher:     cb.dolphin.CommandBatcher = new cb.dolphin.BlindCommandBatcher();
 
 
         constructor(transmitter:Transmitter, clientDolphin:cd.dolphin.ClientDolphin) {
@@ -61,8 +63,13 @@ export module dolphin {
                 return;
             }
             this.currentlySending = true;
-            var cmdAndHandler = this.commandQueue.shift();
-            this.transmitter.transmit([cmdAndHandler.command], (response:cmd.dolphin.Command[]) => {
+
+            var cmdsAndHandlers = this.commandBatcher.batch(this.commandQueue);
+            var callback = cmdsAndHandlers[cmdsAndHandlers.length-1].handler;
+            var commands = cmdsAndHandlers.map( cah => { return cah.command });
+            console.log("batch size "+commands.length);
+            this.transmitter.transmit(commands, (response:cmd.dolphin.Command[]) => {
+
                 // console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
 
                 var touchedPMs : cpm.dolphin.ClientPresentationModel[] = []
@@ -71,9 +78,9 @@ export module dolphin {
                     if (touched) touchedPMs.push(touched);
                 });
 
-                var callback : OnFinishedHandler = cmdAndHandler.handler;
                 if (callback) {
                     callback.onFinished(touchedPMs); // todo: make them unique?
+                    // todo dk: handling of data from datacommand
                 }
 
                 this.doSendNext();  // recursive call: fetch the next in line

@@ -8,6 +8,7 @@ import emptyNt              = require('../test/dolphin/EmptyNotificationTests');
 import createPMCmdt         = require('../test/dolphin/CreatePresentationModelCommandTests');
 import cdt                  = require('../test/dolphin/ClientDolphinTests');
 import cct                  = require('../test/dolphin/ClientConnectorTests');
+import cbt                  = require('../test/dolphin/CommandBatcherTests');
 import mt                   = require('../test/dolphin/MapTests');
 import cmst                 = require('../test/dolphin/ClientModelStoreTests');
 import codect               = require('../test/dolphin/CodecTest')
@@ -25,7 +26,8 @@ test.addTestClass(new changedAttrMDCmdt.dolphin.ChangeAttributeMetadataCommandTe
 test.addTestClass(new emptyNt.dolphin.EmptyNotificationTests(), "EmptyNotificationTests");
 test.addTestClass(new createPMCmdt.dolphin.CreatePresentationModelCommandTests(), "CreatePresentationModelCommandTests");
 test.addTestClass(new cdt.dolphin.ClientDolphinTests(), "ClientDolphinTests");
-test.addTestClass(new cct.dolphin.ClientConnectorTests(), "ClientConnector");
+test.addTestClass(new cct.dolphin.ClientConnectorTests(), "ClientConnectorTests");
+test.addTestClass(new cbt.dolphin.CommandBatcherTests(), "CommandBatcherTests");
 test.addTestClass(new mt.dolphin.MapTests(), "MapTests");
 test.addTestClass(new cmst.dolphin.ClientModelStoreTests(), "ClientModelStoreTests");
 test.addTestClass(new codect.dolphin.CodecTest(), "CodecTest");
