@@ -4,8 +4,6 @@ import cms = require('../../js/dolphin/ClientModelStore');
 import cpm = require('../../js/dolphin/ClientPresentationModel');
 
 // html elements
-//var peopleTable     = <HTMLTableElement>    document.getElementById('people-table');
-//var peopleRecords   = <HTMLBlockElement>    document.getElementById('people-records');
 var postings        = <HTMLUListElement>    document.getElementById('postings');
 var name            = <HTMLInputElement>    document.getElementById('name');
 var message         = <HTMLTextAreaElement> document.getElementById('message');
@@ -22,7 +20,9 @@ var idAtt           = dolphin.attribute("id",       null, -1,  'VALUE');
 var myChat          = dolphin.presentationModel("chatter.input", null, nameAtt, messageAtt, idAtt);
 
 // bind input form bidirectionally
+name.oninput     = (event) =>    nameAtt.setValue(   name.value);
 name.onchange    = (event) =>    nameAtt.setValue(   name.value);
+message.oninput  = (event) => messageAtt.setValue(message.value);
 message.onchange = (event) => messageAtt.setValue(message.value);
 
 nameAtt.onValueChange(   (event) => name.value    = event.newValue);
@@ -35,8 +35,10 @@ dolphin.getClientModelStore().onModelStoreChange((event) => {
     if (event.eventType == cms.dolphin.Type.ADDED) {
         var li = document.createElement("li");
         li.id = pm.id;
-        li.innerHTML = "<b>"+ pm.getAt("name").getValue()+": </b>" + pm.getAt("message").getValue();
         postings.appendChild(li);
+        var update = (evt) => li.innerHTML = "<b>"+ pm.getAt("name").getValue()+": </b>" + pm.getAt("message").getValue();
+        event.clientPresentationModel.getAt("name").onValueChange(update);
+        event.clientPresentationModel.getAt("message").onValueChange(update);
     }
     if (event.eventType == cms.dolphin.Type.REMOVED) {
         li = <HTMLLIElement> document.getElementById(pm.id);
