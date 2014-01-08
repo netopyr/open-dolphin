@@ -19,6 +19,10 @@ beans = {
         bean.scope = 'singleton'
     }
 
+    chatterBus(EventBus) { bean ->
+        bean.scope = 'singleton'
+    }
+
     modelStore(ModelStore) { bean ->
         bean.scope = 'session' // every session must have its own model store
     }
@@ -38,7 +42,8 @@ beans = {
         ref('grailsCrudService'),                    // more services would come here...
         ref('tachoBus'),
         ref('manyEventsBus'),
-        ref('smallFootprintBus')
+        ref('smallFootprintBus'),
+        ref('chatterBus')
     ) { bean ->
         bean.scope = 'session'
     }

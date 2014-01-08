@@ -1,6 +1,7 @@
 import org.opendolphin.LogConfig
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.demo.ChatterActions
 import org.opendolphin.demo.CustomAction
 import org.opendolphin.demo.DemoTitlePurposeAction
 import org.opendolphin.demo.ManyEventsAction
@@ -24,7 +25,8 @@ class DolphinSpringBean {
         CrudService crudService,
         EventBus tachoBus,
         EventBus manyEventsBus,
-        EventBus smallFootprintBus
+        EventBus smallFootprintBus,
+        EventBus chatterBus
     ) {
 
         Logger.getLogger("").level = Level.WARNING
@@ -47,6 +49,7 @@ class DolphinSpringBean {
         // for the dolphin.js demos
         dolphin.register(new TutorialAction())
         dolphin.register(new org.opendolphin.demo.teammember.TeamMemberActions())
+        dolphin.register(new ChatterActions().subscribedTo(chatterBus))
 
     }
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatter</title>
+    <script data-main="" src="../../libs/require.js"></script>
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="chatter.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <!--<div class="col-xs-12 col-lg-4">-->
+
+            <!--<table id="people-table" class="table table-bordered table-condensed">-->
+                <!--<thead>-->
+                <!--<tr>-->
+                    <!--<th>Name</th>-->
+                    <!--<th>Show</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody id="people-records"></tbody>-->
+            <!--</table>-->
+        <!--</div>-->
+
+        <div class="col-xs-12 col-sm-6">
+            <ul id="postings">
+
+            </ul>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                <input id="name" class="form-control" type="text" placeholder="My Name" maxlength="20">
+                <textarea id="message" class="form-control" rows="5" cols="40" wrap="soft"
+                          placeholder="Message"></textarea>
+                <button id="post-message" class="btn btn-default" title="post a message">Post</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <hr>
+            <a href="http://open-dolphin.org"><img src="../../img/open_dolphin_logo_xs.png">OpenDolphin</a>
+            source code:
+            <a href="">tbd</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    require([ 'chatter' ])
+</script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, Verdana, Tahoma;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+.button-add {
+    margin-bottom: 10px;
+}
+
+.dirty {
+    background-color: #fff7e8;
+}
+
+.dirty-field {
+    font-style:  italic;
+    font-weight: bold;
+}
+
+.clean {
+    /* there could be something here */
+}
+
+.selected {
+    border-color: lightsteelblue;
+    opacity: 1;
+}
+
+.unselected {
+    opacity: 0.5;
+}
+
+.detail-form {
+    border-width: 1px;
+    border-style: solid;
+    float: left;
+    margin-top: 40px;
+    border-radius: 10px;
+}
+
+.form {
+    margin: 20px;
+}

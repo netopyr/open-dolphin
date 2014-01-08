@@ -18,7 +18,7 @@ export module dolphin {
         private dirtyValueChangeBus:bus.dolphin.EventBus<ca.dolphin.ValueChangedEvent>;
 
         constructor(public id:string, public presentationModelType:string) {
-            if (typeof id !== 'undefined') { // even an empty string is a valid id
+            if (typeof id !== 'undefined' && id != null) { // even an empty string is a valid id
                 this.id = id;
             } else {
                 this.id = (presentationModelInstanceCount++).toString();
