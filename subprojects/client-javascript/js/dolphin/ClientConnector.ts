@@ -39,15 +39,17 @@ export module dolphin {
 
         private commandQueue :      CommandAndHandler[] = [];
         private currentlySending :  boolean = false;
+        private slackMS:            number; // slack milliseconds for rendering and batching
         private transmitter :       Transmitter;
         private codec :             cod.dolphin.Codec;
         private clientDolphin :     cd.dolphin.ClientDolphin;
         private commandBatcher:     cb.dolphin.CommandBatcher = new cb.dolphin.BlindCommandBatcher(true);
 
 
-        constructor(transmitter:Transmitter, clientDolphin:cd.dolphin.ClientDolphin) {
+        constructor(transmitter:Transmitter, clientDolphin:cd.dolphin.ClientDolphin, slackMS: number = 300) {
             this.transmitter = transmitter;
             this.clientDolphin = clientDolphin;
+            this.slackMS = slackMS;
             this.codec = new cod.dolphin.Codec();
         }
 
@@ -86,7 +88,9 @@ export module dolphin {
                     // todo dk: handling of data from datacommand
                 }
 
-                this.doSendNext();  // recursive call: fetch the next in line
+                // recursive call: fetch the next in line but allow a bit of slack such that
+                // document events can fire, rendering is done and commands can batch up
+                setTimeout( () => this.doSendNext() , this.slackMS );
             });
         }
 

@@ -84,7 +84,7 @@
   require([ 'opendolphin' ], function (dol) {
 
     // setting up the dolphin
-    var dolphin = dol.dolphin("${dolphinUrl}", true);
+    var dolphin = dol.dolphin("${dolphinUrl}", true); 
 
     // create named PM with attribute on the client side
     var textAttribute  = dolphin.attribute("${TutorialAction.ATTR_ID}", null, '');

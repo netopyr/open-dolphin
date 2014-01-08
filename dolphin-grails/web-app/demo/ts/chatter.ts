@@ -13,7 +13,7 @@ var postMessage     = <HTMLButtonElement>   document.getElementById('post-messag
 
 // dolphin setup
 var SERVER_URL      = "http://localhost:8080/dolphin-grails/dolphin/";
-var dolphin         = <cd.dolphin.ClientDolphin> dol.dolphin(SERVER_URL, true);
+var dolphin         = <cd.dolphin.ClientDolphin> dol.dolphin(SERVER_URL, true, 0); // slack
 
 // main entry pm
 var nameAtt         = dolphin.attribute("name",     null, '',  'VALUE');
@@ -49,12 +49,8 @@ postMessage.onclick = (event) => dolphin.send('chatter.post', null);
 
 dolphin.send("chatter.init", null);
 
-//var longPollCallback : (pms) => void;
-//var finisher = { onFinished : longPollCallback, onFinishedData : null }
 var longPollCallback = (pms) => {
-    // give JS some time to process the last callback before kicking off the next one
-    setTimeout( () => dolphin.send("chatter.poll", { onFinished : longPollCallback, onFinishedData : null }), 200);
+    dolphin.send("chatter.poll", { onFinished : longPollCallback, onFinishedData : null });
 }
-
 longPollCallback([]);
 

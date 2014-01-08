@@ -15,7 +15,7 @@ import htm = require('../../js/dolphin/HttpTransmitter');
  */
 
 // factory method for the initialized dolphin
-export function dolphin(url : string, reset : boolean) : dol.dolphin.ClientDolphin  {
+export function dolphin(url : string, reset : boolean, slackMS: number = 300) : dol.dolphin.ClientDolphin  {
     var dolphin = new dol.dolphin.ClientDolphin();
     var transmitter ;
     if (url != null && url.length > 0) {
@@ -23,7 +23,7 @@ export function dolphin(url : string, reset : boolean) : dol.dolphin.ClientDolph
     } else {
         transmitter = new ntm.dolphin.NoTransmitter();
     }
-    dolphin.setClientConnector(new cc.dolphin.ClientConnector(transmitter,dolphin));
+    dolphin.setClientConnector(new cc.dolphin.ClientConnector(transmitter, dolphin, slackMS));
     dolphin.setClientModelStore(new mst.dolphin.ClientModelStore(dolphin));
     return dolphin;
 }

@@ -74,7 +74,7 @@
 <script>
     require([ 'opendolphin' ], function (dol) {
 
-        var dolphin = dol.dolphin("${dolphinUrl}", true);
+        var dolphin = dol.dolphin("${dolphinUrl}", true, 50);         // almost no slack for read-only views
 
         var speedAttr = dolphin.attribute("speed", "train.speed", 0); // todo dk: put in constants
         dolphin.presentationModel("${pmId}", undefined, speedAttr);

@@ -2,6 +2,7 @@ package org.opendolphin.demo
 
 import groovyx.gpars.dataflow.DataflowQueue
 import org.opendolphin.core.comm.Command
+import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.NamedCommand
 import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.EventBus
@@ -48,6 +49,17 @@ public class ChatterActions extends DolphinServerAction {
             }
         })
 
+        actionRegistry.register(CreatePresentationModelCommand, new CommandHandler<CreatePresentationModelCommand>() {
+            public void handleCommand(CreatePresentationModelCommand command, List<Command> response) {
+                // make sure the collection does not grow overly long
+                def posts = getServerDolphin().findAllPresentationModelsByType(TYPE_POST)
+                if (posts.size() > 10) {
+                   getServerDolphin().delete response, posts.first()
+                }
+            }
+        })
+
+
         actionRegistry.register(CMD_POST, new CommandHandler<Command>() {
             public void handleCommand(Command command, List<Command> response) {
 
@@ -60,33 +72,24 @@ public class ChatterActions extends DolphinServerAction {
                     new Slot(ATTR_NAME, nameAtt.value),
                     new Slot(ATTR_MESSAGE, messageAtt.value)
                 )
-                presentationModel(null, TYPE_POST, post)
                 chatterBus.publish(chatQueue, post)
 
-                // make sure the collection does not grow overly long
-                def posts = getServerDolphin().findAllPresentationModelsByType(TYPE_POST)
-                if (posts.size() > 10) {
-                    getServerDolphin().delete response, posts.first()
-                }
+                presentationModel(null, TYPE_POST, post)
 
                 // set back message input to empty string
                 changeValue messageAtt, ""
             }
         })
 
-        actionRegistry.register(CMD_POLL) { NamedCommand command, response ->
-            DTO post = chatQueue.getVal(1, TimeUnit.SECONDS)    // return all values
+        actionRegistry.register(CMD_POLL) { NamedCommand command, List<Command> response ->
+            DTO post = chatQueue.getVal(50, TimeUnit.MILLISECONDS)    // return all values
             while (null != post) {
-                // add the post to collection of known posts
                 presentationModel(null, TYPE_POST, post)
                 post = chatQueue.getVal(20, TimeUnit.MILLISECONDS)
             }
-
             return response
         }
 
-
     }
-
 }
 

@@ -21,7 +21,7 @@ export module dolphin {
         transmit(commands:cmd.dolphin.Command[], onDone:(result:cmd.dolphin.Command[]) => void):void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                alert("could not fetch " + this.url + ", message: " + evt.message);
+                alert("could not fetch " + this.url + ", message: " + evt.message); // todo dk: make this injectable
                 onDone([]);
             }
 
