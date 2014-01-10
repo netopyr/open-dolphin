@@ -1,6 +1,8 @@
 import cmd = require("../../js/dolphin/Command");
 import cc  = require("../../js/dolphin/ClientConnector");
 import vcc = require("../../js/dolphin/ValueChangedCommand");
+import nc  = require("../../js/dolphin/NamedCommand");
+import en  = require("../../js/dolphin/EmptyNotification");
 
 export module dolphin {
 
@@ -47,16 +49,19 @@ export module dolphin {
                         }
                     }
                 }
-                if (found) { // yes, we can
-                    found.newValue = canCmd.newValue; // change existing value, do not batch
+                if (found) {                            // yes, we can
+                    found.newValue = canCmd.newValue;   // change existing value, do not batch
                 } else {
-                    batch.push(candidate); // we cannot merge, so batch the candidate
+                    batch.push(candidate);              // we cannot merge, so batch the candidate
                 }
             } else {
                 batch.push(candidate);
             }
-            if ( ! candidate.handler) { // handler null nor undefined: we have a blind
-                this.processNext(queue, batch);
+            if ( ! candidate.handler &&                 // handler null nor undefined: we have a blind
+                 ! (candidate.command['className'] == "org.opendolphin.core.comm.NamedCommand") &&     // and no unknown server side effect
+                 ! (candidate.command['className'] == "org.opendolphin.core.comm.EmptyNotification")   // and no unknown client side effect
+               ) {
+                this.processNext(queue, batch);         // then we can proceed with batching
             }
         }
     }
