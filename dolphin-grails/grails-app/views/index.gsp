@@ -107,24 +107,30 @@
 
 			<div id="controller-list" role="navigation">
 
-        <h2>Dolphin.js grails GSP pages:</h2>
+        <h2>Dolphin.js dynamic JavaScript from grails GSP:</h2>
 				<ul>
 						<li class="controller"><g:link uri="/djs/simple">     simple page</g:link></li>
 						<li class="controller"><g:link uri="/djs/tacho">      tacho  page</g:link></li>
 				</ul>
-        <h2>Dolphin.js static pages:</h2>
-				<ul>
 
-					<li class="controller"><g:link uri="/demo/js/teammember/TeamMemberDetails.html">Teammembers</g:link></li>
-%{--						<li class="controller"><g:link uri="/qualifier.html"> qualifier.html</g:link></li>
-						<li class="controller"><g:link uri="/test.html">      test.html</g:link></li>--}%
+        <h2>Dolphin.js with plain JavaScript:</h2>
+				<ul>
+					<li class="controller"><g:link uri="/demo/js/teammember/TeamMemberDetails.html">Teammembers master-detail view</g:link></li>
 				</ul>
+
+        <h2>Dolphin.js with TypeScript:</h2>
+				<ul>
+					<li class="controller"><g:link uri="/demo/ts/Chatter.html">A new kind of chat</g:link></li>
+				</ul>
+
         <h2>Dolphin.js with Angular:</h2>
 				<ul>
 						<li class="controller"><g:link uri="/demo/angular/AngularTable.html"> Angular Table Demo</g:link></li>
 				</ul>
 
         <hr>
+        <p></p>
+
         <h2>Dolphin.js admin pages:</h2>
 				<ul>
 						<li class="controller"><g:link uri="/manyEvents?times=10&sleep=20"> Many events starter</g:link></li>

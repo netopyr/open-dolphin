@@ -4,7 +4,7 @@ import cms = require('../../js/dolphin/ClientModelStore');
 import cpm = require('../../js/dolphin/ClientPresentationModel');
 
 // html elements
-var postings        = <HTMLUListElement>    document.getElementById('postings');
+var postings        = <HTMLTableElement>    document.getElementById('postings');
 var name            = <HTMLInputElement>    document.getElementById('name');
 var message         = <HTMLTextAreaElement> document.getElementById('message');
 var postMessage     = <HTMLButtonElement>   document.getElementById('post-message');
@@ -16,43 +16,63 @@ var dolphin         = <cd.dolphin.ClientDolphin> dol.dolphin(SERVER_URL, true, 0
 // main entry pm
 var nameAtt         = dolphin.attribute("name",     null, '',  'VALUE');
 var messageAtt      = dolphin.attribute("message",  null, '',  'VALUE');
-var idAtt           = dolphin.attribute("id",       null, -1,  'VALUE');
-var myChat          = dolphin.presentationModel("chatter.input", null, nameAtt, messageAtt, idAtt);
+var myChat          = dolphin.presentationModel("chatter.input", null, nameAtt, messageAtt);
+var channelBlocked  = false;
+
+function release() {
+    if (!channelBlocked) return; // avoid too many unblocks
+    channelBlocked = false;
+    var http = new XMLHttpRequest();
+    http.open('GET', "http://localhost:8080/dolphin-grails/chatter/release", true);
+    http.send();
+}
 
 // bind input form bidirectionally
-name.oninput     = (event) =>    nameAtt.setValue(   name.value);
-name.onchange    = (event) =>    nameAtt.setValue(   name.value);
-message.oninput  = (event) => messageAtt.setValue(message.value);
-message.onchange = (event) => messageAtt.setValue(message.value);
+name.oninput     = (event) => { release();    nameAtt.setValue(   name.value)};
+message.oninput  = (event) => { release(); messageAtt.setValue(message.value)};
 
 nameAtt.onValueChange(   (event) => name.value    = event.newValue);
 messageAtt.onValueChange((event) => message.value = event.newValue);
 
 // bind collection of posts
+function onPostAdded(pm) {
+    var nameDt = document.createElement("dt");
+    var msgDd  = document.createElement("dd");
+    nameDt.id  = pm.getAt("name").getQualifier();
+    msgDd.id   = pm.getAt("message").getQualifier();
+    postings.appendChild(nameDt);
+    postings.appendChild(msgDd);
+    pm.getAt("name").onValueChange((evt)    => nameDt.innerHTML = evt.newValue);
+    pm.getAt("message").onValueChange((evt) => msgDd.innerHTML  = evt.newValue);
+}
+function onPostRemoved(pm) {
+    var holder = document.getElementById(pm.getAt("name").getQualifier());
+    postings.removeChild(holder);
+    holder = document.getElementById(pm.getAt("message").getQualifier());
+    postings.removeChild(holder);
+}
+
 dolphin.getClientModelStore().onModelStoreChange((event) => {
-    var pm = event.clientPresentationModel;
-    if (pm.presentationModelType != "chatter.type.post") return;
+    if (event.clientPresentationModel.presentationModelType != "chatter.type.post") return;
     if (event.eventType == cms.dolphin.Type.ADDED) {
-        var li = document.createElement("li");
-        li.id = pm.id;
-        postings.appendChild(li);
-        var update = (evt) => li.innerHTML = "<b>"+ pm.getAt("name").getValue()+": </b>" + pm.getAt("message").getValue();
-        event.clientPresentationModel.getAt("name").onValueChange(update);
-        event.clientPresentationModel.getAt("message").onValueChange(update);
+        onPostAdded(event.clientPresentationModel);
     }
     if (event.eventType == cms.dolphin.Type.REMOVED) {
-        li = <HTMLLIElement> document.getElementById(pm.id);
-        postings.removeChild(li);
+        onPostRemoved(event.clientPresentationModel);
     }
 });
 
 // handle the button click
-postMessage.onclick = (event) => dolphin.send('chatter.post', null);
-
-dolphin.send("chatter.init", null);
+postMessage.onclick = (event) => {
+    postMessage.disabled = true; // double-click protection
+    release();
+    dolphin.send('chatter.post', { onFinished : () => postMessage.disabled = false, onFinishedData : null });
+};
 
 var longPollCallback = (pms) => {
+    channelBlocked = true;
     dolphin.send("chatter.poll", { onFinished : longPollCallback, onFinishedData : null });
 }
-longPollCallback([]);
+
+dolphin.send("chatter.init", { onFinished : () => longPollCallback([]), onFinishedData : null });
 
