@@ -96,8 +96,14 @@ public class ChatterActions extends DolphinServerAction {
             public void handleCommand(ValueChangedCommand command, List<Command> response) {
                 def attr = getServerDolphin().getModelStore().findAttributeById(command.attributeId)
                 if (attr && attr.presentationModel.id == PM_ID_INPUT && attr.qualifier) {
-                    updateHistory(attr)
-                    chatterBus.publish(chatQueue, [type: "change", qualifier: attr.qualifier, value: attr.value])
+                    String toCheck = attr.value
+                    String replaced = toCheck.replaceAll(/<(\/?\w)/, /&lt;\1/)
+                    if (toCheck == replaced) {
+                        updateHistory(attr)
+                        chatterBus.publish(chatQueue, [type: "change", qualifier: attr.qualifier, value: attr.value])
+                    } else {
+                        changeValue(attr, replaced)
+                    }
                 }
             }
         })
