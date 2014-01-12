@@ -16,7 +16,8 @@ var dolphin         = <cd.dolphin.ClientDolphin> dol.dolphin(SERVER_URL, true, 0
 // main entry pm
 var nameAtt         = dolphin.attribute("name",     null, '',  'VALUE');
 var messageAtt      = dolphin.attribute("message",  null, '',  'VALUE');
-var myChat          = dolphin.presentationModel("chatter.input", null, nameAtt, messageAtt);
+var dateAtt         = dolphin.attribute("date",     null, '',  'VALUE');
+var myChat          = dolphin.presentationModel("chatter.input", null, nameAtt, messageAtt, dateAtt);
 var channelBlocked  = false;
 
 function release() {
@@ -42,8 +43,8 @@ function onPostAdded(pm) {
     msgDd.id   = pm.getAt("message").getQualifier();
     postings.appendChild(nameDt);
     postings.appendChild(msgDd);
-    pm.getAt("name").onValueChange((evt)    => nameDt.innerHTML = evt.newValue);
-    pm.getAt("message").onValueChange((evt) => msgDd.innerHTML  = evt.newValue);
+    pm.getAt("name").onValueChange((evt)    => nameDt.innerHTML = evt.newValue + "<p class='date'>" + pm.getAt("date").getValue() + "</p>");
+    pm.getAt("message").onValueChange((evt) => msgDd.innerHTML  = "<pre>"+evt.newValue+"</pre>");
 }
 function onPostRemoved(pm) {
     var holder = document.getElementById(pm.getAt("name").getQualifier());
@@ -67,6 +68,7 @@ postMessage.onclick = (event) => {
     postMessage.disabled = true; // double-click protection
     release();
     dolphin.send('chatter.post', { onFinished : () => postMessage.disabled = false, onFinishedData : null });
+    message.focus();
 };
 
 var longPollCallback = (pms) => {

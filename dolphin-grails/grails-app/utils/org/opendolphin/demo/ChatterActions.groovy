@@ -27,6 +27,7 @@ public class ChatterActions extends DolphinServerAction {
     public static final String TYPE_POST    = 'chatter.type.post'
     public static final String ATTR_NAME    = "name"
     public static final String ATTR_MESSAGE = "message"
+    public static final String ATTR_DATE    = "date"
 
     static final Agent history = new Agent<List<DTO>>([])
 
@@ -46,9 +47,11 @@ public class ChatterActions extends DolphinServerAction {
     protected void newPost(String name, List<Command> response) {
         def postId  = postCount++
         String pmId = "$userId-$postId".toString()
+        String now  = new Date().format('dd.MM.yy HH:mm')
         def currentPost = new DTO(
             new Slot(ATTR_NAME,    name, "$pmId-$ATTR_NAME"),
-            new Slot(ATTR_MESSAGE, "",   "$pmId-$ATTR_MESSAGE")
+            new Slot(ATTR_MESSAGE, "",   "$pmId-$ATTR_MESSAGE"),
+            new Slot(ATTR_DATE,    now,  "$pmId-$ATTR_DATE")
         )
         history.sendAndWait { List posts ->
             posts << currentPost

@@ -12,3 +12,8 @@ body {
 .message {
     text-align: left;
 }
+.date {
+    font-weight: normal;
+    font-size: 8pt;
+    color: lightgrey;
+}
