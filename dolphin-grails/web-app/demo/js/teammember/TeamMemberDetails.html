@@ -57,6 +57,7 @@
                     <option value="CEO">CEO</option>
                 </select></td>
             </tr>
+            <tr> <td></td><td><img id="functionImage" src="http://people.canoo.com/mittie/rolePics/Unselected.jpg"></td></tr>
             <tr>
                 <td />
             </tr>
@@ -115,6 +116,7 @@
         const firstName           = document.getElementById("firstName");
         const lastName            = document.getElementById("lastName");
         const functionName        = document.getElementById("function");
+        const functionImage       = document.getElementById("functionImage");
         const availableYes        = document.getElementById("availableYes");
         const availableNo         = document.getElementById("availableNo");
         const isContractor        = document.getElementById("contractor");
@@ -167,6 +169,13 @@
         bindBothValues("input",  lastName,     lastNameAttr);
         bindBothValues("input",  workload,     workloadAttr);
         bindBothValues("change", functionName, functionNameAttr);
+
+        // change the image when the function name changes
+        functionNameAttr.onValueChange(function (event) {
+            var pic = event.newValue
+            if (pic == "") pic = "Unselected";
+            functionImage.src = "http://people.canoo.com/mittie/rolePics/" + pic + ".jpg";
+        });
 
         // availableYes/No binding with isAvailableAttr bidirectionally
         availableYes.onclick = function () { isAvailableAttr.setValue(availableYes.checked); };
