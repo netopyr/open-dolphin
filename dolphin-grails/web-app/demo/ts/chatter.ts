@@ -29,8 +29,8 @@ function release() {
 }
 
 // bind input form bidirectionally
-name.oninput     = (event) => { release();    nameAtt.setValue(   name.value)};
-message.oninput  = (event) => { release(); messageAtt.setValue(message.value)};
+name.oninput     = (event) => {    nameAtt.setValue(   name.value); release() };
+message.oninput  = (event) => { messageAtt.setValue(message.value); release() };
 
 nameAtt.onValueChange(   (event) => name.value    = event.newValue);
 messageAtt.onValueChange((event) => message.value = event.newValue);
@@ -45,6 +45,16 @@ function onPostAdded(pm) {
     postings.appendChild(msgDd);
     pm.getAt("name").onValueChange((evt)    => nameDt.innerHTML = evt.newValue + "<p class='date'>" + pm.getAt("date").getValue() + "</p>");
     pm.getAt("message").onValueChange((evt) => msgDd.innerHTML  = "<pre>"+evt.newValue+"</pre>");
+
+    var postUserId = pm.getAt("name").getQualifier().split("-")[0];
+    msgDd.onclick = (evt) => {
+        var userId = myChat.getAt("name").getQualifier().split("-")[0];
+        if (userId == postUserId) {  // our post, we can select
+            myChat.syncWith(pm);
+            release();
+        }
+        message.focus();
+    }
 }
 function onPostRemoved(pm) {
     var holder = document.getElementById(pm.getAt("name").getQualifier());
@@ -66,8 +76,8 @@ dolphin.getClientModelStore().onModelStoreChange((event) => {
 // handle the button click
 postMessage.onclick = (event) => {
     postMessage.disabled = true; // double-click protection
-    release();
     dolphin.send('chatter.post', { onFinished : () => postMessage.disabled = false, onFinishedData : null });
+    release();
     message.focus();
 };
 
