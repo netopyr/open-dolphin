@@ -76,6 +76,12 @@ export module dolphin {
             };
             this.setDirty(false);
         }
+
+        updateAttributeDirtyness(){
+            for(var i=0;i<this.attributes.length;i++){
+                this.attributes[i].updateDirty();
+            }
+        }
         isDirty(): boolean{
             return this.dirty;
         }

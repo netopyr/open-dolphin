@@ -26,7 +26,8 @@ class DolphinSpringBean {
         EventBus tachoBus,
         EventBus manyEventsBus,
         EventBus smallFootprintBus,
-        EventBus chatterBus
+        EventBus chatterBus,
+        EventBus teamBus
     ) {
 
         Logger.getLogger("").level = Level.WARNING
@@ -48,7 +49,7 @@ class DolphinSpringBean {
 
         // for the dolphin.js demos
         dolphin.register(new TutorialAction())
-        dolphin.register(new org.opendolphin.demo.teammember.TeamMemberActions())
+        dolphin.register(new org.opendolphin.demo.teammember.TeamMemberActions().subscribedTo(teamBus))
         dolphin.register(new ChatterActions().subscribedTo(chatterBus))
 
     }

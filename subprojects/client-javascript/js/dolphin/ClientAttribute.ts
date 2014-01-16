@@ -81,6 +81,10 @@ export module dolphin {
             }
         }
 
+        updateDirty() {
+            this.setDirty(this.calculateDirty(this.baseValue, this.value));
+        }
+
         private setDirty(dirty:boolean) {
             var oldVal = this.dirty;
             this.dirty = dirty;

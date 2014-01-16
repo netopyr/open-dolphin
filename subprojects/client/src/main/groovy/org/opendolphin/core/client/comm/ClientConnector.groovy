@@ -188,6 +188,7 @@ abstract class ClientConnector {
                 attr.value,
                 attr.qualifier?.toString(),
                 attr.tag ? Tag.tagFor[(String) attr.tag] : Tag.VALUE)
+            attribute.baseValue = attr.baseValue
             attributes << attribute
         }
         ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)

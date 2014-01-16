@@ -147,6 +147,7 @@ export module dolphin {
             var attributes:ca.dolphin.ClientAttribute[] = [];
             serverCommand.attributes.forEach((attr) =>{
                 var clientAttribute = this.clientDolphin.attribute(attr.propertyName,attr.qualifier,attr.value, attr.tag ? attr.tag : tags.dolphin.Tag.value());
+                clientAttribute.setBaseValue(attr.baseValue);
                 attributes.push(clientAttribute);
             });
             var clientPm = new cpm.dolphin.ClientPresentationModel(serverCommand.pmId, serverCommand.pmType);
@@ -156,6 +157,8 @@ export module dolphin {
             }
             this.clientDolphin.getClientModelStore().add(clientPm);
             this.clientDolphin.updateQualifier(clientPm);
+            clientPm.updateAttributeDirtyness();
+            clientPm.updateDirty();
             return clientPm;
         }
         private handleValueChangedCommand(serverCommand:vcc.dolphin.ValueChangedCommand):cpm.dolphin.ClientPresentationModel{

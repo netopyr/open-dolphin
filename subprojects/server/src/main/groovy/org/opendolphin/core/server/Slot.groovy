@@ -8,6 +8,7 @@ import groovy.transform.CompileStatic
 class Slot {
     String propertyName
     Object value
+    Object baseValue
     String qualifier
     Tag    tag
 
@@ -17,9 +18,10 @@ class Slot {
      */
     Slot (String propertyName, Object value, String qualifier = null, Tag tag = Tag.VALUE) {
         this.propertyName = propertyName
-        this.value= value
-        this.qualifier =  qualifier
-        this.tag = tag
+        this.value        = value
+        this.baseValue    = value
+        this.qualifier    = qualifier
+        this.tag          = tag
     }
 
     /**
@@ -32,7 +34,7 @@ class Slot {
 
 
     Map<String, Object> toMap() {
-        [propertyName: propertyName, value: value, qualifier: qualifier, tag:tag]
+        [propertyName: propertyName, value: value, baseValue: baseValue, qualifier: qualifier, tag:tag]
     }
 
 }

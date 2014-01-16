@@ -19,7 +19,7 @@ package org.opendolphin.core.comm
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
-class BaseValueChangedCommand extends Command {
+class BaseValueChangedCommand extends Command { // todo dk: should better be named: RebaseCommand
     long attributeId
 
     String toString() { super.toString() + " attr:$attributeId"}

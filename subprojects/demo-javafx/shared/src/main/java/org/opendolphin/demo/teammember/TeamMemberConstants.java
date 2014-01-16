@@ -6,7 +6,10 @@ public class TeamMemberConstants {
     public static final String TYPE_TEAM_MEMBER = "teamMember";
 
     public static final String CMD_ADD          = TYPE_TEAM_MEMBER + ".add";
+    public static final String CMD_REMOVE       = TYPE_TEAM_MEMBER + ".remove";
     public static final String CMD_SAVE         = TYPE_TEAM_MEMBER + ".save";
+    public static final String CMD_POLL         = TYPE_TEAM_MEMBER + ".poll";
+    public static final String CMD_INIT         = TYPE_TEAM_MEMBER + ".init";
 
     public static final String ATT_FIRSTNAME    = "firstName";
     public static final String ATT_LASTNAME     = "lastName";

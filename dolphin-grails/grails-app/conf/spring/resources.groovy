@@ -7,6 +7,10 @@ import org.opendolphin.core.server.comm.ServerConnector
 
 beans = {
 
+    teamBus(EventBus) { bean ->
+        bean.scope = 'singleton'
+    }
+
     tachoBus(EventBus) { bean ->
         bean.scope = 'singleton'
     }
@@ -43,7 +47,8 @@ beans = {
         ref('tachoBus'),
         ref('manyEventsBus'),
         ref('smallFootprintBus'),
-        ref('chatterBus')
+        ref('chatterBus'),
+        ref('teamBus')
     ) { bean ->
         bean.scope = 'session'
     }

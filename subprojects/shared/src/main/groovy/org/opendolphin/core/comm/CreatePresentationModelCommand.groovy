@@ -42,6 +42,7 @@ class CreatePresentationModelCommand extends Command {
                 id:             attr.id,
                 qualifier:      attr.qualifier,
                 value:          attr.value,
+                baseValue:      attr.baseValue,
                 tag:            attr.tag.name
             ]
         }
