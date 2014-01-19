@@ -1,0 +1,47 @@
+.root {
+    -fx-background-color: radial-gradient(radius 100%, lightblue, #486e8f) ;
+}
+
+#master {
+    -fx-padding: 20 20 20 20;
+}
+
+#detail {
+    -fx-padding: 25 25 25 25;
+    -fx-alignment: top-center;
+
+    -fx-border-width: 20;
+    -fx-border-color: transparent;
+    -fx-border-style: solid;
+
+    -fx-background-insets: 20;
+    -fx-background-radius: 10;
+}
+
+.detail-dirty {
+    -fx-background-color: rgba(173,216,230,0.6);
+}
+
+/* the > selects only direct label children in the form */
+#detail  > .label{
+    -fx-text-fill:   white;
+    -fx-font-weight: bold;
+    -fx-font-size:   14;
+}
+
+#master .table-view  {
+    -fx-padding: 5 5 5 5;
+    -fx-background-radius: 5;
+    -fx-background-color: rgba(173,216,230,0.2);
+    -fx-table-cell-border-color:transparent;
+}
+
+#master .table-row-cell:empty  {
+    -fx-background-color: transparent;
+}
+
+#master .table-row-cell .cell-dirty {
+    -fx-border-color: rgb(255, 234, 223);
+    -fx-border-width: 1;
+    -fx-background-color: rgba(255, 217, 161, 0.5);
+}

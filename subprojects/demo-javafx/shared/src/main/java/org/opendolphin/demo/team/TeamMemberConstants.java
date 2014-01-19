@@ -1,4 +1,4 @@
-package org.opendolphin.demo.teammember;
+package org.opendolphin.demo.team;
 
 public class TeamMemberConstants {
 
@@ -9,6 +9,7 @@ public class TeamMemberConstants {
     public static final String CMD_REMOVE       = TYPE_TEAM_MEMBER + ".remove";
     public static final String CMD_SAVE         = TYPE_TEAM_MEMBER + ".save";
     public static final String CMD_POLL         = TYPE_TEAM_MEMBER + ".poll";
+    public static final String CMD_UPDATE       = TYPE_TEAM_MEMBER + ".update";
     public static final String CMD_INIT         = TYPE_TEAM_MEMBER + ".init";
 
     public static final String ATT_FIRSTNAME    = "firstName";

@@ -1,4 +1,4 @@
-package org.opendolphin.demo.teammember;
+package org.opendolphin.demo.team;
 
 import org.opendolphin.core.server.DTO;
 

@@ -41,6 +41,13 @@ public class ClientAttributeWrapper extends SimpleObjectProperty<Object> {
                 fireValueChangedEvent();
             }
         });
+        // the dirtyness may also change and shall call a re-render as the consumer may rely on that
+        attribute.addPropertyChangeListener("dirty", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                fireValueChangedEvent();
+            }
+        });
     }
 
     @Override

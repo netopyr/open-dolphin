@@ -1,7 +1,7 @@
 package demo
 
 import org.opendolphin.core.server.EventBus
-import org.opendolphin.demo.teammember.TeamEvent
+import org.opendolphin.demo.team.TeamEvent
 
 class TeammemberController {
 

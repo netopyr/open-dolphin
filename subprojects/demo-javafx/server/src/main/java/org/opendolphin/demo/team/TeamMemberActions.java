@@ -1,4 +1,4 @@
-package org.opendolphin.demo.teammember;
+package org.opendolphin.demo.team;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
 import org.opendolphin.core.server.comm.CommandHandler;
 
-import static org.opendolphin.demo.teammember.TeamMemberConstants.*;
+import static org.opendolphin.demo.team.TeamMemberConstants.*;
 
 public class TeamMemberActions extends DolphinServerAction {
 
@@ -149,42 +149,55 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 try {
-                    TeamEvent event = memberQueue.getVal(60, TimeUnit.SECONDS);
-                    while (null != event) {
-                        if ("new".equals(event.type)) { // todo : make enum
-                            presentationModel(null, TYPE_TEAM_MEMBER, event.dto);
-                        }
-                        if ("change".equals(event.type)) {
-                            List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
-                            for (Attribute attribute : attributes) {
-                                PresentationModel pm = attribute.getPresentationModel();
-                                if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
-                                    changeValue((ServerAttribute) attribute, event.value);
-                                }
-                            }
-                        }
-                        if ("rebase".equals(event.type)) {
-                            List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
-                            for (Attribute attribute : attributes) {
-                                response.add(new BaseValueChangedCommand(attribute.getId()));
-                            }
-                        }
-                        if ("remove".equals(event.type)) {
-                            List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
-                            for (Attribute attribute : attributes) {
-                                PresentationModel pm = attribute.getPresentationModel();
-                                if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
-                                    response.add(new DeletePresentationModelCommand(pm.getId()));
-                                }
-                            }
-                        }
-                        event = memberQueue.getVal(20, TimeUnit.MILLISECONDS);
-                    }
+                    processEventFromQeue(response, 60, TimeUnit.SECONDS);
+                } catch (InterruptedException e) { /* do nothing */ }
+            }
+        });
+
+        actionRegistry.register(CMD_UPDATE, new CommandHandler<NamedCommand>() {
+            @Override
+            public void handleCommand(NamedCommand command, List<Command> response) {
+                try {
+                    processEventFromQeue(response, 20, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         });
 
 
+    }
+
+    private void processEventFromQeue(List<Command> response, int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
+        TeamEvent event = memberQueue.getVal(timeoutValue, timeoutUnit);
+        while (null != event) {
+            if ("new".equals(event.type)) { // todo : make enum
+                presentationModel(null, TYPE_TEAM_MEMBER, event.dto);
+            }
+            if ("change".equals(event.type)) {
+                List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
+                for (Attribute attribute : attributes) {
+                    PresentationModel pm = attribute.getPresentationModel();
+                    if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
+                        changeValue((ServerAttribute) attribute, event.value);
+                    }
+                }
+            }
+            if ("rebase".equals(event.type)) {
+                List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
+                for (Attribute attribute : attributes) {
+                    response.add(new BaseValueChangedCommand(attribute.getId()));
+                }
+            }
+            if ("remove".equals(event.type)) {
+                List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
+                for (Attribute attribute : attributes) {
+                    PresentationModel pm = attribute.getPresentationModel();
+                    if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
+                        response.add(new DeletePresentationModelCommand(pm.getId()));
+                    }
+                }
+            }
+            event = memberQueue.getVal(20, TimeUnit.MILLISECONDS);
+        }
     }
 
     private boolean updateHistory(final Attribute attr) {
