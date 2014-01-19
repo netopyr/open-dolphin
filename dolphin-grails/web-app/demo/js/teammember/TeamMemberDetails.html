@@ -313,6 +313,9 @@
             }
             if (found < 0) { return; } // should never happen, but better be safe than sorry
             table.deleteRow(found);
+            // When removing a pm, that we have not currently selected, then this should not change our current selection.
+            // Since we select before deletion, this can only happen when some other client removes a pm and we are notified.
+            if (model.id != selectedPmId.getValue()) return;
             selectRow((table.children.length > found) ? found : found - 1 );
         }
 

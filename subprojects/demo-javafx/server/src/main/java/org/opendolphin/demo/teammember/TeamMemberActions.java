@@ -20,8 +20,6 @@ import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
 import org.opendolphin.core.server.comm.CommandHandler;
 
-import javax.print.attribute.IntegerSyntax;
-
 import static org.opendolphin.demo.teammember.TeamMemberConstants.*;
 
 public class TeamMemberActions extends DolphinServerAction {
@@ -108,7 +106,6 @@ public class TeamMemberActions extends DolphinServerAction {
                 PresentationModel pm = getServerDolphin().getAt(selPmId);
                 if (pm == null) {
                     System.out.println("cannot find pm to delete with id "+selPmId);
-                    System.out.println("known pm ids are " + getServerDolphin().listPresentationModelIds());
                     return;
                 }
                 if (!TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) return; // sanity check
@@ -134,26 +131,17 @@ public class TeamMemberActions extends DolphinServerAction {
             }
         });
 
-        // whenever a base value changes, we must publish it to others and update the shared state
-        actionRegistry.register(BaseValueChangedCommand.class, new CommandHandler<BaseValueChangedCommand>() {
-            @Override
-            public void handleCommand(BaseValueChangedCommand command, List<Command> response) {
-                Attribute attr = getServerDolphin().getModelStore().findAttributeById(command.getAttributeId());
-                if (attr == null || // todo: remove dupl with above
-                    attr.getQualifier() == null ||
-                    !TYPE_TEAM_MEMBER.equals(attr.getPresentationModel().getPresentationModelType()))
-                    return;
-                boolean updated = updateBaseHistory(attr);
-                if (updated) teamBus.publish(memberQueue, new TeamEvent("rebase", attr.getQualifier(), null));
-            }
-        });
-
         actionRegistry.register(CMD_SAVE, new CommandHandler<NamedCommand>() {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 String pmIdToSave = (String) findSelectedPmAttribute().getValue();
                 // saving the model to the database here. We assume all was ok:
                 response.add(new SavedPresentationModelNotification(pmIdToSave) );
+                PresentationModel pm = getServerDolphin().getAt(pmIdToSave);
+                for (Attribute attribute : pm.getAttributes()) {
+                    rebaseInHistory(attribute);
+                    teamBus.publish(memberQueue, new TeamEvent("rebase", attribute.getQualifier(), null));
+                }
             }
         });
 
@@ -178,10 +166,7 @@ public class TeamMemberActions extends DolphinServerAction {
                         if ("rebase".equals(event.type)) {
                             List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
                             for (Attribute attribute : attributes) {
-                                PresentationModel pm = attribute.getPresentationModel();
-                                if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
-                                    response.add(new BaseValueChangedCommand(attribute.getId()));
-                                }
+                                response.add(new BaseValueChangedCommand(attribute.getId()));
                             }
                         }
                         if ("remove".equals(event.type)) {
@@ -225,7 +210,7 @@ public class TeamMemberActions extends DolphinServerAction {
         return updated.get();
     }
 
-    private boolean updateBaseHistory(final Attribute attr) { // todo: remove dupl with above
+    private boolean rebaseInHistory(final Attribute attr) { // todo: remove dupl with above
         final AtomicBoolean updated = new AtomicBoolean(false);
         try {
             currentMembers.sendAndWait(new Closure(this) {
@@ -234,11 +219,9 @@ public class TeamMemberActions extends DolphinServerAction {
                     for (DTO member : members) {
                         for (Slot slot : member.getSlots()) {
                             if (slot.getQualifier().equals(attr.getQualifier())) {
-                                if (! slot.getBaseValue().equals(attr.getBaseValue())) {
-                                    slot.setBaseValue(attr.getBaseValue());
-                                    updated.set(true);
-                                }
-                                break out;
+                                slot.setBaseValue(slot.getValue());
+                                updated.set(true);
+                                break out; // in this special case there can only be one such slot
                             }
                         }
                     }
