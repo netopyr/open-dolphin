@@ -229,10 +229,11 @@ public class TeamApplication extends Application {
         });
     }
 
-    private Map<String, Image> lazyImageCache = new HashMap<>(10);
+    private Map<String, Image> lazyImageCache = new HashMap<String, Image>(10);
+
     private Image getImage(String function) {
         if ("".equals(function)) function = "Unselected";
-        if ( ! lazyImageCache.containsKey(function)) {
+        if (!lazyImageCache.containsKey(function)) {
             lazyImageCache.put(function, new Image("http://people.canoo.com/mittie/rolePics/" + function + ".jpg"));
         }
         return lazyImageCache.get(function);
@@ -245,7 +246,8 @@ public class TeamApplication extends Application {
         ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromX(0).toX(1).fromY(0.5).toY(1).build(),
         ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_FUNCTION).fromX(1).toX(0).fromY(1).toY(0.5).build()
     ).onFinished(new EventHandler<ActionEvent>() {
-        @Override public void handle(ActionEvent actionEvent) {
+        @Override
+        public void handle(ActionEvent actionEvent) {
             IMAGE_FUNCTION.setImage(IMAGE_ANIM.getImage());
             IMAGE_FUNCTION.setScaleX(1);
             IMAGE_FUNCTION.setScaleY(1);
