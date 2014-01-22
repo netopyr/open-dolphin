@@ -61,3 +61,26 @@
 .combo-box-base .arrow-button {
     -fx-background-color: transparent;
 }
+
+/*make a transparent background for the combobox popup*/
+
+.combo-box-popup .list-view {
+   -fx-background-color        : transparent, rgba(255, 255, 255, 0.4);
+   -fx-effect                  : null;
+}
+
+.combo-box-popup .list-view .list-cell {
+   -fx-padding         : 4 0 4 5;
+   -fx-background-color: transparent, rgba(255, 255, 255, 0.4);
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover {
+   -fx-background      : rgba(255, 255, 255, 0.4);
+   -fx-background-color: -fx-selection-bar;
+   -fx-text-fill       : -fx-selection-bar-text;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+   -fx-background-color: -fx-cell-hover-color;
+   -fx-text-fill       : -fx-text-inner-color;
+}
