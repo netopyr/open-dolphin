@@ -18,9 +18,14 @@ import javafx.scene.effect.ReflectionBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextBuilder;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import jfxtras.labs.scene.control.gauge.Led;
+import jfxtras.labs.scene.control.gauge.LedBuilder;
 import org.opendolphin.binding.Converter;
 import org.opendolphin.binding.JavaFxUtil;
 import org.opendolphin.core.*;
@@ -46,23 +51,25 @@ public class TeamApplication extends Application {
     private final Button    SAVE                 = new Button("Save");
     private final Button    RESET                = new Button("Reset");
     private final Button    DELETE               = new Button("Delete");
-    private final TextField FIELD_FIRST_NAME     = new TextField("");
-    private final TextField FIELD_LAST_NAME      = new TextField("");
+    private final TextField FIELD_FIRST_NAME     = TextFieldBuilder.create().promptText("e.g. John").build();
+    private final TextField FIELD_LAST_NAME      = TextFieldBuilder.create().promptText("e.g. Doe").build();
     private final CheckBox  CHECK_BOX_AVAILABLE  = new CheckBox();
     private final CheckBox  CHECK_BOX_CONTRACTOR = new CheckBox();
     private final Slider    SLIDER_WORKLOAD      = SliderBuilder.create().min(0).max(100).value(0).build();
     private final ComboBox  COMBO_BOX_FUNCTION   = ComboBoxBuilder.create()
-        .items(FXCollections.observableArrayList((Object) "", "Engineer", "Architect", "Consultant", "CFO", "CTO", "CEO"))
-        .prefWidth(212) // for the moment static. Bind later to col width
+        .items(FXCollections.observableArrayList((Object) "", "Engineer", "Architect", "Administrator", "Consultant", "CFO", "CTO", "CEO"))
+        .prefWidth(213) // for the moment static. Bind later to col width
         .build();
-    private final ImageView IMAGE_FUNCTION       = new ImageView("http://people.canoo.com/mittie/rolePics/Unselected.jpg");
-    private final ImageView IMAGE_ANIM           = new ImageView("http://people.canoo.com/mittie/rolePics/Unselected.jpg");
+
+    private Map<String, Image> lazyImageCache = new HashMap<String, Image>(10);
+
+    private final ImageView IMAGE_FUNCTION = new ImageView(getImage(""));
+    private final ImageView IMAGE_ANIM     = new ImageView(getImage(""));
 
     private TableView<Object> table;
 
     final ObservableList<PresentationModel> teamMembers = FXCollections.observableArrayList();
 
-    //    final BooleanProperty moldEnabled = new SimpleBooleanProperty(false);
     GridPane form;
 
     static  ClientDolphin           clientDolphin;
@@ -113,7 +120,7 @@ public class TeamApplication extends Application {
                             final CheckBox checkBox = (CheckBox) graphic;
                             checkBox.setMouseTransparent(true);
                             checkBox.setSelected((Boolean) item);
-                            setAlignment(Pos.BASELINE_CENTER);
+                            setAlignment(Pos.CENTER);
                         } else if (item instanceof Number) {
                             Node graphic = getGraphic();
                             if (!(graphic instanceof ProgressBar)) {
@@ -123,17 +130,18 @@ public class TeamApplication extends Application {
                             final ProgressBar indicator = (ProgressBar) graphic;
                             final Double doubleItem = Double.valueOf(item.toString()); // omg
                             indicator.setProgress(doubleItem / 100);
-                            setAlignment(Pos.BASELINE_CENTER);
+                            setAlignment(Pos.CENTER);
                         } else {
                             setText(item.toString());
                         }
-                        final PresentationModel pm = (PresentationModel) getTableRow().getItem();
-                        if (null != pm) {
-                            if (pm.getAt(attributeName).isDirty()) {
-                                getStyleClass().add("cell-dirty");
-                            } else {
-                                getStyleClass().removeAll("cell-dirty");
-                            }
+                        final TableRow tableRow = getTableRow();
+                        if (null == tableRow) return;
+                        final PresentationModel pm = (PresentationModel) tableRow.getItem();
+                        if (null == pm) return;
+                        if (pm.getAt(attributeName).isDirty()) {
+                            getStyleClass().add("cell-dirty");
+                        } else {
+                            getStyleClass().removeAll("cell-dirty");
                         }
                     }
                 };
@@ -143,7 +151,10 @@ public class TeamApplication extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(final Stage stage) throws Exception {
+
+        final Font font = Font.loadFont(this.getClass().getResourceAsStream("/Eurostile-Demi.ttf"), 18);
+        if (null == font) System.out.println("could not load font");
 
         table = TableViewBuilder.create()
             .columns(
@@ -154,6 +165,8 @@ public class TeamApplication extends Application {
                 makeTableColumn("Contractor", ATT_CONTRACTOR),
                 makeTableColumn("Workload", ATT_WORKLOAD))
             .items((ObservableList) teamMembers)
+            .columnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY)
+            .placeholder(TextBuilder.create().text("Please add a team member").id("no-content").build())
             .build();
 
         ADD_BUTTON.setTranslateX(5); // quick hack for alignment
@@ -206,10 +219,10 @@ public class TeamApplication extends Application {
         stage.setTitle("Team Members in JavaFX");
         scene.getStylesheets().add("/team.css");
 
-        stage.show();
 
         clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
             @Override public void onFinished(List<ClientPresentationModel> presentationModels) {
+                stage.show();
                 longPoll();
             }
         });
@@ -228,8 +241,6 @@ public class TeamApplication extends Application {
             }
         });
     }
-
-    private Map<String, Image> lazyImageCache = new HashMap<String, Image>(10);
 
     private Image getImage(String function) {
         if ("".equals(function)) function = "Unselected";

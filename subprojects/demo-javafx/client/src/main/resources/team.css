@@ -45,3 +45,19 @@
     -fx-border-width: 1;
     -fx-background-color: rgba(255, 217, 161, 0.5);
 }
+
+#no-content {
+    -fx-font-family: 'Eurostile-Demi';
+    -fx-font-size: 18pt;
+    -fx-fill: rgba(255, 255, 255, 0.8);
+}
+
+.combo-box-base {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-radius: 0, 0, 0;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+}
