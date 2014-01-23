@@ -84,3 +84,11 @@
    -fx-background-color: -fx-cell-hover-color;
    -fx-text-fill       : -fx-text-inner-color;
 }
+
+.dot-selected {
+    -fx-fill: radial-gradient(center 50% 16%, radius 50%, reflect, papayawhip, rgba(183, 146, 104, 0.9) 80% );
+    -fx-effect: dropshadow(one-pass-box, rgba(183, 146, 104, 0.9), 6, 0, 0, 3);
+}
+.dot-unselected {
+    -fx-fill: rgba(42,42,42, 0.2);
+}

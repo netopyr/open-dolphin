@@ -19,6 +19,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.CircleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextBuilder;
 import javafx.stage.Stage;
@@ -113,13 +115,13 @@ public class TeamApplication extends Application {
                         if (empty) return;
                         if (item instanceof Boolean) {
                             Node graphic = getGraphic();
-                            if (!(graphic instanceof CheckBox)) {
-                                graphic = new CheckBox();
+                            if (!(graphic instanceof Circle)) {
+                                graphic = CircleBuilder.create().radius(10).build();
                                 setGraphic(graphic);
                             }
-                            final CheckBox checkBox = (CheckBox) graphic;
-                            checkBox.setMouseTransparent(true);
-                            checkBox.setSelected((Boolean) item);
+                            final Circle checkBox = (Circle) graphic;
+                            checkBox.getStyleClass().clear();
+                            checkBox.getStyleClass().add(((Boolean) item) ? "dot-selected" : "dot-unselected");
                             setAlignment(Pos.CENTER);
                         } else if (item instanceof Number) {
                             Node graphic = getGraphic();
