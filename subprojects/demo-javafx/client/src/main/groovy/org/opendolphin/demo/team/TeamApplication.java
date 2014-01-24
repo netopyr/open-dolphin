@@ -17,6 +17,7 @@ import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.ReflectionBuilder;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CircleBuilder;
@@ -98,6 +99,8 @@ public class TeamApplication extends Application {
         clientDolphin.presentationModel(PM_ID_SELECTED, (String) null, selectedPmId);
     }
 
+    final Map<String, Node> qualifier2graphics = new HashMap<String, Node>(200);
+
     TableColumn makeTableColumn(String header, final String attributeName) {
         // make sure attribute value changes lead to cell value changes
         final TableColumn column = JavaFxUtil.value(attributeName, new TableColumn(header));
@@ -110,43 +113,73 @@ public class TeamApplication extends Application {
                     protected void updateItem(Object item, boolean empty) {
                         super.updateItem(item, empty);
                         if (empty) return;
-                        if (item instanceof Boolean) {
-                            Node graphic = getGraphic();
-                            if (!(graphic instanceof Circle)) {
-                                graphic = CircleBuilder.create().radius(10).build();
-                                setGraphic(graphic);
-                            }
-                            final Circle checkBox = (Circle) graphic;
-                            checkBox.getStyleClass().clear();
-                            checkBox.getStyleClass().add(((Boolean) item) ? "dot-selected" : "dot-unselected");
-                            setAlignment(Pos.CENTER);
-                        } else if (item instanceof Number) {
-                            Node graphic = getGraphic();
-                            if (!(graphic instanceof ProgressBar)) {
-                                graphic = new ProgressBar();
-                                setGraphic(graphic);
-                            }
-                            final ProgressBar indicator = (ProgressBar) graphic;
-                            final Double doubleItem = Double.valueOf(item.toString()); // omg
-                            indicator.setProgress(doubleItem / 100);
-                            setAlignment(Pos.CENTER);
-                        } else {
-                            setText(item.toString());
-                        }
                         final TableRow tableRow = getTableRow();
                         if (null == tableRow) return;
                         final PresentationModel pm = (PresentationModel) tableRow.getItem();
                         if (null == pm) return;
-                        if (pm.getAt(attributeName).isDirty()) {
+                        final Attribute attribute = pm.getAt(attributeName);
+                        if (attribute.isDirty()) {
                             getStyleClass().add("cell-dirty");
                         } else {
                             getStyleClass().removeAll("cell-dirty");
                         }
+                        if (item instanceof String) {
+                            setText(item.toString());
+                            return;
+                        }
+
+                        Node candidate = qualifier2graphics.get(attribute.getQualifier());
+                        if (null != candidate) {
+                            setGraphic(candidate);
+                            if (attributeName.equals(ATT_AVAILABLE) || attributeName.equals(ATT_CONTRACTOR) || attributeName.equals(ATT_WORKLOAD)) {
+                                setAlignment(Pos.CENTER);
+                            }
+                            return;
+                        }
+
+                        Node graphic = null;
+                        if (item instanceof Boolean) {
+                            graphic = makeBoundCircle(pm, attributeName);
+                        }
+                        if (item instanceof Number) {
+                            graphic = makeBoundProgressBar(pm, attributeName);
+                        }
+                        qualifier2graphics.put(attribute.getQualifier(), graphic);
+                        setGraphic(graphic);
                     }
                 };
             }
         });
         return column;
+    }
+
+    private Circle makeBoundCircle(final PresentationModel pm, final String attributeName) {
+        final Circle circle = CircleBuilder.create().radius(10).build();
+        bind(attributeName).of(pm).using(new Converter() {
+            @Override public Object convert(Object value) {
+                ScaleTransitionBuilder.create().duration(Duration.millis(400)).node(circle).toY(((Boolean) value) ? 1 : 0.3).build().play();
+                circle.getStyleClass().clear();
+                circle.getStyleClass().add(((Boolean) value) ? "dot-selected" : "dot-unselected");
+                return circle.getStyle();
+            }
+        }).to("style").of(circle);
+        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent mouseEvent) {
+                pm.getAt(attributeName).setValue(!(Boolean) pm.getAt(attributeName).getValue());
+            }
+        });
+        return circle;
+    }
+
+    private ProgressBar makeBoundProgressBar(final PresentationModel pm, final String attributeName) {
+        final ProgressBar bar = new ProgressBar();
+        final Converter percentage = new Converter() {
+            @Override public Object convert(Object value) {
+                return Double.valueOf(value.toString()) / 100;
+            }
+        };
+        bind(attributeName).of(pm).using(percentage).to("progress").of(bar);
+        return bar;
     }
 
     @Override
@@ -344,9 +377,14 @@ public class TeamApplication extends Application {
                 final PresentationModel pm = event.getPresentationModel();
                 if (event.getType().equals(ModelStoreEvent.Type.ADDED)) {
                     teamMembers.add(pm);
+                    // selection comes from server side. nothing to do here
                 }
                 if (event.getType() == ModelStoreEvent.Type.REMOVED) {
                     teamMembers.remove(pm);
+                    if (selectedPmId.getValue().equals(pm.getId())) { // we may not have a selection any more
+                        final PresentationModel nextPm = clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).get(0);
+                        selectedPmId.setValue(nextPm == null ? null : nextPm.getId());
+                    }
                 }
             }
         });
