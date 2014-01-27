@@ -23,6 +23,8 @@ public class TeamMemberConstants {
     public static final String ATT_SEL_PM_ID    = "selectedPmId";
     public static final String QUAL_SEL_PM_ID   = "teammember.selected.id";
 
+    public static final String[] FUNCTION_NAMES = {"", "Engineer", "Architect", "Administrator", "Consultant", "CFO", "CTO", "CEO"};
+
     public static String uniqueId(int count) {
         return TYPE_TEAM_MEMBER + "." + count;
     }

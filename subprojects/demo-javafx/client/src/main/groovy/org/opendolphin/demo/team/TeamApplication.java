@@ -26,6 +26,7 @@ import javafx.scene.text.TextBuilder;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.opendolphin.binding.Converter;
 import org.opendolphin.binding.JavaFxUtil;
 import org.opendolphin.core.*;
@@ -57,7 +58,7 @@ public class TeamApplication extends Application {
     private final CheckBox  CHECK_BOX_CONTRACTOR = new CheckBox();
     private final Slider    SLIDER_WORKLOAD      = SliderBuilder.create().min(0).max(100).value(0).build();
     private final ComboBox  COMBO_BOX_FUNCTION   = ComboBoxBuilder.create()
-        .items(FXCollections.observableArrayList((Object) "", "Engineer", "Architect", "Administrator", "Consultant", "CFO", "CTO", "CEO"))
+        .items(FXCollections.<Object>observableArrayList(DefaultGroovyMethods.toList(FUNCTION_NAMES)))
         .prefWidth(213) // for the moment static. Bind later to col width
         .build();
 
@@ -97,9 +98,16 @@ public class TeamApplication extends Application {
 
         selectedPmId = new ClientAttribute(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
         clientDolphin.presentationModel(PM_ID_SELECTED, (String) null, selectedPmId);
+
+// preload the images
+        for (String name : FUNCTION_NAMES) {
+            getImage(name);
+        }
     }
 
-    final Map<String, Node> qualifier2graphics = new HashMap<String, Node>(200);
+    // caching the graphic nodes that are used for rendering the table to avoid
+    // creating too many nodes and excessive binding
+    private final Map<String, Node> qualifier2graphics = new HashMap<String, Node>(200);
 
     TableColumn makeTableColumn(String header, final String attributeName) {
         // make sure attribute value changes lead to cell value changes
@@ -112,12 +120,14 @@ public class TeamApplication extends Application {
                     @Override
                     protected void updateItem(Object item, boolean empty) {
                         super.updateItem(item, empty);
+                        // re-rendering is triggered whenever an attribute fires change or the table thinks it is needed (which is quite often)
                         if (empty) return;
                         final TableRow tableRow = getTableRow();
                         if (null == tableRow) return;
                         final PresentationModel pm = (PresentationModel) tableRow.getItem();
                         if (null == pm) return;
                         final Attribute attribute = pm.getAt(attributeName);
+                        // dirty handling is the same for all cell types
                         if (attribute.isDirty()) {
                             getStyleClass().add("cell-dirty");
                         } else {
@@ -127,13 +137,11 @@ public class TeamApplication extends Application {
                             setText(item.toString());
                             return;
                         }
-
+                        // if item is not a string, then we need a graphical representation (node)
+                        setAlignment(Pos.CENTER); // all graphics are centered
                         Node candidate = qualifier2graphics.get(attribute.getQualifier());
                         if (null != candidate) {
                             setGraphic(candidate);
-                            if (attributeName.equals(ATT_AVAILABLE) || attributeName.equals(ATT_CONTRACTOR) || attributeName.equals(ATT_WORKLOAD)) {
-                                setAlignment(Pos.CENTER);
-                            }
                             return;
                         }
 
@@ -283,18 +291,27 @@ public class TeamApplication extends Application {
     }
 
     final   Duration           imageTransitionDuration = Duration.millis(300);
-    private ParallelTransition imageTransition         = ParallelTransitionBuilder.create().children(
+    private ParallelTransition coverFlow               = ParallelTransitionBuilder.create().children(
         TranslateTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromX(130).toX(0).build(),
         TranslateTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_FUNCTION).fromX(0).toX(-130).build(),
         ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromX(0).toX(1).fromY(0.5).toY(1).build(),
         ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_FUNCTION).fromX(1).toX(0).fromY(1).toY(0.5).build()
     ).onFinished(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent actionEvent) {
+        @Override public void handle(ActionEvent actionEvent) {
             IMAGE_FUNCTION.setImage(IMAGE_ANIM.getImage());
             IMAGE_FUNCTION.setScaleX(1);
             IMAGE_FUNCTION.setScaleY(1);
             IMAGE_FUNCTION.setTranslateX(0);
+        }
+    }).build();
+
+    private ParallelTransition rollDown = ParallelTransitionBuilder.create().children(
+        TranslateTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromY(-150).toY(0).build(),
+        ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromY(0).toY(1).build()
+    ).onFinished(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+            IMAGE_FUNCTION.setImage(IMAGE_ANIM.getImage());
         }
     }).build();
 
@@ -319,7 +336,8 @@ public class TeamApplication extends Application {
             public void propertyChange(PropertyChangeEvent evt) {
                 COMBO_BOX_FUNCTION.setValue(evt.getNewValue().toString());
                 IMAGE_ANIM.setImage(getImage(evt.getNewValue().toString()));
-                imageTransition.play();
+                coverFlow.play();
+//                rollDown.play();
             }
         });
 
