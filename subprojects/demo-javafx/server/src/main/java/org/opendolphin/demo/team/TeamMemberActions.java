@@ -12,10 +12,7 @@ import groovyx.gpars.dataflow.DataflowQueue;
 import org.opendolphin.core.Attribute;
 import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.comm.*;
-import org.opendolphin.core.server.DTO;
-import org.opendolphin.core.server.EventBus;
-import org.opendolphin.core.server.ServerAttribute;
-import org.opendolphin.core.server.Slot;
+import org.opendolphin.core.server.*;
 import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
 import org.opendolphin.core.server.comm.CommandHandler;
@@ -25,7 +22,7 @@ import static org.opendolphin.demo.team.TeamMemberConstants.*;
 public class TeamMemberActions extends DolphinServerAction {
 
     /** thread safe shared state to keep around for new user sessions */
-    static final Agent currentMembers = new Agent<List<DTO>>(new LinkedList<DTO>());
+    private final Agent currentMembers ;
 
     /** thread safe unique user count across all sessions */
     static final AtomicInteger userCount = new AtomicInteger(0);
@@ -39,10 +36,10 @@ public class TeamMemberActions extends DolphinServerAction {
     private EventBus teamBus;
     private final DataflowQueue<TeamEvent> memberQueue = new DataflowQueue<TeamEvent>();
 
-    TeamMemberActions subscribedTo(EventBus teamBus) {
+    public TeamMemberActions(EventBus teamBus, Agent<List<DTO>> history) {
         this.teamBus = teamBus;
         this.teamBus.subscribe(memberQueue);
-        return this;
+        currentMembers = history;
     }
 
     @Override
@@ -87,7 +84,7 @@ public class TeamMemberActions extends DolphinServerAction {
                         }
                     });
                 } catch (InterruptedException e) { /* do nothing */ }
-                // notifiy all others about the new team member
+                // notify all others about the new team member
                 teamBus.publish(memberQueue, new TeamEvent("new", dto));
                 // create the pm
                 String addedId = uniqueId(memberId);
@@ -136,7 +133,7 @@ public class TeamMemberActions extends DolphinServerAction {
             public void handleCommand(NamedCommand command, List<Command> response) {
                 String pmIdToSave = (String) findSelectedPmAttribute().getValue();
                 // saving the model to the database here. We assume all was ok:
-                response.add(new SavedPresentationModelNotification(pmIdToSave) );
+                response.add(new SavedPresentationModelNotification(pmIdToSave));
                 PresentationModel pm = getServerDolphin().getAt(pmIdToSave);
                 for (Attribute attribute : pm.getAttributes()) {
                     rebaseInHistory(attribute);
@@ -149,7 +146,7 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 try {
-                    processEventFromQeue(response, 60, TimeUnit.SECONDS);
+                    processEventFromQueue(response, 60, TimeUnit.SECONDS);
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         });
@@ -158,7 +155,7 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 try {
-                    processEventFromQeue(response, 20, TimeUnit.MILLISECONDS);
+                    processEventFromQueue(response, 20, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         });
@@ -166,7 +163,7 @@ public class TeamMemberActions extends DolphinServerAction {
 
     }
 
-    private void processEventFromQeue(List<Command> response, int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
+    private void processEventFromQueue(List<Command> response, int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
         TeamEvent event = memberQueue.getVal(timeoutValue, timeoutUnit);
         while (null != event) {
             if ("new".equals(event.type)) { // todo : make enum

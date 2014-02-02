@@ -35,4 +35,21 @@ class TestInMemoryConfig extends DefaultInMemoryConfig {
         done.countDown()
     }
 
+    /** for testing purposes, we may want to send commands synchronously such that we better know when to run asserts */
+    void sendSynchronously(String commandName) {
+        clientDolphin.send commandName
+        syncPoint(1)
+    }
+
+    /** make sure we continue only after all previous commands have been executed */
+    void syncPoint(int soManyRoundTrips) {
+        if (soManyRoundTrips < 1) return
+        def latch = new CountDownLatch(1)
+        clientDolphin.sync {
+            latch.countDown()
+            syncPoint(soManyRoundTrips - 1)
+        }
+        latch.await()
+    }
+
 }

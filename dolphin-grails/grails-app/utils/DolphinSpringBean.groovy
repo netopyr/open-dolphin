@@ -1,4 +1,6 @@
+import groovyx.gpars.agent.Agent
 import org.opendolphin.LogConfig
+import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.demo.ChatterActions
@@ -13,12 +15,15 @@ import org.opendolphin.demo.SmallFootprintAction
 import org.opendolphin.demo.crud.CrudActions
 import org.opendolphin.demo.crud.CrudService
 import groovy.util.logging.Log
+import org.opendolphin.demo.team.TeamMemberActions
 
 import java.util.logging.Level
 import java.util.logging.Logger
 
 @Log
 class DolphinSpringBean {
+
+    private static final teamHistory = new Agent<List<DTO>>(new LinkedList<DTO>());
 
     DolphinSpringBean(
         ServerDolphin dolphin,
@@ -49,7 +54,7 @@ class DolphinSpringBean {
 
         // for the dolphin.js demos
         dolphin.register(new TutorialAction())
-        dolphin.register(new org.opendolphin.demo.team.TeamMemberActions().subscribedTo(teamBus))
+        dolphin.register(new TeamMemberActions(teamBus, teamHistory))
         dolphin.register(new ChatterActions().subscribedTo(chatterBus))
 
     }
