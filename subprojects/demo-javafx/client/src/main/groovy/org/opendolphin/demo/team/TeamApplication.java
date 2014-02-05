@@ -290,28 +290,15 @@ public class TeamApplication extends Application {
         return lazyImageCache.get(function);
     }
 
-    final   Duration           imageTransitionDuration = Duration.millis(300);
-    private ParallelTransition coverFlow               = ParallelTransitionBuilder.create().children(
-        TranslateTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromX(130).toX(0).build(),
-        TranslateTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_FUNCTION).fromX(0).toX(-130).build(),
-        ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromX(0).toX(1).fromY(0.5).toY(1).build(),
-        ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_FUNCTION).fromX(1).toX(0).fromY(1).toY(0.5).build()
-    ).onFinished(new EventHandler<ActionEvent>() {
-        @Override public void handle(ActionEvent actionEvent) {
-            IMAGE_FUNCTION.setImage(IMAGE_ANIM.getImage());
-            IMAGE_FUNCTION.setScaleX(1);
-            IMAGE_FUNCTION.setScaleY(1);
-            IMAGE_FUNCTION.setTranslateX(0);
-        }
-    }).build();
+    final   Duration  imageTransitionDuration = Duration.millis(200);
 
     private ParallelTransition rollDown = ParallelTransitionBuilder.create().children(
-        TranslateTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromY(-150).toY(0).build(),
-        ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_ANIM).fromY(0).toY(1).build()
+        TranslateTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_FUNCTION).fromY(-150).toY(0).build(),
+        ScaleTransitionBuilder.create().duration(imageTransitionDuration).node(IMAGE_FUNCTION).fromY(0).toY(1).build()
     ).onFinished(new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent actionEvent) {
-            IMAGE_FUNCTION.setImage(IMAGE_ANIM.getImage());
+            IMAGE_ANIM.setImage(IMAGE_FUNCTION.getImage());
         }
     }).build();
 
@@ -335,9 +322,8 @@ public class TeamApplication extends Application {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 COMBO_BOX_FUNCTION.setValue(evt.getNewValue().toString());
-                IMAGE_ANIM.setImage(getImage(evt.getNewValue().toString()));
-                coverFlow.play();
-//                rollDown.play();
+                IMAGE_FUNCTION.setImage(getImage(evt.getNewValue().toString()));
+                rollDown.play();
             }
         });
 
@@ -393,13 +379,13 @@ public class TeamApplication extends Application {
             @Override
             public void modelStoreChanged(ModelStoreEvent event) {
                 final PresentationModel pm = event.getPresentationModel();
-                if (event.getType().equals(ModelStoreEvent.Type.ADDED)) {
+                if (event.getType() == ModelStoreEvent.Type.ADDED) {
                     teamMembers.add(pm);
                     // selection comes from server side. nothing to do here
                 }
                 if (event.getType() == ModelStoreEvent.Type.REMOVED) {
                     teamMembers.remove(pm);
-                    if (selectedPmId.getValue().equals(pm.getId())) { // we may not have a selection any more
+                    if (pm.getId().equals(selectedPmId.getValue())) { // we may not have a selection any more
                         final PresentationModel nextPm = clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).get(0);
                         selectedPmId.setValue(nextPm == null ? null : nextPm.getId());
                     }
@@ -483,6 +469,7 @@ public class TeamApplication extends Application {
                     @Override
                     public void onFinished(List<ClientPresentationModel> presentationModels) {
                         DELETE.setDisable(false);
+                        System.out.println("re-enabled the delete button");
                     }
                 });
             }

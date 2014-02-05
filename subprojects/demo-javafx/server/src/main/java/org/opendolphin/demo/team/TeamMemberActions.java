@@ -1,6 +1,5 @@
 package org.opendolphin.demo.team;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -146,7 +145,8 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 try {
-                    processEventFromQueue(response, 60, TimeUnit.SECONDS);
+                    // the polling runs in a separate dolphin session and cleans the queue
+                    processEventsFromQueue(response, 60, TimeUnit.SECONDS);
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         });
@@ -155,7 +155,7 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 try {
-                    processEventFromQueue(response, 20, TimeUnit.MILLISECONDS);
+                    processEventsFromQueue(response, 20, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         });
@@ -163,7 +163,7 @@ public class TeamMemberActions extends DolphinServerAction {
 
     }
 
-    private void processEventFromQueue(List<Command> response, int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
+    private void processEventsFromQueue(List<Command> response, int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
         TeamEvent event = memberQueue.getVal(timeoutValue, timeoutUnit);
         while (null != event) {
             if ("new".equals(event.type)) { // todo : make enum
