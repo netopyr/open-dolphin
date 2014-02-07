@@ -197,22 +197,29 @@ public class TeamMemberActions extends DolphinServerAction {
         }
     }
 
+    private Slot findSlotByQualifier(List<DTO> dtos, String qualifier) {
+        if (qualifier == null) return null;
+        Slot result = null;
+        for (DTO dto : dtos) {
+            for (Slot slot : dto.getSlots()) {
+                if (qualifier.equals(slot.getQualifier())) {
+                    return slot;
+                }
+            }
+        }
+        return result;
+    }
+
     private boolean updateHistory(final Attribute attr) {
         final AtomicBoolean updated = new AtomicBoolean(false);
         try {
             currentMembers.sendAndWait(new Closure(this) {
                 void doCall(List<DTO> members) {
-                    out:
-                    for (DTO member : members) {
-                        for (Slot slot : member.getSlots()) {
-                            if (slot.getQualifier().equals(attr.getQualifier())) {
-                                if (! slot.getValue().equals(attr.getValue())) {
-                                    slot.setValue(attr.getValue());
-                                    updated.set(true);
-                                }
-                                break out;
-                            }
-                        }
+                    Slot slot = findSlotByQualifier(members, attr.getQualifier());
+                    if (null == slot) return;
+                    if (! slot.getValue().equals(attr.getValue())) {
+                        slot.setValue(attr.getValue());
+                        updated.set(true);
                     }
                 }
             });
@@ -220,28 +227,22 @@ public class TeamMemberActions extends DolphinServerAction {
         return updated.get();
     }
 
-    private boolean rebaseInHistory(final Attribute attr) { // todo: remove dupl with above
+    private boolean rebaseInHistory(final Attribute attr) {
         final AtomicBoolean updated = new AtomicBoolean(false);
         try {
             currentMembers.sendAndWait(new Closure(this) {
                 void doCall(List<DTO> members) {
-                    out:
-                    for (DTO member : members) {
-                        for (Slot slot : member.getSlots()) {
-                            if (slot.getQualifier().equals(attr.getQualifier())) {
-                                slot.setBaseValue(slot.getValue());
-                                updated.set(true);
-                                break out; // in this special case there can only be one such slot
-                            }
-                        }
-                    }
+                    Slot slot = findSlotByQualifier(members, attr.getQualifier());
+                    if (null == slot) return;
+                    slot.setBaseValue(slot.getValue());
+                    updated.set(true);
                 }
             });
         } catch (InterruptedException e) { /* do nothing */ }
         return updated.get();
     }
 
-    private void removeFromHistory(final Attribute attr) { // todo: remove dupl with above
+    private void removeFromHistory(final Attribute attr) {
         try {
             currentMembers.sendAndWait(new Closure(this) {
                 void doCall(List<DTO> members) {
