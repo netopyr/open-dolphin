@@ -33,6 +33,8 @@ import org.codehaus.groovy.runtime.StackTraceUtils
 
 import java.util.logging.Level
 
+import static groovyx.gpars.GParsPool.withPool
+
 @Log
 abstract class ClientConnector {
     Codec codec
@@ -97,6 +99,10 @@ abstract class ClientConnector {
 
     @CompileStatic
     void send(Command command, OnFinishedHandler callback = null) {
+        // we have some change so regardless of the batching we may have to release a push
+        if (command != pushListener) {
+            release()
+        }
         // we are inside the UI thread and events calls come in strict order as received by the UI toolkit
         commandBatcher.batch(new CommandAndHandler(command: command, handler: callback))
     }
@@ -306,4 +312,55 @@ abstract class ClientConnector {
         return null
     }
 
+
+    //////////////////////////////// push support ////////////////////////////////////////
+
+    /** The named command that waits for pushes on the server side */
+    NamedCommand  pushListener   = null;
+    /** The signal command that publishes a "release" event on the respective bus */
+    SignalCommand releaseCommand = null;
+
+    /** whether listening for push events should be done at all. */
+    protected boolean pushEnabled = false;
+
+    /** whether we currently wait for push events (internal state) and may need to release */
+    protected boolean waiting = false;
+
+    /** listens for the pushListener to return. The pushListener must be set and pushEnabled must be true. */
+    protected void listen() {
+        if (!pushEnabled) return // allow the loop to end
+        if (waiting) return      // avoid second call while already waiting (?) -> two different push actions not supported
+        if (null == pushListener) {
+            log.warning("You must set a pushListener on the client connector if you want to listen for push events")
+            return
+        }
+        waiting = true
+        send(pushListener, new OnFinishedHandlerAdapter() {
+            @Override
+            void onFinished(List<ClientPresentationModel> presentationModels) {
+                // we do nothing here nor do we register a special handler.
+                // The server may have sent commands, though, even CallNamedActionCommand.
+                waiting = false
+                listen() // not a real recursion; is added to event queue
+            }
+        })
+    }
+
+    /** Release the current push listener, which blocks the sending queue.
+     *  Does nothing in case that the push listener is not active.
+     * */
+    protected void release() {
+        if (!waiting) {
+            return      // there is no point in releasing if we do not wait. Avoid excessive releasing.
+        }
+        waiting = false // release is under way
+        if (null == releaseCommand) {
+            log.warning("Please set releaseCommand in client connector or we cannot release the send lock.")
+            return
+        }
+        withPool {
+            def transmitAsynchronously = this.&transmit.asyncFun()
+            transmitAsynchronously([releaseCommand]) // sneaks by the strict command sequence
+        }
+    }
 }

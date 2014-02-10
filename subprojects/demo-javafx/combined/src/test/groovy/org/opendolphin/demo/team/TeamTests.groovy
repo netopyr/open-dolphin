@@ -2,7 +2,6 @@ package org.opendolphin.demo.team
 
 import groovyx.gpars.agent.Agent
 import org.opendolphin.LogConfig
-import org.opendolphin.core.Dolphin
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.comm.TestInMemoryConfig
 import org.opendolphin.core.server.DTO
@@ -20,9 +19,8 @@ import static org.opendolphin.demo.team.TeamMemberConstants.ATT_SEL_PM_ID
 import static org.opendolphin.demo.team.TeamMemberConstants.ATT_WORKLOAD
 import static org.opendolphin.demo.team.TeamMemberConstants.CMD_ADD
 import static org.opendolphin.demo.team.TeamMemberConstants.CMD_INIT
-import static org.opendolphin.demo.team.TeamMemberConstants.CMD_POLL
+import static org.opendolphin.demo.team.TeamMemberConstants.ACTION_ON_PUSH
 import static org.opendolphin.demo.team.TeamMemberConstants.CMD_REMOVE
-import static org.opendolphin.demo.team.TeamMemberConstants.CMD_UPDATE
 import static org.opendolphin.demo.team.TeamMemberConstants.PM_ID_SELECTED
 import static org.opendolphin.demo.team.TeamMemberConstants.TYPE_TEAM_MEMBER
 
@@ -126,7 +124,7 @@ class TeamTests extends Specification {
 
         when: "one is adding a record and second one is polling (as from a long-poll)"
         app.sendSynchronously CMD_ADD
-        secondApp.sendSynchronously CMD_POLL
+        secondApp.sendSynchronously ACTION_ON_PUSH
 
         then: "both see the added record"
         clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).size() == 1
@@ -136,7 +134,7 @@ class TeamTests extends Specification {
         def firstOne  = clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).first()
         def secondOne = secondDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).first()
         secondOne[ATT_FIRSTNAME].value = 'changed'
-        app.sendSynchronously CMD_POLL
+        app.sendSynchronously ACTION_ON_PUSH
 
         then: "both see the transient change and the dirtyness"
         firstOne[ATT_FIRSTNAME].value == 'changed'
@@ -148,7 +146,7 @@ class TeamTests extends Specification {
 
         when: "first one is removing the record and second one polls"
         app.sendSynchronously CMD_REMOVE
-        secondApp.sendSynchronously CMD_POLL
+        secondApp.sendSynchronously ACTION_ON_PUSH
 
         then: "both see the empty state again"
         clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).size() == 0

@@ -25,6 +25,7 @@ import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
 import org.opendolphin.core.comm.AttributeCreatedNotification
 import org.opendolphin.core.comm.EmptyNotification
 import org.opendolphin.core.comm.NamedCommand
+import org.opendolphin.core.comm.SignalCommand
 
 /**
  * The main Dolphin facade on the client side.
@@ -151,6 +152,17 @@ public class ClientDolphin extends Dolphin {
                     tag: attribute.tag
             )
         }
+    }
+
+    public startPushListening(String pushActionName, String releaseActionName) {
+        clientConnector.pushListener   = new NamedCommand(pushActionName);
+        clientConnector.releaseCommand = new SignalCommand(releaseActionName);
+        clientConnector.pushEnabled    = true
+        clientConnector.listen()
+    }
+
+    public stopPushListening() {
+        clientConnector.pushEnabled = false
     }
 }
 

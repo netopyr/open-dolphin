@@ -156,23 +156,12 @@
 
         const disabledAttr        = dolphin.attribute("disabled", null, true); // a free-standing attribute for the detail form
 
-        var   channelBlocked      = false;
-
-        function release() {      // todo dk: put in library
-            if (!channelBlocked) return;
-            channelBlocked = false;
-            var http = new XMLHttpRequest();
-            http.open('GET', "http://localhost:8080/dolphin-grails/teammember/release", true);
-            http.send();
-        }
-
         ///////////////////// bindings for the detail view (form) /////////////////////////
 
         // this helper function for a standard binding of values could later go into Dolphin JsBinder
         function bindBothValues(type, element, attribute) { // bind element value to attribute value bidirectionally
             element.addEventListener(type, function () {
                 attribute.setValue(element.value);
-                release();
             });
             attribute.onValueChange(function (event) {
                 element.value = event.newValue;
@@ -191,7 +180,6 @@
 
         workload.addEventListener("input", function () {
             workloadAttr.setValue(workload.value);
-            release();
         });
         workloadAttr.onValueChange(function (event) {
             if(sliderPressed) return;
@@ -206,14 +194,14 @@
         });
 
         // availableYes/No binding with isAvailableAttr bidirectionally
-        availableYes.onclick = function () { isAvailableAttr.setValue(availableYes.checked); release(); };
-        availableNo.onclick  = function () { isAvailableAttr.setValue(availableYes.checked); release(); }; // :-)
+        availableYes.onclick = function () { isAvailableAttr.setValue(availableYes.checked); };
+        availableNo.onclick  = function () { isAvailableAttr.setValue(availableYes.checked); }; // :-)
         isAvailableAttr.onValueChange(function (event) {
             availableYes.checked =  event.newValue;
             availableNo.checked  = !event.newValue;
         });
         // isContractor binding with isContractorAttr bidirectionally
-        isContractor.onclick = function () { isContractorAttr.setValue(isContractor.checked); release(); };
+        isContractor.onclick = function () { isContractorAttr.setValue(isContractor.checked); };
         isContractorAttr.onValueChange(function (event) {
             isContractor.checked = event.newValue;
         });
@@ -247,11 +235,9 @@
             if (selectedPm) {
                 disabledAttr.setValue(false);
                 detailPM.syncWith(selectedPm);
-                release();
             } else {
                 detailPM.syncWith(blankPM);
                 disabledAttr.setValue(true);
-                release();
             }
         });
 
@@ -261,7 +247,6 @@
         // send add command to create an empty pm
         addTeamMemberBtn.onclick = function () {
             dolphin.send("teamMember.add");              // server adds new PM and immediately selects it
-            release();
         }
         // save the pm
         saveTeamMemberBtn.onclick = function () {
@@ -270,17 +255,14 @@
             dolphin.send("teamMember.save", { onFinished: function() {
                 disabledAttr.setValue(false);             // save is done, new input is allowed
             }});
-            release();
         }
         // reset
         resetButton.onclick = function () {
             detailPM.reset();
-            release();
         };
         // delete
         deleteTeamMemberBtn.onclick = function () {
             dolphin.send("teamMember.remove");
-            release();
         };
 
 
@@ -340,7 +322,7 @@
         var selectRow = function(rowNumber) { // starting at 0
             var row  = table.children[rowNumber];
             var pmId = (row ? row.dataset.id : null);
-            selectedPmId.setValue(pmId); // no release() here since we do not publish this.
+            selectedPmId.setValue(pmId);
         }
 
         function createSelfUpdatingTDs(model, propertyName, alignment) {
@@ -357,15 +339,10 @@
             return td
         }
 
-        var longPollCallback = function (pms) {
-            channelBlocked = true;
-            dolphin.send("teamMember.poll", { onFinished: longPollCallback });
-        };
-
-        // todo: visualize "not yet ready" until init has come back
+        // get the initial data and start listening
         dolphin.send("teamMember.init", { onFinished: function () {
             loading.innerHTML = "";
-            return longPollCallback([]);
+            dolphin.startPushListening("teamMember.on.push", "teamMember.release");
         } } );
 
     });

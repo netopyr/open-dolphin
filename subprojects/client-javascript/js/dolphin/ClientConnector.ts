@@ -17,6 +17,8 @@ import dapmc  = require("../../js/dolphin/DeleteAllPresentationModelsOfTypeComma
 import dpmc   = require("../../js/dolphin/DeletePresentationModelCommand");
 import cpmc   = require("../../js/dolphin/CreatePresentationModelCommand");
 import dcmd   = require("../../js/dolphin/DataCommand");
+import ncmd   = require("../../js/dolphin/NamedCommand");
+import scmd   = require("../../js/dolphin/SignalCommand");
 import tags   = require("../../js/dolphin/Tag");
 
 export module dolphin {
@@ -33,6 +35,7 @@ export module dolphin {
 
     export interface Transmitter {
         transmit(commands:cmd.dolphin.Command[], onDone:(result:cmd.dolphin.Command[]) => void) : void ;
+        signal(command:scmd.dolphin.SignalCommand) : void;
     }
 
     export class ClientConnector {
@@ -45,8 +48,14 @@ export module dolphin {
         private clientDolphin :     cd.dolphin.ClientDolphin;
         private commandBatcher:     cb.dolphin.CommandBatcher = new cb.dolphin.BlindCommandBatcher(true);
 
+        /////// push support state  ///////
+        private pushListener:       ncmd.dolphin.NamedCommand;
+        private releaseCommand:     scmd.dolphin.SignalCommand;
+        private pushEnabled:        boolean = false;
+        private waiting:            boolean = false;
 
-        constructor(transmitter:Transmitter, clientDolphin:cd.dolphin.ClientDolphin, slackMS: number = 300) {
+
+        constructor(transmitter:Transmitter, clientDolphin:cd.dolphin.ClientDolphin, slackMS: number = 0) {
             this.transmitter = transmitter;
             this.clientDolphin = clientDolphin;
             this.slackMS = slackMS;
@@ -56,10 +65,22 @@ export module dolphin {
         setCommandBatcher(newBatcher: cb.dolphin.CommandBatcher) {
             this.commandBatcher = newBatcher;
         }
+        setPushEnabled(enabled:boolean) {
+            this.pushEnabled = enabled;
+        }
+        setPushListener(newListener: ncmd.dolphin.NamedCommand) {
+            this.pushListener = newListener
+        }
+        setReleaseCommand(newCommand: scmd.dolphin.SignalCommand) {
+            this.releaseCommand = newCommand
+        }
 
         send(command:cmd.dolphin.Command, onFinished:OnFinishedHandler) {
             this.commandQueue.push({command: command, handler: onFinished });
-            if (this.currentlySending) return;
+            if (this.currentlySending) {
+                if(command != this.pushListener) this.release(); // there is not point in releasing if we do not send atm
+                return;
+            }
             this.doSendNext();
         }
 
@@ -75,7 +96,7 @@ export module dolphin {
             var commands = cmdsAndHandlers.map( cah => { return cah.command });
             this.transmitter.transmit(commands, (response:cmd.dolphin.Command[]) => {
 
-                // console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
+                //console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
 
                 var touchedPMs : cpm.dolphin.ClientPresentationModel[] = []
                 response.forEach((command:cmd.dolphin.Command) => {
@@ -252,5 +273,28 @@ export module dolphin {
             this.clientDolphin.send(serverCommand.actionName,null);
             return null;
         }
+
+
+        ///////////// push support ///////////////
+
+        listen() : void {
+            if (! this.pushEnabled) return;
+            if (this.waiting) return;
+            // todo: how to issue a warning if no pushListener is set?
+            this.waiting = true;
+            var me = this; // oh, boy, this took some time to find...
+            this.send(this.pushListener, { onFinished: function(models) {
+                me.waiting = false;
+                me.listen();
+            }, onFinishedData: null})
+        }
+
+        release() : void {
+            if (! this.waiting) return;
+            this.waiting = false;
+            // todo: how to issue a warning if no releaseCommand is set?
+            this.transmitter.signal(this.releaseCommand);
+        }
+
     }
 }

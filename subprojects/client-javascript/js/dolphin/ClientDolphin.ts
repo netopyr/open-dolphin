@@ -1,10 +1,11 @@
-import namedCmd = require("../../js/dolphin/NamedCommand")
-import emptyNot = require("../../js/dolphin/EmptyNotification")
-import pm       = require("../../js/dolphin/ClientPresentationModel")
-import cms      = require("../../js/dolphin/ClientModelStore")
-import cc       = require("../../js/dolphin/ClientConnector")
+import namedCmd = require("../../js/dolphin/NamedCommand");
+import signlCmd = require("../../js/dolphin/SignalCommand");
+import emptyNot = require("../../js/dolphin/EmptyNotification");
+import pm       = require("../../js/dolphin/ClientPresentationModel");
+import cms      = require("../../js/dolphin/ClientModelStore");
+import cc       = require("../../js/dolphin/ClientConnector");
 import ca       = require("../../js/dolphin/ClientAttribute");
-import acn      = require("../../js/dolphin/AttributeCreatedNotification")
+import acn      = require("../../js/dolphin/AttributeCreatedNotification");
 
 export module dolphin {
 
@@ -111,6 +112,17 @@ export module dolphin {
                                                     clientAttribute.tag
                                                     ), null);
             }
+        }
+
+        ////// push support ///////
+        startPushListening(pushActionName: string, releaseActionName: string) {
+            this.clientConnector.setPushListener(new namedCmd.dolphin.NamedCommand(pushActionName));
+            this.clientConnector.setReleaseCommand(new signlCmd.dolphin.SignalCommand(releaseActionName));
+            this.clientConnector.setPushEnabled(true);
+            this.clientConnector.listen();
+        }
+        stopPushListening() {
+            this.clientConnector.setPushEnabled(false);
         }
 
     }

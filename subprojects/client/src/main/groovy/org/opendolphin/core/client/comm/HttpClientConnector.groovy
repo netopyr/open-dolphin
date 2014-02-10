@@ -16,10 +16,13 @@
 
 package org.opendolphin.core.client.comm
 
+import org.apache.http.ConnectionReuseStrategy
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.StatusLine
 import org.apache.http.client.HttpResponseException
+import org.apache.http.client.methods.HttpRequestBase
+import org.apache.http.protocol.HttpContext
 import org.apache.http.util.EntityUtils
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.comm.Command
@@ -28,6 +31,7 @@ import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
+import org.opendolphin.core.comm.SignalCommand
 
 @Log
 class HttpClientConnector extends ClientConnector {
@@ -36,7 +40,11 @@ class HttpClientConnector extends ClientConnector {
 
     private DefaultHttpClient httpClient = new DefaultHttpClient()
 
+    /** A second channel for the sole purpose of sending SignalCommands */
+    private DefaultHttpClient signalHttpClient = new DefaultHttpClient()
+
     private SessionAffinityCheckingResponseHandler responseHandler = null
+    private SimpleResponseHandler signalResponseHandler = null
 
     HttpClientConnector(ClientDolphin clientDolphin, String servletUrl) {
         this(clientDolphin, null, servletUrl)
@@ -46,6 +54,7 @@ class HttpClientConnector extends ClientConnector {
         super(clientDolphin, commandBatcher)
         this.servletUrl = servletUrl
         this.responseHandler = new SessionAffinityCheckingResponseHandler()
+        this.signalResponseHandler = new SimpleResponseHandler()
     }
 
     void setThrowExceptionOnSessionChange(boolean throwExceptionOnSessionChange) {
@@ -63,14 +72,19 @@ class HttpClientConnector extends ClientConnector {
             StringEntity entity = new StringEntity(content)
             httpPost.setEntity(entity)
 
-            def response = httpClient.execute(httpPost, responseHandler)
+            String response
 
-            log.finest response
-
-            result = codec.decode(response)
+            if (commands.size() == 1 && commands.first() == releaseCommand) { // todo dk: ok, this is not nice...
+                signalHttpClient.execute(httpPost, signalResponseHandler)
+            } else {
+                response = httpClient.execute(httpPost, responseHandler)
+                log.finest response
+                result = codec.decode(response)
+            }
         }
         catch (ex) {
             log.severe("cannot transmit")
+            ex.printStackTrace()
             throw ex
         }
         return result
@@ -109,6 +123,21 @@ class SessionAffinityCheckingResponseHandler implements ResponseHandler<String> 
                 }
             }
         }
+        return result
+    }
+}
+@Log
+class SimpleResponseHandler implements ResponseHandler<String> {
+    @Override
+    String handleResponse(HttpResponse response) throws HttpResponseException, IOException {
+        StatusLine statusLine = response.getStatusLine();
+        HttpEntity entity = response.getEntity();
+        if (statusLine.getStatusCode() >= 300) {
+            EntityUtils.consume(entity);
+            throw new HttpResponseException(statusLine.getStatusCode(),
+                    statusLine.getReasonPhrase());
+        }
+        String result = entity == null ? null : EntityUtils.toString(entity);
         return result
     }
 }

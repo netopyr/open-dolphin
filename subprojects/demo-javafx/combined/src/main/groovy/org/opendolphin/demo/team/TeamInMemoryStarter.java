@@ -7,6 +7,7 @@ import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientModelStore;
 import org.opendolphin.core.client.comm.BlindCommandBatcher;
 import org.opendolphin.core.client.comm.HttpClientConnector;
+import org.opendolphin.core.client.comm.InMemoryClientConnector;
 import org.opendolphin.core.client.comm.JavaFXUiThreadHandler;
 import org.opendolphin.core.comm.JsonCodec;
 import org.opendolphin.core.server.DTO;
@@ -25,18 +26,12 @@ public class TeamInMemoryStarter {
 
         final JavaFxInMemoryConfig config = new JavaFxInMemoryConfig();
         ClientDolphin clientDolphin = config.getClientDolphin();
+        ((InMemoryClientConnector)clientDolphin.getClientConnector()).setSleepMillis(0);
         ServerDolphin serverDolphin = config.getServerDolphin();
         serverDolphin.register(new TeamMemberActions(teamBus, history));
-
-        // for concurrent long-polls, we use a second dolphin
-        final JavaFxInMemoryConfig pollConfig = new JavaFxInMemoryConfig();
-        ClientDolphin pollerDolphin = pollConfig.getClientDolphin();
-        pollerDolphin.setClientModelStore(new NoModelStore(pollerDolphin));
-        ServerDolphin pollerServer = pollConfig.getServerDolphin();
-        pollerServer.register(new TeamMemberActions(teamBus, history));
+        serverDolphin.getServerConnector().register(new TeamBusRelease(teamBus));
 
         TeamApplication.clientDolphin = clientDolphin;
-        TeamApplication.pollerDolphin = pollerDolphin;
         Application.launch(TeamApplication.class);
     }
 }

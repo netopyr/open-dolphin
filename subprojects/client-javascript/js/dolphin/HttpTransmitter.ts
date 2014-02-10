@@ -1,6 +1,7 @@
-import cmd = require("../../js/dolphin/Command")
-import cc  = require("../../js/dolphin/ClientConnector")
-import cod = require("../../js/dolphin/Codec")
+import cmd  = require("../../js/dolphin/Command")
+import scmd = require("../../js/dolphin/SignalCommand")
+import cc   = require("../../js/dolphin/ClientConnector")
+import cod  = require("../../js/dolphin/Codec")
 
 export module dolphin {
 
@@ -34,6 +35,12 @@ export module dolphin {
             this.http.open('POST', this.url, true);
             this.http.send(this.codec.encode(commands));
 
+        }
+
+        signal(command : scmd.dolphin.SignalCommand) {
+            var sig = new XMLHttpRequest(); // the signal commands need an extra connection
+            sig.open('POST', this.url, true);
+            sig.send(this.codec.encode([command]));
         }
 
         invalidate() {

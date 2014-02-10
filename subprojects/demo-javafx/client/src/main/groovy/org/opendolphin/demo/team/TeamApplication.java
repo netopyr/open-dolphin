@@ -74,7 +74,6 @@ public class TeamApplication extends Application {
     GridPane form;
 
     static  ClientDolphin           clientDolphin;
-    static  ClientDolphin           pollerDolphin;
     private ClientPresentationModel teamMemberMold;
     private ClientPresentationModel blankMold;
     private ClientAttribute         selectedPmId;
@@ -99,10 +98,6 @@ public class TeamApplication extends Application {
         selectedPmId = new ClientAttribute(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
         clientDolphin.presentationModel(PM_ID_SELECTED, (String) null, selectedPmId);
 
-// preload the images
-        for (String name : FUNCTION_NAMES) {
-            getImage(name);
-        }
     }
 
     // caching the graphic nodes that are used for rendering the table to avoid
@@ -259,25 +254,14 @@ public class TeamApplication extends Application {
         stage.setTitle("Team Members in JavaFX");
         scene.getStylesheets().add("/team.css");
 
-
+        // preload the images
+        for (String name : FUNCTION_NAMES) {
+            getImage(name);
+        }
         clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
             @Override public void onFinished(List<ClientPresentationModel> presentationModels) {
                 stage.show();
-                longPoll();
-            }
-        });
-    }
-
-    private void longPoll() {
-        pollerDolphin.send(CMD_POLL, new OnFinishedHandlerAdapter(){
-            @Override public void onFinished(List<ClientPresentationModel> presentationModels) {
-                // now there may be something interesting for us
-                clientDolphin.send(CMD_UPDATE, new OnFinishedHandlerAdapter() {
-                    @Override
-                    public void onFinished(List<ClientPresentationModel> presentationModels) {
-                        longPoll();
-                    }
-                });
+                clientDolphin.startPushListening(ACTION_ON_PUSH, CMD_RELEASE);
             }
         });
     }
@@ -469,7 +453,6 @@ public class TeamApplication extends Application {
                     @Override
                     public void onFinished(List<ClientPresentationModel> presentationModels) {
                         DELETE.setDisable(false);
-                        System.out.println("re-enabled the delete button");
                     }
                 });
             }

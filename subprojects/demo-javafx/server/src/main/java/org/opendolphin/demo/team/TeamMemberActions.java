@@ -51,7 +51,7 @@ public class TeamMemberActions extends DolphinServerAction {
                 try {
                     currentMembers.sendAndWait(new Closure(this) {
                         void doCall(List<DTO> members) {
-                            for(DTO member : members) {
+                            for (DTO member : members) {
                                 presentationModel(null, TYPE_TEAM_MEMBER, member);
                             }
                         }
@@ -141,25 +141,16 @@ public class TeamMemberActions extends DolphinServerAction {
             }
         });
 
-        actionRegistry.register(CMD_POLL, new CommandHandler<NamedCommand>() {
+        actionRegistry.register(ACTION_ON_PUSH, new CommandHandler<NamedCommand>() {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 try {
-                    // the polling runs in a separate dolphin session and cleans the queue
                     processEventsFromQueue(response, 60, TimeUnit.SECONDS);
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         });
 
-        actionRegistry.register(CMD_UPDATE, new CommandHandler<NamedCommand>() {
-            @Override
-            public void handleCommand(NamedCommand command, List<Command> response) {
-                try {
-                    processEventsFromQueue(response, 20, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) { /* do nothing */ }
-            }
-        });
-
+        // the release action is in the TeamBusRelease
 
     }
 

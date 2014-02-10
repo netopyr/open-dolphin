@@ -19,7 +19,7 @@
 }
 
 .detail-dirty {
-    -fx-background-color: rgba(173,216,230,0.6);
+    -fx-background-color: rgba(173,216,230,0.2);
 }
 
 /* the > selects only direct label children in the form */

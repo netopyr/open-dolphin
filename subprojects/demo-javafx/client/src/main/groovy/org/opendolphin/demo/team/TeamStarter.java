@@ -28,16 +28,7 @@ public class TeamStarter {
         connector.setUiThreadHandler(uiThreadHandler);
         clientDolphin.setClientConnector(connector);
 
-        // for concurrent long-polls, we use a second dolphin
-        ClientDolphin pollerDolphin = new ClientDolphin();
-        pollerDolphin.setClientModelStore(new NoModelStore(pollerDolphin));
-        HttpClientConnector poller = new HttpClientConnector(pollerDolphin, servletUrl);
-        poller.setCodec(codec);
-        poller.setUiThreadHandler(uiThreadHandler);
-        pollerDolphin.setClientConnector(poller);
-
         TeamApplication.clientDolphin = clientDolphin;
-        TeamApplication.pollerDolphin = pollerDolphin;
         Application.launch(TeamApplication.class);
     }
 }

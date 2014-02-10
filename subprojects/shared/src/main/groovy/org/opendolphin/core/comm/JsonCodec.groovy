@@ -59,7 +59,12 @@ class JsonCodec implements Codec {
             Command responseCommand = Class.forName(cmd['className']).newInstance()
             cmd.each { key, value ->
                 if (key == 'className') return
-                if (key == 'id' && !(responseCommand instanceof NamedCommand)) return // set id only for NamedCommand
+                if (key == 'id') { // id is only set for NamedCommand and SignalCommand others are dynamic
+                    if (responseCommand in NamedCommand || responseCommand instanceof SignalCommand) {
+                        responseCommand.id = value
+                    }
+                    return
+                }
                 if (key == 'attributeId') value = value.toLong()
                 if (key == 'tag') value = Tag.tagFor[value]
                 responseCommand[key] = value

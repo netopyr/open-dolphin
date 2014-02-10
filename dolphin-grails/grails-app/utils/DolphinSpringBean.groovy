@@ -15,6 +15,7 @@ import org.opendolphin.demo.SmallFootprintAction
 import org.opendolphin.demo.crud.CrudActions
 import org.opendolphin.demo.crud.CrudService
 import groovy.util.logging.Log
+import org.opendolphin.demo.team.TeamBusRelease
 import org.opendolphin.demo.team.TeamMemberActions
 
 import java.util.logging.Level
@@ -35,13 +36,12 @@ class DolphinSpringBean {
         EventBus teamBus
     ) {
 
-        Logger.getLogger("").level = Level.WARNING
+        Logger.getLogger("").level = Level.INFO
+        LogConfig.logCommunication()
 
         log.info "creating new dolphin session"
 
         dolphin.registerDefaultActions()
-
-        // todo dk: we may want to use dolphin.action cmdName, handler
 
         dolphin.register(new VehiclePushActions())
         dolphin.register(new CrudActions(crudService: crudService))
@@ -54,7 +54,10 @@ class DolphinSpringBean {
 
         // for the dolphin.js demos
         dolphin.register(new TutorialAction())
-        dolphin.register(new TeamMemberActions(teamBus, teamHistory))
+
+        dolphin.register(new TeamMemberActions(teamBus, teamHistory));
+        dolphin.getServerConnector().register(new TeamBusRelease(teamBus));
+
         dolphin.register(new ChatterActions().subscribedTo(chatterBus))
 
     }

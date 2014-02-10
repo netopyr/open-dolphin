@@ -18,6 +18,7 @@ package org.opendolphin.core.server.comm
 
 import org.opendolphin.core.comm.Codec
 import org.opendolphin.core.comm.Command
+import org.opendolphin.core.comm.SignalCommand
 import org.opendolphin.core.server.action.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -38,9 +39,12 @@ class ServerConnector {
     List<Command> receive(Command command) {
         log.info "S:     received $command"
         List<Command> response = new LinkedList() // collecting parameter pattern
-        for (DolphinServerAction it in dolphinServerActions) {
-            it.dolphinResponse = response
-        } // todo nochmal nachdenken}
+
+        if ( ! (command instanceof SignalCommand)) { // signal commands must not update thread-confined state
+            for (DolphinServerAction it in dolphinServerActions) {
+                it.dolphinResponse = response
+            }
+        }
 
         List<CommandHandler> actions = registry[command.id]
         if (!actions) {
