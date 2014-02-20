@@ -46,7 +46,7 @@
         var dolphin = dol.dolphin(SERVER_URL, false);
 
         // make the known PM
-        var instantUpdateAttribute = dol.attribute(ATTR_ID, null, "");
+        var instantUpdateAttribute = dolphin.attribute(ATTR_ID, null, "");
         dolphin.presentationModel(PM_ID_MODEL, undefined, instantUpdateAttribute);
 
         // html elements to bind against

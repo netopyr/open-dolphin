@@ -2,6 +2,7 @@ import tsUnit = require("../../testsuite/tsUnit")
 import cc     = require("../../js/dolphin/ClientConnector")
 import hcc    = require("../../js/dolphin/HttpTransmitter")
 import cmd    = require("../../js/dolphin/Command")
+import scmd   = require("../../js/dolphin/SignalCommand")
 import cd     = require("../../js/dolphin/ClientDolphin")
 import cms    = require("../../js/dolphin/ClientModelStore")
 import cpm    = require("../../js/dolphin/ClientPresentationModel")
@@ -30,6 +31,7 @@ export module dolphin {
             this.clientCommands = commands;
             onDone(this.serverCommands);
         }
+        signal(command: scmd.dolphin.SignalCommand) : void { /** do nothing */ }
     }
 
     export class ClientConnectorTests extends tsUnit.tsUnit.TestClass {
@@ -58,7 +60,7 @@ export module dolphin {
             clientConnector.send(lastCommand, undefined)
 
             this.areIdentical( transmitter.clientCommands.length, 1)
-            this.areIdentical( transmitter.clientCommands[0], lastCommand)
+            this.areIdentical( transmitter.clientCommands[0].id, lastCommand.id)
         }
 
         handleDeletePresentationModelCommand(){

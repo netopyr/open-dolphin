@@ -47,8 +47,8 @@
         // setting up the dolphin
         var dolphin = dol.dolphin(null, false);
         // make two attributes
-        var nameAttribute = dol.attribute("person-name", "person.name", "");
-        var ageAttribute  = dol.attribute("person-age",  "person.age",  "");
+        var nameAttribute = dolphin.attribute("person-name", "person.name", "");
+        var ageAttribute  = dolphin.attribute("person-age",  "person.age",  "");
 
         //Create PM and put both attribute into it
         var personPM = dolphin.presentationModel(undefined, undefined, nameAttribute,ageAttribute);
