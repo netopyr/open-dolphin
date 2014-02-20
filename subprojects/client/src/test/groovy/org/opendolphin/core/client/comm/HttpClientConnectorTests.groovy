@@ -1,9 +1,13 @@
 package org.opendolphin.core.client.comm
 
+import org.apache.http.HttpResponse
+import org.apache.http.StatusLine
 import org.apache.http.client.ClientProtocolException
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpUriRequest
+import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.message.BasicStatusLine
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
@@ -47,12 +51,15 @@ class HttpClientConnectorTests extends GroovyTestCase {
         connector.signalHttpClient = new DefaultHttpClient() {
             @Override
             def <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
+                StatusLine statusLine = [ getStatusCode: {200}, getReasonPhrase: {"OK"te}] as StatusLine
+                StringEntity entity = new StringEntity("ok")
+                HttpResponse response = [ getStatusLine: {statusLine}, getEntity: {entity} ] as HttpResponse
+                responseHandler.handleResponse(response)
                 httpWasCalled.countDown()
                 return "[]"
             }
         }
         connector.release()
-        sleep 100 // make sure the SimpleResponseHandler had time to be called
         httpWasCalled.await(2, TimeUnit.SECONDS)
         assert 0 == httpWasCalled.count
     }
