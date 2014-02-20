@@ -96,7 +96,7 @@ class TeamTests extends Specification {
         firstOne.isDirty()
 
         when: "connection is lost and we connect with a new session but same history"
-        sleep 100
+        sleep 100 // this looks silly but there is no good way that we wait for the history being updated
         def secondApp = initApp()
         secondApp.sendSynchronously CMD_INIT
         def secondOne = secondApp.clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).first()

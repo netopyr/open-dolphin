@@ -52,6 +52,7 @@ class HttpClientConnectorTests extends GroovyTestCase {
             }
         }
         connector.release()
+        sleep 100 // make sure the SimpleResponseHandler had time to be called
         httpWasCalled.await(2, TimeUnit.SECONDS)
         assert 0 == httpWasCalled.count
     }
