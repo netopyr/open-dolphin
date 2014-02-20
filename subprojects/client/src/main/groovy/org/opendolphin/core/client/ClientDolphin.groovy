@@ -155,6 +155,15 @@ public class ClientDolphin extends Dolphin {
     }
 
     public startPushListening(String pushActionName, String releaseActionName) {
+        if (null == pushActionName) {
+            // todo dk: think about logging here
+//            log.warning("You must set a pushListener on the client connector if you want to listen for push events")
+            return
+        }
+        if (null == releaseActionName) {
+//            log.warning("Please set releaseCommand in client connector or we cannot release the send lock.")
+            return
+        }
         clientConnector.pushListener   = new NamedCommand(pushActionName);
         clientConnector.releaseCommand = new SignalCommand(releaseActionName);
         clientConnector.pushEnabled    = true
@@ -163,6 +172,10 @@ public class ClientDolphin extends Dolphin {
 
     public stopPushListening() {
         clientConnector.pushEnabled = false
+    }
+
+    public boolean isPushListening() {
+        return clientConnector.pushEnabled
     }
 }
 

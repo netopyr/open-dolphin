@@ -330,10 +330,6 @@ abstract class ClientConnector {
     protected void listen() {
         if (!pushEnabled) return // allow the loop to end
         if (waiting) return      // avoid second call while already waiting (?) -> two different push actions not supported
-        if (null == pushListener) {
-            log.warning("You must set a pushListener on the client connector if you want to listen for push events")
-            return
-        }
         waiting = true
         send(pushListener, new OnFinishedHandlerAdapter() {
             @Override
@@ -354,10 +350,6 @@ abstract class ClientConnector {
             return      // there is no point in releasing if we do not wait. Avoid excessive releasing.
         }
         waiting = false // release is under way
-        if (null == releaseCommand) {
-            log.warning("Please set releaseCommand in client connector or we cannot release the send lock.")
-            return
-        }
         withPool {
             def transmitAsynchronously = this.&transmit.asyncFun()
             transmitAsynchronously([releaseCommand]) // sneaks by the strict command sequence
