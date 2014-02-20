@@ -8,6 +8,10 @@ import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.JsonCodec
+import org.opendolphin.core.comm.SignalCommand
+
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class HttpClientConnectorTests extends GroovyTestCase {
 
@@ -34,6 +38,22 @@ class HttpClientConnectorTests extends GroovyTestCase {
         assert 1 == result.size()
         assert result[0] instanceof CreatePresentationModelCommand
         assert 'p1' == result[0].pmId
+    }
+
+    void testSignal() {
+        connector.setReleaseCommand(new SignalCommand("test signal"))
+        connector.waiting = true
+        CountDownLatch httpWasCalled = new CountDownLatch(1)
+        connector.signalHttpClient = new DefaultHttpClient() {
+            @Override
+            def <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
+                httpWasCalled.countDown()
+                return "[]"
+            }
+        }
+        connector.release()
+        httpWasCalled.await(2, TimeUnit.SECONDS)
+        assert 0 == httpWasCalled.count
     }
 
 
