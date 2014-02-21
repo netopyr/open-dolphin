@@ -64,6 +64,29 @@ class HttpClientConnectorTests extends GroovyTestCase {
         assert 0 == httpWasCalled.count
     }
 
+    void testSignalWithBadReturnCodeMustThrowException() {
+        connector.setReleaseCommand(new SignalCommand("test signal"))
+        connector.waiting = true
+        CountDownLatch httpWasCalled = new CountDownLatch(1)
+        connector.signalHttpClient = new DefaultHttpClient() {
+            @Override
+            def <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
+                StatusLine statusLine = [ getStatusCode: {500}, getReasonPhrase: {"Internal Server Error"}] as StatusLine
+                StringEntity entity = new StringEntity("failed")
+                HttpResponse response = [ getStatusLine: {statusLine}, getEntity: {entity} ] as HttpResponse
+                try {
+                    responseHandler.handleResponse(response)
+                } catch (e) {
+                    httpWasCalled.countDown()
+                }
+                return "[]"
+            }
+        }
+        connector.release()
+        httpWasCalled.await(2, TimeUnit.SECONDS)
+        assert 0 == httpWasCalled.count
+    }
+
 
     void testCallWithException() {
         try {
