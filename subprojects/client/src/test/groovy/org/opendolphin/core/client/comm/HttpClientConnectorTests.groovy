@@ -51,7 +51,7 @@ class HttpClientConnectorTests extends GroovyTestCase {
         connector.signalHttpClient = new DefaultHttpClient() {
             @Override
             def <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-                StatusLine statusLine = [ getStatusCode: {200}, getReasonPhrase: {"OK"te}] as StatusLine
+                StatusLine statusLine = [ getStatusCode: {200}, getReasonPhrase: {"OK"}] as StatusLine
                 StringEntity entity = new StringEntity("ok")
                 HttpResponse response = [ getStatusLine: {statusLine}, getEntity: {entity} ] as HttpResponse
                 responseHandler.handleResponse(response)
