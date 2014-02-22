@@ -37,17 +37,17 @@ class ResetView {
                 scene {
                     gridPane {
 
-                        label id: 'header', row: 0, column: 1,
+                        label id: 'header',                         row: 0, column: 1,
                                 'Person Form'
 
-                        label id: 'nameLabel', 'Name: ', row: 1, column: 0
-                        textField id: 'nameInput', row: 1, column: 1
+                        label id: 'nameLabel', 'Name: ',            row: 1, column: 0
+                        textField id: 'nameInput',                  row: 1, column: 1
 
-                        label id: 'lastnameLabel', 'Lastname: ', row: 2, column: 0
-                        textField id: 'lastnameInput', row: 2, column: 1
+                        label id: 'lastnameLabel', 'Lastname: ',    row: 2, column: 0
+                        textField id: 'lastnameInput',              row: 2, column: 1
 
-                        button id: 'resetButton', 'Reset', row: 3, column: 1,
-                                onAction: { dolphin.clientModelStore.reset(model) }
+                        button id: 'resetButton', 'Reset',          row: 3, column: 1,
+                                onAction: { model.reset() }
                     }
                 }
             }
@@ -62,7 +62,7 @@ class ResetView {
             bindInfo DIRTY_PROPERTY of model[NAME]     to FX.TEXT_FILL  of nameLabel,     { it ? RED : WHITE }
             bindInfo DIRTY_PROPERTY of model[LASTNAME] to FX.TEXT_FILL  of lastnameLabel, { it ? RED : WHITE }
             bindInfo DIRTY_PROPERTY of model           to FX.TITLE      of primaryStage , { it ? '** Unsaved **': '' }
-            bindInfo DIRTY_PROPERTY of model           to FX.DISABLE   of resetButton,    { !it }
+            bindInfo DIRTY_PROPERTY of model           to FX.DISABLE    of resetButton,   { !it }
 
             primaryStage.show()
         }

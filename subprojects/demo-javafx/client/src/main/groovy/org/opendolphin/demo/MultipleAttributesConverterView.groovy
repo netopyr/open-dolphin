@@ -27,6 +27,12 @@ import static org.opendolphin.demo.DemoStyle.style
 import static org.opendolphin.demo.MyProps.ATT.getPURPOSE
 import static org.opendolphin.demo.MyProps.ATT.getTITLE
 
+/*
+   ------------------------------- Disabled -----------------------------------------
+   This demo needs is currently disabled since the JFXBinder does not support "using"
+   ------------------------------- Disabled -----------------------------------------
+ */
+
 class MultipleAttributesConverterView {
 
     private static String defaultTitle = 'Title will be displayed in upper case'
@@ -89,7 +95,7 @@ class MultipleAttributesConverterView {
             }
             bind PURPOSE of pm using validator to FX.TEXT of remainingLabel    // pm -> ui (converter)
 
-            titleAttr.value = defaultTitle
+            titleAttr.value   = defaultTitle
             purposeAttr.value = defaultPurpose
 
             primaryStage.show()

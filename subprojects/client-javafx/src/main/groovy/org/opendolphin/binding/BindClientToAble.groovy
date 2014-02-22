@@ -12,4 +12,7 @@ class BindClientToAble {
     BindClientOtherOfAble to(String targetPropertyName) {
         new BindClientOtherOfAble(attribute, targetPropertyName)
     }
+
+    // todo dk: at this point, the support for "using" is missing.
+
 }

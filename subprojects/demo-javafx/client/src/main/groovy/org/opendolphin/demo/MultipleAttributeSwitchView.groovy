@@ -40,6 +40,7 @@ import static javafx.geometry.HPos.CENTER
 
 
 class MultipleAttributeSwitchView {
+    static final Tag MESSAGE = new Tag("message")
 
     static show(ClientDolphin dolphin) {
 
@@ -47,14 +48,14 @@ class MultipleAttributeSwitchView {
 
             def pm1 = dolphin.presentationModel('FirstDemo',
                 new ClientAttribute(TITLE,   'First title',  "pm1-title"),
-                            new ClientAttribute(TITLE,   '',             "pm1-title-msg", MESSAGE),
+                new ClientAttribute(TITLE,   '',             "pm1-title-msg", MESSAGE),
                 new ClientAttribute(PURPOSE, 'First purpose',"pm1-purpose")
             )
             def pm2 = dolphin.presentationModel('SecondDemo',
                 new ClientAttribute(TITLE,   'Second title',   "pm2-title"),
                 new ClientAttribute(TITLE,   '',               "pm2-title-msg", MESSAGE),
-                            new ClientAttribute(PURPOSE, 'Second purpose', "pm2-purpose")
-)
+                new ClientAttribute(PURPOSE, 'Second purpose', "pm2-purpose")
+            )
 
             def mold = dolphin.presentationModel(MOLD,
                  new ClientAttribute(TITLE,   ''),
@@ -97,7 +98,7 @@ class MultipleAttributeSwitchView {
             bind TITLE       of mold to FX.TEXT  of titleLabel
             bind PURPOSE     of mold to FX.TEXT  of purposeLabel
 
-            bind TITLE, tagFor.MESSAGE of mold to FX.TEXT of titleMsg
+            bind TITLE, MESSAGE of mold to FX.TEXT of titleMsg
 
             primaryStage.show()
         }
