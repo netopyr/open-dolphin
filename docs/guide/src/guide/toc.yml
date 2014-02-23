@@ -22,11 +22,20 @@ howto:
   step5: Split into modules/projects
   step6: Enhanced view, let the "director" wire all application actions
   step7: Remote setup
+web:
+  title: OpenDolphin on the web
+  web_intro: Using OpenDolphin from a web page
 demos:
   title : Use Cases and Demos
   demo_login: The general approach of OpenDolphin with a Login dialog
   demo_singleAttMultBindings: Immediate and deferred binding
   demo_yard: The container yard monitoring application
+  demo_push: The push capability
+  demo_multi_device: One application on multiple devices
+  demo_follow_me: Follow-me applications with re-connect
+  demo_team_app: Team applications for collaborative work
+  demo_point_of_sale: Floating workstations in a point-of-sale solution
+  demo_integration: Integration of many technologies into one app
 config:
   title: tbd Configuration and Setup
   config_standalone: Standalone in-memory usage

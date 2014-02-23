@@ -1,0 +1,63 @@
+Using OpenDolphin.js follows the exact same pattern as for Desktop clients:
+- create the view (HTML)
+- do the binding (JavaScript)
+
+All the rest happens on the server.
+
+Here is a typical structure of an HTML page that uses OpenDolphin.js
+(extracted from [BasicFunctionalTestsJs.html|https://github.com/canoo/open-dolphin/blob/master/subprojects/client-javascript/testsuite/functional/BasicFunctionalTestsJs.html]):
+
+{code}
+<!DOCTYPE html>
+<html>
+<head>
+    ..
+    <!-- refer to OpenDolphin -->
+    <script data-main="../../js/dolphin/" src="../../libs/require.js"></script>
+</head>
+<body>
+..
+<p>view description: html elements are best identified by an id
+<div id="instant-update-label">unchanged</div>
+..
+<script>
+    require([ 'opendolphin' ], function (dol) {
+
+        // setting up the dolphin for a null url and not forcing a new session on load
+
+        const dolphin = dol.dolphin(null, false);
+
+
+        // create a presentation model
+
+        // make an attribute with name, qualifier, and initial value
+        const instantUpdateAttribute = dolphin.attribute("instant-update", undefined, "");
+        // and put it into a presentation model with no id and no type
+        dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
+
+
+        // do the binding
+
+        // hold onto the html element to bind against
+        const instantUpdateLabel  = document.getElementById("instant-update-label");
+
+        // bind value of attribute to value of instantUpdateLabel
+        instantUpdateAttribute.onValueChange(function (event) {
+            instantUpdateLabel.innerHTML = event.newValue;
+        });
+
+        //..
+    });
+</script>
+</body>
+</html>
+{code}
+
+That's it. The div element with id @instant-update-label@ will from now on always
+display the value of the @instantUpdateAttribute@ no matter how or where (client or server)
+it was changed.
+
+You will find more information about how to use the OpenDolphin.js features in the
+[Demos chapter|guide:demos] and in the live demos that are available on the
+[live OpenDolphin.js demos|https://klondike.canoo.com/dolphin-grails/] server.
+They show the combination of various features and technologies with cross-linking to all sources.

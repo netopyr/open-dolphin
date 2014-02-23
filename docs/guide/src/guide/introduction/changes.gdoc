@@ -1,6 +1,30 @@
 h4. Release 0.9
 
-Tags are no longer enums but constants of the Tag class (DOL-95) to allow custom tags.
+The biggest change in release 0.9 is the inclusion of *OpenDolphin.js*, the JavaScript client (DOL-98) that allows to share
+the same OpenDolphin application on desktop and web (including mobile web).\\
+See also [OpenDolphin for the web|guide:web]
+
+The [push|guide:demo_push] capability ([DOL-30|http://www.canoo.com/jira/browse/DOL-30C]) has been moved from the demos into the OpenDolphin core and is now an official feature
+with a simple API, standard behaviour, and - as always - the option the replace the default implementation with
+your preferred technology.
+
+Both OpenDolphin.js and the push capability in combination with the existing OpenDolphin features allow for
+new interesting use cases that are show-cased in this release:
+- [multi-device|guide:demo_multi_device] applications where the same application runs on many devices
+- [re-connect|guide:demo_follow_me] to an application exactly where you left off even after a longer *offline* period
+- [follow-me|guide:demo_follow_me] applications where you start your work on one device - let's says on the road with a smartphone or a tablet - and complete your work in the office with a desktop application for longer text entries
+- [team-applications|guide:demo_team_app] where a whole team works collaboratively and everybody immediately sees all contributions from all other team members, avoiding double-work and conflicts, and mutually completing, correcting, and helping with each other's work
+- [point-of-sale|guide:demo_point_of_sale] solutions where personnel shares a limited set of workstations, freely moving between them and always having their latest context available
+- application [integration|guide:demo_integration] where you combine the strength of different view technologies, say JavaFX for the layout and web technology for charting, into an integrated OpenDolphin application.
+
+Tags are no longer enums but instances of the Tag class (DOL-95) to allow *custom tags*.
+All existing tags are available as constants of that class except the MESSAGE tag, which is replaced by custom tags.
+
+Attributes now maintain a direct reference to their PresentationModel. This allows an *efficient lookup*
+of tags for a given Attribute (DOL-97). Sharing an Attribute instance between PresentationModels is no longer supported.
+In order to share the same information across PresentationModels, use Attributes with the same qualifier.
+
+Furthermore, a number of *performance enhancements* and *consistency checks* have been included.
 
 h4. Release 0.8
 

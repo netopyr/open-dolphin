@@ -30,21 +30,21 @@ IsDirty
     require([ 'opendolphin' ], function (dol) {
 
         // setting up the dolphin
-        var dolphin = dol.dolphin(null, false);
+        const dolphin = dol.dolphin(null, false);
         // make two attributes
-        var instantUpdateAttribute = dolphin.attribute("instant-update",   "same-qualifier", "");
-        var qualifiedAttribute     = dolphin.attribute("qualified-update", "same-qualifier","");
+        const instantUpdateAttribute = dolphin.attribute("instant-update",   "same-qualifier", "");
+        const qualifiedAttribute     = dolphin.attribute("qualified-update", "same-qualifier","");
         // and put each into its own presentation model
         dolphin.presentationModel(undefined, undefined, instantUpdateAttribute);
         dolphin.presentationModel(undefined, undefined, qualifiedAttribute);
 
         // html elements to bind against
-        var instantUpdateInput  = document.getElementById("instant-update-input");
-        var rebaseButton        = document.getElementById("rebase-button");
-        var resetButton         = document.getElementById("reset-button");
-        var dirtyStatus         = document.getElementById("dirty-status");
-        var instantUpdateLabel  = document.getElementById("instant-update-label");
-        var qualifiedLabel      = document.getElementById("qualified-label");
+        const instantUpdateInput  = document.getElementById("instant-update-input");
+        const rebaseButton        = document.getElementById("rebase-button");
+        const resetButton         = document.getElementById("reset-button");
+        const dirtyStatus         = document.getElementById("dirty-status");
+        const instantUpdateLabel  = document.getElementById("instant-update-label");
+        const qualifiedLabel      = document.getElementById("qualified-label");
 
         // bind input of textfield to attribute
         instantUpdateInput.oninput = function (event) {
