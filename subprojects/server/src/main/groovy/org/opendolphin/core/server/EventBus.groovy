@@ -31,6 +31,17 @@ import java.lang.ref.WeakReference
  */
 class EventBus {
 
+    final int maxQueueLength
+
+    EventBus(int maxQueueLength) {
+        assert maxQueueLength > 0
+        this.maxQueueLength = maxQueueLength
+    }
+
+    EventBus() {
+        this.maxQueueLength = 100
+    }
+
     private final Agent subscribers = Agent.agent(new LinkedList())
 
     void subscribe(DataflowQueue queue){
@@ -54,9 +65,11 @@ class EventBus {
         subscribers { list ->
             def nullRefs = new LinkedList()
             for (queueRef in list) {
-                def queue = queueRef.get()
+                DataflowQueue queue = queueRef.get()
                 if (nullProtectionDone(queue, queueRef, nullRefs)) continue
-                if ( ! sender.is(queue)) queue << value
+                if (sender.is(queue)) continue
+                while (queue.length() >= maxQueueLength) { queue.getVal() }
+                queue << value
             }
             list.removeAll nullRefs
         }

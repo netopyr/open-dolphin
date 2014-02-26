@@ -3,6 +3,9 @@ package org.opendolphin.core.server
 import groovyx.gpars.dataflow.DataflowQueue
 import spock.lang.Specification
 
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+
 public class EventBusSpec extends Specification {
 
     void 'no notification without registration'() {
@@ -63,5 +66,23 @@ public class EventBusSpec extends Specification {
         then:
         done == false
         ! ('y' in nullRefs)
+    }
+
+    void 'memory leak protection'() {
+        given: "an event bus with maxQueueLength of 1"
+        def bus  = new EventBus(1)
+        def flow = new DataflowQueue()
+        def done = new CountDownLatch(9)
+        flow.wheneverBound {
+            assert flow.length() < 2
+            done.countDown()
+        }
+        bus.subscribe(flow)
+        when: "we publish values 0..9"
+        10.times { bus.publish(null, it) }
+        then: "the queue does not overflow, the max length is retained and least recent values are gone"
+        done.await(2, TimeUnit.SECONDS)
+        flow.val == 9
+        null == flow.poll()
     }
 }
