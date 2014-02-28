@@ -61,9 +61,8 @@ class ManyEventsView {
             bind 'speed' of event to FX.VALUE of gauge
             bind 'color' of event to 'histogramColor' of gauge, { it % 2 == 0 ? Color.ORANGERED : Color.GREENYELLOW }
 
-            Closure longPoll
-            longPoll = { dolphin.send "many.events", longPoll }
-            longPoll()
+            // for read-only clients, we don't need release actions
+            dolphin.startPushListening("many.events", "there.is.no.release.action.needed")
 
             primaryStage.show()
         }
