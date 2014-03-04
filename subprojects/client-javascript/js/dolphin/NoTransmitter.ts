@@ -1,5 +1,6 @@
-import cmd = require("../../js/dolphin/Command")
-import cc  = require("../../js/dolphin/ClientConnector")
+import cmd  = require("../../js/dolphin/Command")
+import scmd = require("../../js/dolphin/SignalCommand")
+import cc   = require("../../js/dolphin/ClientConnector")
 export module dolphin {
 
     /**
@@ -15,6 +16,10 @@ export module dolphin {
 
             onDone( [] );
 
+        }
+
+        signal(command:scmd.dolphin.SignalCommand) : void {
+            // do nothing
         }
 
     }

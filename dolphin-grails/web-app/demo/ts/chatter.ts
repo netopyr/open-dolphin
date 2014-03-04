@@ -10,7 +10,7 @@ var message         = <HTMLTextAreaElement> document.getElementById('message');
 var postMessage     = <HTMLButtonElement>   document.getElementById('post-message');
 
 // dolphin setup
-var SERVER_URL      = "http://localhost:8080/dolphin-grails/dolphin/";
+var SERVER_URL      = window.location.protocol + "//" + window.location.host + "/dolphin-grails/dolphin/";
 var dolphin         = <cd.dolphin.ClientDolphin> dol.dolphin(SERVER_URL, true, 0); // slack
 
 // main entry pm
@@ -24,7 +24,7 @@ function release() {
     if (!channelBlocked) return; // avoid too many unblocks
     channelBlocked = false;
     var http = new XMLHttpRequest();
-    http.open('GET', "http://localhost:8080/dolphin-grails/chatter/release", true);
+    http.open('GET', window.location.protocol + "//" + window.location.host + "/dolphin-grails/chatter/release", true);
     http.send();
 }
 
