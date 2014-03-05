@@ -29,5 +29,9 @@ Especially all changes to the client model store, client presentation models, an
 this thread-confined approach. Thus, all binding events will be fired in the UI thread and the
 views are automatically updated correctly.
 
+Likewise, on the server (controller) side all actions are executed in a thread-confined manner, i.e.
+there is at most one action at a time being executed and per roundtrip all actions are executed in the
+same thread.
+
 With the clear structure and division of responsibilities that OpenDolphin imposes onto the application
 a lot of otherwise common headaches around proper thread handling disappear.

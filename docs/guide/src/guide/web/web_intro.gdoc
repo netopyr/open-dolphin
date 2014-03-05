@@ -57,6 +57,14 @@ That's it. The div element with id @instant-update-label@ will from now on alway
 display the value of the @instantUpdateAttribute@ no matter how or where (client or server)
 it was changed.
 
+You can bind individual HTML elements to attributes and vice versa like in the example above.
+But just like for desktop clients, you can also use the model store listener to update
+collections, use the dolphin instance to send individual commands, and even use the push listening.
+
+In case that you are using any additional web technology like Angular.js or GWT
+you can happily use the view generation and binding facilities of these technologies.
+Simply use OpenDolphin attributes as the binding sources or targets.
+
 You will find more information about how to use the OpenDolphin.js features in the
 [Demos chapter|guide:demos] and in the live demos that are available on the
 [live OpenDolphin.js demos|https://klondike.canoo.com/dolphin-grails/] server.
