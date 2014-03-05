@@ -13,7 +13,7 @@ that uses the push capability (with links to the source code).
 External sources can publish data on the OpenDolphin [Event Bus|EventBus] in order to notify
 registered parties. At this point, the data sits happily on the server waiting for
 its client to pick it up. But since OpenDolphin is _reactive_ this pick-up only
-occurs if there is also server roundtrip.
+occurs if the client comes to visit.
 In other words: we somehow have to organize appropriate server roundtrips.
 
 OpenDolphin comes with a feature that does exactly that. It is available through the
