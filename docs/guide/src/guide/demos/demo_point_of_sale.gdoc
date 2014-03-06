@@ -1,1 +1,18 @@
-to be completed
+For "point-of-sale" application it is typical that you have fewer workstations than
+people using them, for example:
+- cash registers in a shop
+- workstations in a restaurant
+- desktop computers in a hospital
+
+In such a setting, you may start your work at one workstation, service the customer,
+return to the workstation only to find it occupied by a co-worker, and complete the
+transaction at some other workstation that happens to be available.
+
+You certainly want to take your working context with you!
+
+OpenDolphin makes this possible by combining the strategies that we have seen for
+[follow-me|guide:demo_follow_me] and [team|guide:demo_team_app] applications.
+
+todo link to demo
+
+todo link to video
