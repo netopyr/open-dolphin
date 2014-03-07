@@ -27,12 +27,6 @@ import static org.opendolphin.demo.DemoStyle.style
 import static org.opendolphin.demo.MyProps.ATT.getPURPOSE
 import static org.opendolphin.demo.MyProps.ATT.getTITLE
 
-/*
-   ------------------------------- Disabled -----------------------------------------
-   This demo needs is currently disabled since the JFXBinder does not support "using"
-   ------------------------------- Disabled -----------------------------------------
- */
-
 class MultipleAttributesConverterView {
 
     private static String defaultTitle = 'Title will be displayed in upper case'
@@ -72,7 +66,9 @@ class MultipleAttributesConverterView {
                 String convert(String value) {
                     return value.toUpperCase()
                 }
-            }        // converter as interface implementation
+            }
+
+            // converter as interface implementation
             bind(FX.TEXT).of(titleInput).to(TITLE).of(pm)                           // ui -> pm
             bind(TITLE).of(pm).to(FX.TEXT).of(titleInput)                           // pm -> ui
             bind(TITLE).of(pm).using(titleConverter).to(FX.TEXT).of(titleLabel)     // pm -> ui (converter)

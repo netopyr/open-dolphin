@@ -81,9 +81,7 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        // target
-//        bind "text" of sourceLabel using {"[" + it + "]"} to "text" of targetLabel
-        bind "text" of sourceLabel to "text" of targetLabel, {"[" + it + "]"}
+        bind "text" of sourceLabel using {"[" + it + "]"} to "text" of targetLabel
 
         assert targetLabel.text == "[initialValue]"
 
@@ -296,9 +294,8 @@ class JFXBinderTest extends GroovyTestCase {
     void testPresentationModelBindingUsingConverter() {
         ClientPresentationModel sourceModel = new ClientPresentationModel('source', [new ClientAttribute('attr_1', "", null, Tag.tagFor.MESSAGE)])
         def targetLabel = new javafx.scene.control.Label()
-//        target:
-//        bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel using { 'my' + it } to 'text' of targetLabel
-        bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel to 'text' of targetLabel, { 'my' + it }
+
+        bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel using { 'my' + it } to 'text' of targetLabel
         sourceModel.getAt('attr_1', Tag.tagFor.MESSAGE).value = 'Dummy'
         assert targetLabel.text == 'myDummy'
     }
