@@ -22,7 +22,8 @@ public class ChatterActions extends DolphinServerAction {
 
     public static final String CMD_INIT     = "chatter.init"
     public static final String CMD_POST     = "chatter.post"
-    public static final String CMD_POLL     = "chatter.poll"
+    public static final String CMD_ON_PUSH  = "chatter.on.push"
+    public static final String CMD_RELEASE  = "chatter.release"
     public static final String PM_ID_INPUT  = 'chatter.input'
     public static final String TYPE_POST    = 'chatter.type.post'
     public static final String ATTR_NAME    = "name"
@@ -45,11 +46,11 @@ public class ChatterActions extends DolphinServerAction {
     }
 
     protected void newPost(String name, List<Command> response) {
-        def postId  = postCount++
+        def postId = postCount++
         String pmId = "$userId-$postId".toString()
-        String now  = new Date().format('dd.MM.yy HH:mm')
+        String now = new Date().format('dd.MM.yy HH:mm')
         def currentPost = new DTO(
-            new Slot(ATTR_NAME,    name, "$pmId-$ATTR_NAME"),
+            new Slot(ATTR_NAME, name, "$pmId-$ATTR_NAME"),
             new Slot(ATTR_MESSAGE, "",   "$pmId-$ATTR_MESSAGE"),
             new Slot(ATTR_DATE,    now,  "$pmId-$ATTR_DATE")
         )
@@ -118,7 +119,7 @@ public class ChatterActions extends DolphinServerAction {
             }
         })
 
-        actionRegistry.register(CMD_POLL) { NamedCommand command, List<Command> response ->
+        actionRegistry.register(CMD_ON_PUSH) { NamedCommand command, List<Command> response ->
             Map post = chatQueue.getVal(60, TimeUnit.SECONDS)    // return all values
             while (null != post) {
                 if (post.type == "new") {

@@ -18,19 +18,10 @@ var nameAtt         = dolphin.attribute("name",     null, '',  'VALUE');
 var messageAtt      = dolphin.attribute("message",  null, '',  'VALUE');
 var dateAtt         = dolphin.attribute("date",     null, '',  'VALUE');
 var myChat          = dolphin.presentationModel("chatter.input", null, nameAtt, messageAtt, dateAtt);
-var channelBlocked  = false;
-
-function release() {
-    if (!channelBlocked) return; // avoid too many unblocks
-    channelBlocked = false;
-    var http = new XMLHttpRequest();
-    http.open('GET', window.location.protocol + "//" + window.location.host + "/dolphin-grails/chatter/release", true);
-    http.send();
-}
 
 // bind input form bidirectionally
-name.oninput     = (event) => {    nameAtt.setValue(   name.value); release() };
-message.oninput  = (event) => { messageAtt.setValue(message.value); release() };
+name.oninput     = (event) => {    nameAtt.setValue(   name.value);  };
+message.oninput  = (event) => { messageAtt.setValue(message.value);  };
 
 nameAtt.onValueChange(   (event) => name.value    = event.newValue);
 messageAtt.onValueChange((event) => message.value = event.newValue);
@@ -51,7 +42,6 @@ function onPostAdded(pm) {
         var userId = myChat.getAt("name").getQualifier().split("-")[0];
         if (userId == postUserId) {  // our post, we can select
             myChat.syncWith(pm);
-            release();
         }
         message.focus();
     }
@@ -77,14 +67,11 @@ dolphin.getClientModelStore().onModelStoreChange((event) => {
 postMessage.onclick = (event) => {
     postMessage.disabled = true; // double-click protection
     dolphin.send('chatter.post', { onFinished : () => postMessage.disabled = false, onFinishedData : null });
-    release();
     message.focus();
 };
 
-var longPollCallback = (pms) => {
-    channelBlocked = true;
-    dolphin.send("chatter.poll", { onFinished : longPollCallback, onFinishedData : null });
-}
-
-dolphin.send("chatter.init", { onFinished : () => longPollCallback([]), onFinishedData : null });
+dolphin.send("chatter.init", {
+    onFinished     : () => { dolphin.startPushListening("chatter.on.push", "chatter.release") },
+    onFinishedData : null
+});
 

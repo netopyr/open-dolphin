@@ -1,6 +1,5 @@
 package org.opendolphin.demo.team;
 
-import groovyx.gpars.dataflow.DataflowQueue;
 import org.opendolphin.core.comm.*;
 import org.opendolphin.core.server.EventBus;
 import org.opendolphin.core.server.action.ServerAction;

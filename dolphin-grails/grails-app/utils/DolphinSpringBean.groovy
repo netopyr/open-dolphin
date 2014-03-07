@@ -4,6 +4,7 @@ import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.demo.ChatterActions
+import org.opendolphin.demo.ChatterRelease
 import org.opendolphin.demo.CustomAction
 import org.opendolphin.demo.DemoTitlePurposeAction
 import org.opendolphin.demo.ManyEventsAction
@@ -59,6 +60,7 @@ class DolphinSpringBean {
         dolphin.getServerConnector().register(new TeamBusRelease(teamBus));
 
         dolphin.register(new ChatterActions().subscribedTo(chatterBus))
+        dolphin.getServerConnector().register(new ChatterRelease(chatterBus));
 
     }
 }
