@@ -215,12 +215,24 @@ configure(mavenizedProjects()) {
                                 name 'Dierk Koenig'
                             }
                             developer {
-                                id 'Sven'
+                                id 'svene'
                                 name 'Sven Ehrke'
                             }
                             developer {
                                 id 'jporzelt'
                                 name 'Johannes Porzelt'
+                            }
+                            developer {
+                                id 'kunsingh'
+                                name 'Kunal Singh'
+                            }
+                            developer {
+                                id 'Nicolai82'
+                                name 'Nicolai Kilian'
+                            }
+                            developer {
+                                id 'ToddCostella'
+                                name 'Todd Costella'
                             }
                         }
                     }

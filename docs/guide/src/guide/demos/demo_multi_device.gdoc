@@ -8,14 +8,13 @@ that you can connect to
 - from a tablet
 - from a smartphone
 
-todo screenshots here
+!../img/dolphin_pics/dolphinFamily.png!
 
 The way to achieve this is to have
 - one and only one application on the server side made from OpenDolphin actions
 - various client-specific views, in this case JavaFX and JavaScript where the HTML5/JavaScript part can be natively packaged for mobile devices.
 
-todo "family" picture
-todo link to video
+See also: [demo video|https://www.youtube.com/watch?v=mBv6q3tVfn8].
 
 The multi-device capability of OpenDolphin is the basis for many other use cases:
 - [follow-me applications|guide:demo_follow_me]

@@ -4,6 +4,8 @@ Using OpenDolphin.js follows the exact same pattern as for Desktop clients:
 
 All the rest happens on the server.
 
+[Video intro|https://www.youtube.com/watch?v=-oGEnyWN9zM].
+
 Here is a typical structure of an HTML page that uses OpenDolphin.js
 (extracted from [BasicFunctionalTestsJs.html|https://github.com/canoo/open-dolphin/blob/master/subprojects/client-javascript/testsuite/functional/BasicFunctionalTestsJs.html]):
 
@@ -12,7 +14,7 @@ Here is a typical structure of an HTML page that uses OpenDolphin.js
 <html>
 <head>
     ..
-    <!-- refer to OpenDolphin -->
+    <!-- refer to OpenDolphin, see also http://open-dolphin.org/dolphin_website/Download.html -->
     <script data-main="../../js/dolphin/" src="../../libs/require.js"></script>
 </head>
 <body>

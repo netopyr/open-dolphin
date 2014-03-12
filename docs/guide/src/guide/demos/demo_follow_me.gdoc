@@ -26,3 +26,5 @@ Even if you go *offline* accidentally for technical reasons, no problem. Just re
 Again, [the team-members live demo|https://klondike.canoo.com/dolphin-grails/demo/js/teammember/TeamMemberDetails.html]
 is a perfect example how to achieve this. It uses a simple "history" of the presentation state to allow the
 re-connect any time later.
+
+See also: [demo video|https://www.youtube.com/watch?v=mBv6q3tVfn8].

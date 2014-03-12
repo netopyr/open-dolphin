@@ -26,6 +26,8 @@ In order to share the same information across PresentationModels, use Attributes
 
 Furthermore, a number of *performance enhancements* and *consistency checks* have been included.
 
+Please find the full list of changes [here|http://www.canoo.com/jira/secure/ReleaseNote.jspa?version=11400&styleName=Text&projectId=10480&Create=Create].
+
 h4. Release 0.8
 
 25 issues have been addressed in this release where the most important ones come from our
