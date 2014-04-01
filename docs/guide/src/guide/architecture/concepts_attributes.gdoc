@@ -1,7 +1,6 @@
 Each presentation model can refer to many attributes.
 
-Attributes maintain no back-reference.
-Technically, they can be shared between presentation models.
+Attributes maintain a back-reference to their one and only presentation model.
 
 Attributes are _generic._ You never need implement your own attribute type.
 
