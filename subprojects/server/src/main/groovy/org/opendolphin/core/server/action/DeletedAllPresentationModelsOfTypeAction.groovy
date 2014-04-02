@@ -24,9 +24,9 @@ class DeletedAllPresentationModelsOfTypeAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(DeletedAllPresentationModelsOfTypeNotification) { DeletedAllPresentationModelsOfTypeNotification command, response ->
-            List models = new LinkedList( serverDolphin.modelStore.findAllPresentationModelsByType(command.pmType))
+            List models = new LinkedList( serverDolphin.findAllPresentationModelsByType(command.pmType))
             for (PresentationModel model in models ){
-                serverDolphin.modelStore.remove(model)
+                serverDolphin.remove(model)
             }
         }
     }

@@ -55,7 +55,7 @@ class DeletePresentationModelTests extends GroovyTestCase {
         // when we now delete the pm
         clientDolphin.delete(model)
         // ... it is no longer in the client model store
-        assert !clientDolphin.modelStore.findPresentationModelById(modelId)
+        assert !clientDolphin.findPresentationModelById(modelId)
         // ... all listeners have been detached from model and all its attributes
         assert ! model.getPropertyChangeListeners()
         // what is allowed to remain is the "detached" model still listening to its own attribute changes

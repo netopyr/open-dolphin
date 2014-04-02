@@ -117,7 +117,7 @@ public class TeamMemberActions extends DolphinServerAction {
         actionRegistry.register(ValueChangedCommand.class, new CommandHandler<ValueChangedCommand>() {
             @Override
             public void handleCommand(ValueChangedCommand command, List<Command> response) {
-                Attribute attr = getServerDolphin().getModelStore().findAttributeById(command.getAttributeId());
+                Attribute attr = getServerDolphin().findAttributeById(command.getAttributeId());
                 if (attr == null ||
                     attr.getQualifier() == null ||
                     !TYPE_TEAM_MEMBER.equals(attr.getPresentationModel().getPresentationModelType()))
@@ -161,7 +161,7 @@ public class TeamMemberActions extends DolphinServerAction {
                 presentationModel(null, TYPE_TEAM_MEMBER, event.dto);
             }
             if ("change".equals(event.type)) {
-                List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
+                List<Attribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
                 for (Attribute attribute : attributes) {
                     PresentationModel pm = attribute.getPresentationModel();
                     if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
@@ -170,13 +170,13 @@ public class TeamMemberActions extends DolphinServerAction {
                 }
             }
             if ("rebase".equals(event.type)) {
-                List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
+                List<Attribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
                 for (Attribute attribute : attributes) {
                     response.add(new BaseValueChangedCommand(attribute.getId()));
                 }
             }
             if ("remove".equals(event.type)) {
-                List<Attribute> attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(event.qualifier);
+                List<Attribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
                 for (Attribute attribute : attributes) {
                     PresentationModel pm = attribute.getPresentationModel();
                     if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {

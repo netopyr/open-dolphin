@@ -34,13 +34,13 @@ public class ServerDolphinTest extends GroovyTestCase {
         assert dolphin.listPresentationModels().empty
 
         def pm1 = new ServerPresentationModel("first", [])
-        dolphin.modelStore.add pm1
+        dolphin.add pm1
 
         assert ['first'].toSet() == dolphin.listPresentationModelIds()
         assert [pm1] == dolphin.listPresentationModels().toList()
 
         def pm2 = new ServerPresentationModel("second", [])
-        dolphin.modelStore.add pm2
+        dolphin.add pm2
 
         assert 2 == dolphin.listPresentationModelIds().size()
         assert 2 == dolphin.listPresentationModels().size()
@@ -67,11 +67,11 @@ public class ServerDolphinTest extends GroovyTestCase {
         }
         dolphin.addModelStoreListener 'person', typedListener
         dolphin.addModelStoreListener listener
-        dolphin.getModelStore().add(new ServerPresentationModel('p1', []))
+        dolphin.add(new ServerPresentationModel('p1', []))
         ServerPresentationModel modelWithType = new ServerPresentationModel('person1', [])
         modelWithType.setPresentationModelType('person')
-        dolphin.getModelStore().add(modelWithType)
-        dolphin.getModelStore().add(new ServerPresentationModel('p2', []))
+        dolphin.add(modelWithType)
+        dolphin.add(new ServerPresentationModel('p2', []))
         dolphin.removeModelStoreListener 'person', typedListener
         dolphin.removeModelStoreListener listener
         assert 3 == listenerCallCount
@@ -85,11 +85,11 @@ public class ServerDolphinTest extends GroovyTestCase {
         int listenerCallCount = 0
         dolphin.addModelStoreListener 'person', { evt -> typedListenerCallCount++ }
         dolphin.addModelStoreListener { evt -> listenerCallCount++ }
-        dolphin.getModelStore().add(new ServerPresentationModel('p1', []))
+        dolphin.add(new ServerPresentationModel('p1', []))
         ServerPresentationModel modelWithType = new ServerPresentationModel('person1', [])
         modelWithType.setPresentationModelType('person')
-        dolphin.getModelStore().add(modelWithType)
-        dolphin.getModelStore().add(new ServerPresentationModel('p2', []))
+        dolphin.add(modelWithType)
+        dolphin.add(new ServerPresentationModel('p2', []))
         assert 3 == listenerCallCount
         assert 1 == typedListenerCallCount
     }

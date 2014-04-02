@@ -77,7 +77,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testValueChangeWithQualifiersInClientSideOnlyPMs() {
         def modelA = new ClientPresentationModel("1", [new ClientAttribute("a", 0, "QUAL")])
         modelA.clientSideOnly = true
-        clientDolphin.modelStore.add modelA
+        clientDolphin.add modelA
 
         def modelB = clientDolphin.presentationModel("2", new ClientAttribute("b", 0))
         modelB.clientSideOnly = true
@@ -92,7 +92,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testValueRebaseWithQualifiersInClientSideOnlyPMs() {
         def modelA = new ClientPresentationModel("1", [new ClientAttribute("a", 0, "QUAL")])
         modelA.clientSideOnly = true
-        clientDolphin.modelStore.add modelA
+        clientDolphin.add modelA
 
         def modelB = clientDolphin.presentationModel("2", new ClientAttribute("b", 0))
         modelB.clientSideOnly = true
@@ -154,7 +154,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             serverDolphin.presentationModel(response, "id".toString(), null, new DTO(new Slot("attr", 'attr')))
         }
         serverDolphin.action "checkNotificationReached", { cmd, response ->
-            assert 1 == serverDolphin.modelStore.listPresentationModels().size()
+            assert 1 == serverDolphin.listPresentationModels().size()
             assert serverDolphin.getAt("id")
         }
 
@@ -194,7 +194,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             serverDolphin.clientSideModel(response, "id".toString(), null, new DTO(new Slot("attr", 'attr')))
         }
         serverDolphin.action "checkNotificationReached", { cmd, response ->
-            assert 0 == serverDolphin.modelStore.listPresentationModels().size()
+            assert 0 == serverDolphin.listPresentationModels().size()
         }
 
         clientDolphin.send "create", { List<ClientPresentationModel> pms ->

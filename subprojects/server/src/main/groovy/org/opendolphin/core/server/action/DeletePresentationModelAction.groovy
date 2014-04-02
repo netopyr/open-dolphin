@@ -25,7 +25,7 @@ class DeletePresentationModelAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(DeletedPresentationModelNotification) { DeletedPresentationModelNotification command, response ->
             PresentationModel model = serverDolphin.getAt(command.pmId)
-            serverDolphin.modelStore.remove(model)
+            serverDolphin.remove(model)
         }
     }
 }

@@ -25,7 +25,53 @@ import java.util.Set;
 import static org.codehaus.groovy.runtime.DefaultGroovyMethods.asType;
 
 public abstract class Dolphin {
-    public abstract ModelStore getModelStore();
+
+    protected abstract ModelStore getModelStore();
+
+    /**
+     * Adds a presentation model to the model store.<br/>
+     * Presentation model ids should be unique. This method guarantees this condition by disallowing
+     * models with duplicate ids to be added.
+     *
+     * @param model the model to be added.
+     * @return if the add operation was successful or not.
+     */
+    public boolean add(PresentationModel model) {
+        return getModelStore().add(model);
+    }
+
+    /**
+     * Removes a presentation model from the model store.<br/>
+     *
+     * @param model the model to be removed from the store.
+     * @return if the remove operation was successful or not.
+     */
+    public boolean remove(PresentationModel model) {
+        return getModelStore().remove(model);
+    }
+
+    /**
+     * Finds an attribute by its id.<br/>
+     * <strong>WARNING:</strong> this method may return {@code null} if no match is found.
+     *
+     * @param id the id to search for.
+     * @return an attribute whose id matches the parameter, {@code null} otherwise.
+     */
+    public Attribute findAttributeById(long id) {
+        return getModelStore().findAttributeById(id);
+    }
+
+    /**
+     * Returns a {@code List} of all attributes that share the same qualifier.<br/>
+     * Never returns empty. The returned {@code List} is immutable.
+     *
+     * @return a {@code List} of all attributes fo which their qualifier was a match.
+     */
+    public List<Attribute> findAllAttributesByQualifier(String qualifier) {
+        return getModelStore().findAllAttributesByQualifier(qualifier);
+    }
+
+
 
     public Set<String> listPresentationModelIds() {
         return getModelStore().listPresentationModelIds();
@@ -39,7 +85,9 @@ public abstract class Dolphin {
         return getModelStore().findAllPresentationModelsByType(presentationModelType);
     }
 
-    /** alias for findPresentationModelById */
+    /**
+     * alias for findPresentationModelById
+     */
     public PresentationModel getAt(String id) {
         return findPresentationModelById(id);
     }
@@ -68,11 +116,9 @@ public abstract class Dolphin {
         getModelStore().addModelStoreListener(presentationModelType, asType(listener, ModelStoreListener.class));
     }
 
-
     public boolean hasModelStoreListener(String presentationModelType, ModelStoreListener listener) {
         return getModelStore().hasModelStoreListener(presentationModelType, listener);
     }
-
 
     public void addModelStoreListener(ModelStoreListener listener) {
         getModelStore().addModelStoreListener(listener);
