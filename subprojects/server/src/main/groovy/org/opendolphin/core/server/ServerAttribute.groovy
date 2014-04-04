@@ -17,16 +17,14 @@
 package org.opendolphin.core.server
 
 import org.opendolphin.core.BaseAttribute
-import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
-import org.opendolphin.core.comm.ValueChangedCommand
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class ServerAttribute extends BaseAttribute {
 
     private boolean idAlreadySet = false;
-    public  boolean notifyClient = true;
+    private boolean notifyClient = true;
 
     ServerAttribute(String propertyName, Object initialValue) {
         super(propertyName, initialValue)
@@ -54,9 +52,31 @@ class ServerAttribute extends BaseAttribute {
     void setValue(Object value) {
         super.setValue(value)
         if (notifyClient) {
-            def response = presentationModel.modelStore.currentResponse
-            ServerDolphin.changeValue(response, this, getValue())
-            println "will notify client here"
+            ServerDolphin.changeValue(presentationModel.modelStore.currentResponse, this, getValue())
         }
+    }
+
+    @Override
+    void reset() {
+        super.reset()
+        if (notifyClient) {
+            ServerDolphin.reset(presentationModel.modelStore.currentResponse, this)
+        }
+    }
+
+    @Override
+    void rebase() {
+        super.rebase()
+        if (notifyClient) {
+            ServerDolphin.rebase(presentationModel.modelStore.currentResponse, this)
+        }
+    }
+
+    /** Do the applyChange without create commands that are sent to the client */
+    public void silently(Runnable applyChange) {
+        def temp = notifyClient
+        notifyClient = false
+        applyChange.run()
+        notifyClient = temp
     }
 }

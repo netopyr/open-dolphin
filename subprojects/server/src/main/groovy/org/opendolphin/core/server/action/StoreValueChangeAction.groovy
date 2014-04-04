@@ -31,10 +31,9 @@ class StoreValueChangeAction extends DolphinServerAction {
             def modelStore = serverDolphin.serverModelStore
             ServerAttribute attribute = modelStore.findAttributeById(command.attributeId as Long)
             if (attribute) {
-                def old = attribute.notifyClient
-                attribute.notifyClient = false
-                attribute.value = command.newValue
-                attribute.notifyClient = old
+                attribute.silently {
+                    attribute.value = command.newValue
+                }
             } else {
                 log.severe("cannot find attribute with id $command.attributeId to change value from '$command.oldValue' to '$command.newValue'. " +
                            "Known attribute ids are: "+ serverDolphin.serverModelStore.listPresentationModels()*.attributes*.id )

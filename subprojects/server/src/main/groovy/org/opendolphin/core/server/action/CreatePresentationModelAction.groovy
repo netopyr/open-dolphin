@@ -16,6 +16,7 @@
 
 package org.opendolphin.core.server.action
 
+import groovy.util.logging.Log
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.CreatePresentationModelCommand
@@ -25,6 +26,7 @@ import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.comm.ActionRegistry
 import groovy.transform.CompileStatic
 
+@Log
 @CompileStatic
 class CreatePresentationModelAction extends DolphinServerAction {
 
@@ -43,6 +45,10 @@ class CreatePresentationModelAction extends DolphinServerAction {
         }
         PresentationModel model = new ServerPresentationModel(command.pmId, attributes)
         model.presentationModelType = command.pmType
-        serverDolphin.serverModelStore.add(model)
+        if (serverDolphin.serverModelStore.containsPresentationModel(model.id)) {
+            log.info("There already is a PM with id ${model.id}. Create PM ignored.")
+        } else {
+            serverDolphin.serverModelStore.add(model)
+        }
     }
 }

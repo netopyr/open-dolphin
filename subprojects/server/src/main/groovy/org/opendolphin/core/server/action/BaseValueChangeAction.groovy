@@ -18,6 +18,7 @@ package org.opendolphin.core.server.action
 
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.comm.BaseValueChangedCommand
+import org.opendolphin.core.server.ServerAttribute
 import org.opendolphin.core.server.comm.ActionRegistry
 import groovy.util.logging.Log
 
@@ -26,9 +27,11 @@ class BaseValueChangeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(BaseValueChangedCommand) { BaseValueChangedCommand command, response ->
             def modelStore = serverDolphin.serverModelStore
-            Attribute attribute = modelStore.findAttributeById(command.attributeId)
+            ServerAttribute attribute = modelStore.findAttributeById(command.attributeId)
             if (attribute) {
-                attribute.rebase()
+                attribute.silently {
+                    attribute.rebase()
+                }
                 log.finest "S: attribute $attribute.id for $attribute.propertyName with value $attribute.value is dirty? : $attribute.dirty"
             }
             else log.warning("Could not find attribute with id '$command.attributeId' to change its base value.")

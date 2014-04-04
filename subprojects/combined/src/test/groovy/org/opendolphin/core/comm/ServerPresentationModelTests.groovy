@@ -54,7 +54,7 @@ class ServerPresentationModelTests extends GroovyTestCase {
         assert context.done.await(2, TimeUnit.SECONDS)
     }
 
-    void testSecondServerActionCanRelyOnServerStateChange() {
+    void testSecondServerActionCanRelyOnAttributeValueChange() {
         def model = clientDolphin.presentationModel("PM1", ["att1"] )
 
         serverDolphin.action "setValue", { cmd, response ->
@@ -73,5 +73,62 @@ class ServerPresentationModelTests extends GroovyTestCase {
             context.assertionsDone()
         }
     }
+
+    void testSecondServerActionCanRelyOnAttributeReset() {
+        def model = clientDolphin.presentationModel("PM1", att1:'base' )
+        model.att1.value = 'changed'
+        assert model.att1.dirty
+
+        serverDolphin.action "reset", { cmd, response ->
+            def at = serverDolphin.getAt("PM1").getAt("att1")
+            assert at.dirty
+            at.reset()
+        }
+
+        serverDolphin.action "assertPristine", { cmd, response ->
+            def at = serverDolphin.getAt("PM1").getAt("att1")
+            assert ! at.dirty
+            assert at.value == "base"
+        }
+
+        clientDolphin.send "reset"
+        clientDolphin.send "assertPristine"
+
+        clientDolphin.sync {
+            assert ! model.att1.dirty
+            assert model.att1.value == "base"
+            context.assertionsDone()
+        }
+    }
+
+    void testSecondServerActionCanRelyOnAttributeRebase() {
+        def model = clientDolphin.presentationModel("PM1", att1:'base' )
+        model.att1.value = 'changed'
+        assert model.att1.dirty
+
+        serverDolphin.action "rebase", { cmd, response ->
+            def at = serverDolphin.getAt("PM1").getAt("att1")
+            assert at.dirty
+            at.rebase()
+        }
+
+        serverDolphin.action "assertNewPristine", { cmd, response ->
+            def at = serverDolphin.getAt("PM1").getAt("att1")
+            assert ! at.dirty
+            assert at.value == "changed"
+        }
+
+        clientDolphin.send "rebase"
+        clientDolphin.send "assertNewPristine"
+
+        clientDolphin.sync {
+            assert ! model.att1.dirty
+            assert model.att1.value == "changed"
+            context.assertionsDone()
+        }
+    }
+
+    // feature list
+    // PM: create, delete, deleteAllOfType, switch/apply, reset, rebase
 
 }

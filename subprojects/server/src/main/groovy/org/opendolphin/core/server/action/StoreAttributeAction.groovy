@@ -33,7 +33,7 @@ class StoreAttributeAction extends DolphinServerAction {
 
             def existing = modelStore.findAttributeById(command.attributeId)
             if (existing) {
-                log.warning "trying to store an already existing attribute: $command"
+                log.info "trying to store an already existing attribute: $command"
                 return
             }
 
