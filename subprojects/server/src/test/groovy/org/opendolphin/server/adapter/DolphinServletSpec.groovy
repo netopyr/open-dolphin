@@ -2,7 +2,7 @@ package org.opendolphin.server.adapter
 
 import org.opendolphin.core.comm.Codec
 import org.opendolphin.core.server.ServerDolphin
-import org.opendolphin.core.server.comm.ServerConnector
+import org.opendolphin.core.server.ServerConnector
 import spock.lang.Specification
 
 import javax.servlet.ServletInputStream
@@ -55,7 +55,8 @@ class DolphinServletSpec extends Specification {
     def mockServerConnector() {
         [
             getCodec: { [encode: {}, decode: { [null] }] as Codec },
-            receive: { [] }
+            receive: { [] },
+            serverModelStore: { setCurrentResponse: { } }
         ] as ServerConnector
     }
 

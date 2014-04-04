@@ -50,9 +50,9 @@ public class ChatterActions extends DolphinServerAction {
         String pmId = "$userId-$postId".toString()
         String now = new Date().format('dd.MM.yy HH:mm')
         def currentPost = new DTO(
-            new Slot(ATTR_NAME, name, "$pmId-$ATTR_NAME"),
-            new Slot(ATTR_MESSAGE, "",   "$pmId-$ATTR_MESSAGE"),
-            new Slot(ATTR_DATE,    now,  "$pmId-$ATTR_DATE")
+            new Slot(ATTR_NAME,   name, "$pmId-$ATTR_NAME"),
+            new Slot(ATTR_MESSAGE,  "", "$pmId-$ATTR_MESSAGE"),
+            new Slot(ATTR_DATE,    now, "$pmId-$ATTR_DATE")
         )
         history.sendAndWait { List posts ->
             posts << currentPost
@@ -98,7 +98,7 @@ public class ChatterActions extends DolphinServerAction {
 
         actionRegistry.register(ValueChangedCommand, new CommandHandler<ValueChangedCommand>() {
             public void handleCommand(ValueChangedCommand command, List<Command> response) {
-                def attr = getServerDolphin().getModelStore().findAttributeById(command.attributeId)
+                def attr = getServerDolphin().findAttributeById(command.attributeId)
                 if (attr && attr.presentationModel.id == PM_ID_INPUT && attr.qualifier) {
                     String toCheck = attr.value
                     String replaced = toCheck.replaceAll(/<(\/?\w)/, /&lt;\1/)
@@ -106,7 +106,7 @@ public class ChatterActions extends DolphinServerAction {
                         updateHistory(attr)
                         chatterBus.publish(chatQueue, [type: "change", qualifier: attr.qualifier, value: attr.value])
                     } else {
-                        changeValue(attr, replaced)
+                        attr.value = replaced
                     }
                 }
             }
@@ -126,9 +126,9 @@ public class ChatterActions extends DolphinServerAction {
                     presentationModel(null, TYPE_POST, post.dto)
                 }
                 if (post.type == "change") {
-                    def attributes = getServerDolphin().getModelStore().findAllAttributesByQualifier(post.qualifier)
+                    def attributes = getServerDolphin().findAllAttributesByQualifier(post.qualifier)
                     if (attributes) {
-                        changeValue attributes.first(), post.value
+                        attributes.first().value = post.value
                     }
                 }
                 post = chatQueue.getVal(20, TimeUnit.MILLISECONDS)

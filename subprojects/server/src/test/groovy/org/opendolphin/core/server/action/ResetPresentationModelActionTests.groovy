@@ -3,14 +3,15 @@ package org.opendolphin.core.server.action
 import org.opendolphin.core.ModelStore
 import org.opendolphin.core.comm.PresentationModelResetedCommand
 import org.opendolphin.core.comm.ResetPresentationModelCommand
+import org.opendolphin.core.server.ServerModelStore
 import org.opendolphin.core.server.ServerPresentationModel
-import org.opendolphin.core.server.comm.ServerConnector
+import org.opendolphin.core.server.ServerConnector
 
 class ResetPresentationModelActionTests extends GroovyTestCase {
 
     void testResetModel() {
-        def store = new ModelStore()
-        ServerConnector connector = new ServerConnector()
+        def store = new ServerModelStore()
+        ServerConnector connector = new ServerConnector(serverModelStore: store)
         ResetPresentationModelAction action = new ResetPresentationModelAction(store)
         store.add(new ServerPresentationModel('p1',[]))
         connector.register(action)

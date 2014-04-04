@@ -23,6 +23,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ServerPresentationModel extends BasePresentationModel {
 
+    public ServerModelStore modelStore
+
     ServerPresentationModel(String id, List<ServerAttribute> attributes) {
         super(id, attributes)
     }

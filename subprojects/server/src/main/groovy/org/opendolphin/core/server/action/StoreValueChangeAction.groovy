@@ -17,6 +17,7 @@
 package org.opendolphin.core.server.action
 
 import org.opendolphin.core.comm.ValueChangedCommand
+import org.opendolphin.core.server.ServerAttribute
 import org.opendolphin.core.server.comm.ActionRegistry
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -28,9 +29,12 @@ class StoreValueChangeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(ValueChangedCommand) { ValueChangedCommand command, response ->
             def modelStore = serverDolphin.serverModelStore
-            def attribute = modelStore.findAttributeById(command.attributeId as Long)
+            ServerAttribute attribute = modelStore.findAttributeById(command.attributeId as Long)
             if (attribute) {
+                def old = attribute.notifyClient
+                attribute.notifyClient = false
                 attribute.value = command.newValue
+                attribute.notifyClient = old
             } else {
                 log.severe("cannot find attribute with id $command.attributeId to change value from '$command.oldValue' to '$command.newValue'. " +
                            "Known attribute ids are: "+ serverDolphin.serverModelStore.listPresentationModels()*.attributes*.id )

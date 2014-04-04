@@ -22,7 +22,7 @@ import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.ClientConnector
-import org.opendolphin.core.server.comm.ServerConnector
+import org.opendolphin.core.server.ServerConnector
 
 import java.util.concurrent.TimeUnit
 

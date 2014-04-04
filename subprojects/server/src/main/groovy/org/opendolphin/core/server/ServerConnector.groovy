@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opendolphin.core.server.comm
+package org.opendolphin.core.server
 
 import org.opendolphin.core.comm.Codec
 import org.opendolphin.core.comm.Command
@@ -23,6 +23,9 @@ import org.opendolphin.core.server.action.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
 import org.codehaus.groovy.runtime.StackTraceUtils
+import org.opendolphin.core.server.comm.ActionRegistry
+import org.opendolphin.core.server.comm.CommandHandler
+
 import java.util.logging.Level
 
 
@@ -30,6 +33,7 @@ import java.util.logging.Level
 @Log
 class ServerConnector {
     Codec codec
+    ServerModelStore serverModelStore
 
     ActionRegistry registry = new ActionRegistry()
 
@@ -42,9 +46,10 @@ class ServerConnector {
 
         if ( ! (command instanceof SignalCommand)) { // signal commands must not update thread-confined state
             for (DolphinServerAction it in dolphinServerActions) {
-                it.dolphinResponse = response
+                it.dolphinResponse = response       // todo: can be deleted as soon as all action refer to the SMS
             }
         }
+        serverModelStore.currentResponse = response
 
         List<CommandHandler> actions = registry[command.id]
         if (!actions) {

@@ -1,9 +1,9 @@
-import org.opendolphin.core.ModelStore
+import org.opendolphin.core.server.ServerModelStore
 import org.opendolphin.core.comm.JsonCodec
 import org.opendolphin.core.comm.ZippedJsonCodec
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerDolphin
-import org.opendolphin.core.server.comm.ServerConnector
+import org.opendolphin.core.server.ServerConnector
 
 beans = {
 
@@ -27,13 +27,14 @@ beans = {
         bean.scope = 'singleton'
     }
 
-    modelStore(ModelStore) { bean ->
+    modelStore(ServerModelStore) { bean ->
         bean.scope = 'session' // every session must have its own model store
     }
 
     serverConnector(ServerConnector) { bean ->
         bean.scope = 'session'  // could be shared among sessions but since the registry is set, this is safer...
         codec = new JsonCodec()
+        serverModelStore = ref('modelStore')
     }
 
     serverDolphin(ServerDolphin, ref('modelStore'), ref('serverConnector')) { bean ->

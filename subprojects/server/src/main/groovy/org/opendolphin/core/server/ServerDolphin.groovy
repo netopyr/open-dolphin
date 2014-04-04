@@ -27,13 +27,11 @@ import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.DeletePresentationModelCommand
 import org.opendolphin.core.comm.DeleteAllPresentationModelsOfTypeCommand
-import org.opendolphin.core.comm.DeletedAllPresentationModelsOfTypeNotification
 import org.opendolphin.core.comm.InitializeAttributeCommand
 import org.opendolphin.core.comm.PresentationModelResetedCommand
 import org.opendolphin.core.comm.ValueChangedCommand
 import org.opendolphin.core.server.action.*
 import org.opendolphin.core.server.comm.NamedCommandHandler
-import org.opendolphin.core.server.comm.ServerConnector
 
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -51,20 +49,21 @@ import static org.opendolphin.StringUtil.isBlank
 class ServerDolphin extends Dolphin {
 
     /** the server model store is unique per user session */
-    final ModelStore serverModelStore
+    final ServerModelStore serverModelStore
 
     /** the serverConnector is unique per user session */
     final ServerConnector serverConnector
 
     private AtomicBoolean initialized = new AtomicBoolean(false);
 
-    ServerDolphin(ModelStore serverModelStore, ServerConnector serverConnector) {
+    ServerDolphin(ServerModelStore serverModelStore, ServerConnector serverConnector) {
         this.serverModelStore = serverModelStore
         this.serverConnector = serverConnector
+        this.serverConnector.serverModelStore = serverModelStore
     }
 
     ServerDolphin() {
-        this(new ModelStore(), new ServerConnector())
+        this(new ServerModelStore(), new ServerConnector())
     }
 
     @Override

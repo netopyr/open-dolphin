@@ -20,7 +20,8 @@ import org.opendolphin.core.ModelStore
 import org.opendolphin.core.comm.Codec
 import org.opendolphin.core.comm.JsonCodec;
 import org.opendolphin.core.server.ServerDolphin
-import org.opendolphin.core.server.comm.ServerConnector;
+import org.opendolphin.core.server.ServerConnector
+import org.opendolphin.core.server.ServerModelStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,7 +54,8 @@ abstract class DolphinServlet extends HttpServlet {
         ServerDolphin dolphin = session.getAttribute(DOLPHIN_ATTRIBUTE_ID)
         if (!dolphin) {
             log.info "creating new dolphin for session $session.id"
-            dolphin = new ServerDolphin(new ModelStore(), new ServerConnector(codec: codec))
+            def modelStore = new ServerModelStore()
+            dolphin = new ServerDolphin(modelStore, new ServerConnector(codec: codec, serverModelStore: modelStore))
             dolphin.registerDefaultActions()
             registerApplicationActions(dolphin)
             session.setAttribute(DOLPHIN_ATTRIBUTE_ID, dolphin)
