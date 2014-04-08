@@ -29,7 +29,7 @@ export module dolphin {
         // the indexes we maintain for fast access
         private presentationModels          : map.dolphin.Map<string,pm.dolphin.ClientPresentationModel>;
         private presentationModelsPerType   : map.dolphin.Map<string,pm.dolphin.ClientPresentationModel[]>;
-        private attributesPerId             : map.dolphin.Map<number,ca.dolphin.ClientAttribute>;
+        private attributesPerId             : map.dolphin.Map<string,ca.dolphin.ClientAttribute>;
         private attributesPerQualifier      : map.dolphin.Map<string,ca.dolphin.ClientAttribute[]>;
 
         private modelStoreChangeBus         : bus.dolphin.EventBus<ModelStoreEvent>;
@@ -40,7 +40,7 @@ export module dolphin {
             this.clientDolphin = clientDolphin;
             this.presentationModels         = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel>();
             this.presentationModelsPerType  = new map.dolphin.Map<string,pm.dolphin.ClientPresentationModel[]>();
-            this.attributesPerId            = new map.dolphin.Map<number,ca.dolphin.ClientAttribute>();
+            this.attributesPerId            = new map.dolphin.Map<string,ca.dolphin.ClientAttribute>();
             this.attributesPerQualifier     = new map.dolphin.Map<string,ca.dolphin.ClientAttribute[]>();
             this.modelStoreChangeBus        = new bus.dolphin.EventBus();
         }
@@ -247,7 +247,7 @@ export module dolphin {
             this.attributesPerId.remove(attribute.id);
         }
 
-        findAttributeById(id:number):ca.dolphin.ClientAttribute {
+        findAttributeById(id:string):ca.dolphin.ClientAttribute {
             return this.attributesPerId.get(id);
         }
 

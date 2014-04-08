@@ -13,7 +13,7 @@ class ResetPresentationModelActionTests extends GroovyTestCase {
         def store = new ServerModelStore()
         ServerConnector connector = new ServerConnector(serverModelStore: store)
         ResetPresentationModelAction action = new ResetPresentationModelAction(store)
-        store.add(new ServerPresentationModel('p1',[]))
+        store.add(new ServerPresentationModel('p1',[],store))
         connector.register(action)
         List response = connector.receive(new ResetPresentationModelCommand('p1'))
         assert 1 == response.size()

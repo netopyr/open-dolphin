@@ -40,7 +40,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     private PresentationModel presentationModel;
 
-    protected long id = instanceCount++;
+    private String id ;
     private String qualifier; // application specific semantics apply
 
     public BaseAttribute(String propertyName) {
@@ -56,12 +56,18 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
     }
 
     public BaseAttribute(String propertyName, Object baseValue, String qualifier, Tag tag) {
+        this.id = (instanceCount++) + getOrigin();
         this.propertyName = propertyName;
         this.baseValue = baseValue;
         this.value = baseValue;
         this.qualifier = qualifier;
         this.tag = (null==tag) ? Tag.VALUE : tag ;
     }
+
+    /**
+     * @return 'C' for client or 'S' for server
+     */
+    public abstract String getOrigin();
 
     public boolean isDirty() {
         return dirty;
@@ -156,8 +162,11 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
         return propertyName;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
+    }
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getQualifier() {

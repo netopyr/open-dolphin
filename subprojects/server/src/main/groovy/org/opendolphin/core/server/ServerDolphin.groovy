@@ -101,8 +101,26 @@ class ServerDolphin extends Dolphin {
         register(serverAction)
     }
 
-    /** Convenience method to let Dolphin create a presentation model as specified by the DTO. */
-    static void presentationModel(List<Command> response, String id, String presentationModelType, DTO dto){
+    /**
+     * Create a presentation model on the server side, add it to the model store, and send a command to
+     * the client, advising him to do the same.
+     * @throws IllegalArgumentException if a presentation model for this id already exists. No commands are sent in this case.
+     */
+    ServerPresentationModel presentationModel(String id, String presentationModelType, DTO dto) {
+        List<ServerAttribute> attributes = dto.slots.collect { Slot slot ->
+            new ServerAttribute(slot.propertyName, slot.value, slot.qualifier, slot.tag)
+        }
+        ServerPresentationModel model = new ServerPresentationModel(id, attributes, serverModelStore)
+        model.presentationModelType = presentationModelType
+        serverModelStore.add(model)
+        serverModelStore.currentResponse << CreatePresentationModelCommand.makeFrom(model)
+        return model
+    }
+
+    /** Convenience method to let the client (!) dolphin create a presentation model as specified by the DTO.
+     * The server model store remains untouched until the client has issued the notification.*/
+    // todo: the two behaviors of presentationModel() should better be reflected in the method names
+     static void presentationModel(List<Command> response, String id, String presentationModelType, DTO dto){
         if (null == response) return
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable())
     }
@@ -125,7 +143,7 @@ class ServerDolphin extends Dolphin {
     }
 
     /** Convenience method to let Dolphin rebase the value of an attribute */
-    static void rebase(List<Command> response, long attributeId){
+    static void rebase(List<Command> response, String attributeId){
         if (null == response) return
         response << new BaseValueChangedCommand(attributeId: attributeId)
     }
@@ -205,8 +223,13 @@ class ServerDolphin extends Dolphin {
     }
 
     // overriding super methods with server-specific return types to avoid casting
+
     ServerPresentationModel getAt(String pmId) {
         (ServerPresentationModel) super.getAt(pmId)
+    }
+
+    public ServerAttribute findAttributeById(String id) {
+        return (ServerAttribute) super.findAttributeById(id);
     }
 
 }

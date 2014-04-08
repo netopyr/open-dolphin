@@ -23,11 +23,26 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ServerPresentationModel extends BasePresentationModel {
 
+    private static final String AUTO_ID_SUFFIX = "-AUTO-SRV"
+
     public ServerModelStore modelStore
 
-    ServerPresentationModel(String id, List<ServerAttribute> attributes) {
-        super(id, attributes)
+    /**
+     * @param id if id is null or empty, an auto-generated id will be used
+     */
+    ServerPresentationModel(String id, List<ServerAttribute> attributes, ServerModelStore serverModelStore) {
+        super(id ?: makeId(serverModelStore), attributes)
+        if (id?.endsWith(AUTO_ID_SUFFIX)) {
+            throw new IllegalArgumentException("presentation model with self-provided id '$id' may not end with suffix '$AUTO_ID_SUFFIX' since that is reserved.")
+        }
+        modelStore = serverModelStore
     }
+
+    static String makeId(ServerModelStore serverModelStore) {
+        def newId = serverModelStore.pmInstanceCount++
+        return "$newId"+AUTO_ID_SUFFIX
+    }
+
 
     // override with server specific return values to avoid casting in client code
 

@@ -153,10 +153,10 @@ export module dolphin {
             return null;
         }
 
-        findAttributeById(id:number): ca.dolphin.ClientAttribute{
+        findAttributeById(id:string): ca.dolphin.ClientAttribute{
             if(!id) return null;
             for(var i=0;i<this.attributes.length;i++){
-                if(this.attributes[i].id == id){
+                if(this.attributes[i].id == id){ 
                     return this.attributes[i];
                 }
             };

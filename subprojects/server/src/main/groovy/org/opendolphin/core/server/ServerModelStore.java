@@ -10,6 +10,7 @@ import java.util.List;
 public class ServerModelStore extends ModelStore {
 
     protected List<Command> currentResponse = null;
+    protected long pmInstanceCount = 0L;
 
     public ServerModelStore() {
     }

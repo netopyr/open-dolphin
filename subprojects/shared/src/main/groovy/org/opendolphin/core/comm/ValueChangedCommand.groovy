@@ -20,7 +20,7 @@ import groovy.transform.TupleConstructor
 
 @TupleConstructor
 class ValueChangedCommand extends Command {
-    long attributeId
+    String  attributeId
     Object  oldValue
     Object  newValue
 

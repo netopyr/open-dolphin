@@ -42,7 +42,7 @@ public interface PresentationModel extends Observable {
 
     Attribute findAttributeByQualifier(String qualifier);
 
-    Attribute findAttributeById(long id);
+    Attribute findAttributeById(String id);
 
     void syncWith(PresentationModel other);
 

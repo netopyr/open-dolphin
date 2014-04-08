@@ -122,7 +122,7 @@ class BasePresentationModelSpec extends Specification {
         null == pm.findAttributeByQualifier('no-such-qualifier')
         baseAttribute == pm.findAttributeByQualifier('myQualifier')
 
-        null == pm.findAttributeById(Long.MAX_VALUE)
+        null == pm.findAttributeById(Long.MAX_VALUE.toString())
         baseAttribute == pm.findAttributeById(baseAttribute.id)
     }
 

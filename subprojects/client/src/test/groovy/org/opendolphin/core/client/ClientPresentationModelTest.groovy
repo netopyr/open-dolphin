@@ -13,7 +13,7 @@ public class ClientPresentationModelTest extends GroovyTestCase{
     }
     void testBadIdCtor() {
         shouldFail(IllegalArgumentException) {
-            new ClientPresentationModel("1000-AUTO-ID",[])
+            new ClientPresentationModel("1000-AUTO-CLT",[])
         }
     }
 }

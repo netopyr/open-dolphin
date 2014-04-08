@@ -31,7 +31,7 @@ public interface Attribute extends Observable {
 
     String getQualifier();
 
-    long getId();
+    String getId();
 
     Tag getTag();
 

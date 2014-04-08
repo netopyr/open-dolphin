@@ -169,6 +169,9 @@ export module dolphin {
             serverCommand.attributes.forEach((attr) =>{
                 var clientAttribute = this.clientDolphin.attribute(attr.propertyName,attr.qualifier,attr.value, attr.tag ? attr.tag : tags.dolphin.Tag.value());
                 clientAttribute.setBaseValue(attr.baseValue);
+                if(attr.id && attr.id.match(".*S$")) {
+                    clientAttribute.id = attr.id;
+                }
                 attributes.push(clientAttribute);
             });
             var clientPm = new cpm.dolphin.ClientPresentationModel(serverCommand.pmId, serverCommand.pmType);

@@ -41,7 +41,7 @@ class StoreAttributeAction extends DolphinServerAction {
             attribute.id = command.attributeId
             def pm = serverDolphin.findPresentationModelById(command.pmId)
             if (null == pm) {
-                pm = new ServerPresentationModel(command.pmId, [])
+                pm = new ServerPresentationModel(command.pmId, [], modelStore)
                 modelStore.add(pm)
             }
             pm._internal_addAttribute(attribute)

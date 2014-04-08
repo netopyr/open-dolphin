@@ -47,4 +47,8 @@ class ClientAttribute extends BaseAttribute {
         this(props.propertyName.toString(), props.initialValue)
         this.qualifier = props.qualifier
     }
+
+    public String getOrigin(){
+        return "C";
+    }
 }

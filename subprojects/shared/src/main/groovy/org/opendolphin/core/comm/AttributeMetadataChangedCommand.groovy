@@ -17,7 +17,7 @@
 package org.opendolphin.core.comm
 
 class AttributeMetadataChangedCommand extends Command {
-    long    attributeId
+    String  attributeId
     String  metadataName
     Object  value
 

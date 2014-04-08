@@ -19,7 +19,7 @@ public class TutorialAction extends DolphinServerAction {
     public static final String ATTR_ID      = "attrId"
     public static final String CMD_ADD      = "org.opendolphin.demo.Tutorial.add"
 
-    private int count = 0
+    private static int count = 0
 
     public void registerIn(ActionRegistry actionRegistry) {
         actionRegistry.register(CMD_ECHO, new CommandHandler<Command>() {

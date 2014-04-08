@@ -170,7 +170,7 @@ public class BasePresentationModel extends AbstractObservable implements Present
         return null;
     }
 
-    public Attribute findAttributeById(long id) {
+    public Attribute findAttributeById(String id) {
         for (Attribute attribute : attributes) {
             if (attribute.getId() == id) {
                 return attribute;

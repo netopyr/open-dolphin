@@ -6,7 +6,7 @@ export module dolphin {
 
         className:string;
 
-        constructor(public pmId:string, public attributeId:number, public propertyName:string, public newValue:any, public qualifier:string, public tag:string = tags.dolphin.Tag.value()) {
+        constructor(public pmId:string, public attributeId:string, public propertyName:string, public newValue:any, public qualifier:string, public tag:string = tags.dolphin.Tag.value()) {
             super();
             this.id = 'AttributeCreated';
             this.className = "org.opendolphin.core.comm.AttributeCreatedNotification";

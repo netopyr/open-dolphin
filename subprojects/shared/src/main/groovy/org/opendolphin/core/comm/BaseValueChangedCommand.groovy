@@ -20,7 +20,7 @@ import groovy.transform.TupleConstructor
 
 @TupleConstructor
 class BaseValueChangedCommand extends Command { // todo dk: should better be named: RebaseCommand
-    long attributeId
+    String attributeId
 
     String toString() { super.toString() + " attr:$attributeId"}
 }

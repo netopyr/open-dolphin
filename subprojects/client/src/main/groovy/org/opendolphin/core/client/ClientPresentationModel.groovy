@@ -23,7 +23,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ClientPresentationModel extends BasePresentationModel {
 
-    private static final String AUTO_ID_SUFFIX = "-AUTO-ID"
+    private static final String AUTO_ID_SUFFIX = "-AUTO-CLT"
     boolean clientSideOnly = false
     private static long instanceCount = 0
 
@@ -32,7 +32,7 @@ class ClientPresentationModel extends BasePresentationModel {
     }
 
     /**
-     * @param id if id is null or empty, the hashCode will be used
+     * @param id if id is null or empty, an auto-generated id will be used
      */
     ClientPresentationModel(String id, List<ClientAttribute> attributes) {
         super(id ?: "" + instanceCount++ + AUTO_ID_SUFFIX, attributes)
@@ -41,7 +41,7 @@ class ClientPresentationModel extends BasePresentationModel {
         }
     }
 
-    // override with server specific return values to avoid casting in client code
+    // override with client specific return values to avoid casting in client code
 
     ClientAttribute getAt(String propertyName) {
         return (ClientAttribute) super.getAt(propertyName)

@@ -57,7 +57,7 @@ public abstract class Dolphin {
      * @param id the id to search for.
      * @return an attribute whose id matches the parameter, {@code null} otherwise.
      */
-    public Attribute findAttributeById(long id) {
+    public Attribute findAttributeById(String id) {
         return getModelStore().findAttributeById(id);
     }
 

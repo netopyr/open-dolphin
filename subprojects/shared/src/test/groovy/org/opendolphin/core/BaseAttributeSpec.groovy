@@ -243,4 +243,9 @@ class MyAttribute extends BaseAttribute {
     MyAttribute(String propertyName, Object baseValue, Tag tag) {
         super(propertyName, baseValue, tag)
     }
+
+    @Override
+    String getOrigin() {
+        return "M"
+    }
 }

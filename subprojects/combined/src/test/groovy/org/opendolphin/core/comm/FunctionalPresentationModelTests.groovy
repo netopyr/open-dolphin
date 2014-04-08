@@ -159,13 +159,9 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
 
         clientDolphin.send "create", { List<ClientPresentationModel> pms ->
-            println 1
             assert pms.size() == 1
-            println 2
             assert 'attr' == pms.first().getAt("attr").value
-            println 3
             clientDolphin.send "checkNotificationReached", { List<ClientPresentationModel> xxx ->
-                println 4
                 context.assertionsDone() // make sure the assertions are really executed
             }
         }
@@ -209,10 +205,9 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testFetchingAnInitialListOfData() {
         serverDolphin.action "fetchData", { cmd, response ->
             ('a'..'z').each {
-                PresentationModel model = new ServerPresentationModel(it, [
-                    new ServerAttribute('char', it)
-                ])
-                response << CreatePresentationModelCommand.makeFrom(model)
+                DTO dto = new DTO(new Slot('char',it))
+                // sending CreatePresentationModelCommand _without_ adding the pm to the server model store
+                serverDolphin.presentationModel(response, it, null, dto)
             }
         }
         clientDolphin.send "fetchData", { List<ClientPresentationModel> pms ->

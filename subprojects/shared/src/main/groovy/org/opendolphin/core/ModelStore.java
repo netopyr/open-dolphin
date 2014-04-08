@@ -35,7 +35,7 @@ public class ModelStore {
 
     private final Map<String, PresentationModel>        presentationModels;
     private final Map<String, List<PresentationModel>>  modelsPerType;
-    private final Map<Long,   Attribute>                attributesPerId;
+    private final Map<String, Attribute>                attributesPerId;
     private final Map<String, List<Attribute>>          attributesPerQualifier;
 
     private final Set<ModelStoreListenerWrapper> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper>();
@@ -60,7 +60,7 @@ public class ModelStore {
     public ModelStore(ModelStoreConfig config) {
         presentationModels      = new HashMap<String, PresentationModel>        (config.getPmCapacity());
         modelsPerType           = new HashMap<String, List<PresentationModel>>  (config.getTypeCapacity());
-        attributesPerId         = new HashMap<Long, Attribute>                  (config.getAttributeCapacity());
+        attributesPerId         = new HashMap<String, Attribute>                (config.getAttributeCapacity());
         attributesPerQualifier  = new HashMap<String, List<Attribute>>          (config.getQualifierCapacity());
     }
 
@@ -242,7 +242,7 @@ public class ModelStore {
      * @param id the id to search for.
      * @return an attribute whose id matches the parameter, {@code null} otherwise.
      */
-    public Attribute findAttributeById(long id) {
+    public Attribute findAttributeById(String id) {
         return attributesPerId.get(id);
     }
 

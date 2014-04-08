@@ -21,7 +21,7 @@ import org.opendolphin.core.Tag
 class AttributeCreatedNotification extends Command {
 
     String  pmId
-    long    attributeId
+    String  attributeId
     String  propertyName
     def     newValue
     String  qualifier

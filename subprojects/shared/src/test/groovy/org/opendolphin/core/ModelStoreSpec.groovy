@@ -83,7 +83,12 @@ class ModelStoreSpec extends Specification {
     def "add and remove a pm including type and qualifier"() {
         given:
         def modelStore = new ModelStore()
-        def bpm1 = new BasePresentationModel("pm1",[new BaseAttribute('attr','val','quali',Tag.VALUE) {} ])
+        def bpm1 = new BasePresentationModel("pm1",[new BaseAttribute('attr','val','quali',Tag.VALUE) {
+            @Override
+            String getOrigin() {
+                return "B"
+            }
+        } ])
         bpm1.presentationModelType = "type"
 
         when:
@@ -100,7 +105,12 @@ class ModelStoreSpec extends Specification {
     def "try to register an attribute twice"() {
         given:
         def modelStore = new ModelStore()
-        def attr = new BaseAttribute('attr','val','quali',Tag.VALUE) {}
+        def attr = new BaseAttribute('attr','val','quali',Tag.VALUE) {
+            @Override
+            String getOrigin() {
+                return "B"
+            }
+        }
 
         when:
         modelStore.registerAttribute(attr)

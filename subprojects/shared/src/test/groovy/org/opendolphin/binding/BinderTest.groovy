@@ -421,4 +421,9 @@ class SimpleAttribute extends BaseAttribute {
     SimpleAttribute(String propertyName, Object initialValue) {
         super(propertyName, initialValue)
     }
+
+    @Override
+    String getOrigin() {
+        return "S"
+    }
 }

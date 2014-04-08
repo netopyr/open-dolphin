@@ -5,7 +5,7 @@ export module dolphin {
 
         className:string;
 
-        constructor(public attributeId:number) {
+        constructor(public attributeId:string) {
             super();
             this.id = 'BaseValueChanged';
             this.className = "org.opendolphin.core.comm.BaseValueChangedCommand";

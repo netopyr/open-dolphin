@@ -36,7 +36,7 @@ public class JsonCodecTest extends GroovyTestCase {
         def codec = new JsonCodec()
         def commands = []
         count.times{
-            commands << new AttributeCreatedNotification(pmId: it, attributeId: it*count, propertyName: "prop$it", newValue: "value$it", qualifier: null)
+            commands << new AttributeCreatedNotification(pmId: it, attributeId: "${it*count}C", propertyName: "prop$it", newValue: "value$it", qualifier: null)
         }
         def coded = codec.encode(commands)
         def decoded = codec.decode(coded)

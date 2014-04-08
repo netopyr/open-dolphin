@@ -12,7 +12,7 @@ export module dolphin {
     export class ClientAttribute {
         private static SUPPORTED_VALUE_TYPES:string[] = ["string", "number", "boolean"];
         static clientAttributeInstanceCount : number = 0;
-        id                          : number;
+        id                          : string;
         private value               : any;
         private dirty               : boolean = false;
         private baseValue           : any;
@@ -24,7 +24,7 @@ export module dolphin {
         private baseValueChangeBus  : bus.dolphin.EventBus<ValueChangedEvent>;
 
         constructor(public propertyName:string, qualifier:string, value:any, public tag:string = tags.dolphin.Tag.value()) {
-            this.id = ClientAttribute.clientAttributeInstanceCount++;
+            this.id = "" + (ClientAttribute.clientAttributeInstanceCount++) + "C";
             this.valueChangeBus = new bus.dolphin.EventBus();
             this.qualifierChangeBus = new bus.dolphin.EventBus();
             this.dirtyValueChangeBus = new bus.dolphin.EventBus();

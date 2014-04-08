@@ -180,6 +180,10 @@ public class BinderJavaTest {
             super(propertyName);
         }
 
+        @Override
+        public String getOrigin() {
+            return "T";
+        }
     }
 }
 

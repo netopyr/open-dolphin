@@ -2,6 +2,7 @@ package org.opendolphin.demo
 
 import groovyx.gpars.agent.Agent
 import groovyx.gpars.dataflow.DataflowQueue
+import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.NamedCommand
@@ -15,6 +16,8 @@ import org.opendolphin.core.server.action.DolphinServerAction
 import org.opendolphin.core.server.comm.ActionRegistry
 import org.opendolphin.core.server.comm.CommandHandler
 
+import java.beans.PropertyChangeEvent
+import java.beans.PropertyChangeListener
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -59,7 +62,7 @@ public class ChatterActions extends DolphinServerAction {
             if (posts.size() > 10) posts.remove(0)
         }
         chatterBus.publish(chatQueue, [type: "new", dto: currentPost])
-        presentationModel(pmId, TYPE_POST, currentPost)
+        getServerDolphin().presentationModel(pmId, TYPE_POST, currentPost)
         response.add new SwitchPresentationModelCommand(pmId: PM_ID_INPUT, sourcePmId: pmId)
     }
 
@@ -76,12 +79,25 @@ public class ChatterActions extends DolphinServerAction {
 
         actionRegistry.register(CMD_INIT, new CommandHandler<Command>() {
             public void handleCommand(Command command, List<Command> response) {
+                userId = count.getAndIncrement()
                 // display the old conversation that happened before we joined
                 history.sendAndWait { List<DTO> posts ->
-                    for(post in posts) presentationModel(null, TYPE_POST, post)
+                    for(post in posts) {
+                        // either let the client create the pm id or make sure we create a unique one
+                        getServerDolphin().presentationModel( "${userId}-${postCount++}", TYPE_POST, post)
+                    }
                 }
+
+                // at this point, the input pm must be known and we can attach PCLs
+                for(attribute in getServerDolphin().getAt(PM_ID_INPUT).attributes) {
+                    attribute.addPropertyChangeListener("value", new PropertyChangeListener() {
+                        @Override void propertyChange(PropertyChangeEvent evt) {
+                            validateAndPromoteValueChange((ServerAttribute) evt.source)
+                        }
+                    })
+                }
+
                 // we start with an initial open post
-                userId = count.getAndIncrement()
                 newPost("User-${userId} (please change)", response)
             }
         })
@@ -96,25 +112,9 @@ public class ChatterActions extends DolphinServerAction {
             }
         })
 
-        actionRegistry.register(ValueChangedCommand, new CommandHandler<ValueChangedCommand>() {
-            public void handleCommand(ValueChangedCommand command, List<Command> response) {
-                def attr = getServerDolphin().findAttributeById(command.attributeId)
-                if (attr && attr.presentationModel.id == PM_ID_INPUT && attr.qualifier) {
-                    String toCheck = attr.value
-                    String replaced = toCheck.replaceAll(/<(\/?\w)/, /&lt;\1/)
-                    if (toCheck == replaced) {
-                        updateHistory(attr)
-                        chatterBus.publish(chatQueue, [type: "change", qualifier: attr.qualifier, value: attr.value])
-                    } else {
-                        attr.value = replaced
-                    }
-                }
-            }
-        })
-
         actionRegistry.register(CMD_POST, new CommandHandler<Command>() {
             public void handleCommand(Command command, List<Command> response) {
-                def name = getServerDolphin().getAt(PM_ID_INPUT).getAt(ATTR_NAME).value
+                String name = getServerDolphin().getAt(PM_ID_INPUT).getAt(ATTR_NAME).value
                 newPost(name, response)
             }
         })
@@ -123,7 +123,8 @@ public class ChatterActions extends DolphinServerAction {
             Map post = chatQueue.getVal(60, TimeUnit.SECONDS)    // return all values
             while (null != post) {
                 if (post.type == "new") {
-                    presentationModel(null, TYPE_POST, post.dto)
+                    // either let the client create the pm id or make sure we create a unique one
+                    getServerDolphin().presentationModel("${userId}-${postCount++}", TYPE_POST, post.dto)
                 }
                 if (post.type == "change") {
                     def attributes = getServerDolphin().findAllAttributesByQualifier(post.qualifier)
@@ -136,6 +137,17 @@ public class ChatterActions extends DolphinServerAction {
             return response
         }
 
+    }
+
+    protected validateAndPromoteValueChange(ServerAttribute attr) {
+        String toCheck = attr.value
+        String replaced = toCheck.replaceAll(/<(\/?\w)/, /&lt;\1/)
+        if (toCheck == replaced) {
+            updateHistory(attr)
+            chatterBus.publish(chatQueue, [type: "change", qualifier: attr.qualifier, value: attr.value])
+        } else {
+            attr.value = replaced
+        }
     }
 }
 
