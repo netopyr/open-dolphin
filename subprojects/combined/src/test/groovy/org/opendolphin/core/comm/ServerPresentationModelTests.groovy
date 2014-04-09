@@ -17,6 +17,8 @@
 package org.opendolphin.core.comm
 
 import groovyx.gpars.dataflow.DataflowQueue
+import org.opendolphin.LogConfig
+import org.opendolphin.core.ModelStoreConfig
 import org.opendolphin.core.ModelStoreEvent
 import org.opendolphin.core.ModelStoreListener
 import org.opendolphin.core.client.ClientDolphin
@@ -42,12 +44,22 @@ class ServerPresentationModelTests extends GroovyTestCase {
         context = new TestInMemoryConfig()
         serverDolphin = context.serverDolphin
         clientDolphin = context.clientDolphin
-//        LogConfig.noLogs()
+        LogConfig.noLogs()
     }
 
     @Override
     protected void tearDown() {
         assert context.done.await(2, TimeUnit.SECONDS)
+    }
+
+    void testServerModelStoreAcceptsConfig() {
+        new ServerModelStore(new ModelStoreConfig())
+    }
+
+    void testServerPresentationModelRejectsAutoId() {
+        shouldFail IllegalArgumentException, {
+            new ServerPresentationModel("1${ServerPresentationModel.AUTO_ID_SUFFIX}", [], new ServerModelStore())
+        }
     }
 
     void testSecondServerActionCanRelyOnAttributeValueChange() {
@@ -164,6 +176,7 @@ class ServerPresentationModelTests extends GroovyTestCase {
             assert pm.dirty
             pm.rebase()
             assert ! pm.dirty
+            ServerDolphin.rebase(null, (ServerAttribute) null) // throws no exception but logs and returns
         }
 
         serverDolphin.action "assertNewPristine", { cmd, response ->
