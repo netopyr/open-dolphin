@@ -39,6 +39,7 @@ class CreatePresentationModelAction extends DolphinServerAction {
     private static void createPresentationModel(CreatePresentationModelCommand command, ServerDolphin serverDolphin) {
         if (command.pmId.endsWith("-AUTO-SRV")) { // todo: make constant, cover in tests
             log.info("Cannot create PM '$command.pmId' with forbidden suffix. Create PM ignored.")
+            return
         }
         List<ServerAttribute> attributes = new LinkedList()
         for (Map<String, Object> attr in command.attributes) {

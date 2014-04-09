@@ -16,9 +16,14 @@
 
 package org.opendolphin.core.comm
 
+import groovyx.gpars.dataflow.DataflowQueue
 import org.opendolphin.LogConfig
+import org.opendolphin.core.ModelStoreEvent
+import org.opendolphin.core.ModelStoreListener
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.server.*
+import org.opendolphin.core.server.action.DolphinServerAction
+import org.opendolphin.core.server.comm.ActionRegistry
 
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -233,7 +238,54 @@ class ServerPresentationModelTests extends GroovyTestCase {
 
     }
 
+    void testServerSideModelStoreListener() {
+
+        DataflowQueue<CreatePresentationModelCommand> receivedCommands = new DataflowQueue<>()
+        DataflowQueue<ModelStoreEvent> receivedEvents   = new DataflowQueue<>()
+
+        serverDolphin.action "registerMSL", { cmd, response ->
+            serverDolphin.addModelStoreListener(new ModelStoreListener() {
+                @Override void modelStoreChanged(ModelStoreEvent event) {
+                    receivedEvents << event
+                }
+            })
+        }
+
+        serverDolphin.register(new DolphinServerAction() {
+            @Override
+            void registerIn(ActionRegistry registry) {
+                registry.register(CreatePresentationModelCommand) { cmd, resp ->
+                    receivedCommands << cmd
+                }
+            }
+        })
+
+        serverDolphin.action "create", { cmd, response ->
+            def dto = new DTO(new Slot("att1", 1))
+            serverDolphin.presentationModel("server-side-with-id", null, dto)
+            // will lead to log: [INFO] There already is a PM with id server-side-with-id. Create PM ignored.
+            serverDolphin.presentationModel(null, "server-side-without-id", dto)
+            // will lead to log: [INFO] Cannot create PM '0-AUTO-SRV' with forbidden suffix. Create PM ignored.
+            // at this point, the MSL has been triggered
+        }
+
+        clientDolphin.send "registerMSL"
+
+        clientDolphin.presentationModel("client-side-with-id", null, attr1:1)
+
+        clientDolphin.send "create", {
+            assert receivedCommands.val.pmId == "client-side-with-id"
+            assert receivedCommands.val.pmId == "server-side-with-id"
+            assert receivedCommands.val.pmId == "0-AUTO-SRV"
+            assert receivedEvents.val.presentationModel.id == "client-side-with-id"
+            assert receivedEvents.val.presentationModel.id == "server-side-with-id"
+            assert receivedEvents.val.presentationModel.id == "0-AUTO-SRV"
+            context.assertionsDone()
+        }
+
+    }
+
     // feature list
-    // PM:  delete, deleteAllOfType, switch/apply, pcl, modelStoreListener
+    // PM:  delete, deleteAllOfType, switch/apply,
 
 }
