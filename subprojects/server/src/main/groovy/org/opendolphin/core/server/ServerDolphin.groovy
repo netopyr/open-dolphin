@@ -157,6 +157,16 @@ class ServerDolphin extends Dolphin {
         }
     }
 
+    /** Convenience method to let Dolphin remove all presentation models of a given type directly on the server and notify the client.*/
+    void removeAllPresentationModelsOfType(String type) {
+        // todo: [REF] duplicated with DeleteAllPresentationModelsOfTypeAction, could go into ModelStore
+        List<ServerPresentationModel> models = new LinkedList( findAllPresentationModelsByType(type)) // work on a copy
+        for (ServerPresentationModel model in models ){
+            serverModelStore.remove(model) // go through the model store to avoid single commands being sent to the client
+        }
+        ServerDolphin.deleteAllPresentationModelsOfType(serverModelStore.currentResponse, type)
+    }
+
     /** Convenience method to let Dolphin delete a presentation model on the client side */
     static void delete(List<Command> response, ServerPresentationModel pm){
         if (null == pm) {
@@ -172,7 +182,7 @@ class ServerDolphin extends Dolphin {
         response << new DeletePresentationModelCommand(pmId: pmId)
     }
 
-    /** Convenience method to let Dolphin delete all presentation models of a given type */
+    /** Convenience method to let Dolphin delete all presentation models of a given type on the client side */
     static void deleteAllPresentationModelsOfType(List<Command> response, String pmType){
         if (null == response || isBlank(pmType)) return
         response << new DeleteAllPresentationModelsOfTypeCommand(pmType: pmType)

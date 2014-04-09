@@ -16,17 +16,17 @@
 
 package org.opendolphin.core.server.action
 
-import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.comm.DeletedAllPresentationModelsOfTypeNotification
+import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.comm.ActionRegistry
 
 class DeletedAllPresentationModelsOfTypeAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(DeletedAllPresentationModelsOfTypeNotification) { DeletedAllPresentationModelsOfTypeNotification command, response ->
-            List models = new LinkedList( serverDolphin.findAllPresentationModelsByType(command.pmType))
-            for (PresentationModel model in models ){
-                serverDolphin.remove(model)
+            List<ServerPresentationModel> models = new LinkedList( serverDolphin.findAllPresentationModelsByType(command.pmType)) // work on a copy
+            for (ServerPresentationModel model in models ){
+                serverDolphin.modelStore.remove(model) // go through the model store to avoid commands being sent to the client
             }
         }
     }

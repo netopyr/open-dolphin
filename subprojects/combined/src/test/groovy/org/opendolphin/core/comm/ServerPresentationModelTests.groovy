@@ -17,7 +17,6 @@
 package org.opendolphin.core.comm
 
 import groovyx.gpars.dataflow.DataflowQueue
-import org.opendolphin.LogConfig
 import org.opendolphin.core.ModelStoreEvent
 import org.opendolphin.core.ModelStoreListener
 import org.opendolphin.core.client.ClientDolphin
@@ -304,7 +303,29 @@ class ServerPresentationModelTests extends GroovyTestCase {
 
     }
 
+    void testServerSideAllPmRemoval() {
+
+        clientDolphin.presentationModel(null, "client-side-type", attr1:1)
+        clientDolphin.presentationModel(null, "client-side-type", attr1:1)
+
+        serverDolphin.action "remove", { cmd, response ->
+            assert serverDolphin.findAllPresentationModelsByType("client-side-type").size() == 2
+            serverDolphin.removeAllPresentationModelsOfType("client-side-type")
+            // immediately removed on server
+            assert serverDolphin.findAllPresentationModelsByType("client-side-type").size() == 0
+        }
+
+        assert clientDolphin.findAllPresentationModelsByType("client-side-type").size() == 2
+
+        clientDolphin.send "remove", {
+            // removed from client before callback
+            assert clientDolphin.findAllPresentationModelsByType("client-side-type").size() == 0
+            context.assertionsDone()
+        }
+
+    }
+
     // feature list
-    // PM:  delete, deleteAllOfType, switch/apply,
+    // PM:  switch/apply,
 
 }
