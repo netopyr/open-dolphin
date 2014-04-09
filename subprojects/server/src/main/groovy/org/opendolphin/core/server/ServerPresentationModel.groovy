@@ -25,7 +25,7 @@ import org.opendolphin.core.comm.SwitchPresentationModelCommand
 @CompileStatic
 class ServerPresentationModel extends BasePresentationModel {
 
-    private static final String AUTO_ID_SUFFIX = "-AUTO-SRV"
+    public static final String AUTO_ID_SUFFIX = "-AUTO-SRV"
 
     public ServerModelStore modelStore
 

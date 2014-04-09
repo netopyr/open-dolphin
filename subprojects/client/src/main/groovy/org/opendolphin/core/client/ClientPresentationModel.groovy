@@ -23,7 +23,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ClientPresentationModel extends BasePresentationModel {
 
-    private static final String AUTO_ID_SUFFIX = "-AUTO-CLT"
+    public  static final String AUTO_ID_SUFFIX = "-AUTO-CLT"
     boolean clientSideOnly = false
     private static long instanceCount = 0
 

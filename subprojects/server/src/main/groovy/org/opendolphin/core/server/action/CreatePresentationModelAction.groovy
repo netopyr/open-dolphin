@@ -37,7 +37,7 @@ class CreatePresentationModelAction extends DolphinServerAction {
     }
 
     private static void createPresentationModel(CreatePresentationModelCommand command, ServerDolphin serverDolphin) {
-        if (command.pmId.endsWith("-AUTO-SRV")) { // todo: make constant, cover in tests
+        if (command.pmId.endsWith(ServerPresentationModel.AUTO_ID_SUFFIX)) {
             log.info("Cannot create PM '$command.pmId' with forbidden suffix. Create PM ignored.")
             return
         }
