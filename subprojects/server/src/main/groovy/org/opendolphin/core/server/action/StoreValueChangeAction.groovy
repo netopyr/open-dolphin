@@ -27,7 +27,6 @@ class StoreValueChangeAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {
         registry.register(ValueChangedCommand) { ValueChangedCommand command, response ->
-            println "SVCA: model store $serverDolphin.serverModelStore"
             ServerAttribute attribute = serverDolphin.findAttributeById(command.attributeId)
             if (attribute) {
                 attribute.silently {
@@ -35,8 +34,7 @@ class StoreValueChangeAction extends DolphinServerAction {
                 }
             } else {
                 log.severe("cannot find attribute with id '$command.attributeId' to change value from '$command.oldValue' to '$command.newValue'. " +
-                           "Known PMs are: "+ serverDolphin.serverModelStore.listPresentationModels() )
-//                           "Known attribute ids are: "+ serverDolphin.serverModelStore.listPresentationModels()*.attributes*.id )
+                           "Known attribute ids are: "+ serverDolphin.serverModelStore.listPresentationModels()*.attributes*.id )
             }
         }
     }

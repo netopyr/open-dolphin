@@ -17,8 +17,10 @@
 package org.opendolphin.core.server
 
 import org.opendolphin.core.BasePresentationModel
+import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import groovy.transform.CompileStatic
+import org.opendolphin.core.comm.SwitchPresentationModelCommand
 
 @CompileStatic
 class ServerPresentationModel extends BasePresentationModel {
@@ -43,8 +45,13 @@ class ServerPresentationModel extends BasePresentationModel {
         return "$newId"+AUTO_ID_SUFFIX
     }
 
+    @Override
+    void syncWith(PresentationModel sourcePresentationModel) {
+        super.syncWith(sourcePresentationModel) // this may already trigger some value changes and metadata changes
+        modelStore.currentResponse << new SwitchPresentationModelCommand(sourcePmId: sourcePresentationModel.id, pmId: id)
+    }
 
-    // override with server specific return values to avoid casting in client code
+// override with server specific return values to avoid casting in client code
 
     ServerAttribute getAt(String propertyName) {
         return (ServerAttribute) super.getAt(propertyName)

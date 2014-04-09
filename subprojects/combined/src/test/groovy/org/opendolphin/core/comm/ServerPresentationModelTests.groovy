@@ -322,10 +322,38 @@ class ServerPresentationModelTests extends GroovyTestCase {
             assert clientDolphin.findAllPresentationModelsByType("client-side-type").size() == 0
             context.assertionsDone()
         }
-
     }
 
-    // feature list
-    // PM:  switch/apply,
+    void testServerSideSwitch() {
+
+        def source = clientDolphin.presentationModel("source", null, attr1:"sourceValue")
+        def target = clientDolphin.presentationModel("target", null, attr1:"targetValue")
+
+        source.getAt("attr1").qualifier = "source.qualifier"
+
+        assert source.getAt("attr1").value     != target.getAt("attr1").value
+        assert source.getAt("attr1").baseValue != target.getAt("attr1").baseValue
+        assert source.getAt("attr1").qualifier != target.getAt("attr1").qualifier
+
+        serverDolphin.action "switch", { cmd, response ->
+            def sourcePM = serverDolphin.getAt("source")
+            def targetPM = serverDolphin.getAt("target")
+            targetPM.syncWith(sourcePM)
+            // immediately applied on server
+            assert targetPM.getAt("attr1").value     == sourcePM.getAt("attr1").value
+            assert targetPM.getAt("attr1").baseValue == sourcePM.getAt("attr1").baseValue
+            assert targetPM.getAt("attr1").qualifier == sourcePM.getAt("attr1").qualifier
+        }
+
+        clientDolphin.send "switch", {
+            // synced on client before callback
+            assert source.getAt("attr1").value     == target.getAt("attr1").value
+            assert source.getAt("attr1").baseValue == target.getAt("attr1").baseValue
+            assert source.getAt("attr1").qualifier == target.getAt("attr1").qualifier
+            context.assertionsDone()
+        }
+    }
+
+    // manual changes to baseValue or qualifier ?
 
 }
