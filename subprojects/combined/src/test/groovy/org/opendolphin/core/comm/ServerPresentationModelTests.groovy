@@ -54,12 +54,14 @@ class ServerPresentationModelTests extends GroovyTestCase {
 
     void testServerModelStoreAcceptsConfig() {
         new ServerModelStore(new ModelStoreConfig())
+        context.assertionsDone()
     }
 
     void testServerPresentationModelRejectsAutoId() {
         shouldFail IllegalArgumentException, {
             new ServerPresentationModel("1${ServerPresentationModel.AUTO_ID_SUFFIX}", [], new ServerModelStore())
         }
+        context.assertionsDone()
     }
 
     void testSecondServerActionCanRelyOnAttributeValueChange() {
