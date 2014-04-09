@@ -3,6 +3,8 @@ package org.opendolphin.demo
 import groovyx.gpars.agent.Agent
 import groovyx.gpars.dataflow.DataflowQueue
 import org.opendolphin.core.BaseAttribute
+import org.opendolphin.core.ModelStoreEvent
+import org.opendolphin.core.ModelStoreListener
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.NamedCommand
@@ -11,10 +13,12 @@ import org.opendolphin.core.comm.ValueChangedCommand
 import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerAttribute
+import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.action.DolphinServerAction
 import org.opendolphin.core.server.comm.ActionRegistry
 import org.opendolphin.core.server.comm.CommandHandler
+import org.opendolphin.demo.crud.PositionConstants
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
@@ -75,6 +79,17 @@ public class ChatterActions extends DolphinServerAction {
         }
     }
 
+    protected validateAndPromoteValueChange(ServerAttribute attr) {
+        String toCheck = attr.value
+        String replaced = toCheck.replaceAll(/<(\/?\w)/, /&lt;\1/)
+        if (toCheck == replaced) {
+            updateHistory(attr)
+            chatterBus.publish(chatQueue, [type: "change", qualifier: attr.qualifier, value: attr.value])
+        } else {
+            attr.value = replaced
+        }
+    }
+
     public void registerIn(ActionRegistry actionRegistry) {
 
         actionRegistry.register(CMD_INIT, new CommandHandler<Command>() {
@@ -99,16 +114,16 @@ public class ChatterActions extends DolphinServerAction {
 
                 // we start with an initial open post
                 newPost("User-${userId} (please change)", response)
-            }
-        })
 
-        actionRegistry.register(CreatePresentationModelCommand, new CommandHandler<CreatePresentationModelCommand>() {
-            public void handleCommand(CreatePresentationModelCommand command, List<Command> response) {
                 // make sure the collection does not grow overly long
-                def posts = getServerDolphin().findAllPresentationModelsByType(TYPE_POST)
-                if (posts.size() > 10) {
-                   getServerDolphin().delete response, posts.first()
+                getServerDolphin().addModelStoreListener TYPE_POST, { ModelStoreEvent event ->
+                    if (event.type != ModelStoreEvent.Type.ADDED) return;
+                    def posts = getServerDolphin().findAllPresentationModelsByType(TYPE_POST)
+                    if (posts.size() > 10) {
+                       getServerDolphin().remove(posts.first())
+                    }
                 }
+
             }
         })
 
@@ -139,15 +154,5 @@ public class ChatterActions extends DolphinServerAction {
 
     }
 
-    protected validateAndPromoteValueChange(ServerAttribute attr) {
-        String toCheck = attr.value
-        String replaced = toCheck.replaceAll(/<(\/?\w)/, /&lt;\1/)
-        if (toCheck == replaced) {
-            updateHistory(attr)
-            chatterBus.publish(chatQueue, [type: "change", qualifier: attr.qualifier, value: attr.value])
-        } else {
-            attr.value = replaced
-        }
-    }
 }
 

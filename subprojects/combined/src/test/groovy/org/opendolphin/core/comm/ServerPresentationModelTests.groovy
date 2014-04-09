@@ -282,6 +282,25 @@ class ServerPresentationModelTests extends GroovyTestCase {
             assert receivedEvents.val.presentationModel.id == "0-AUTO-SRV"
             context.assertionsDone()
         }
+    }
+
+    void testServerSidePmRemoval() {
+
+        clientDolphin.presentationModel("client-side-with-id", null, attr1:1)
+
+        serverDolphin.action "remove", { cmd, response ->
+            def pm = serverDolphin.getAt("client-side-with-id")
+            assert pm
+            serverDolphin.remove(pm)
+            assert null == serverDolphin.getAt("client-side-with-id") // immediately removed on server
+        }
+
+        assert clientDolphin.getAt("client-side-with-id")
+
+        clientDolphin.send "remove", {
+            assert null == clientDolphin.getAt("client-side-with-id") // removed from client before callback
+            context.assertionsDone()
+        }
 
     }
 

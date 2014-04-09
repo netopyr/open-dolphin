@@ -21,6 +21,7 @@ import groovy.util.logging.Log
 import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.Dolphin
 import org.opendolphin.core.ModelStore
+import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.BaseValueChangedCommand
 import org.opendolphin.core.comm.Command
@@ -148,7 +149,15 @@ class ServerDolphin extends Dolphin {
         response << new BaseValueChangedCommand(attributeId: attributeId)
     }
 
-    /** Convenience method to let Dolphin delete a presentation model */
+    /** Convenience method to let Dolphin remove a presentation model directly on the server and notify the client.*/
+    boolean remove(ServerPresentationModel pm){
+        boolean deleted = serverModelStore.remove(pm)
+        if (deleted) {
+            ServerDolphin.delete(serverModelStore.currentResponse, pm)
+        }
+    }
+
+    /** Convenience method to let Dolphin delete a presentation model on the client side */
     static void delete(List<Command> response, ServerPresentationModel pm){
         if (null == pm) {
             log.severe("Cannot delete null presentation model")
@@ -157,7 +166,7 @@ class ServerDolphin extends Dolphin {
         delete(response, pm.id)
     }
 
-    /** Convenience method to let Dolphin delete a presentation model */
+    /** Convenience method to let Dolphin delete a presentation model on the client side */
     static void delete(List<Command> response, String pmId){
         if (null == response || isBlank(pmId)) return
         response << new DeletePresentationModelCommand(pmId: pmId)
@@ -232,4 +241,8 @@ class ServerDolphin extends Dolphin {
         return (ServerAttribute) super.findAttributeById(id);
     }
 
+    @Override
+    List<ServerPresentationModel> findAllPresentationModelsByType(String presentationModelType) {
+        return (List<ServerPresentationModel>) super.findAllPresentationModelsByType(presentationModelType)
+    }
 }
