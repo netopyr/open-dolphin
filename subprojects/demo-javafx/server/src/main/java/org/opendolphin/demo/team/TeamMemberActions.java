@@ -1,6 +1,10 @@
 package org.opendolphin.demo.team;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,11 +56,14 @@ public class TeamMemberActions extends DolphinServerAction {
                     currentMembers.sendAndWait(new Closure(this) {
                         void doCall(List<DTO> members) {
                             for (DTO member : members) {
-                                presentationModel(null, TYPE_TEAM_MEMBER, member);
+                                getServerDolphin().presentationModel(null, TYPE_TEAM_MEMBER, member);
                             }
                         }
                     });
                 } catch (InterruptedException e) { /* do nothing */ }
+
+                registerOnValueChange(getServerDolphin().getAt(PM_ID_MOLD));
+
                 // we do not necessarily select at start
             }
         });
@@ -79,7 +86,6 @@ public class TeamMemberActions extends DolphinServerAction {
                     currentMembers.sendAndWait(new Closure(this) {
                         void doCall(List<DTO> members) {
                             members.add(dto);
-                            return;
                         }
                     });
                 } catch (InterruptedException e) { /* do nothing */ }
@@ -87,10 +93,11 @@ public class TeamMemberActions extends DolphinServerAction {
                 teamBus.publish(memberQueue, new TeamEvent("new", dto));
                 // create the pm
                 String addedId = uniqueId(memberId);
-                presentationModel(addedId, TYPE_TEAM_MEMBER, dto);
+                getServerDolphin().presentationModel(addedId, TYPE_TEAM_MEMBER, dto); // create on server
+
                 // it is a server-side decision that after creating a new team member,
                 // it should be immediately selected
-                changeValue(findSelectedPmAttribute(), addedId);
+                changeValue(findSelectedPmAttribute(), addedId); // let client do this for consistency
             }
         });
 
@@ -113,20 +120,6 @@ public class TeamMemberActions extends DolphinServerAction {
             }
         });
 
-        // whenever a value changes, we must publish it to others and update the shared state
-        actionRegistry.register(ValueChangedCommand.class, new CommandHandler<ValueChangedCommand>() {
-            @Override
-            public void handleCommand(ValueChangedCommand command, List<Command> response) {
-                Attribute attr = getServerDolphin().findAttributeById(command.getAttributeId());
-                if (attr == null ||
-                    attr.getQualifier() == null ||
-                    !TYPE_TEAM_MEMBER.equals(attr.getPresentationModel().getPresentationModelType()))
-                    return;
-                boolean updated = updateHistory(attr);
-                if (updated) teamBus.publish(memberQueue, new TeamEvent("change", attr.getQualifier(), attr.getValue()));
-            }
-        });
-
         actionRegistry.register(CMD_SAVE, new CommandHandler<NamedCommand>() {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
@@ -145,7 +138,7 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 try {
-                    processEventsFromQueue(response, 60, TimeUnit.SECONDS);
+                    processEventsFromQueue(60, TimeUnit.SECONDS);
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         });
@@ -154,34 +147,60 @@ public class TeamMemberActions extends DolphinServerAction {
 
     }
 
-    private void processEventsFromQueue(List<Command> response, int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
+    private boolean silent = false;
+    final PropertyChangeListener proliferator = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (silent) return;
+            ServerAttribute attribute = (ServerAttribute) evt.getSource();
+            boolean updated = updateHistory(attribute);
+            if (updated)
+                teamBus.publish(memberQueue, new TeamEvent("change", attribute.getQualifier(), attribute.getValue()));
+        }
+    };
+
+    private void registerOnValueChange(ServerPresentationModel member) {
+        for (final Attribute attribute : member.getAttributes()) {
+            attribute.addPropertyChangeListener("value", proliferator);
+        }
+    }
+
+    // inside this method do all manipulations directly on the server side since it has nothing to do
+    // with user interactions and is thus safe to process in a more efficient manner.
+    private void processEventsFromQueue(int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
         TeamEvent event = memberQueue.getVal(timeoutValue, timeoutUnit);
         while (null != event) {
             if ("new".equals(event.type)) { // todo : make enum
-                presentationModel(null, TYPE_TEAM_MEMBER, event.dto);
+                getServerDolphin().presentationModel(null, TYPE_TEAM_MEMBER, event.dto); // create on server side
             }
             if ("change".equals(event.type)) {
-                List<Attribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
-                for (Attribute attribute : attributes) {
+                silent = true; // do not issue additional posts on the bus from value changes that come from the bus
+                List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
+                for (ServerAttribute attribute : attributes) {
                     PresentationModel pm = attribute.getPresentationModel();
                     if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
-                        changeValue((ServerAttribute) attribute, event.value);
+                        attribute.setValue(event.value);
                     }
                 }
+                silent = false;
             }
             if ("rebase".equals(event.type)) {
-                List<Attribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
-                for (Attribute attribute : attributes) {
-                    response.add(new BaseValueChangedCommand(attribute.getId()));
+                List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
+                for (ServerAttribute attribute : attributes) {
+                    attribute.rebase();
                 }
             }
             if ("remove".equals(event.type)) {
-                List<Attribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
-                for (Attribute attribute : attributes) {
-                    PresentationModel pm = attribute.getPresentationModel();
+                List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
+                Set<ServerPresentationModel> toDelete = new HashSet<ServerPresentationModel>();
+                for (ServerAttribute attribute : attributes) {
+                    ServerPresentationModel pm = attribute.getPresentationModel();
                     if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
-                        response.add(new DeletePresentationModelCommand(pm.getId()));
+                        toDelete.add(pm);
                     }
+                }
+                for (ServerPresentationModel pm : toDelete) {
+                    getServerDolphin().remove(pm);
                 }
             }
             event = memberQueue.getVal(20, TimeUnit.MILLISECONDS);
@@ -208,7 +227,7 @@ public class TeamMemberActions extends DolphinServerAction {
                 void doCall(List<DTO> members) {
                     Slot slot = findSlotByQualifier(members, attr.getQualifier());
                     if (null == slot) return;
-                    if (! slot.getValue().equals(attr.getValue())) {
+                    if (!slot.getValue().equals(attr.getValue())) {
                         slot.setValue(attr.getValue());
                         updated.set(true);
                     }
@@ -256,6 +275,7 @@ public class TeamMemberActions extends DolphinServerAction {
     private ServerAttribute findSelectedPmAttribute() {
         return getServerDolphin().getAt(PM_ID_SELECTED).getAt(ATT_SEL_PM_ID);
     }
+
 }
 
 

@@ -16,6 +16,7 @@
 
 package org.opendolphin.core.server
 
+import org.opendolphin.core.Attribute
 import org.opendolphin.core.BasePresentationModel
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag

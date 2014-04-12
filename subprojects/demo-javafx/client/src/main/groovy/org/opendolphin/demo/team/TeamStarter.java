@@ -1,7 +1,6 @@
 package org.opendolphin.demo.team;
 
 import javafx.application.Application;
-import org.opendolphin.core.NoModelStore;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientModelStore;
 import org.opendolphin.core.client.comm.BlindCommandBatcher;
@@ -15,12 +14,13 @@ public class TeamStarter {
     public static void main(String[] args) throws Exception {
 
         final String servletUrl = "http://localhost:8080/dolphin-grails/dolphin/";
+//        final String servletUrl = "https://klondike.canoo.com/dolphin-grails/dolphin/";
 
         ClientDolphin clientDolphin = new ClientDolphin();
         clientDolphin.setClientModelStore(new ClientModelStore(clientDolphin));
         BlindCommandBatcher batcher = new BlindCommandBatcher();
         batcher.setMergeValueChanges(true);
-        batcher.setDeferMillis(42);
+        batcher.setDeferMillis(100);
         HttpClientConnector connector = new HttpClientConnector(clientDolphin, batcher, servletUrl);
         final JsonCodec codec = new JsonCodec();
         connector.setCodec(codec);

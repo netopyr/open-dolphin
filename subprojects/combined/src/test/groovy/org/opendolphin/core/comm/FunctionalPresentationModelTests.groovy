@@ -511,6 +511,45 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     }
 
+    void testCopyPresentationModelOnClient() {
+
+        ClientAttribute ca = new ClientAttribute('attr1', true, 'qualifier', Tag.ENABLED)
+        ca.value = false
+        def pm1 = clientDolphin.presentationModel("PM1", "type", ca)
+        clientDolphin.addAttributeToModel(pm1, ca)
+        def pm2 = clientDolphin.copy(pm1)
+
+        assert pm1.id != pm2.id
+        assert pm1.presentationModelType == pm2.presentationModelType
+        assert pm1.attributes.size()    == pm2.attributes.size()
+        def orig = pm1.getAt('attr1', Tag.ENABLED)
+        def copy = pm2.getAt('attr1', Tag.ENABLED)
+        assert orig.value     == copy.value
+        assert orig.baseValue == copy.baseValue
+        assert orig.qualifier == copy.qualifier
+        assert orig.tag       == copy.tag
+
+        serverDolphin.action('assert') { cmd, response ->
+            def pms = serverDolphin.findAllPresentationModelsByType('type')
+            assert pms.size() == 2
+            def spm1 = pms[0]
+            def spm2 = pms[1]
+            assert spm1.id != spm2.id
+            assert spm1.presentationModelType == spm2.presentationModelType
+            assert spm1.attributes.size()    == spm2.attributes.size()
+            def sorig = spm1.getAt('attr1', Tag.ENABLED)
+            def scopy = spm2.getAt('attr1', Tag.ENABLED)
+            assert sorig.value     == scopy.value
+            assert sorig.baseValue == scopy.baseValue
+            assert sorig.qualifier == scopy.qualifier
+            assert sorig.tag       == scopy.tag
+        }
+
+        clientDolphin.send 'assert', {
+            context.assertionsDone()
+        }
+    }
+
     void testWithNullResponses() {
         clientDolphin.presentationModel('pm', attr: 1)
 

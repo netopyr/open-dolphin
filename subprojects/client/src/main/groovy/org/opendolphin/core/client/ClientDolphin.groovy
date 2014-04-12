@@ -23,6 +23,7 @@ import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.client.comm.OnFinishedHandler
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
 import org.opendolphin.core.comm.AttributeCreatedNotification
+import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.EmptyNotification
 import org.opendolphin.core.comm.NamedCommand
 import org.opendolphin.core.comm.SignalCommand
@@ -152,6 +153,22 @@ public class ClientDolphin extends Dolphin {
                     tag: attribute.tag
             )
         }
+    }
+
+    // todo dk: compare with JS version, todo: same on server
+    protected ClientAttribute copyAttribute(ClientAttribute sourceAttribute) {
+        def result = new ClientAttribute(sourceAttribute.propertyName,sourceAttribute.baseValue, sourceAttribute.qualifier, sourceAttribute.tag)
+        result.value = sourceAttribute.value
+        return result
+    }
+
+    public ClientPresentationModel copy(ClientPresentationModel sourcePM) {
+        def attrs  = sourcePM.attributes.collect{ copyAttribute(it) }
+        def result = new ClientPresentationModel(null, attrs)
+        result.presentationModelType = sourcePM.presentationModelType
+        result.clientSideOnly = sourcePM.clientSideOnly
+        clientModelStore.add(result)
+        return result
     }
 
     public startPushListening(String pushActionName, String releaseActionName) {

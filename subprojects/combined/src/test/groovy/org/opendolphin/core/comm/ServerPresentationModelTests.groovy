@@ -369,6 +369,9 @@ class ServerPresentationModelTests extends GroovyTestCase {
         }
     }
 
+    // todo dk: think about these use cases:
+    // dolphin.copy(pm) on client and server
     // manual changes to baseValue or qualifier ?
+    // creating attributes at runtime and adding them to PMs after creation ? "initAt"
 
 }

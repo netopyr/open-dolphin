@@ -87,13 +87,7 @@ public class TeamApplication extends Application {
             new ClientAttribute(ATT_CONTRACTOR, false),
             new ClientAttribute(ATT_WORKLOAD, 0));
 
-        blankMold = clientDolphin.presentationModel(null, (String) null, // use copy when available
-            new ClientAttribute(ATT_FIRSTNAME, ""),
-            new ClientAttribute(ATT_LASTNAME, ""),
-            new ClientAttribute(ATT_FUNCTION, ""),
-            new ClientAttribute(ATT_AVAILABLE, false),
-            new ClientAttribute(ATT_CONTRACTOR, false),
-            new ClientAttribute(ATT_WORKLOAD, 0));
+        blankMold = clientDolphin.copy(teamMemberMold);
 
         selectedPmId = new ClientAttribute(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
         clientDolphin.presentationModel(PM_ID_SELECTED, (String) null, selectedPmId);

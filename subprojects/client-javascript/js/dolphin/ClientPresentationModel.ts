@@ -27,6 +27,7 @@ export module dolphin {
             this.dirtyValueChangeBus = new bus.dolphin.EventBus();
         }
 
+        // todo dk: align with Java version: move to ClientDolphin and auto-add to model store
         /** a copy constructor for anything but IDs. Per default, copies are client side only, no automatic update applies. */
         copy() {
             var result = new ClientPresentationModel(null, this.presentationModelType);

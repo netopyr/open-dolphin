@@ -18,6 +18,7 @@ package org.opendolphin.core.server
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
+import org.opendolphin.core.Attribute
 import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.Dolphin
 import org.opendolphin.core.ModelStore
@@ -254,5 +255,10 @@ class ServerDolphin extends Dolphin {
     @Override
     List<ServerPresentationModel> findAllPresentationModelsByType(String presentationModelType) {
         return (List<ServerPresentationModel>) super.findAllPresentationModelsByType(presentationModelType)
+    }
+
+    @Override
+    List<ServerAttribute> findAllAttributesByQualifier(String qualifier) {
+        return (List<ServerAttribute>) super.findAllAttributesByQualifier(qualifier)
     }
 }
