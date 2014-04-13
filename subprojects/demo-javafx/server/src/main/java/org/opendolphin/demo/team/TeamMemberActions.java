@@ -62,7 +62,9 @@ public class TeamMemberActions extends DolphinServerAction {
                     });
                 } catch (InterruptedException e) { /* do nothing */ }
 
-                registerOnValueChange(getServerDolphin().getAt(PM_ID_MOLD));
+                final ServerPresentationModel mold = getServerDolphin().getAt(PM_ID_MOLD);
+                if (null == mold) System.out.println("SEVERE: Mold PM must be known before calling CMD_INIT.");
+                registerOnValueChange(mold);
 
                 // we do not necessarily select at start
             }

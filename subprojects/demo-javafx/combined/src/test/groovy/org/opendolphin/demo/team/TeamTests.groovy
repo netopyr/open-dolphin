@@ -7,6 +7,7 @@ import org.opendolphin.core.comm.TestInMemoryConfig
 import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.demo.crud.PortfolioConstants
 import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit
 import static org.opendolphin.demo.team.TeamMemberConstants.ATT_AVAILABLE
 import static org.opendolphin.demo.team.TeamMemberConstants.ATT_CONTRACTOR
 import static org.opendolphin.demo.team.TeamMemberConstants.ATT_FIRSTNAME
+import static org.opendolphin.demo.team.TeamMemberConstants.ATT_FUNCTION
 import static org.opendolphin.demo.team.TeamMemberConstants.ATT_LASTNAME
 import static org.opendolphin.demo.team.TeamMemberConstants.ATT_SEL_PM_ID
 import static org.opendolphin.demo.team.TeamMemberConstants.ATT_WORKLOAD
@@ -21,23 +23,25 @@ import static org.opendolphin.demo.team.TeamMemberConstants.CMD_ADD
 import static org.opendolphin.demo.team.TeamMemberConstants.CMD_INIT
 import static org.opendolphin.demo.team.TeamMemberConstants.ACTION_ON_PUSH
 import static org.opendolphin.demo.team.TeamMemberConstants.CMD_REMOVE
+import static org.opendolphin.demo.team.TeamMemberConstants.PM_ID_MOLD
 import static org.opendolphin.demo.team.TeamMemberConstants.PM_ID_SELECTED
 import static org.opendolphin.demo.team.TeamMemberConstants.TYPE_TEAM_MEMBER
 
 class TeamTests extends Specification {
 
     volatile TestInMemoryConfig app
-    ServerDolphin serverDolphin
     ClientDolphin clientDolphin
     Agent<List<DTO>> teamHistory = new Agent<List<DTO>>(new LinkedList<DTO>())
     EventBus teamBus = new EventBus()
 
     protected TestInMemoryConfig initApp() {
         def result = new TestInMemoryConfig()
-        serverDolphin = result.serverDolphin
-        clientDolphin = result.clientDolphin
-        serverDolphin.register(new TeamMemberActions(teamBus, teamHistory))
-        clientDolphin.presentationModel(PM_ID_SELECTED, null, (ATT_SEL_PM_ID): null)
+        result.serverDolphin.register(new TeamMemberActions(teamBus, teamHistory))
+        result.clientDolphin.presentationModel(PM_ID_SELECTED, null, (ATT_SEL_PM_ID): null)
+        result.clientDolphin.presentationModel(PM_ID_MOLD, null,
+                    (ATT_FIRSTNAME): null,    (ATT_LASTNAME): null,  (ATT_FUNCTION): null,
+                    (ATT_AVAILABLE): false, (ATT_CONTRACTOR): false, (ATT_WORKLOAD): 0)
+        result.syncPoint(1)
         result
     }
 
@@ -45,6 +49,7 @@ class TeamTests extends Specification {
     protected void setup() {
         LogConfig.noLogs()
         app = initApp()
+        clientDolphin = app.clientDolphin
     }
 
     // make sure the tests only count as ok if context.assertionsDone() has been reached
@@ -91,20 +96,25 @@ class TeamTests extends Specification {
         app.sendSynchronously CMD_ADD
         def firstOne = clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).first()
         firstOne[ATT_FIRSTNAME].value = 'changed'
+        app.syncPoint(1)
 
         then: "the transient state is dirty"
         firstOne.isDirty()
 
         when: "connection is lost and we connect with a new session but same history"
-        sleep 100 // this looks silly but there is no good way that we wait for the history being updated
         def secondApp = initApp()
         secondApp.sendSynchronously CMD_INIT
+        // new team member is in the history
         def secondOne = secondApp.clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).first()
 
         then: "we see the no-yet-saved changes and dirtyness as if we had never been away"
-        secondOne[ATT_FIRSTNAME].value == 'changed'
-        secondOne[ATT_FIRSTNAME].isDirty()
-        secondOne.isDirty()
+
+        secondApp.clientDolphin.sync {
+            secondOne != null
+            secondOne[ATT_FIRSTNAME].value == 'changed'
+            secondOne[ATT_FIRSTNAME].isDirty()
+            secondOne.isDirty()
+        }
 
         and: "the selection is not retained (that is on purpose as different apps have different selections)"
         secondApp.clientDolphin[PM_ID_SELECTED][ATT_SEL_PM_ID].value == null
@@ -138,12 +148,16 @@ class TeamTests extends Specification {
         app.sendSynchronously ACTION_ON_PUSH
 
         then: "both see the transient change and the dirtyness"
-        firstOne[ATT_FIRSTNAME].value == 'changed'
-        firstOne[ATT_FIRSTNAME].isDirty()
-        firstOne.isDirty()
-        secondOne[ATT_FIRSTNAME].value == 'changed'
-        secondOne[ATT_FIRSTNAME].isDirty()
-        secondOne.isDirty()
+        clientDolphin.sync {
+            firstOne[ATT_FIRSTNAME].value == 'changed'
+            firstOne[ATT_FIRSTNAME].isDirty()
+            firstOne.isDirty()
+        }
+        secondDolphin.sync {
+            secondOne[ATT_FIRSTNAME].value == 'changed'
+            secondOne[ATT_FIRSTNAME].isDirty()
+            secondOne.isDirty()
+        }
 
         when: "first one is removing the record and second one polls"
         app.sendSynchronously CMD_REMOVE
