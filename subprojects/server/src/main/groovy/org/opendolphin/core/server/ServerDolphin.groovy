@@ -110,7 +110,11 @@ class ServerDolphin extends Dolphin {
      */
     ServerPresentationModel presentationModel(String id, String presentationModelType, DTO dto) {
         List<ServerAttribute> attributes = dto.slots.collect { Slot slot ->
-            new ServerAttribute(slot.propertyName, slot.value, slot.qualifier, slot.tag)
+            ServerAttribute result = new ServerAttribute(slot.propertyName, slot.baseValue, slot.qualifier, slot.tag)
+            result.silently {
+                result.value = slot.value
+            }
+            return result
         }
         ServerPresentationModel model = new ServerPresentationModel(id, attributes, serverModelStore)
         model.presentationModelType = presentationModelType

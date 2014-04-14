@@ -122,10 +122,13 @@ public class TeamApplication extends Application {
                         } else {
                             getStyleClass().removeAll("cell-dirty");
                         }
-                        if (item instanceof String) {
+                        if (attributeName.equals(ATT_FIRSTNAME) ||
+                            attributeName.equals(ATT_LASTNAME) ||
+                            attributeName.equals(ATT_FUNCTION)) {
                             setText(item.toString());
                             return;
                         }
+                        setText(null);
                         // if item is not a string, then we need a graphical representation (node)
                         setAlignment(Pos.CENTER); // all graphics are centered
                         Node candidate = qualifier2graphics.get(attribute.getQualifier());
@@ -138,7 +141,7 @@ public class TeamApplication extends Application {
                         if (item instanceof Boolean) {
                             graphic = makeBoundCircle(pm, attributeName);
                         }
-                        if (item instanceof Number) {
+                        if (item instanceof Number || item instanceof String) { // numbers may come as strings
                             graphic = makeBoundProgressBar(pm, attributeName);
                         }
                         qualifier2graphics.put(attribute.getQualifier(), graphic);

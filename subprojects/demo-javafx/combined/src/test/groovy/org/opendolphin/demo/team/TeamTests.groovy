@@ -110,10 +110,10 @@ class TeamTests extends Specification {
         then: "we see the no-yet-saved changes and dirtyness as if we had never been away"
 
         secondApp.clientDolphin.sync {
-            secondOne != null
-            secondOne[ATT_FIRSTNAME].value == 'changed'
-            secondOne[ATT_FIRSTNAME].isDirty()
-            secondOne.isDirty()
+            assert secondOne != null
+            assert secondOne[ATT_FIRSTNAME].value == 'changed'
+            assert secondOne[ATT_FIRSTNAME].isDirty()
+            assert secondOne.isDirty()
         }
 
         and: "the selection is not retained (that is on purpose as different apps have different selections)"
@@ -145,7 +145,7 @@ class TeamTests extends Specification {
         def firstOne  = clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).first()
         def secondOne = secondDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).first()
         secondOne[ATT_FIRSTNAME].value = 'changed'
-        app.sendSynchronously ACTION_ON_PUSH
+        //app.sendSynchronously ACTION_ON_PUSH // interestingly, this seems not to be needed
 
         then: "both see the transient change and the dirtyness"
         clientDolphin.sync {
@@ -161,11 +161,11 @@ class TeamTests extends Specification {
 
         when: "first one is removing the record and second one polls"
         app.sendSynchronously CMD_REMOVE
-        secondApp.sendSynchronously ACTION_ON_PUSH
+        //secondApp.sendSynchronously ACTION_ON_PUSH // interestingly, this seems not to be needed
 
         then: "both see the empty state again"
-        clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).size() == 0
-        secondDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).size() == 0
+        clientDolphin.sync { clientDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).size() == 0 }
+        secondDolphin.sync { secondDolphin.findAllPresentationModelsByType(TYPE_TEAM_MEMBER).size() == 0 }
     }
 
 

@@ -107,18 +107,18 @@ public class TeamMemberActions extends DolphinServerAction {
         actionRegistry.register(CMD_REMOVE, new CommandHandler<NamedCommand>() {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
-                String selPmId = getServerDolphin().getAt(PM_ID_SELECTED).getAt(ATT_SEL_PM_ID).getValue().toString();
+                String selPmId = (String) findSelectedPmAttribute().getValue();
                 PresentationModel pm = getServerDolphin().getAt(selPmId);
-                if (pm == null) {
+                if (null == pm) {
                     System.out.println("cannot find pm to delete with id "+selPmId);
                     return;
                 }
                 if (!TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) return; // sanity check
+                getServerDolphin().remove(pm);
                 // take the qualifier of the first attribute as the indication which pm to remove
                 Attribute indicator = pm.getAttributes().get(0);
                 removeFromHistory(indicator);
                 teamBus.publish(memberQueue, new TeamEvent("remove", indicator.getQualifier(), null));
-                response.add(new DeletePresentationModelCommand(selPmId));
             }
         });
 
@@ -126,9 +126,13 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 String pmIdToSave = (String) findSelectedPmAttribute().getValue();
+                ServerPresentationModel pm = getServerDolphin().getAt(pmIdToSave);
+                if (null == pm) {
+                    System.out.println("Cannot save unknown presentation model with id "+pmIdToSave);
+                    return;
+                }
                 // saving the model to the database here. We assume all was ok:
-                response.add(new SavedPresentationModelNotification(pmIdToSave));
-                PresentationModel pm = getServerDolphin().getAt(pmIdToSave);
+                pm.rebase();
                 for (Attribute attribute : pm.getAttributes()) {
                     rebaseInHistory(attribute);
                     teamBus.publish(memberQueue, new TeamEvent("rebase", attribute.getQualifier(), null));
