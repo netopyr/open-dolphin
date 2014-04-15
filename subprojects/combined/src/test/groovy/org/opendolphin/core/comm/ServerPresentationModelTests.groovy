@@ -369,9 +369,64 @@ class ServerPresentationModelTests extends GroovyTestCase {
         }
     }
 
+
+    void testServerSideBaseValueChange() {
+        def source = clientDolphin.presentationModel("source", null, attr1:"sourceValue")
+
+        source.getAt("attr1").baseValue = "sourceValue"
+
+        serverDolphin.action "changeBaseValue", { cmd, response ->
+            def attribute = serverDolphin.getAt("source").getAt("attr1")
+            attribute.baseValue = "changed"
+            // immediately applied on server
+            assert attribute.baseValue == "changed"
+        }
+
+        clientDolphin.send "changeBaseValue", {
+            assert source.getAt("attr1").value     == "sourceValue"
+            assert source.getAt("attr1").baseValue == "changed"
+            context.assertionsDone()
+        }
+    }
+
+    void testServerSideQualifierChange() {
+        def source = clientDolphin.presentationModel("source", null, attr1:"sourceValue")
+
+        source.getAt("attr1").qualifier = "qualifier"
+
+        serverDolphin.action "changeBaseValue", { cmd, response ->
+            def attribute = serverDolphin.getAt("source").getAt("attr1")
+            attribute.qualifier = "changed"
+            // immediately applied on server
+            assert attribute.qualifier == "changed"
+        }
+
+        clientDolphin.send "changeBaseValue", {
+            assert source.getAt("attr1").value     == "sourceValue"
+            assert source.getAt("attr1").qualifier == "changed"
+            context.assertionsDone()
+        }
+    }
+
+    void testServerSideAddingOfAttributesToAnExistingModel() {
+        def source = clientDolphin.presentationModel("source", null, attr1:"sourceValue")
+
+        serverDolphin.action "addAttribute", { cmd, response ->
+            def pm = serverDolphin.getAt("source")
+            def attr2 = new ServerAttribute("attr2","initial")
+            pm.addAttribute(attr2)
+            // immediately applied on server
+            assert pm.getAt("attr2").value == "initial"
+        }
+
+        clientDolphin.send "addAttribute", {
+            assert source.getAt("attr2").value == "initial"
+            context.assertionsDone()
+        }
+    }
+
     // todo dk: think about these use cases:
-    // dolphin.copy(pm) on client and server
-    // manual changes to baseValue or qualifier ?
-    // creating attributes at runtime and adding them to PMs after creation ? "initAt"
+    // dolphin.copy(pm) on client and server (done) - todo: make js version use the same approach
+    // server-side tagging
 
 }

@@ -52,6 +52,12 @@ class ServerPresentationModel extends BasePresentationModel {
         modelStore.currentResponse << new SwitchPresentationModelCommand(sourcePmId: sourcePresentationModel.id, pmId: id)
     }
 
+    void addAttribute(ServerAttribute attribute) {
+        _internal_addAttribute(attribute)
+        modelStore.registerAttribute(attribute)
+        ServerDolphin.initAt(modelStore.currentResponse, id, attribute.propertyName, attribute.qualifier, attribute.value, attribute.tag)
+    }
+
 // override with server specific return values to avoid casting in client code
 
     ServerAttribute getAt(String propertyName) {

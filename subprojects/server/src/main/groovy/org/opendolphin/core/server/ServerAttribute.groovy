@@ -16,9 +16,13 @@
 
 package org.opendolphin.core.server
 
+import org.opendolphin.core.Attribute
 import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.Tag
 import groovy.transform.CompileStatic
+import org.opendolphin.core.comm.AttributeMetadataChangedCommand
+import org.opendolphin.core.comm.BaseValueChangedCommand
+import org.opendolphin.core.comm.ChangeAttributeMetadataCommand
 
 @CompileStatic
 class ServerAttribute extends BaseAttribute {
@@ -43,6 +47,22 @@ class ServerAttribute extends BaseAttribute {
         super.setValue(value)
         if (notifyClient) {
             ServerDolphin.changeValue(presentationModel.modelStore.currentResponse, this, getValue())
+        }
+    }
+
+    @Override
+    void setBaseValue(Object value) {
+        super.setBaseValue(value)
+        if (notifyClient) {
+            presentationModel.modelStore.currentResponse << new AttributeMetadataChangedCommand(attributeId: id, metadataName: Attribute.BASE_VALUE, value:value)
+        }
+    }
+
+    @Override
+    void setQualifier(String value) {
+        super.setQualifier(value)
+        if (notifyClient) {
+            presentationModel.modelStore.currentResponse << new AttributeMetadataChangedCommand(attributeId: id, metadataName: Attribute.QUALIFIER_PROPERTY, value:value)
         }
     }
 
