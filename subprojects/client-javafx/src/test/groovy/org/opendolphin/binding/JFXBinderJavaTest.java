@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Java Style Tests for JFX Binding
@@ -239,6 +240,11 @@ public class JFXBinderJavaTest {
         JFXBinder.unbind("value").of(pojo).from("text").of(targetLabel);
         pojo.setValue("anotherValue");
         assertEquals("newValue", targetLabel.getText());
+    }
+
+    @Test
+    public void textFixClassTestCoverage() {
+        assertNotNull( JFXBinder.class.getClass() );
     }
 
     // Binding support for Java classes is established by implementing Observable

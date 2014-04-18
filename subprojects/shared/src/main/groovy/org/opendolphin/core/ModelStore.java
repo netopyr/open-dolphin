@@ -248,7 +248,7 @@ public class ModelStore {
 
     /**
      * Returns a {@code List} of all attributes that share the same qualifier.<br/>
-     * Never returns empty. The returned {@code List} is immutable.
+     * Never returns null. The returned {@code List} is immutable.
      *
      * @return a {@code List} of all attributes fo which their qualifier was a match.
      */

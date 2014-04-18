@@ -32,6 +32,8 @@ public class ServerDolphinTest extends GroovyTestCase {
     void testListPresentationModels() {
         assert dolphin.listPresentationModelIds().empty
         assert dolphin.listPresentationModels().empty
+        assert dolphin.findAllAttributesByQualifier("no-such-qualifier").empty
+        assert dolphin.findAllPresentationModelsByType("no-such-type").empty
 
         def pm1 = new ServerPresentationModel("first", [], dolphin.serverModelStore)
         dolphin.add pm1
