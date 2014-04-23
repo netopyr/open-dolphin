@@ -33,7 +33,7 @@ public class TeamBusRelease implements ServerAction {
             @Override
             public void handleCommand(SignalCommand command, List<Command> response) {
                 // seeing the response is ok but we should not see any serverDolphin here
-                teamBus.publish(null, new TeamEvent("release", null));
+                teamBus.publish(null, new TeamEvent(TeamEvent.Type.RELEASE, null));
             }
         });
 

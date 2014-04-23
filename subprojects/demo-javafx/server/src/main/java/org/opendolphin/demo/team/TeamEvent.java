@@ -4,18 +4,22 @@ import org.opendolphin.core.server.DTO;
 
 public class TeamEvent {
 
-    public String type, qualifier;
+    enum Type { NEW, CHANGE, REBASE, REMOVE, RELEASE }
+
+    public Type type;
+    public String qualifier;
     public Object value;
     public DTO    dto;
 
-    public TeamEvent(String type, DTO dto) {
+    public TeamEvent(Type type, DTO dto) {
         this.type = type;
         this.dto = dto;
     }
 
-    public TeamEvent(String type, String qualifier, Object value) {
+    public TeamEvent(Type type, String qualifier, Object value) {
         this.type      = type;
         this.qualifier = qualifier;
         this.value     = value;
     }
 }
+

@@ -86,7 +86,7 @@ public class TeamMemberActions extends DolphinServerAction {
                     });
                 } catch (InterruptedException e) { /* do nothing */ }
                 // notify all others about the new team member
-                teamBus.publish(memberQueue, new TeamEvent("new", dto));
+                teamBus.publish(memberQueue, new TeamEvent(TeamEvent.Type.NEW, dto));
                 // create the pm
                 String addedId = uniqueId(memberId);
                 getServerDolphin().presentationModel(addedId, TYPE_TEAM_MEMBER, dto); // create on server
@@ -112,7 +112,7 @@ public class TeamMemberActions extends DolphinServerAction {
                 // take the qualifier of the first attribute as the indication which pm to remove
                 Attribute indicator = pm.getAttributes().get(0);
                 removeFromHistory(indicator);
-                teamBus.publish(memberQueue, new TeamEvent("remove", indicator.getQualifier(), null));
+                teamBus.publish(memberQueue, new TeamEvent(TeamEvent.Type.REMOVE, indicator.getQualifier(), null));
             }
         });
 
@@ -129,7 +129,7 @@ public class TeamMemberActions extends DolphinServerAction {
                 pm.rebase();
                 for (Attribute attribute : pm.getAttributes()) {
                     rebaseInHistory(attribute);
-                    teamBus.publish(memberQueue, new TeamEvent("rebase", attribute.getQualifier(), null));
+                    teamBus.publish(memberQueue, new TeamEvent(TeamEvent.Type.REBASE, attribute.getQualifier(), null));
                 }
             }
         });
@@ -155,13 +155,13 @@ public class TeamMemberActions extends DolphinServerAction {
             ServerAttribute attribute = (ServerAttribute) evt.getSource();
             boolean updated = updateHistory(attribute);
             if (updated)
-                teamBus.publish(memberQueue, new TeamEvent("change", attribute.getQualifier(), attribute.getValue()));
+                teamBus.publish(memberQueue, new TeamEvent(TeamEvent.Type.CHANGE, attribute.getQualifier(), attribute.getValue()));
         }
     };
 
     private void registerOnValueChange(ServerPresentationModel member) {
         for (final Attribute attribute : member.getAttributes()) {
-            attribute.addPropertyChangeListener("value", proliferator);
+            attribute.addPropertyChangeListener(Attribute.VALUE, proliferator);
         }
     }
 
@@ -170,10 +170,10 @@ public class TeamMemberActions extends DolphinServerAction {
     private void processEventsFromQueue(int timeoutValue, TimeUnit timeoutUnit) throws InterruptedException {
         TeamEvent event = memberQueue.getVal(timeoutValue, timeoutUnit);
         while (null != event) {
-            if ("new".equals(event.type)) { // todo : make enum
+            if (TeamEvent.Type.NEW == event.type) {
                 getServerDolphin().presentationModel(null, TYPE_TEAM_MEMBER, event.dto); // create on server side
             }
-            if ("change".equals(event.type)) {
+            if (TeamEvent.Type.CHANGE == event.type) {
                 silent = true; // do not issue additional posts on the bus from value changes that come from the bus
                 List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
                 for (ServerAttribute attribute : attributes) {
@@ -184,13 +184,13 @@ public class TeamMemberActions extends DolphinServerAction {
                 }
                 silent = false;
             }
-            if ("rebase".equals(event.type)) {
+            if (TeamEvent.Type.REBASE == event.type) {
                 List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
                 for (ServerAttribute attribute : attributes) {
                     attribute.rebase();
                 }
             }
-            if ("remove".equals(event.type)) {
+            if (TeamEvent.Type.REBASE == event.type) {
                 List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
                 Set<ServerPresentationModel> toDelete = new HashSet<ServerPresentationModel>();
                 for (ServerAttribute attribute : attributes) {
