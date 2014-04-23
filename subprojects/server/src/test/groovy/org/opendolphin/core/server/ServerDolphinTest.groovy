@@ -27,7 +27,10 @@ public class ServerDolphinTest extends GroovyTestCase {
         dolphin = new ServerDolphin()
     }
 
-    // todo dk: creating a SPM adds the respective commands to the response
+    void testUniqueIds() {
+        def other = new ServerDolphin()
+        assert dolphin.id != other.id
+    }
 
     void testListPresentationModels() {
         assert dolphin.listPresentationModelIds().empty

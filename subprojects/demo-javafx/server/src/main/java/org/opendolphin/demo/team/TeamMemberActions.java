@@ -27,14 +27,8 @@ public class TeamMemberActions extends DolphinServerAction {
     /** thread safe shared state to keep around for new user sessions */
     private final Agent currentMembers ;
 
-    /** thread safe unique user count across all sessions */
-    static final AtomicInteger userCount = new AtomicInteger(0);
-
     /** thread safe unique member count across all sessions */
     static final AtomicInteger memberCount = new AtomicInteger(0);
-
-    /** unique identification of the current user session. */
-    final int userId = userCount.getAndIncrement();
 
     private EventBus teamBus;
     private final DataflowQueue<TeamEvent> memberQueue = new DataflowQueue<TeamEvent>();
@@ -76,9 +70,9 @@ public class TeamMemberActions extends DolphinServerAction {
                 // prepare a DTO to add
                 int memberId = memberCount.getAndIncrement();
                 final DTO dto = new DTO(
-                    new Slot(ATT_FIRSTNAME, "", qualifier(memberId, ATT_FIRSTNAME)),
-                    new Slot(ATT_LASTNAME, "", qualifier(memberId, ATT_LASTNAME)),
-                    new Slot(ATT_FUNCTION, "", qualifier(memberId, ATT_FUNCTION)),
+                    new Slot(ATT_FIRSTNAME, "",     qualifier(memberId, ATT_FIRSTNAME)),
+                    new Slot(ATT_LASTNAME, "",      qualifier(memberId, ATT_LASTNAME)),
+                    new Slot(ATT_FUNCTION, "",      qualifier(memberId, ATT_FUNCTION)),
                     new Slot(ATT_AVAILABLE,  false, qualifier(memberId, ATT_AVAILABLE)),
                     new Slot(ATT_CONTRACTOR, false, qualifier(memberId, ATT_CONTRACTOR)),
                     new Slot(ATT_WORKLOAD,   0,     qualifier(memberId, ATT_WORKLOAD))

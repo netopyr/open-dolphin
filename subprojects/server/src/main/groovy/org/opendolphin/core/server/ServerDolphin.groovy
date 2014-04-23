@@ -246,6 +246,11 @@ class ServerDolphin extends Dolphin {
         response << new InitializeAttributeCommand(pmId: pmId, propertyName: propertyName, qualifier: qualifier, newValue: newValue, tag: tag)
     }
 
+    /** The id of the server dolphin, which is identical to the id of its server model store. */
+    int getId() {
+        serverModelStore.id
+    }
+
     // overriding super methods with server-specific return types to avoid casting
 
     ServerPresentationModel getAt(String pmId) {

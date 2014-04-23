@@ -6,11 +6,20 @@ import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.comm.Command;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerModelStore extends ModelStore {
 
     protected List<Command> currentResponse = null;
+
+    /** Used to create unique presentation model ids within one server model store. */
     protected long pmInstanceCount = 0L;
+
+    /** thread safe unique store count across all sessions in order to create unique store ids.*/
+    private static final AtomicInteger storeCount = new AtomicInteger(0);
+
+    /** unique identification of the current user session. */
+    public final int id = storeCount.getAndIncrement();
 
     public ServerModelStore() {
     }
