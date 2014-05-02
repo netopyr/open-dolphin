@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.Delete
+
 /*
  * Copyright 2012-2013 Canoo Engineering AG.
  *
@@ -301,10 +303,10 @@ demos.each { demo ->
             description: "start the ${demo} demo") {}
 }
 
-task clean(type: Delete) {
-    delete 'build'
-    delete 'dist'
-}
+//task clean(type: Delete) {
+//    delete 'build'
+//    delete 'dist'
+//}
 
 task(projectCoverage, description: 'This task merges the module cobertura reports and generates one report.') {
     doLast {
@@ -333,4 +335,33 @@ task(projectCoverage, description: 'This task merges the module cobertura report
         }
         net.sourceforge.cobertura.reporting.Main.main(args as String[]);
     }
+}
+
+// asciidoc section, see https://github.com/asciidoctor/asciidoctor-gradle-plugin
+
+buildscript {
+    repositories {
+        maven {
+            url  'http://dl.bintray.com/content/aalmiray/asciidoctor'
+        }
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:0.7.0'
+    }
+}
+
+apply plugin: 'asciidoctor'
+
+asciidoctor {
+    sourceDir = new File("docs/arc")
+    outputDir = new File("$buildDir/arc")
+    options = [
+        attributes: [
+            'source-highlighter': 'coderay',
+            toc: 'Table of Contents',
+            idprefix: '',
+            idseparator: '-'
+        ]
+    ]
 }
