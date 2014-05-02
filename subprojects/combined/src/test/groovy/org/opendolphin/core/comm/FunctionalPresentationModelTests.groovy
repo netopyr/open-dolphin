@@ -36,6 +36,7 @@ import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.comm.NamedCommandHandler
 
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
@@ -571,6 +572,37 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.send('arbitrary'){
             context.assertionsDone()
         }
+    }
+
+    void testStateConflictBetweenClientAndServer() {
+        LogConfig.logCommunication()
+        def latch = new CountDownLatch(1)
+        def pm = clientDolphin.presentationModel('pm', attr: 1)
+        def attr = pm.getAt('attr')
+
+        serverDolphin.action('set2') { cmd, response ->
+            latch.await() // mimic a server delay such that the client has enough time to change the value concurrently
+            serverDolphin.getAt('pm').getAt('attr').value == 1
+            serverDolphin.getAt('pm').getAt('attr').value  = 2
+            serverDolphin.getAt('pm').getAt('attr').value == 2 // immediate change of server state
+        }
+        serverDolphin.action('assert3') { cmd, response ->
+            assert serverDolphin.getAt('pm').getAt('attr').value == 3
+        }
+
+        clientDolphin.send('set2') // a conflict could arise when the server value is changed ...
+        attr.value = 3            // ... while the client value is changed concurrently
+        latch.countDown()
+        clientDolphin.send('assert3') // since from the client perspective, the last change was to 3, server and client should both see the 3
+
+        // in between these calls a conflicting value change could be transferred, setting both value to 2
+
+        clientDolphin.send('assert3'){
+            assert attr.value == 3
+            context.assertionsDone()
+        }
+
+
     }
 
 }

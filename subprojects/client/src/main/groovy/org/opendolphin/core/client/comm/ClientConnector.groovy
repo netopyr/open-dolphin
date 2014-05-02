@@ -216,6 +216,11 @@ abstract class ClientConnector {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update old value '$serverCommand.oldValue' to new value '$serverCommand.newValue'"
             return null
         }
+        if (attribute.value != serverCommand.oldValue) {
+            // todo dk: think about sending a RejectCommand here to tell the server about a possible lost update
+            log.warning "C: attribute with id '$serverCommand.attributeId' and value '$attribute.value' cannot be set to new value '$serverCommand.newValue' because the change was based on an outdated old value of '$serverCommand.oldValue'."
+            return null
+        }
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
         attribute.value = serverCommand.newValue
         return null // this command is not expected to be sent explicitly, so no pm needs to be returned

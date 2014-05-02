@@ -29,11 +29,14 @@ class StoreValueChangeAction extends DolphinServerAction {
         registry.register(ValueChangedCommand) { ValueChangedCommand command, response ->
             ServerAttribute attribute = serverDolphin.findAttributeById(command.attributeId)
             if (attribute) {
+                if (attribute.value != command.oldValue) {
+                    log.warning("S: updating attribute with id '$command.attributeId' to new value '$command.newValue' even though its old command value '$command.oldValue' does not conform to the old value of '$attribute.value'. Client overrules server.")
+                }
                 attribute.silently {
                     attribute.value = command.newValue
                 }
             } else {
-                log.severe("cannot find attribute with id '$command.attributeId' to change value from '$command.oldValue' to '$command.newValue'. " +
+                log.severe("S: cannot find attribute with id '$command.attributeId' to change value from '$command.oldValue' to '$command.newValue'. " +
                            "Known attribute ids are: "+ serverDolphin.serverModelStore.listPresentationModels()*.attributes*.id )
             }
         }

@@ -191,6 +191,12 @@ export module dolphin {
                 console.log("attribute with id "+serverCommand.attributeId+" not found, cannot update old value "+serverCommand.oldValue+" to new value "+serverCommand.newValue);
                 return null;
             }
+            if(clientAttribute.getValue() != serverCommand.oldValue){
+//                todo dk: think about sending a RejectCommand here to tell the server about a possible lost update
+                console.log("attribute with id "+serverCommand.attributeId+" and value " + clientAttribute.getValue() +
+                            " cannot be set to value " + serverCommand.newValue + " because the change was based on an outdated old value of " + serverCommand.oldValue);
+                return null;
+            }
             clientAttribute.setValue(serverCommand.newValue);
             return null;
         }
