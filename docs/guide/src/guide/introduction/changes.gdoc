@@ -1,3 +1,71 @@
+h4. Release 0.10
+
+Release 0.10 now fully supports a programming model on the server side that is equivalent to working on the client
+side.
+As an example: no longer do you need to call
+{code}
+// sending command
+changeValue(attribute, value);
+
+// to be replaced with
+changeValueCommand(attribute, value);
+{code}
+on the server side but you can directly use
+{code}
+// immediate state change
+attribute.setValue(value);
+{code}
+which will immediately change the attribute value on the server side _and_ send the appropriate command
+to the client.
+
+This approach allows that
+- any trailing code on the server side can now rely on the updated state
+- any property change listeners are immediately called
+- any model store listeners are immediately called
+
+{note}
+You get a full reactive *event-driven programming model* in the normally request-response oriented
+Java enterprise world.
+{note}
+
+Along with this change comes full support of immediate effects on the server side for
+- attribute value changes
+- creating presentation models
+- presentation model and attribute reset
+- presentation model and attribute rebase
+- presentation model and attribute switch (apply)
+- instant update of all attributes that share the same qualifier
+- adding attributes to presentation models
+- removing single presentation models or all presentation models of a certain type
+All these action now have immediate effect on the server side _and_ the appropriate commands are sent to the server.
+
+The old approach remains fully supported even though the API will change a little (see note below).
+
+{warning}
+The old "strong" approach of never changing the server state but only sending commands to the client
+had the (undocumented) effect that server actions were transactional: in case of server side exceptions
+no change was sent to the client. Either all or no changes were executed.
+
+You can still have the same behavior by restricting yourself to the old API but if you use the new API, changes will no
+longer be transactional and server-side exceptions need application-specific handling.
+{warning}
+
+The old "strong" approach can easily enforce that the client is always the master. As soon as you do any
+immediate server-side change there may be conflicts when client-state changes while the same state is
+modified on the server.
+
+OpenDolphin detects these conflicts and ensures that the client side always wins.
+
+{note}
+While the "old" API is fully retained in release 0.10, many methods in the @ServerDolphin@ have been deprecated.
+In order to prevent confusion between old methods that merely send a command and new ones that change the server
+state immediately, we will use a convention for the old methods to use a <methodname>Command suffix.
+They are already available in this release and the old methods delegate to the new ones.
+
+Please resolve the deprecation warnings as soon as possible since we will remove those methods before version 1.0.
+If you have a decent IDE, you can just apply an "inline method" refactoring.
+{note}
+
 h4. Release 0.9
 
 The biggest change in release 0.9 is the inclusion of *OpenDolphin.js*, the JavaScript client (DOL-98) that allows to share
