@@ -70,13 +70,7 @@ class ServerPresentationModel extends BasePresentationModel {
 
     public void rebase() {
         for (Attribute attr : attributes) {
-            if (attr.qualifier) { // alternatively, we could use eventing here like on the client side
-                for (eachAttr in modelStore.findAllAttributesByQualifier(attr.qualifier)) {
-                    eachAttr.rebase()
-                }
-            } else {
-                attr.rebase()
-            }
+            attr.rebase()
         }
     }
 }

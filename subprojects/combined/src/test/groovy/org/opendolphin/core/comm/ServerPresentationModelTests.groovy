@@ -113,7 +113,10 @@ class ServerPresentationModelTests extends GroovyTestCase {
     }
 
     void testSecondServerActionCanRelyOnAttributeRebase() {
-        def model = clientDolphin.presentationModel("PM1", att1:'base' )
+        def model = clientDolphin.presentationModel("PM1", att1:'base', att2:'base')
+        model.att1.qualifier = 'qualifier'
+        model.att2.qualifier = 'qualifier'
+
         model.att1.value = 'changed'
         assert model.att1.dirty
 
@@ -122,12 +125,14 @@ class ServerPresentationModelTests extends GroovyTestCase {
             assert at.dirty
             at.rebase()
             assert ! at.dirty
+            assert ! serverDolphin.getAt("PM1").getAt("att2").dirty
         }
 
         serverDolphin.action "assertNewPristine", { cmd, response ->
             def at = serverDolphin.getAt("PM1").getAt("att1")
             assert ! at.dirty
             assert at.value == "changed"
+            assert ! serverDolphin.getAt("PM1").getAt("att2").dirty
         }
 
         clientDolphin.send "rebase"
@@ -135,7 +140,9 @@ class ServerPresentationModelTests extends GroovyTestCase {
 
         clientDolphin.sync {
             assert ! model.att1.dirty
+            assert ! model.att2.dirty
             assert model.att1.value == "changed"
+            assert model.att2.value == "changed"
             context.assertionsDone()
         }
     }

@@ -140,6 +140,7 @@ public abstract class BaseAttribute extends AbstractObservable implements Attrib
 
     public void rebase() {
         setBaseValue(getValue());
+        setDirty(false);
     }
 
     public void reset() {

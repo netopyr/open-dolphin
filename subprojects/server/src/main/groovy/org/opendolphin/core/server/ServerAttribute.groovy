@@ -80,6 +80,13 @@ class ServerAttribute extends BaseAttribute {
         if (notifyClient) {
             ServerDolphin.rebaseCommand(presentationModel.modelStore.currentResponse, this)
         }
+        if (qualifier) { // other attributes with the same qualifier must also rebase
+            for (ServerAttribute sameQualified in (List<ServerAttribute>) presentationModel.modelStore.findAllAttributesByQualifier(qualifier)) {
+                if (sameQualified.dirty) {
+                    sameQualified.rebase()
+                }
+            }
+        }
     }
 
     public String getOrigin(){
