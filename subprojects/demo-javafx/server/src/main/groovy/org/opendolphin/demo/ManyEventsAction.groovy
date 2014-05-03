@@ -37,8 +37,8 @@ class ManyEventsAction extends DolphinServerAction {
             while (null != post) {
                 def (speed, color) = post
                 log.info "got speed notification: $speed"
-                changeValue(atSpeed, speed)
-                changeValue(atColor, color)
+                atSpeed.value = speed
+                atColor.value = color
                 post = speedQueue.getVal(20, TimeUnit.MILLISECONDS)
             }
             log.info "returning speed data"

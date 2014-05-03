@@ -21,6 +21,6 @@ import org.opendolphin.core.client.comm.JavaFXUiThreadHandler
 
 def dolphin = StarterUtil.setupForRemote()
 dolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
-LogConfig.noLogs()
+//LogConfig.noLogs()
 
 ManyEventsView.show dolphin

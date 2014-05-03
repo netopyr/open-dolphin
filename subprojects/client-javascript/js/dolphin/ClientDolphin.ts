@@ -82,14 +82,20 @@ export module dolphin {
         deleteAllPresentationModelOfType(presentationModelType:string) {
             this.getClientModelStore().deleteAllPresentationModelOfType(presentationModelType);
         }
-        updateQualifier(presentationModel:pm.dolphin.ClientPresentationModel):void{
+
+        updatePresentationModelQualifier(presentationModel:pm.dolphin.ClientPresentationModel):void{
             presentationModel.getAttributes().forEach( sourceAttribute =>{
-                if(!sourceAttribute.getQualifier()) return;
-                var attributes = this.getClientModelStore().findAllAttributeByQualifier(sourceAttribute.getQualifier());
-                attributes.forEach(targetAttribute => {
-                    if(targetAttribute.tag != sourceAttribute.tag) return;
-                    targetAttribute.setValue(sourceAttribute.getValue());
-                });
+                this.updateAttributeQualifier(sourceAttribute);
+            });
+        }
+
+        updateAttributeQualifier(sourceAttribute:ca.dolphin.ClientAttribute):void{
+            if(!sourceAttribute.getQualifier()) return;
+            var attributes = this.getClientModelStore().findAllAttributesByQualifier(sourceAttribute.getQualifier());
+            attributes.forEach(targetAttribute => {
+                if(targetAttribute.tag != sourceAttribute.tag) return;       // attributes with same qualifier and tag
+                targetAttribute.setValue(sourceAttribute.getValue());        // should always have the same value
+                targetAttribute.setBaseValue(sourceAttribute.getBaseValue());// and same base value and so dirtyness
             });
         }
 

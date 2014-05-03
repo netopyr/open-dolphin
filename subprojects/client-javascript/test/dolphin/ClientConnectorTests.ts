@@ -209,26 +209,26 @@ export module dolphin {
             //new PM with existing attribute qualifier
             var serverCommand: iac.dolphin.InitializeAttributeCommand = new  iac.dolphin.InitializeAttributeCommand("newPm","newPmType","newProp","qual1","newValue");
             //before calling InitializeAttributeCommand
-            var attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributeByQualifier("qual1");
+            var attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributesByQualifier("qual1");
             this.areIdentical(attribute[0].getValue(), 0);
             this.areIdentical(TestHelper.clientDolphin.listPresentationModelIds().length, 2);
 
             //call InitializeAttributeCommand
             TestHelper.clientConnector.handle(serverCommand);
-            attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributeByQualifier("qual1");
+            attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributesByQualifier("qual1");
             this.areIdentical(attribute[0].getValue(), "newValue");// same attribute value will change
             this.areIdentical(TestHelper.clientDolphin.listPresentationModelIds().length, 3);
 
             //existing PM with existing attribute qualifier
             var serverCommand: iac.dolphin.InitializeAttributeCommand = new  iac.dolphin.InitializeAttributeCommand("pmId1","pmType1","newProp","qual3","newValue");
             //before calling InitializeAttributeCommand
-            var attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributeByQualifier("qual3");
+            var attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributesByQualifier("qual3");
             this.areIdentical(attribute[0].getValue(), 5);
             this.areIdentical(TestHelper.clientDolphin.listPresentationModelIds().length, 3);
 
             //call InitializeAttributeCommand
             TestHelper.clientConnector.handle(serverCommand);
-            attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributeByQualifier("qual3");
+            attribute = TestHelper.clientDolphin.getClientModelStore().findAllAttributesByQualifier("qual3");
             this.areIdentical(attribute[0].getValue(), "newValue");// same attribute value will change
             this.areIdentical(TestHelper.clientDolphin.listPresentationModelIds().length, 3);// no PM added
         }

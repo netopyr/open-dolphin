@@ -282,7 +282,7 @@ export module dolphin {
             }
         }
 
-        findAllAttributeByQualifier(qualifier:string):ca.dolphin.ClientAttribute[] {
+        findAllAttributesByQualifier(qualifier:string):ca.dolphin.ClientAttribute[] {
             if (!qualifier || !this.attributesPerQualifier.containsKey(qualifier)) {
                 return [];
             }

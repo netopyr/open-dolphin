@@ -113,11 +113,12 @@ export module dolphin {
 
         rebase() {
             this.setBaseValue(this.value);
+            this.setDirty(false); // this is not superfluous!
         }
 
         reset() {
             this.setValue(this.baseValue);
-            this.setDirty(false); // todo dk: this may be superfluous.
+            this.setDirty(false); // this is not superfluous!
         }
 
         static checkValue(value:any) : any {

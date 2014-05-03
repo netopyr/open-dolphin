@@ -65,7 +65,6 @@ class JsonCodec implements Codec {
                     }
                     return
                 }
-//                if (key == 'attributeId') value = value.toLong()
                 if (key == 'tag') value = Tag.tagFor[value]
                 responseCommand[key] = value
             }

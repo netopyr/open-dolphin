@@ -152,7 +152,7 @@
         const blankPM             = detailPM.copy(); // stored for later use on "unselect"
 
         const selectedPmId        = dolphin.attribute("selectedPmId", 'teammember.selected.id', null); /* null for no selection*/
-        const selectedTeamMember  = dolphin.presentationModel("selectedTeamMember", null, selectedPmId);
+                                    dolphin.presentationModel("selectedTeamMember", null, selectedPmId); // only to give the attribute a place to live
 
         const disabledAttr        = dolphin.attribute("disabled", null, true); // a free-standing attribute for the detail form
 

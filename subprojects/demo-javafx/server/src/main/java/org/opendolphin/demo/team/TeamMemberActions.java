@@ -102,7 +102,7 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 String selPmId = (String) findSelectedPmAttribute().getValue();
-                PresentationModel pm = getServerDolphin().getAt(selPmId);
+                ServerPresentationModel pm = getServerDolphin().getAt(selPmId);
                 if (null == pm) {
                     System.out.println("cannot find pm to delete with id "+selPmId);
                     return;
@@ -190,7 +190,7 @@ public class TeamMemberActions extends DolphinServerAction {
                     attribute.rebase();
                 }
             }
-            if (TeamEvent.Type.REBASE == event.type) {
+            if (TeamEvent.Type.REMOVE == event.type) {
                 List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
                 Set<ServerPresentationModel> toDelete = new HashSet<ServerPresentationModel>();
                 for (ServerAttribute attribute : attributes) {

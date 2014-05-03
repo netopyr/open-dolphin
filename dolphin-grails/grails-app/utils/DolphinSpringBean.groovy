@@ -37,9 +37,9 @@ class DolphinSpringBean {
         EventBus teamBus
     ) {
 
-//        Logger.getLogger("").level = Level.INFO
+        Logger.getLogger("").level = Level.INFO
 //        LogConfig.logCommunication()
-        LogConfig.noLogs()
+//        LogConfig.noLogs()
 
         log.info "creating new dolphin session"
 

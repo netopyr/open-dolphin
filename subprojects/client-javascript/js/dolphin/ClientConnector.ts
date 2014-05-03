@@ -180,7 +180,7 @@ export module dolphin {
                 clientPm.clientSideOnly = true;
             }
             this.clientDolphin.getClientModelStore().add(clientPm);
-            this.clientDolphin.updateQualifier(clientPm);
+            this.clientDolphin.updatePresentationModelQualifier(clientPm);
             clientPm.updateAttributeDirtyness();
             clientPm.updateDirty();
             return clientPm;
@@ -189,6 +189,10 @@ export module dolphin {
             var clientAttribute: ca.dolphin.ClientAttribute = this.clientDolphin.getClientModelStore().findAttributeById(serverCommand.attributeId);
             if(!clientAttribute){
                 console.log("attribute with id "+serverCommand.attributeId+" not found, cannot update old value "+serverCommand.oldValue+" to new value "+serverCommand.newValue);
+                return null;
+            }
+            if (clientAttribute.getValue() == serverCommand.newValue) {
+                //console.log("nothing to do. new value == old value");
                 return null;
             }
             if(clientAttribute.getValue() != serverCommand.oldValue){
@@ -226,7 +230,7 @@ export module dolphin {
         private handleInitializeAttributeCommand(serverCommand: iac.dolphin.InitializeAttributeCommand):cpm.dolphin.ClientPresentationModel{
             var attribute = new ca.dolphin.ClientAttribute(serverCommand.propertyName,serverCommand.qualifier,serverCommand.newValue, serverCommand.tag);
             if(serverCommand.qualifier){
-                var attributesCopy:ca.dolphin.ClientAttribute[]= this.clientDolphin.getClientModelStore().findAllAttributeByQualifier(serverCommand.qualifier);
+                var attributesCopy:ca.dolphin.ClientAttribute[]= this.clientDolphin.getClientModelStore().findAllAttributesByQualifier(serverCommand.qualifier);
                 if(attributesCopy){
                     if(!serverCommand.newValue){
                         var attr = attributesCopy.shift();
@@ -249,7 +253,7 @@ export module dolphin {
                 this.clientDolphin.getClientModelStore().add(presentationModel);
             }
             this.clientDolphin.addAttributeToModel(presentationModel,attribute);
-            this.clientDolphin.updateQualifier(presentationModel);
+            this.clientDolphin.updatePresentationModelQualifier(presentationModel);
             return presentationModel;
         }
         private handleSavedPresentationModelNotification(serverCommand: spmn.dolphin.SavedPresentationModelNotification){
