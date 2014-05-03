@@ -294,12 +294,19 @@ class ClientConnectorTests extends GroovyTestCase {
 		assert !clientConnector.handle(new ValueChangedCommand(attributeId: 0, oldValue: 'oldValue', newValue: 'newValue'))
 	}
 
-	void testHandle_ValueChanged() {
-		def attribute = new ClientAttribute('attr', 'initialValue')
-		dolphin.clientModelStore.registerAttribute(attribute)
-		assert !clientConnector.handle(new ValueChangedCommand(attributeId: attribute.id, oldValue: 'oldValue', newValue: 'newValue'))
-		assert 'newValue' == attribute.value
-	}
+    void testHandle_ValueChangedWithBadBaseValueIsIgnored() {
+   		def attribute = new ClientAttribute('attr', 'initialValue')
+   		dolphin.clientModelStore.registerAttribute(attribute)
+        clientConnector.handle(new ValueChangedCommand(attributeId: attribute.id, oldValue: 'no-such-base-value', newValue: 'newValue'))
+        assert 'initialValue' == attribute.value
+   	}
+
+    void testHandle_ValueChanged() {
+   		def attribute = new ClientAttribute('attr', 'initialValue')
+   		dolphin.clientModelStore.registerAttribute(attribute)
+   		assert !clientConnector.handle(new ValueChangedCommand(attributeId: attribute.id, oldValue: 'initialValue', newValue: 'newValue'))
+   		assert 'newValue' == attribute.value
+   	}
 
 	void testHandle_CreatePresentationModelTwiceFails() {
 		assert clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', attributes: [[propertyName: 'attr', value: 'initialValue', qualifier: 'qualifier']]))
