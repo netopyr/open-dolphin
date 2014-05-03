@@ -295,17 +295,26 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testRebaseIsTransferred() {
-        ClientPresentationModel person = clientDolphin.presentationModel("person",null,name:'Dierk')
+        ClientPresentationModel person = clientDolphin.presentationModel("person",null,name:'Dierk',other:'Dierk')
+
+        person.name.qualifier  = 'qualifier'
+        person.other.qualifier = 'qualifier'
+
         assert person.name.value == "Dierk"
         person.name.value = "Mittie"
         assert person.name.dirty
+
+
         clientDolphin.sync { assert serverDolphin["person"].name.value == "Mittie" }
         person.name.rebase()
         assert ! person.name.dirty
-        assert person.name.value     == "Mittie" // value unchanged
-        assert person.name.baseValue == "Mittie" // base value changed
+        assert person.name.value      == "Mittie" // value unchanged
+        assert person.other.value     == "Mittie" // proliferated to attributes with same qualifier
+        assert person.name.baseValue  == "Mittie" // base value changed
+        assert person.other.baseValue == "Mittie" // proliferated to attributes with same qualifier
         clientDolphin.sync {
-            assert serverDolphin["person"].name.baseValue == "Mittie" // rebase is done on server
+            assert serverDolphin["person"].name.baseValue  == "Mittie" // rebase is done on server
+            assert serverDolphin["person"].other.baseValue == "Mittie" // rebase is done on server
             context.assertionsDone()
         }
     }
