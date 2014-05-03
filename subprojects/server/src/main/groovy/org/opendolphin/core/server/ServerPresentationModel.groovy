@@ -67,4 +67,16 @@ class ServerPresentationModel extends BasePresentationModel {
     ServerAttribute getAt(String propertyName, Tag tag) {
         return (ServerAttribute) super.getAt(propertyName, tag)
     }
+
+    public void rebase() {
+        for (Attribute attr : attributes) {
+            if (attr.qualifier) { // alternatively, we could use eventing here like on the client side
+                for (eachAttr in modelStore.findAllAttributesByQualifier(attr.qualifier)) {
+                    eachAttr.rebase()
+                }
+            } else {
+                attr.rebase()
+            }
+        }
+    }
 }

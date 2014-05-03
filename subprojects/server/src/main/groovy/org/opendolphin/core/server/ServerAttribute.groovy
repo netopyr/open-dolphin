@@ -44,10 +44,10 @@ class ServerAttribute extends BaseAttribute {
 
     @Override
     void setValue(Object value) {
-        super.setValue(value)
         if (notifyClient) {
-            ServerDolphin.changeValue(presentationModel.modelStore.currentResponse, this, getValue())
+            ServerDolphin.changeValueCommand(presentationModel.modelStore.currentResponse, this, value)
         }
+        super.setValue(value)
     }
 
     @Override
@@ -78,7 +78,7 @@ class ServerAttribute extends BaseAttribute {
     void rebase() {
         super.rebase()
         if (notifyClient) {
-            ServerDolphin.rebase(presentationModel.modelStore.currentResponse, this)
+            ServerDolphin.rebaseCommand(presentationModel.modelStore.currentResponse, this)
         }
     }
 
