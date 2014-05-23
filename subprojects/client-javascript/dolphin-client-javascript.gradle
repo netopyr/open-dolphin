@@ -1,15 +1,30 @@
+// To produce '${buildDir}/opendolphin.js' from the typescript files underneath 'js/dolphin' do the following:
+//
+// Run typescript compiler (needs nodejs and tsc installation):
+//  ./gradlew compileTypeScript
+//    which reads *.ts files from 'js/dolphin' and transpiles them into *.js and *.map files into 'js/dolphin'
+// Then run:
+//  ./gradlew requireJS
+// which produces 'build/opendolphin.js' containing all the dolphin code.
+//
 // see also: https://github.com/eriwen/gradle-js-plugin
 // Pull the plugin from Maven Central
+
 buildscript {
     repositories {
         mavenCentral()
+		maven {
+			url 'https://github.com/sothmann/typescript-gradle-plugin/raw/mavenrepo/'
+		}
     }
     dependencies {
         classpath 'com.eriwen:gradle-js-plugin:1.8.0'
+		classpath 'de.richsource.gradle.plugins:typescript-gradle-plugin:1.0.3'
     }
 }
 // Invoke the plugin
 apply plugin: 'js'
+apply plugin: 'typescript'
 
 // Declare the js sources
 javascript.source {
@@ -27,7 +42,7 @@ requireJs {
     source = javascript.source.dev.js.files
     dest = "${buildDir}/raw-opendolphin.js"
     requirejs.options = [
-        name: "opendolphin",
+        name: "OpenDolphin",
         baseUrl: "js/dolphin",
         optimize: "none"            // comment this line for full ugly minification
     ]
@@ -63,6 +78,15 @@ task jsZip (type: Zip) {
         include 'js/**'
         include 'libs/**'
     }
+}
+
+compileTypeScript {
+	source = 'js/dolphin'
+	outputDir = file('js/dolphin')
+	module = 'amd'
+	sourcemap = true
+	// does not seem to work:
+	//out = file('build/ts/opendolphin.js')
 }
 
 task install (dependsOn: [jsZip, requireJs, updateGrailsJs])
