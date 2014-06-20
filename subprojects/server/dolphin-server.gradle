@@ -14,7 +14,25 @@
  * limitations under the License.
  */
 
+buildscript {
+	repositories {
+		maven { url 'http://repo.spring.io/plugins-release' }
+	}
+	dependencies {
+		// Use propdeps plugin to be get a 'providedCompile' configuration (like the 'war' plugin does) for a java/groovy library
+		// see:
+		// - https://github.com/spring-projects/gradle-plugins/tree/master/propdeps-plugin
+		// - http://gesellix.github.io/gradle-summit-2014/?full#provided-jar
+		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.6'
+	}
+}
+
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-eclipse'
+
 dependencies {
     compile project(':shared')
-    compile 'javax.servlet:servlet-api:2.5'
+    provided 'javax.servlet:servlet-api:2.5'
 }
