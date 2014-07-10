@@ -73,7 +73,10 @@ class ServerConnector {
     }
 
     void register(ServerAction action){
-        if (action instanceof DolphinServerAction) dolphinServerActions.add action
+        if (action instanceof DolphinServerAction) {
+            // static type checker complains if no explicit cast
+            dolphinServerActions.add((DolphinServerAction) action)
+        }
         action.registerIn registry
     }
 }

@@ -3,19 +3,19 @@ apply plugin: 'groovy'
 apply from: 'scripts/docsDependencies.gradle'
 
 repositories {
-    mavenCentral()
+    jcenter()
     // it's gonna be maven() in the near future
-    mavenRepo name: 'SpringSource', url: 'http://repository.springsource.com/maven/bundles/release'
-    mavenRepo name: 'JavaNet', url: 'http://download.java.net/maven/2/'
+    maven { url 'http://repository.springsource.com/maven/bundles/release' }
+    maven { url 'http://download.java.net/maven/2/' }
 }
 
 dependencies {
-    groovy localGroovy()
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
     compile gradleApi()
-    compile(ext.grailsDocs) { transitive = false }
-    compile(ext.xhtmlRenderer) { transitive = false }
-    compile(ext.lowagieItext) { transitive = false }
-    compile(ext.radeox) { transitive = false }
-    compile "net.saliman:gradle-cobertura-plugin:1.1.1"
+    compile(grailsDocs) { transitive = false }
+    compile(xhtmlRenderer) { transitive = false }
+    compile(lowagieItext) { transitive = false }
+    compile(radeox) { transitive = false }
+    compile "net.saliman:gradle-cobertura-plugin:2.2.4"
 }
 

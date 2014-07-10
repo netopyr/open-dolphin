@@ -107,7 +107,7 @@ abstract class ClientConnector {
         commandBatcher.batch(new CommandAndHandler(command: command, handler: callback))
     }
 
-    @CompileStatic
+    // @CompileStatic
     void processResults(List<Command> response, List<CommandAndHandler> commandsAndHandlers) {
         def me = this
         me.info "C: server responded with ${response?.size()} command(s): ${response?.id}"

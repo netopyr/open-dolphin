@@ -23,7 +23,7 @@ buildscript {
 		// see:
 		// - https://github.com/spring-projects/gradle-plugins/tree/master/propdeps-plugin
 		// - http://gesellix.github.io/gradle-summit-2014/?full#provided-jar
-		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.6'
+		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 	}
 }
 
@@ -34,5 +34,6 @@ apply plugin: 'propdeps-eclipse'
 
 dependencies {
     compile project(':shared')
+    compile 'javax.inject:javax.inject:1'
     provided 'javax.servlet:servlet-api:2.5'
 }

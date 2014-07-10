@@ -16,5 +16,6 @@
 
 dependencies {
     compile project(':shared'),
-            'org.apache.httpcomponents:httpclient:4.2.1'
+            'org.apache.httpcomponents:httpclient:4.2.1',
+            'javax.inject:javax.inject:1'
 }

@@ -1,10 +1,6 @@
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
-
 // shamelessly copied from GroovyFX
 
-project.ext.guideBuildDirectory = "${buildDir}/guide"
-
+ext.guideBuildDirectory = "${buildDir}/guide"
 
 task buildGuide(type: GrailsDoc, group:'Documentation') {
     srcDir    = file('docs/guide/src')
@@ -12,58 +8,16 @@ task buildGuide(type: GrailsDoc, group:'Documentation') {
     styleDir  = file('docs/guide/resources/style')
     cssDir    = file('docs/guide/resources/css')
     imagesDir = file('docs/guide/resources/img')
-    outputDir = file(project.ext.guideBuildDirectory)
+    outputDir = file(guideBuildDirectory)
 }
 
 task pdfGuide(type: PdfGuide, dependsOn: buildGuide, group:'Documentation') {
-    inputs.files file(project.ext.guideBuildDirectory + '/guide')
-    outputDirectory = new File(project.ext.guideBuildDirectory)
+    inputs.files file(guideBuildDirectory + '/guide')
+    outputDirectory = new File(guideBuildDirectory)
     pdfName = "dolphin-guide-${project.version}.pdf"
 }
 
 task zipGuide(type: Zip, dependsOn: pdfGuide, group:'Documentation') {
     appendix = 'guide'
-    from project.ext.guideBuildDirectory
+    from guideBuildDirectory
 }
-
-// ---------------- generating the documentation ------------------
-
-def titleForDocumentation = 'Dolphin ' + version
-def copyrightString = 'Copyright &#169; 2012 The Dolphin team. All Rights Reserved.'
-def packageTitle = group
-
-/*
-javadoc {
-    //options.overview('overview.html')
-    options.showAll()
-    options.encoding('UTF-8')
-    options.setUse(true)
-    options.author(true)
-    options.version(true)
-    options.windowTitle(titleForDocumentation)
-    options.docTitle(titleForDocumentation)
-    options.footer(copyrightString)
-
-    doFirst {
-        javadoc.title = titleForDocumentation
-        javadoc.options.docTitle = javadoc.title
-    }
-}
-
-groovydoc {
-    dependsOn(classes)
-    includePrivate = true
-    use = true
-    windowTitle = packageTitle
-    docTitle = packageTitle
-    header = packageTitle
-    footer = copyrightString
-    include 'groovyx/**'
-    //overview = new File('overview.html')
-}
-*/
-
-/*
-task documentation(dependsOn: ['javadoc', 'groovydoc', 'buildGuide', 'pdfGuide'],
-                   description: 'Create the API documentation and guide.')
-*/

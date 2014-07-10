@@ -1,7 +1,9 @@
-ext.grailsDocs      = 'org.grails:grails-docs:2.0.3@jar'
-ext.xhtmlRenderer   = 'org.xhtmlrenderer:core-renderer:R8'
-ext.lowagieItext    = 'com.lowagie:itext:2.0.8'
-ext.radeox          = 'radeox:radeox:1.0-b2'
+ext {
+    grailsDocs      = 'org.grails:grails-docs:2.4.1'
+    xhtmlRenderer   = 'org.xhtmlrenderer:core-renderer:R8'
+    lowagieItext    = 'com.lowagie:itext:2.0.8'
+    radeox          = 'radeox:radeox:1.0-b2'
+}
 
 repositories {
   mavenCentral()
@@ -17,9 +19,9 @@ dependencies {
     docs 'org.codehaus.groovy:groovy-all:1.8.6'
     docs 'org.yaml:snakeyaml:1.9'
     docs 'commons-lang:commons-lang:2.6'
-    docs ext.grailsDocs
-    docs ext.radeox
-    docs ext.lowagieItext
-    docs ext.xhtmlRenderer
+    docs grailsDocs
+    docs radeox
+    docs lowagieItext
+    docs xhtmlRenderer
     docs 'commons-logging:commons-logging:1.1.1'
 }

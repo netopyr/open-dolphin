@@ -26,7 +26,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "net.saliman:gradle-cobertura-plugin:1.1.1"
+        classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
     }
 }
 
@@ -36,8 +36,6 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    sourceCompatibility = '1.6'
-    targetCompatibility = '1.6' // some users are still on 1.6
     archivesBaseName = "dolphin-${project.name}"
 
     cobertura {
@@ -53,16 +51,15 @@ subprojects {
 
     repositories {
         flatDir name: 'javafx', dirs: [jfxLibDir]
-        mavenCentral()
+        jcenter()
     }
 
     dependencies {
-        compile 'org.codehaus.groovy:groovy-all:2.2.1'
-        groovy  'org.codehaus.groovy:groovy-all:2.2.1'
+        compile "org.codehaus.groovy:groovy-all:$groovyVersion"
         testCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
-        testRuntime 'net.saliman:gradle-cobertura-plugin:1.1.1'
+        testRuntime 'net.saliman:gradle-cobertura-plugin:2.2.4'
     }
 
     task makeDirs(description: 'make all dirs for project setup') << {
@@ -72,8 +69,6 @@ subprojects {
             srcDir.mkdirs()
         }
     }
-
-
 }
 
 String locateJfxLibDir() {
