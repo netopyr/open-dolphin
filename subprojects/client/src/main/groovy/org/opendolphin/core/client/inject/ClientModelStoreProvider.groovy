@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-dependencies {
-    compile project(':shared'),
-            'org.apache.httpcomponents:httpclient:4.2.1',
-            'javax.inject:javax.inject:1'
+package org.opendolphin.core.client.inject
 
-    testCompile 'com.google.guiceberry:guiceberry:3.3.1'
-    testCompile('com.google.inject:guice:3.0') {
-        exclude group: 'org.sonatype.sisu.inject', module: 'cglib'
+import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.ClientModelStore
+
+import javax.inject.Inject
+import javax.inject.Provider
+
+class ClientModelStoreProvider implements Provider<ClientModelStore> {
+    @Inject
+    private ClientDolphin clientDolphin
+
+    @Override
+    ClientModelStore get() {
+        clientDolphin.clientModelStore = new ClientModelStore(clientDolphin)
+        clientDolphin.clientModelStore
     }
 }

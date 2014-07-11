@@ -61,6 +61,7 @@ subprojects {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         testRuntime 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        testCompile 'junit:junit:4.11'
     }
 
     task makeDirs(description: 'make all dirs for project setup') << {
