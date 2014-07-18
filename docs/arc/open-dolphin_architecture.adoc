@@ -3,7 +3,7 @@
 Describing the OpenDolphin architecture and the architecture of the OpenDolphin library.
 
 This document follows the general format of arc42 architecture documentations but adapts it
-to accommodate the nature of OpenDolphin, which _is_ in architecture in
+to accommodate the nature of OpenDolphin, which _is_ an architecture in
 itself but also provides a library that _has_ an architecture.
 While architecture documentations are usually targeted only to those that are going
 to evolve the system, this document is also for developers that are going
@@ -37,7 +37,7 @@ Migrating between UI technologies is expensive and the tighter the
 UI is coupled to the application logic the more expensive such a migration becomes.
 To make matters worse, UI technologies change frequently. New ones with new
 capabilities appear on the market, users demand the new features, and formerly fashionable
-technologies can suddenly lose popularity.
+technologies can quickly lose popularity.
 
 Any well-designed system today puts its business logic in a place where it is decoupled and
 protected against change. Service-oriented architectures and REST-based approaches
