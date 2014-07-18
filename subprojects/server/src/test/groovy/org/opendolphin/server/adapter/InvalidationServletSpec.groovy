@@ -27,15 +27,15 @@ class InvalidationServletSpec extends Specification {
     }
 
 
-    def mockServlet(String requestURL) {
+    def mockServlet(String url) {
 
         def servlet = new InvalidationServlet()
         def session = [
             invalidate : { -> invalidateWasReached = true }
         ] as HttpSession
         def req = [
-            getSession:  { -> session },
-            requestURL: { -> requestURL }
+            getSession:     { -> session },
+            getRequestURL:  { -> new StringBuffer(url) }
         ] as HttpServletRequest
         def resp = [
             getWriter:   { -> new MockPrintWriter() }
