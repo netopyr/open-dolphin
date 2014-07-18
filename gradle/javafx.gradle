@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-apply plugin: 'groovy'
+ext.jfxrtLocation = new File("${System.properties['java.home']}/jre/lib/jfxrt.jar").parentFile
 
-dependencies {
-    compile project(':client')
-
-    compileOnly ':jfxrt:'
-    testCompile ':jfxrt:'
+for (location in ['lib/jfxrt.jar', 'jre/lib/jfxrt.jar', 'jre/lib/ext/jfxrt.jar']) {
+    File javaHome = new File(System.properties['java.home'])
+    javaHome = javaHome.name == 'jre' ? javaHome.parentFile : javaHome
+    File file = new File(javaHome, location)
+    if (file.exists()) {
+        ext.jfxrtLocation = file.parentFile
+        break
+    }
 }
-
-/*
-test {
-    classpath += files("${jfxrtLocation}/jfxrt.jar")
-}
-*/
-
-cobertura.auxiliaryClasspath += files("${jfxrtLocation}/jfxrt.jar")

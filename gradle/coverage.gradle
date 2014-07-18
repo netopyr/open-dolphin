@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-apply plugin: 'groovy'
+apply plugin: 'cobertura'
 
-dependencies {
-    compile project(':client')
-
-    compileOnly ':jfxrt:'
-    testCompile ':jfxrt:'
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageExcludes = ['.*org.opendolphin.demo.*', '.*org.opendolphin.logo.*']
+    if (plugins.hasPlugin('groovy')) {
+        coverageSourceDirs = sourceSets.main.java.srcDirs + sourceSets.main.groovy.srcDirs
+    }
 }
 
-/*
-test {
-    classpath += files("${jfxrtLocation}/jfxrt.jar")
-}
-*/
-
-cobertura.auxiliaryClasspath += files("${jfxrtLocation}/jfxrt.jar")

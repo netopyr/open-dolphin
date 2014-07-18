@@ -26,6 +26,7 @@ buildscript {
 // Invoke the plugin
 apply plugin: 'js'
 apply plugin: 'typescript'
+apply plugin: 'java'
 
 // Declare the js sources
 javascript.source {

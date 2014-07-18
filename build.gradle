@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-
-ext {
-    jfxLibDir = locateJfxLibDir()
-}
+apply from: rootProject.file('gradle/javafx.gradle')
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'net.sourceforge.cobertura:cobertura:2.0.3'
@@ -31,221 +26,144 @@ buildscript {
     }
 }
 
-subprojects {
-    apply plugin: 'cobertura'
-    apply plugin: 'groovy'
+allprojects {
+    apply plugin: 'base'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    archivesBaseName = "dolphin-${project.name}"
-
-    cobertura {
-        coverageExcludes = ['.*org.opendolphin.demo.*', '.*org.opendolphin.logo.*']
-        rootProject.subprojects.each {
-            coverageDirs << file("subprojects/${it.name}/build/classes/main")
-        }
-        rootProject.subprojects.each {
-            coverageSourceDirs << file("subprojects/${it.name}/src/main/groovy")
-            coverageSourceDirs << file("subprojects/${it.name}/src/main/java")
-        }
-    }
-
     repositories {
-        flatDir name: 'javafx', dirs: [jfxLibDir]
         jcenter()
+        flatDir { dirs jfxrtLocation.absolutePath }
     }
 
-    dependencies {
-        compile "org.codehaus.groovy:groovy-all:$groovyVersion"
-        testCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
-            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-        }
-        testRuntime 'net.saliman:gradle-cobertura-plugin:2.2.4'
-    }
-
-    task makeDirs(description: 'make all dirs for project setup') << {
-        def sources = [sourceSets.main, sourceSets.test]
-        sources*.allSource*.srcDirs.flatten().each { File srcDir ->
-            println "making $srcDir"
-            srcDir.mkdirs()
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
         }
     }
 }
 
-String locateJfxLibDir() {
-    def javaFxHome = System.env['JAVAFX_HOME'] ?: ''
-    def javaHome = System.env['JAVA_HOME'] ?: ''
-    def jdk7 = System.getProperty('java.version')[0..2].toDouble() == 1.7
-    def jdk8 = System.getProperty('java.version')[0..2].toDouble() == 1.8
-    def jdkHome = System.properties.'java.home' ?: ''
+subprojects { subproj ->
+    plugins.withType(GroovyPlugin) {
+        subproj.apply from: rootProject.file('gradle/coverage.gradle')
 
-    def result = "$javaFxHome/rt/lib"
-    if (new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from explicit JAVAFX_HOME: $result"
-        return result
-    }
-    result = "$jdkHome/lib/"
-    if (jdk7 && new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from current java 7: $result"
-        return result
-    }
-    result = "$jdkHome/lib/ext/"
-    if (jdk8 && new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from current java 8: $result"
-        return result
-    }
-    result = "$javaHome/jre/lib/"
-    if (new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from explicit JAVA_HOME: $result"
-        return result
-    }
-    result = "$javaHome/lib/"
-    if (new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from explicit JAVA_HOME: $result"
-        return result
-    }
-    println "please use a Java Version 7_06+"
-    println " or set JAVA_HOME   to a dir that contains the jre/lib/jfxrt.jar"
-    println " or set JAVAFX_HOME to a dir that contains the rt/lib/jfxrt.jar"
-    System.exit 1
-}
+        configurations {
+            compileOnly
+            testCompileOnly
+        }
 
-def mavenizedProjects() {
-    [
-            project(':client'),
-            project(':client-javafx'),
-            project(':shared'),
-            project(':server'),
-            project(':combined'),
-            project(':demo-javafx-server'), // for testing with dolphin-grails
-            project(':demo-javafx-shared'), // for testing with dolphin-grails
-    ]
-}
+        subproj.archivesBaseName = "dolphin-${project.name}"
 
-configure(mavenizedProjects()) {
-    apply plugin: 'maven'
-    apply plugin: 'signing'
+        subproj.tasks.withType(JavaCompile) {
+            sourceCompatibility = '1.6'
+            targetCompatibility = '1.6'
+        }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    javadoc {
-        failOnError = false
-    }
-
-    task groovydocJar(type: Jar, dependsOn:groovydoc) {
-        classifier = 'javadoc'
-        from groovydoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives groovydocJar
-    }
-
-    signing {
-        required { gradle.taskGraph.hasTask(uploadArchives) }
-        sign configurations.archives
-    }
-
-    gradle.taskGraph.whenReady { taskGraph ->
-        if (taskGraph.hasTask(uploadArchives)) {
-            uploadArchives {
-                repositories.mavenDeployer {
-                    def nexusURL = version.endsWith('SNAPSHOT') ? nexusDeployURL : nexusReleaseDelopyURL
-                    def sonatypeURL = version.endsWith('SNAPSHOT') ? sonatypeDeployURL : sonatypeReleaseDeployURL
-                    beforeDeployment { MavenDeployment deployment ->
-                        signing.signPom(deployment)
-                    }
-                    if (project.hasProperty('mavenCentral')) {
-                        repository(url: sonatypeURL) {
-                            authentication(userName: sonatypeUser, password: sonatypePassword)
-                        }
-                    } else {
-                        repository(url: nexusURL) {
-                            authentication(userName: nexusDeployUser, password: nexusDeployPassword)
-                        }
-                    }
-                    pom.project {
-                        name 'Open Dolphin'
-                        packaging 'jar'
-                        description 'Dolphin is a free open-source library that bridges the worlds of enterprise Java and desktop Java.' +
-                                    ' It uses presentation models to bind client-side views to server-side actions.'
-                        url 'http://open-dolphin.org/'
-
-                        scm {
-                            url 'https://github.com/canoo/open-dolphin.git'
-                            connection 'scm:git@github.com:canoo/open-dolphin.git'
-                            developerConnection 'scm:git@github.com:canoo/open-dolphin.git'
-                        }
-
-                        licenses {
-                            license {
-                                name 'The Apache Software License, Version 2.0'
-                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                                distribution 'repo'
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id 'aalmiray'
-                                name 'Andres Almiray'
-                            }
-                            developer {
-                                id 'clipp'
-                                name 'Christoph Lipp'
-                            }
-                            developer {
-                                id 'DieterHolz'
-                                name 'Dieter Holz'
-                            }
-                            developer {
-                                id 'detlef-brendle'
-                                name 'Detlef Brendle'
-                            }
-                            developer {
-                                id 'Dierk'
-                                name 'Dierk Koenig'
-                            }
-                            developer {
-                                id 'svene'
-                                name 'Sven Ehrke'
-                            }
-                            developer {
-                                id 'jporzelt'
-                                name 'Johannes Porzelt'
-                            }
-                            developer {
-                                id 'kunsingh'
-                                name 'Kunal Singh'
-                            }
-                            developer {
-                                id 'Nicolai82'
-                                name 'Nicolai Kilian'
-                            }
-                            developer {
-                                id 'ToddCostella'
-                                name 'Todd Costella'
-                            }
-                        }
-                    }
-                }
+        dependencies {
+            compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+            testCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
+                exclude group: 'org.codehaus.groovy', module: 'groovy-all'
             }
         }
-    }
 
+        sourceSets {
+            main {
+                compileClasspath += [configurations.compileOnly]
+            }
+            test {
+                compileClasspath += [configurations.testCompileOnly]
+            }
+        }
+
+        javadoc {
+            classpath += [configurations.compileOnly]
+        }
+
+        idea {
+            module {
+                scopes.PROVIDED.plus += [configurations.compileOnly]
+                scopes.PROVIDED.plus += [configurations.testCompileOnly]
+            }
+        }
+
+        task sourceJar(type: Jar) {
+            group 'Build'
+            description 'An archive of the source code'
+            classifier 'sources'
+            from sourceSets.main.allSource
+        }
+
+        tasks.withType(AbstractCompile) {
+            if (rootProject.hasProperty('lint') && rootProject.lint.toBoolean()) {
+                options.compilerArgs = [
+                    '-Xlint:all', '-Xlint:deprecation', '-Xlint:unchecked'
+                ]
+            }
+        }
+
+        task makeDirs(description: 'make all dirs for project setup') << {
+            def sources = [sourceSets.main, sourceSets.test]
+            sources*.allSource*.srcDirs.flatten().each { File srcDir ->
+                println "making $srcDir"
+                srcDir.mkdirs()
+            }
+        }
+
+        if (subproj.publishJars.toBoolean()) {
+            subproj.apply plugin: 'maven'
+            subproj.apply plugin: 'signing'
+
+            task sourcesJar(type: Jar, dependsOn: classes) {
+                group 'Build'
+                description 'An archive of the source code'
+                classifier = 'sources'
+                from sourceSets.main.allSource
+            }
+
+            task javadocJar(type: Jar) {
+                group 'Build'
+                description 'An archive of the javadoc'
+                classifier 'javadoc'
+                from javadoc
+            }
+
+            javadoc {
+                failOnError = false
+            }
+
+            task groovydocJar(type: Jar, dependsOn: groovydoc) {
+                group 'Build'
+                classifier = 'javadoc'
+                from groovydoc.destinationDir
+            }
+
+            jar.finalizedBy sourcesJar
+            jar.finalizedBy groovydocJar
+
+            artifacts {
+                archives sourcesJar
+                archives groovydocJar
+            }
+
+            signing {
+                required { gradle.taskGraph.hasTask(uploadArchives) }
+                sign configurations.archives
+            }
+
+            subproj.apply from: rootProject.file('gradle/publishing.gradle')
+        }
+    }
 }
 
 def distDir = new File(rootDir, 'dist')
 subprojects.each { proj ->
     evaluationDependsOn proj.path
-    proj.jar.doLast { jarTask ->
-        copy {
-            from jarTask.archivePath
-            into distDir
+    if (proj.tasks.findByName('jar')) {
+        proj.jar.doLast { jarTask ->
+            copy {
+                from jarTask.archivePath
+                into distDir
+            }
         }
     }
     proj.tasks.create(name: 'sourceZip', type: Zip) {
@@ -255,15 +173,10 @@ subprojects.each { proj ->
     }
 }
 
-task wrap(type: Wrapper, description: "create a gradlew") {
-    gradleVersion = '1.10'
-}
-
 apply {
     from 'buildSrc/scripts/docsDependencies.gradle'
     from 'buildSrc/scripts/docs.gradle'
 }
-
 
 task apidoc(group: 'Documentation', type: Groovydoc) {
     def coreProjects = subprojects.findAll { !it.name.contains('demo') }
@@ -282,11 +195,13 @@ task apidoc(group: 'Documentation', type: Groovydoc) {
 }
 
 def demos = new File(rootDir, 'subprojects/demo-javafx/combined/src/main/groovy/org/opendolphin/demo')
-        .list()
-        .findAll { it.startsWith('start') && it.endsWith('Demo.groovy') }
-.collect { it - 'start' - 'Demo.groovy' }
+    .list()
+    .findAll { it.startsWith('start') && it.endsWith('Demo.groovy') }
+    .collect { it - 'start' - 'Demo.groovy' }
 
-task listDemos(description: "List all available demos") << { demos.sort().each { println "gradlew ${it}Demo" } }
+task listDemos(description: "List all available demos") << {
+    demos.sort().each { println "gradlew ${it}Demo" }
+}
 
 demos.each { demo ->
     task "${demo}DemoPreparation"(description: "internal") << {
@@ -294,13 +209,15 @@ demos.each { demo ->
     }
     def group = demo.startsWith('Grails') ? 'Demo (server required)' : 'Demo'
     task "${demo}Demo"(group: group, dependsOn: ["${demo}DemoPreparation", ':demo-javafx-combined:run'],
-            description: "start the ${demo} demo") {}
+        description: "start the ${demo} demo") {}
 }
 
-task clean(type: Delete) {
+task cleanRootProject(type: Delete) {
     delete 'build'
     delete 'dist'
 }
+
+clean.finalizedBy cleanRootProject
 
 task(projectCoverage, description: 'This task merges the module cobertura reports and generates one report.') {
     doLast {
@@ -310,7 +227,7 @@ task(projectCoverage, description: 'This task merges the module cobertura report
         args << "${coberturaDir.absolutePath}/result.ser"
         args << '--basedir'
         args << projectDir.absolutePath
-        new File(projectDir,'subprojects').eachFileRecurse {
+        new File(projectDir, 'subprojects').eachFileRecurse {
             if (it.name.matches('.*.ser')) {
                 args << "${it.absolutePath - projectDir.absolutePath}"
             }
@@ -322,7 +239,7 @@ task(projectCoverage, description: 'This task merges the module cobertura report
         args << 'format'
         args << 'html'
         args << '--destination'
-        args << new File(buildDir,'reports/cobertura')
+        args << new File(buildDir, 'reports/cobertura')
         subprojects.each {
             args.addAll(it.sourceSets.main.java.srcDirs)
             args.addAll(it.sourceSets.main.groovy.srcDirs)

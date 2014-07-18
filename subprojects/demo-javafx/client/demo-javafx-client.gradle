@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
+apply plugin: 'groovy'
+
 dependencies {
-    compile ':jfxrt:',
-            project(':demo-javafx-shared'),
+    compile project(':demo-javafx-shared'),
             project(':client-javafx'),
             'org.codehaus.groovyfx:groovyfx:0.2',
             'org.jfxtras:jfxtras-labs:2.2-r4'
+
+    compileOnly ':jfxrt:'
+    testCompile ':jfxrt:'
 }
+
+test {
+    classpath += files("${jfxrtLocation}/jfxrt.jar")
+}
+
+cobertura.auxiliaryClasspath += files("${jfxrtLocation}/jfxrt.jar")
