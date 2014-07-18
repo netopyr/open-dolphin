@@ -24,7 +24,7 @@ public class InvalidationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.pathInfo.contains("invalidate")) {
+        if (req.requestURL.contains("invalidate")) {
             req.session.invalidate()
             resp.writer.write("new session")
         }

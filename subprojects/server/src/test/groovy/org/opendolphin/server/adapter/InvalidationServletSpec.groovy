@@ -27,7 +27,7 @@ class InvalidationServletSpec extends Specification {
     }
 
 
-    def mockServlet(String pathInfo) {
+    def mockServlet(String requestURL) {
 
         def servlet = new InvalidationServlet()
         def session = [
@@ -35,7 +35,7 @@ class InvalidationServletSpec extends Specification {
         ] as HttpSession
         def req = [
             getSession:  { -> session },
-            getPathInfo: { -> pathInfo }
+            requestURL: { -> requestURL }
         ] as HttpServletRequest
         def resp = [
             getWriter:   { -> new MockPrintWriter() }
