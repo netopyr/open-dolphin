@@ -27,6 +27,7 @@ buildscript {
 	}
 }
 
+apply plugin: 'groovy'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-maven'
 apply plugin: 'propdeps-idea'

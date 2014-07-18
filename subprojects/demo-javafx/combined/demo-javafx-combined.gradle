@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+apply plugin: 'groovy'
 apply plugin: 'application'
 
 def mainClassPackage = "org.opendolphin.demo."
@@ -27,8 +28,16 @@ run.doFirst {
 }
 
 dependencies {
-    compile ':jfxrt:',
-            project(':combined'),
+    compile project(':combined'),
             project(':demo-javafx-client'),
             project(':demo-javafx-server')
+
+    compileOnly ':jfxrt:'
+    testCompile ':jfxrt:'
 }
+
+test {
+    classpath += files("${jfxrtLocation}/jfxrt.jar")
+}
+
+cobertura.auxiliaryClasspath += files("${jfxrtLocation}/jfxrt.jar")
