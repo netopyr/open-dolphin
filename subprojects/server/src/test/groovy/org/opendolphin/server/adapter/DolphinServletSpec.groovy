@@ -24,8 +24,8 @@ class DolphinServletSpec extends Specification {
 
         then:
         servlet.registerReached
-
     }
+
     void "calling doPost in new session must reach registration of custom actions - all logging for branch coverage"() {
         given:
         DolphinServlet.log.level = Level.ALL // for full branch coverage

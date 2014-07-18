@@ -39,7 +39,7 @@ abstract class DolphinServlet extends HttpServlet {
         log.finest "received json: $requestJson"
         def commands = dolphin.serverConnector.codec.decode(requestJson)
         def results = new LinkedList()
-        for (command in commands) {
+        for (command in commands) { // a subclass could override this for less defensive exception handling
             log.finest "processing $command"
             results.addAll dolphin.serverConnector.receive(command)
         }
