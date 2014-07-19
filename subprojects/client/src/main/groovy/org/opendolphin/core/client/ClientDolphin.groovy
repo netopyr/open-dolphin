@@ -115,7 +115,12 @@ public class ClientDolphin extends Dolphin {
         new ApplyToAble(dolphin: this, source: source)
     }
 
-    /** Removes the modelToDelete from the client model store,
+    @Override
+    ClientPresentationModel getAt(String id) {
+        return super.getAt(id)
+    }
+
+   /** Removes the modelToDelete from the client model store,
      * detaches all model store listeners,
      * and notifies the server if successful */
     public void delete(ClientPresentationModel modelToDelete) {

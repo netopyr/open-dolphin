@@ -25,7 +25,14 @@ class DeletePresentationModelAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(DeletedPresentationModelNotification) { DeletedPresentationModelNotification command, response ->
             PresentationModel model = serverDolphin.getAt(command.pmId)
-            serverDolphin.remove(model)
+
+            // we cannot do serverDolphin.remove(model) since that may trigger another DeleteCommand
+            // we need to do it silently.
+            // todo: check whether there are more operations on PMs that need to be done silently, and
+            // consider introducing a "silent" mode on PMs just like we have for ServerAttributes
+
+            serverDolphin.serverModelStore.remove(model)
+
         }
     }
 }
