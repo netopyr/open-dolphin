@@ -103,7 +103,19 @@ class ServerDolphin extends Dolphin {
         register(serverAction)
     }
 
-    // todo: should override add(model) such that CreatePresentationModelCommand is issued
+    /**
+     * Adding the model to the model store and if successful, sending the CreatePresentationModelCommand.
+     * @param model the model to be added.
+     * @return whether the adding was successful, which implies that also the command has been sent
+     */
+    @Override
+    boolean add(PresentationModel model) {
+        def result = super.add(model)
+        if (result){
+            serverModelStore.currentResponse << CreatePresentationModelCommand.makeFrom(model)
+        }
+        return result
+    }
 
     /**
      * Create a presentation model on the server side, add it to the model store, and send a command to
@@ -120,8 +132,7 @@ class ServerDolphin extends Dolphin {
         }
         ServerPresentationModel model = new ServerPresentationModel(id, attributes, serverModelStore)
         model.presentationModelType = presentationModelType
-        serverModelStore.add(model) // todo should use the to-be-overridden add(model) method
-        serverModelStore.currentResponse << CreatePresentationModelCommand.makeFrom(model)
+        add model
         return model
     }
 

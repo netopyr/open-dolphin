@@ -45,7 +45,7 @@ class KbsVanishedPmTests extends GroovyTestCase {
         context = new TestInMemoryConfig()
         serverDolphin = context.serverDolphin
         clientDolphin = context.clientDolphin
-//        LogConfig.noLogs()
+        LogConfig.noLogs()
     }
 
     @Override
