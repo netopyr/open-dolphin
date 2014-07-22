@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import java.text.SimpleDateFormat
+
 apply from: rootProject.file('gradle/javafx.gradle')
 
 buildscript {
@@ -23,7 +25,14 @@ buildscript {
     dependencies {
         classpath 'net.sourceforge.cobertura:cobertura:2.0.3'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
     }
+}
+
+Date buildTimeAndDate = new Date()
+ext {
+    buildDate = new SimpleDateFormat('yyyy-MM-dd').format(buildTimeAndDate)
+    buildTime = new SimpleDateFormat('HH:mm:ss.SSSZ').format(buildTimeAndDate)
 }
 
 allprojects {
@@ -86,13 +95,6 @@ subprojects { subproj ->
             }
         }
 
-        task sourceJar(type: Jar) {
-            group 'Build'
-            description 'An archive of the source code'
-            classifier 'sources'
-            from sourceSets.main.allSource
-        }
-
         tasks.withType(AbstractCompile) {
             if (rootProject.hasProperty('lint') && rootProject.lint.toBoolean()) {
                 options.compilerArgs = [
@@ -110,21 +112,11 @@ subprojects { subproj ->
         }
 
         if (subproj.publishJars.toBoolean()) {
-            subproj.apply plugin: 'maven'
-            subproj.apply plugin: 'signing'
-
-            task sourcesJar(type: Jar, dependsOn: classes) {
+            task sourceJar(type: Jar, dependsOn: classes) {
                 group 'Build'
                 description 'An archive of the source code'
                 classifier = 'sources'
                 from sourceSets.main.allSource
-            }
-
-            task javadocJar(type: Jar) {
-                group 'Build'
-                description 'An archive of the javadoc'
-                classifier 'javadoc'
-                from javadoc
             }
 
             javadoc {
@@ -137,20 +129,16 @@ subprojects { subproj ->
                 from groovydoc.destinationDir
             }
 
-            jar.finalizedBy sourcesJar
-            jar.finalizedBy groovydocJar
+            subproj.apply from: rootProject.file('gradle/publishing.gradle')
 
             artifacts {
-                archives sourcesJar
+                archives jar
+                archives sourceJar
                 archives groovydocJar
             }
 
-            signing {
-                required { gradle.taskGraph.hasTask(uploadArchives) }
-                sign configurations.archives
-            }
-
-            subproj.apply from: rootProject.file('gradle/publishing.gradle')
+            jar.finalizedBy sourceJar
+            jar.finalizedBy groovydocJar
         }
     }
 }
@@ -240,9 +228,12 @@ task(projectCoverage, description: 'This task merges the module cobertura report
         args << 'html'
         args << '--destination'
         args << new File(buildDir, 'reports/cobertura')
-        subprojects.each {
-            args.addAll(it.sourceSets.main.java.srcDirs)
-            args.addAll(it.sourceSets.main.groovy.srcDirs)
+        subprojects.each { subproj ->
+            args.addAll(subproj.sourceSets.main.java.srcDirs)
+            // must filter as not every project has the groovy plugin applied
+            if (subproj.plugins.hasPlugin('groovy')) {
+                args.addAll(subproj.sourceSets.main.groovy.srcDirs)
+            }
         }
         net.sourceforge.cobertura.reporting.Main.main(args as String[]);
     }
