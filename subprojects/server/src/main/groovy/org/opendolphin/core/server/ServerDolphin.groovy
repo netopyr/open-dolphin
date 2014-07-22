@@ -104,6 +104,20 @@ class ServerDolphin extends Dolphin {
     }
 
     /**
+     * Adding the model to the model store and if successful, sending the CreatePresentationModelCommand.
+     * @param model the model to be added.
+     * @return whether the adding was successful, which implies that also the command has been sent
+     */
+    @Override
+    boolean add(PresentationModel model) {
+        def result = super.add(model)
+        if (result){
+            serverModelStore.currentResponse << CreatePresentationModelCommand.makeFrom(model)
+        }
+        return result
+    }
+
+    /**
      * Create a presentation model on the server side, add it to the model store, and send a command to
      * the client, advising him to do the same.
      * @throws IllegalArgumentException if a presentation model for this id already exists. No commands are sent in this case.
@@ -118,8 +132,7 @@ class ServerDolphin extends Dolphin {
         }
         ServerPresentationModel model = new ServerPresentationModel(id, attributes, serverModelStore)
         model.presentationModelType = presentationModelType
-        serverModelStore.add(model)
-        serverModelStore.currentResponse << CreatePresentationModelCommand.makeFrom(model)
+        add model
         return model
     }
 

@@ -14,6 +14,7 @@ class StoreAttributeActionTests extends GroovyTestCase {
     @Override
     protected void setUp() throws Exception {
         dolphin = new ServerDolphin()
+        dolphin.serverModelStore.currentResponse = []
         registry = new ActionRegistry()
     }
 
