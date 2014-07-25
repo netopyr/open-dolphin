@@ -26,10 +26,13 @@ export module dolphin {
                 onDone([]);
             }
 
-            this.http.onloadend = (evt:ProgressEvent) => {
-                var responseText = this.http.responseText;
-                var responseCommands = this.codec.decode(responseText);
-                onDone(responseCommands);
+            this.http.onreadystatechange= (evt:ProgressEvent) => {
+                if (this.http.readyState==4 && this.http.status==200)
+                {
+                    var responseText = this.http.responseText;
+                    var responseCommands = this.codec.decode(responseText);
+                    onDone(responseCommands);
+                }
             }
 
             this.http.open('POST', this.url, true);
