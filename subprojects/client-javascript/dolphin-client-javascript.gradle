@@ -41,15 +41,15 @@ javascript.source {
 // does not work with Java 8 !
 requireJs {
     source = javascript.source.dev.js.files
-    dest = "${buildDir}/raw-opendolphin.js"
+    dest = file("${buildDir}/raw-opendolphin.js")
     requirejs.options = [
-        name: "OpenDolphin",
+        name: "opendolphin",
         baseUrl: "js/dolphin",
         optimize: "none"            // comment this line for full ugly minification
     ]
 } << {
     copy {
-        from   "${buildDir}/raw-opendolphin.js"
+        from   file("${buildDir}/raw-opendolphin.js")
         into   buildDir
         rename ".*", "opendolphin.js"
         filter { String line -> line.replaceAll(/\.{2}\/\.{2}\/js\/dolphin\//, '')}
