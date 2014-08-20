@@ -38,16 +38,16 @@ class InvalidationServletSpec extends Specification {
             getRequestURL:  { -> new StringBuffer(url) }
         ] as HttpServletRequest
         def resp = [
-            getWriter:   { -> new MockPrintWriter() }
+            getWriter:   { -> new MockPrintWriter("whatever") }
         ] as HttpServletResponse
         return [ servlet, req, resp ]
     }
 
 }
 
-class MockPrintWriter extends PrintWriter {
+public class MockPrintWriter extends PrintWriter {
     MockPrintWriter() throws FileNotFoundException {
-        super("whatever")
+        super(new StringWriter())
     }
     @Override
     void write(String s) {
