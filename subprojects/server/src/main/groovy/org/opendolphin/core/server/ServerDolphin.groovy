@@ -188,8 +188,7 @@ class ServerDolphin extends Dolphin {
 
     /** Convenience method to let Dolphin remove a presentation model directly on the server and notify the client.*/
     boolean remove(ServerPresentationModel pm){
-        serverModelStore.remove(pm)
-        boolean deleted = null == getAt(pm.id)
+        boolean deleted = serverModelStore.remove(pm)
         if (deleted) {
             ServerDolphin.deleteCommand(serverModelStore.currentResponse, pm)
         }
