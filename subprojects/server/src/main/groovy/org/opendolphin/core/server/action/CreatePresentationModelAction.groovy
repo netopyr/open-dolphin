@@ -37,9 +37,12 @@ class CreatePresentationModelAction extends DolphinServerAction {
     }
 
     private static void createPresentationModel(CreatePresentationModelCommand command, ServerDolphin serverDolphin) {
-        if (command.pmId.endsWith(ServerPresentationModel.AUTO_ID_SUFFIX)) {
-            log.info("Cannot create PM '$command.pmId' with forbidden suffix. Create PM ignored.")
+        if(serverDolphin.getAt(command.pmId) != null) {
+            log.info("Ignoring create PM '$command.pmId' since it is already in the model store.")
             return
+        }
+        if (command.pmId.endsWith(ServerPresentationModel.AUTO_ID_SUFFIX)) {
+            log.info("Creating the PM '$command.pmId' with reserved server-auto-suffix.")
         }
         List<ServerAttribute> attributes = new LinkedList()
         for (Map<String, Object> attr in command.attributes) {

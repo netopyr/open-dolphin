@@ -16,6 +16,7 @@
 
 package org.opendolphin.core.server
 
+import groovy.util.logging.Log
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.BasePresentationModel
 import org.opendolphin.core.PresentationModel
@@ -23,7 +24,7 @@ import org.opendolphin.core.Tag
 import groovy.transform.CompileStatic
 import org.opendolphin.core.comm.SwitchPresentationModelCommand
 
-@CompileStatic
+@CompileStatic @Log
 class ServerPresentationModel extends BasePresentationModel {
 
     public static final String AUTO_ID_SUFFIX = "-AUTO-SRV"
@@ -36,7 +37,10 @@ class ServerPresentationModel extends BasePresentationModel {
     ServerPresentationModel(String id, List<ServerAttribute> attributes, ServerModelStore serverModelStore) {
         super(id ?: makeId(serverModelStore), attributes)
         if (id?.endsWith(AUTO_ID_SUFFIX)) {
-            throw new IllegalArgumentException("presentation model with self-provided id '$id' may not end with suffix '$AUTO_ID_SUFFIX' since that is reserved.")
+            log.info("Creating a PM with self-provided id '$id' even though it ends with a reserved suffix.")
+            // the IAE should no longer be thrown to better handle back notifications.
+            // We may want to re-enable this as soon as commands and notifications are better separated.
+//            throw new IllegalArgumentException("presentation model with self-provided id '$id' may not end with suffix '$AUTO_ID_SUFFIX' since that is reserved.")
         }
         modelStore = serverModelStore
     }

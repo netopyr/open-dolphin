@@ -19,6 +19,7 @@ package org.opendolphin.core.comm
 import groovy.transform.Canonical
 
 @Canonical
+// todo: send this on server PM rebase but allow also silent resets of meta data
 class SavedPresentationModelNotification extends Command {
     String pmId
 

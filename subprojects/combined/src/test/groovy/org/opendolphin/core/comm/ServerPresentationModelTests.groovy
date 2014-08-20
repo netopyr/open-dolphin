@@ -57,10 +57,11 @@ class ServerPresentationModelTests extends GroovyTestCase {
         context.assertionsDone()
     }
 
-    void testServerPresentationModelRejectsAutoId() {
-        shouldFail IllegalArgumentException, {
-            new ServerPresentationModel("1${ServerPresentationModel.AUTO_ID_SUFFIX}", [], new ServerModelStore())
-        }
+    void testServerPresentationModelDoesNotRejectAutoId() {
+        // re-enable the shouldFail once we have proper Separation of commands and notifications
+//        shouldFail IllegalArgumentException, {
+        assert new ServerPresentationModel("1${ServerPresentationModel.AUTO_ID_SUFFIX}", [], new ServerModelStore())
+//        }
         context.assertionsDone()
     }
 

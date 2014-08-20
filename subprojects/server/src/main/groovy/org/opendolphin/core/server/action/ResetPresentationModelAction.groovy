@@ -23,6 +23,7 @@ import org.opendolphin.core.comm.PresentationModelResetedCommand
 import org.opendolphin.core.comm.ResetPresentationModelCommand
 import org.opendolphin.core.server.comm.ActionRegistry
 
+// todo: check whether this is needed at all or superseded by the MetaDataChangeCommand
 class ResetPresentationModelAction implements ServerAction {
     private final ModelStore modelStore
 

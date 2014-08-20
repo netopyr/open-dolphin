@@ -49,9 +49,14 @@ class StoreAttributeAction extends DolphinServerAction {
         }
 
         registry.register(ChangeAttributeMetadataCommand) { ChangeAttributeMetadataCommand command, response ->
-            def attribute = serverDolphin.serverModelStore.findAttributeById(command.attributeId)
-            if (!attribute) return
-            attribute[command.metadataName] = command.value
+            def attribute = serverDolphin.findAttributeById(command.attributeId)
+            if (!attribute) {
+                log.warning("Cannot find attribute with id '$command.attributeId'. Metadata remains unchanged.")
+                return
+            }
+            attribute.silently {
+                attribute[command.metadataName] = command.value
+            }
         }
     }
 }
