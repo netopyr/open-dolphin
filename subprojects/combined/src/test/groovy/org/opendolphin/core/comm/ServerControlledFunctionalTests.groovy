@@ -127,6 +127,7 @@ class ServerControlledFunctionalTests extends GroovyTestCase {
         serverDolphin.action("remove") { cmd, list ->
             def myPm = serverDolphin.getAt("myPm")
             serverDolphin.remove(myPm)
+            assert null == serverDolphin.getAt("myPm")
         }
 
         clientDolphin.send("createPM"){
