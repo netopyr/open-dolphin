@@ -77,9 +77,7 @@ class ServerPresentationModelTests extends GroovyTestCase {
         }
 
         clientDolphin.send "setValue"
-        clientDolphin.send "assertValue"
-
-        clientDolphin.sync {
+        clientDolphin.send "assertValue", {
             assert 1 == model.att1.value
             context.assertionsDone()
         }
