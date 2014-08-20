@@ -72,7 +72,7 @@ public class EventBusSpec extends Specification {
         given: "an event bus with maxQueueLength of 1"
         def bus  = new EventBus(1)
         def flow = new DataflowQueue()
-        def done = new CountDownLatch(9)
+        def done = new CountDownLatch(10)
         flow.wheneverBound {
             assert flow.length() < 2
             done.countDown()
