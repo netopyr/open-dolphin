@@ -336,6 +336,11 @@ class ServerDolphin extends Dolphin {
         (ServerPresentationModel) super.getAt(pmId)
     }
 
+    @Override
+    ServerPresentationModel findPresentationModelById(String id) {
+        return (ServerPresentationModel) super.findPresentationModelById(id)
+    }
+
     public ServerAttribute findAttributeById(String id) {
         return (ServerAttribute) super.findAttributeById(id);
     }
@@ -348,5 +353,10 @@ class ServerDolphin extends Dolphin {
     @Override
     List<ServerAttribute> findAllAttributesByQualifier(String qualifier) {
         return (List<ServerAttribute>) super.findAllAttributesByQualifier(qualifier)
+    }
+
+    @Override
+    Collection<ServerPresentationModel> listPresentationModels() {
+        return (Collection<ServerPresentationModel>) super.listPresentationModels()
     }
 }
