@@ -192,6 +192,7 @@ class ServerDolphin extends Dolphin {
         if (deleted) {
             ServerDolphin.deleteCommand(serverModelStore.currentResponse, pm)
         }
+        return deleted
     }
 
     /** Convenience method to let Dolphin remove all presentation models of a given type directly on the server and notify the client.*/
