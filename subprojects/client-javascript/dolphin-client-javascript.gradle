@@ -1,11 +1,15 @@
 // To produce '${buildDir}/opendolphin.js' from the typescript files underneath 'js/dolphin' do the following:
 //
-// Run typescript compiler (needs nodejs and tsc installation):
-//  ./gradlew compileTypeScript
+// Run typescript compiler (needs nodejs and tsc installation) from within the folder 'open-dolphin/subprojects/client-javascript':
+//  ../..//gradlew compileTypeScript
 //    which reads *.ts files from 'js/dolphin' and transpiles them into *.js and *.map files into 'js/dolphin'
 // Then run:
-//  ./gradlew requireJS
+//  ../../gradlew requireJS
 // which produces 'build/opendolphin.js' containing all the dolphin code.
+//
+// Then run:
+//  ../../gradlew updateGrailsJs
+// so that 'build/opendolphin.js' is copied to the folder of the grails application
 //
 // see also: https://github.com/eriwen/gradle-js-plugin
 // Pull the plugin from Maven Central
@@ -43,7 +47,7 @@ requireJs {
     source = javascript.source.dev.js.files
     dest = file("${buildDir}/raw-opendolphin.js")
     requirejs.options = [
-        name: "opendolphin",
+        name: "OpenDolphin",
         baseUrl: "js/dolphin",
         optimize: "none"            // comment this line for full ugly minification
     ]
@@ -52,7 +56,9 @@ requireJs {
         from   file("${buildDir}/raw-opendolphin.js")
         into   buildDir
         rename ".*", "opendolphin.js"
-        filter { String line -> line.replaceAll(/\.{2}\/\.{2}\/js\/dolphin\//, '')}
+		// Collapse paths like '../../js/dolphin/../../js/dolphin/../../js/dolphin/Command' to 'Command'
+		// and replace 'define('OpenDolphin'...' (coming from 'OpenDolphin.ts') with 'define('opendolphin'...' so that the all-in-one opendolphin.js contains the correct name 'opendolphin' for the entry module:
+        filter { String line -> line.replaceAll(/\.{2}\/\.{2}\/js\/dolphin\//, '').replace('define(\'OpenDolphin\'', 'define(\'opendolphin\'') }
     }
 }
 
