@@ -35,15 +35,16 @@ public class JsonCodecTest extends GroovyTestCase {
     void assertSoManyCommands(int count) {
         def codec = new JsonCodec()
         def commands = []
-        count.times{
-            commands << new AttributeCreatedNotification(pmId: it, attributeId: "${it*count}C", propertyName: "prop$it", newValue: "value$it", qualifier: null)
+        count.times {
+            commands << new AttributeCreatedNotification(pmId: it, attributeId: "${it * count}C", propertyName: "prop$it", newValue: "value$it", qualifier: null)
         }
         def coded = codec.encode(commands)
         def decoded = codec.decode(coded)
         assert commands.toString() == decoded.toString()
     }
+
     void testCodingCreatePresentationModelCommandWithDisallowedSelfReflectiveMapEntry() {
-        def map = [ propertyName: 'x', qualifier: null ]
+        def map = [propertyName: 'x', qualifier: null]
         map.value = map
         shouldFail {
             assertCodingCreatePresentationModel(map)
@@ -51,7 +52,7 @@ public class JsonCodecTest extends GroovyTestCase {
     }
 
     void testCodingCreatePresentationModelWithStructuredEntry() {
-        def map = [ propertyName: 'x', qualifier: null ]
+        def map = [propertyName: 'x', qualifier: null]
         map.value = "ok"
         assertCodingCreatePresentationModel(map)
     }
@@ -70,13 +71,13 @@ public class JsonCodecTest extends GroovyTestCase {
     }
 
     void testCodingCommands() {
-        assertCodingCommand(new AttributeCreatedNotification(tag:Tag.TOOLTIP))
+        assertCodingCommand(new AttributeCreatedNotification(tag: Tag.TOOLTIP))
         assertCodingCommand(new AttributeMetadataChangedCommand())
         assertCodingCommand(new CallNamedActionCommand("some-action"))
         assertCodingCommand(new CreatePresentationModelCommand())
         assertCodingCommand(new ChangeAttributeMetadataCommand())
         assertCodingCommand(new GetPresentationModelCommand())
-        assertCodingCommand(new DataCommand([a:1, b:2]))
+        assertCodingCommand(new DataCommand([a: 1, b: 2]))
         assertCodingCommand(new DeleteAllPresentationModelsOfTypeCommand())
         assertCodingCommand(new DeletedAllPresentationModelsOfTypeNotification())
         assertCodingCommand(new DeletedPresentationModelNotification())
@@ -101,6 +102,33 @@ public class JsonCodecTest extends GroovyTestCase {
         assert commands.toString().toList().sort() == decoded.toString().toList().sort()
     }
 
+    void testProperTypeEnAndDecoding() {
+        assertCorrectEnAndDecoding('n', 't')
+        assertCorrectEnAndDecoding('\n', '\t')
+        assertCorrectEnAndDecoding("String", "newString")
+        assertCorrectEnAndDecoding(true, false)
+        assertCorrectEnAndDecoding(Integer.MAX_VALUE, Integer.MIN_VALUE)
+        assertCorrectEnAndDecoding(Long.MAX_VALUE, Long.MIN_VALUE)
+        assertCorrectEnAndDecoding(new Date(0, 0, 1900), new Date(1, 1, 2000))
+        assertCorrectEnAndDecoding(new BigDecimal(Double.MAX_VALUE), new BigDecimal(Double.MIN_VALUE))
+        // is decoded as Long !
+        assertCorrectEnAndDecoding(Double.MAX_VALUE, Double.MIN_VALUE)              // is decoded as BigDecimal !
+        assertCorrectEnAndDecoding(Float.MAX_VALUE, Float.MIN_VALUE)                // is decoded as BigDecimal !
+    }
+
+    private void assertCorrectEnAndDecoding(Object oldValue, Object newValue) {
+        def codec = new JsonCodec()
+        def in_command = new ValueChangedCommand("bla", oldValue, newValue);
+        def coded = codec.encode([in_command])
+
+        def out_command = codec.decode(coded)[0];
+        assert in_command != out_command;
+        assert in_command.attributeId == out_command.attributeId
+        assert in_command.oldValue.class == out_command.oldValue.class
+        assert in_command.oldValue == out_command.oldValue
+        assert in_command.newValue.class == out_command.newValue.class
+        assert in_command.newValue == out_command.newValue
+    }
 
 
 }
