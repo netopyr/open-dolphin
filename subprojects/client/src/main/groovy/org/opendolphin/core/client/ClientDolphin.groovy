@@ -139,6 +139,7 @@ public class ClientDolphin extends Dolphin {
      * inside the given presentation model and for the given property name.
      * @return the ClientAttribute that carries the tag value
      */
+    // todo: make this available on the server side as well
     public ClientAttribute tag(ClientPresentationModel model, String propertyName, Tag tag, def value) {
         def attribute = new ClientAttribute(propertyName, value, null, tag)
         addAttributeToModel(model, attribute)
