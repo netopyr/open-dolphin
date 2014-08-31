@@ -2,6 +2,9 @@
 .tooltip {
     -fx-background-color:firebrick;
 }
+.tooltip > .label {
+    -fx-text-fill:   white;
+}
 
 #header {
     -fx-font-size: 18;
