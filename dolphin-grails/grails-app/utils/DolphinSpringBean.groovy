@@ -10,6 +10,7 @@ import org.opendolphin.demo.DemoTitlePurposeAction
 import org.opendolphin.demo.ManyEventsAction
 import org.opendolphin.demo.PerformanceAction
 import org.opendolphin.demo.SharedTachoAction
+import org.opendolphin.demo.TesselAction
 import org.opendolphin.demo.TutorialAction
 import org.opendolphin.demo.VehiclePushActions
 import org.opendolphin.demo.SmallFootprintAction
@@ -38,7 +39,7 @@ class DolphinSpringBean {
     ) {
 
         Logger.getLogger("").level = Level.INFO
-//        LogConfig.logCommunication()
+        LogConfig.logCommunication()
 //        LogConfig.noLogs()
 
         log.info "creating new dolphin session"
@@ -62,6 +63,8 @@ class DolphinSpringBean {
 
         dolphin.register(new ChatterActions().subscribedTo(chatterBus))
         dolphin.getServerConnector().register(new ChatterRelease(chatterBus));
+
+        dolphin.register(new TesselAction())
 
     }
 }
