@@ -13,6 +13,7 @@
 		<link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
 		<link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
 
+
     <script data-main="${resource(dir: 'dolphin', file: 'opendolphin.js')}"
             src="${resource(dir: 'libs', file: 'require.js')}">
     </script>

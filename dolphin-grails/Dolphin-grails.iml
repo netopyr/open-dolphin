@@ -42,7 +42,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="grails-2.3.4" level="application" />
+    <orderEntry type="library" name="grails-2.4.3" level="application" />
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library (dolphin-grails)">
         <CLASSES>
@@ -99,8 +99,6 @@
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="dolphin-grails-grailsPlugins" />
-    <orderEntry type="module" module-name="Dolphin-grails-grailsPlugins" />
   </component>
 </module>
 
