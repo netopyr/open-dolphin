@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Dolphin-grails.iml" filepath="$PROJECT_DIR$/Dolphin-grails.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dolphin-grails-grailsPlugins.iml" filepath="$PROJECT_DIR$/dolphin-grails-grailsPlugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Dolphin-grails-grailsPlugins.iml" filepath="$PROJECT_DIR$/Dolphin-grails-grailsPlugins.iml" />
     </modules>
   </component>
 </project>
