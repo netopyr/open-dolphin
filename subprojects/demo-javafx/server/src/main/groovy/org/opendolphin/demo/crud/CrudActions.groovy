@@ -77,6 +77,6 @@ class CrudActions extends DolphinServerAction {
         def positions    = allPositions.findAll { it[PORTFOLIO_ID].value == portfolioDomainId }
         def total        = positions.sum { it[WEIGHT].value }
 
-        changeValue(currentPortfolio[TOTAL], total)
+        currentPortfolio[TOTAL].value = total
     }
 }
