@@ -69,6 +69,18 @@ public class JsonCodecTest extends GroovyTestCase {
         assert commands.toString().toList().sort() == decoded.toString().toList().sort() // ;-)
     }
 
+    void testCodingSpecialCharacters() {
+        def codec = new JsonCodec()
+        def commands = []
+        def specialChars = "äöüéèà ☺ "
+        commands << new CreatePresentationModelCommand(pmId: specialChars, attributes: [[attr: specialChars]])
+        def coded = codec.encode(commands)
+        def decoded = codec.decode(coded)
+        CreatePresentationModelCommand cmd = decoded.first()
+        assert cmd.pmId == specialChars
+        assert cmd.attributes.first().attr == specialChars
+    }
+
     void testCodingCommands() {
         assertCodingCommand(new AttributeCreatedNotification(tag:Tag.TOOLTIP))
         assertCodingCommand(new AttributeMetadataChangedCommand())

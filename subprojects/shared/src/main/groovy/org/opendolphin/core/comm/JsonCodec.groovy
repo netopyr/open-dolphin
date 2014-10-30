@@ -47,7 +47,7 @@ class JsonCodec implements Codec {
             }   }
             entry
         }
-        JsonBuilder builder = new JsonBuilder(content)
+        JsonBuilder builder = new JsonBuilder(content) // todo dk: here and in Slurper: think about charset UTF-8
         builder.toString()
     }
 
