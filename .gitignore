@@ -10,3 +10,4 @@ out
 gradle-app.setting
 *.js.map
 
+dolphin-grails/target
