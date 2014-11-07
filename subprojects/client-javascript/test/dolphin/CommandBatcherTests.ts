@@ -66,9 +66,9 @@ export module dolphin {
         }
 
         blindFolding() {
-            var cmd1    : vcc.dolphin.ValueChangedCommand = new vcc.dolphin.ValueChangedCommand(1, 0, 1);
-            var cmd2    : vcc.dolphin.ValueChangedCommand = new vcc.dolphin.ValueChangedCommand(2, 0, 1); // other id, will be batched
-            var cmd3    : vcc.dolphin.ValueChangedCommand = new vcc.dolphin.ValueChangedCommand(1, 1, 2); // will be folded
+            var cmd1    : vcc.dolphin.ValueChangedCommand = new vcc.dolphin.ValueChangedCommand("1", 0, 1);
+            var cmd2    : vcc.dolphin.ValueChangedCommand = new vcc.dolphin.ValueChangedCommand("2", 0, 1); // other id, will be batched
+            var cmd3    : vcc.dolphin.ValueChangedCommand = new vcc.dolphin.ValueChangedCommand("1", 1, 2); // will be folded
 
             var queue = [
                 { command: cmd1, handler: null },
@@ -82,7 +82,7 @@ export module dolphin {
             var result = batcher.batch(queue);
             this.areIdentical( result.length, 2);
 
-            this.areIdentical(result[0].command['attributeId'], 1);
+            this.areIdentical(result[0].command['attributeId'], "1");
             this.areIdentical(result[0].command['oldValue'],    0);
             this.areIdentical(result[0].command['newValue'],    2);
             this.areIdentical(result[1], unfolded);

@@ -116,7 +116,7 @@ export module dolphin {
             var result = pm.findAttributeById(ca1.id);
             this.areIdentical(ca1,result);
             // find by invalid id
-            result=pm.findAttributeById(-1);
+            result=pm.findAttributeById("no-such-id");
             this.areIdentical(result, null);
         }
 

@@ -3,7 +3,7 @@ export module dolphin {
     export class Codec {
 
         encode(commands:any) {
-            return JSON.stringify(commands);
+            return JSON.stringify(commands); // todo dk: look for possible API support for character encoding
         }
 
         decode(transmitted:any) {

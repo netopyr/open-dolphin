@@ -6,6 +6,7 @@ import cd     = require("../../js/dolphin/ClientDolphin")
 import cms    = require("../../js/dolphin/ClientModelStore")
 import ca     = require("../../js/dolphin/ClientAttribute")
 import cmd    = require("../../js/dolphin/Command")
+import scmd   = require("../../js/dolphin/SignalCommand")
 
 
 export module dolphin {
@@ -13,6 +14,8 @@ export module dolphin {
     class TestTransmitter implements cc.dolphin.Transmitter {
         constructor(public clientCommands, public serverCommands) {
         }
+
+        signal(command:scmd.dolphin.SignalCommand) : void { /* do nothing */; }
 
         transmit(commands:cmd.dolphin.Command[], onDone:(result:cmd.dolphin.Command[]) => void):void {
             this.clientCommands = commands;

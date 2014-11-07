@@ -154,7 +154,7 @@ export module dolphin {
             return matches;
         }
 
-        addPresentationModelByType(model:pm.dolphin.ClientPresentationModel) {
+        addPresentationModelByType(model:pm.dolphin.ClientPresentationModel) { // todo: check findAllPMsByType is working on an updated index
             if (!model) {
                 return;
             }

@@ -56,11 +56,11 @@ export module dolphin {
         }
 
         testCodingCommands() {
-            this.isTrue(CodecTestHelper.testCodingCommand(new attrCreatedCmd.dolphin.AttributeCreatedNotification("pmId", 5, "prop", "value", "qualifier", "TOOLTIP")))
-            this.isTrue(CodecTestHelper.testCodingCommand(new mdcCmd.dolphin.AttributeMetadataChangedCommand(5, "name", "value")))
+            this.isTrue(CodecTestHelper.testCodingCommand(new attrCreatedCmd.dolphin.AttributeCreatedNotification("pmId", "5", "prop", "value", "qualifier", "TOOLTIP")))
+            this.isTrue(CodecTestHelper.testCodingCommand(new mdcCmd.dolphin.AttributeMetadataChangedCommand("5", "name", "value")))
             this.isTrue(CodecTestHelper.testCodingCommand(new callNameCmd.dolphin.CallNamedActionCommand("some-action")))
             this.isTrue(CodecTestHelper.testCodingCommand(new createPMCmd.dolphin.CreatePresentationModelCommand(new cpm.dolphin.ClientPresentationModel("MyId", "MyType"))))
-            this.isTrue(CodecTestHelper.testCodingCommand(new changeAttrCmd.dolphin.ChangeAttributeMetadataCommand(5, "name", "value")))
+            this.isTrue(CodecTestHelper.testCodingCommand(new changeAttrCmd.dolphin.ChangeAttributeMetadataCommand("5", "name", "value")))
             this.isTrue(CodecTestHelper.testCodingCommand(new getPMCmd.dolphin.GetPresentationModelCommand("pmId")))
             this.isTrue(CodecTestHelper.testCodingCommand(new dataCmd.dolphin.DataCommand("test")));
             this.isTrue(CodecTestHelper.testCodingCommand(new delAllPMCmd.dolphin.DeleteAllPresentationModelsOfTypeCommand("type")))
@@ -69,14 +69,14 @@ export module dolphin {
             this.isTrue(CodecTestHelper.testCodingCommand(new delPMCmd.dolphin.DeletePresentationModelCommand("pmId")))
             this.isTrue(CodecTestHelper.testCodingCommand(new emptyNot.dolphin.EmptyNotification()))
             this.isTrue(CodecTestHelper.testCodingCommand(new initAttr.dolphin.InitializeAttributeCommand("pmId", "prop", "qualifier", "value", "pmType")))
-            this.isTrue(CodecTestHelper.testCodingCommand(new bvcCmd.dolphin.BaseValueChangedCommand(5)))
+            this.isTrue(CodecTestHelper.testCodingCommand(new bvcCmd.dolphin.BaseValueChangedCommand("5")))
             this.isTrue(CodecTestHelper.testCodingCommand(new nmdCmd.dolphin.NamedCommand("name")))
             this.isTrue(CodecTestHelper.testCodingCommand(new pmReCmd.dolphin.PresentationModelResetedCommand("pmId")))
             this.isTrue(CodecTestHelper.testCodingCommand(new rsPmCmd.dolphin.ResetPresentationModelCommand("pmId")))
             this.isTrue(CodecTestHelper.testCodingCommand(new savePmNot.dolphin.SavedPresentationModelNotification("pmId")))
             this.isTrue(CodecTestHelper.testCodingCommand(new sgnCmd.dolphin.SignalCommand("signal")))
             this.isTrue(CodecTestHelper.testCodingCommand(new switchPmCmd.dolphin.SwitchPresentationModelCommand("pmId", "sourcePmId")))
-            this.isTrue(CodecTestHelper.testCodingCommand(new valChngCmd.dolphin.ValueChangedCommand(5, "oldValue", "newValue")))
+            this.isTrue(CodecTestHelper.testCodingCommand(new valChngCmd.dolphin.ValueChangedCommand("5", "oldValue", "newValue")))
         }
     }
 
@@ -87,7 +87,7 @@ export module dolphin {
             var commands:attrCreatedCmd.dolphin.AttributeCreatedNotification[] = [];
 
             for (var i = 0; i < count; i++) {
-                commands.push(new attrCreatedCmd.dolphin.AttributeCreatedNotification(i.toString(), i * count, "prop" + i, "value" + i, null));
+                commands.push(new attrCreatedCmd.dolphin.AttributeCreatedNotification(i.toString(), "" + i * count, "prop" + i, "value" + i, null));
             }
 
             var coded = codec.encode(commands);

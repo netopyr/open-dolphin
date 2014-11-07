@@ -15,7 +15,7 @@ export module dolphin {
             var clientDolphin:cd.dolphin.ClientDolphin = new cd.dolphin.ClientDolphin();
             var clientModelStore:cms.dolphin.ClientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
             clientDolphin.setClientModelStore(clientModelStore);
-            clientDolphin.setClientConnector(new cc.dolphin.ClientConnector({transmit: (result:cmd.dolphin.Command[]) => {
+            clientDolphin.setClientConnector(new cc.dolphin.ClientConnector({signal:undefined, transmit: (result:cmd.dolphin.Command[]) => {
             } },clientDolphin));
 
             var pm1:cpm.dolphin.ClientPresentationModel = clientDolphin.presentationModel("myId1", "myType");
@@ -34,7 +34,7 @@ export module dolphin {
             var clientDolphin:cd.dolphin.ClientDolphin = new cd.dolphin.ClientDolphin();
             var clientModelStore:cms.dolphin.ClientModelStore = new cms.dolphin.ClientModelStore(clientDolphin);
             clientDolphin.setClientModelStore(clientModelStore);
-            clientDolphin.setClientConnector(new cc.dolphin.ClientConnector({transmit: (result:cmd.dolphin.Command[]) => {
+            clientDolphin.setClientConnector(new cc.dolphin.ClientConnector({signal:undefined, transmit: (result:cmd.dolphin.Command[]) => {
             } },clientDolphin));
 
             var pm:cpm.dolphin.ClientPresentationModel = clientDolphin.presentationModel("myId", "myType");
