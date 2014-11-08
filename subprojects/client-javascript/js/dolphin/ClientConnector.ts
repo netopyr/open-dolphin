@@ -195,12 +195,13 @@ export module dolphin {
                 //console.log("nothing to do. new value == old value");
                 return null;
             }
-            if(clientAttribute.getValue() != serverCommand.oldValue){
-//                todo dk: think about sending a RejectCommand here to tell the server about a possible lost update
-                console.log("attribute with id "+serverCommand.attributeId+" and value " + clientAttribute.getValue() +
-                            " cannot be set to value " + serverCommand.newValue + " because the change was based on an outdated old value of " + serverCommand.oldValue);
-                return null; // todo dk: this should most likely not be done.
-            }
+            // Below was the code that would enforce that value changes only appear when the proper oldValue is given.
+            // While that seemed appropriate at first, there are actually valid command sequences where the oldValue is not properly set.
+            // We leave the commented code in the codebase to allow for logging/debugging such cases.
+//            if(clientAttribute.getValue() != serverCommand.oldValue) {
+//                console.log("attribute with id "+serverCommand.attributeId+" and value " + clientAttribute.getValue() +
+//                            " was set to value " + serverCommand.newValue + " even though the change was based on an outdated old value of " + serverCommand.oldValue);
+//            }
             clientAttribute.setValue(serverCommand.newValue);
             return null;
         }
