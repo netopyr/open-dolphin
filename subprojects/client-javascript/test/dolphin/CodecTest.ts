@@ -56,7 +56,7 @@ export module dolphin {
         }
 
         testCodingCommands() {
-            this.isTrue(CodecTestHelper.testCodingCommand(new attrCreatedCmd.dolphin.AttributeCreatedNotification("pmId", "5", "prop", "value", "qualifier", "TOOLTIP")))
+            this.isTrue(CodecTestHelper.testCodingCommand(new attrCreatedCmd.dolphin.AttributeCreatedNotification("pmId", "5", "prop", "äöüéàè", "qualifier", "TOOLTIP")))
             this.isTrue(CodecTestHelper.testCodingCommand(new mdcCmd.dolphin.AttributeMetadataChangedCommand("5", "name", "value")))
             this.isTrue(CodecTestHelper.testCodingCommand(new callNameCmd.dolphin.CallNamedActionCommand("some-action")))
             this.isTrue(CodecTestHelper.testCodingCommand(new createPMCmd.dolphin.CreatePresentationModelCommand(new cpm.dolphin.ClientPresentationModel("MyId", "MyType"))))
