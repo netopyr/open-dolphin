@@ -48,7 +48,7 @@ grails.project.dependency.resolution = {
     dependencies {
         compile 'org.codehaus.gpars:gpars:1.0.0'
 
-        def dolphinVersion = '0.11'
+        def dolphinVersion = '0.12-SNAPSHOT'
 
         compile "org.open-dolphin:dolphin-shared:$dolphinVersion"
         compile "org.open-dolphin:dolphin-server:$dolphinVersion"
