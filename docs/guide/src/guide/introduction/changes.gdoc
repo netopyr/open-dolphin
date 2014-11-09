@@ -1,3 +1,19 @@
+h4. Release 0.11
+
+0.11 is a maintenance release. There is no additional functionality.
+
+The dependent version has been bumped up to 2.3.4.
+The grails version for the included demos is now at 2.4.3.
+
+Resolved Bugs:
+- [DOL-121|http://www.canoo.com/jira/browse/DOL-121] - OpenDolphin should provide a default way to invalidate the session on the server side
+- [DOL-123|http://www.canoo.com/jira/browse/DOL-123] - when deleting and re-creating a PM very quickly on the client side, the PM must not get lost
+- [DOL-124|http://www.canoo.com/jira/browse/DOL-124] - when adding a PM to the server model store through the ServerDolphin, the client should be notified just like when using the presentationModel() factory method
+- [DOL-130|http://www.canoo.com/jira/browse/DOL-130] - allow client side value changes even though the provided oldValue does not match the current value of the attribute. (JS client)
+
+Resolved Tasks:
+- [DOL-127|http://www.canoo.com/jira/browse/DOL-127] - Make all default actions use silent mode properly
+
 h4. Release 0.10
 
 Release 0.10 now fully supports a programming model on the server side that is equivalent to working on the client
