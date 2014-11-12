@@ -14,6 +14,42 @@
  * limitations under the License.
  */
 
+apply from: rootProject.file('gradle/javafx.gradle')
+apply from: rootProject.file('gradle/coverage.gradle')
+
 dependencies {
     compile project(':client'), project(':server')
+    compileOnly project.files(project.jfxrtLocation)
+    testCompile project.files(project.jfxrtLocation)
+}
+
+ext.depProjects = [
+    ':client',
+    ':server',
+    ':shared',
+]
+
+ext.depProjects.each { evaluationDependsOn it }
+
+jacocoTestReport {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+
+    List cd = []
+    Set csd = [] as Set
+    project.depProjects.each { String projectName ->
+        cd << project(projectName).sourceSets.main.output.classesDir.path
+        csd << project(projectName).sourceSets.main.allSource.srcDirs
+    }
+    cd << sourceSets.main.output.classesDir.path
+    csd << sourceSets.main.allSource.srcDirs
+
+    additionalSourceDirs = project.files(cd)
+    sourceDirectories = project.files(cd)
+    classDirectories =  project.files(csd)
+    reports {
+        xml.enabled = true
+        csv.enabled = false
+        html.enabled = true
+    }
 }

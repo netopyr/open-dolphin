@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'application'
+apply from: rootProject.file('gradle/javafx.gradle')
 
 def mainClassPackage = "org.opendolphin.demo."
 mainClassName = mainClassPackage+"startPushDemo"
@@ -27,8 +28,8 @@ run.doFirst {
 }
 
 dependencies {
-    compile ':jfxrt:',
-            project(':combined'),
+    compile project(':combined'),
             project(':demo-javafx-client'),
             project(':demo-javafx-server')
+    compileOnly project.files(project.jfxrtLocation)
 }

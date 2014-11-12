@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-apply from: rootProject.file('gradle/javafx.gradle')
-apply from: rootProject.file('gradle/coverage.gradle')
+ext.jfxrtLocation = new File("${System.properties['java.home']}/jre/lib/jfxrt.jar").absolutePath
 
-dependencies {
-    compile project(':client')
-    compileOnly project.files(project.jfxrtLocation)
-    testCompile project.files(project.jfxrtLocation)
+for (location in ['lib/jfxrt.jar', 'jre/lib/jfxrt.jar', 'jre/lib/ext/jfxrt.jar']) {
+    File javaHome = new File(System.properties['java.home'])
+    javaHome = javaHome.name == 'jre' ? javaHome.parentFile : javaHome
+    File file = new File(javaHome, location)
+    if (file.exists()) {
+        ext.jfxrtLocation = file.absolutePath
+        break
+    }
 }

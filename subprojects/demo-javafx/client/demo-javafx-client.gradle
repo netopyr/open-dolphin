@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+apply from: rootProject.file('gradle/javafx.gradle')
+
 dependencies {
-    compile ':jfxrt:',
-            project(':demo-javafx-shared'),
+    compile project(':demo-javafx-shared'),
             project(':client-javafx'),
             'org.codehaus.groovyfx:groovyfx:0.2',
             'org.jfxtras:jfxtras-labs:2.2-r4'
+
+    compileOnly project.files(project.jfxrtLocation)
 }

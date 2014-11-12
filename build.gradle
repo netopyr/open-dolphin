@@ -14,44 +14,59 @@
  * limitations under the License.
  */
 
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-
-ext {
-    jfxLibDir = locateJfxLibDir()
-}
-
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'net.sourceforge.cobertura:cobertura:2.0.3'
-        classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
     }
 }
 
-subprojects {
-    apply plugin: 'cobertura'
-    apply plugin: 'groovy'
+ext {
+    projectsWithCoverage = []
+}
+
+allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+}
+
+apply plugin: 'com.github.kt3k.coveralls'
+
+subprojects {
+    apply plugin: 'groovy'
+
+    plugins.withType(JavaPlugin) {
+        configurations {
+            compileOnly
+            testCompileOnly
+        }
+
+        sourceSets {
+            main {
+                compileClasspath += [configurations.compileOnly]
+            }
+            test {
+                compileClasspath += [configurations.testCompileOnly]
+            }
+        }
+
+        javadoc {
+            classpath += [configurations.compileOnly]
+        }
+
+        idea {
+            module {
+                scopes.PROVIDED.plus += [configurations.compileOnly]
+                scopes.PROVIDED.plus += [configurations.testCompileOnly]
+            }
+        }
+    }
 
     archivesBaseName = "dolphin-${project.name}"
 
-    cobertura {
-        coverageExcludes = ['.*org.opendolphin.demo.*', '.*org.opendolphin.logo.*']
-        rootProject.subprojects.each {
-            coverageDirs << file("subprojects/${it.name}/build/classes/main")
-        }
-        rootProject.subprojects.each {
-            coverageSourceDirs << file("subprojects/${it.name}/src/main/groovy")
-            coverageSourceDirs << file("subprojects/${it.name}/src/main/java")
-        }
-    }
-
     repositories {
-        flatDir name: 'javafx', dirs: [jfxLibDir]
         jcenter()
     }
 
@@ -60,7 +75,6 @@ subprojects {
         testCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
-        testRuntime 'net.saliman:gradle-cobertura-plugin:2.2.4'
     }
 
     task makeDirs(description: 'make all dirs for project setup') << {
@@ -70,44 +84,6 @@ subprojects {
             srcDir.mkdirs()
         }
     }
-}
-
-String locateJfxLibDir() {
-    def javaFxHome = System.env['JAVAFX_HOME'] ?: ''
-    def javaHome = System.env['JAVA_HOME'] ?: ''
-    def jdk7 = System.getProperty('java.version')[0..2].toDouble() == 1.7
-    def jdk8 = System.getProperty('java.version')[0..2].toDouble() == 1.8
-    def jdkHome = System.properties.'java.home' ?: ''
-
-    def result = "$javaFxHome/rt/lib"
-    if (new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from explicit JAVAFX_HOME: $result"
-        return result
-    }
-    result = "$jdkHome/lib/"
-    if (jdk7 && new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from current java 7: $result"
-        return result
-    }
-    result = "$jdkHome/lib/ext/"
-    if (jdk8 && new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from current java 8: $result"
-        return result
-    }
-    result = "$javaHome/jre/lib/"
-    if (new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from explicit JAVA_HOME: $result"
-        return result
-    }
-    result = "$javaHome/lib/"
-    if (new File("$result/jfxrt.jar").exists()) {
-        println "using javafx from explicit JAVA_HOME: $result"
-        return result
-    }
-    println "please use a Java Version 7_06+"
-    println " or set JAVA_HOME   to a dir that contains the jre/lib/jfxrt.jar"
-    println " or set JAVAFX_HOME to a dir that contains the rt/lib/jfxrt.jar"
-    System.exit 1
 }
 
 def mavenizedProjects() {
@@ -256,7 +232,7 @@ subprojects.each { proj ->
 }
 
 task wrap(type: Wrapper, description: "create a gradlew") {
-    gradleVersion = '1.10'
+    gradleVersion = '2.0'
 }
 
 apply {
@@ -302,31 +278,19 @@ task clean(type: Delete) {
     delete 'dist'
 }
 
-task(projectCoverage, description: 'This task merges the module cobertura reports and generates one report.') {
-    doLast {
-        def args = []
-        def coberturaDir = new File(buildDir, 'cobertura')
-        args << '--datafile'
-        args << "${coberturaDir.absolutePath}/result.ser"
-        args << '--basedir'
-        args << projectDir.absolutePath
-        new File(projectDir,'subprojects').eachFileRecurse {
-            if (it.name.matches('.*.ser')) {
-                args << "${it.absolutePath - projectDir.absolutePath}"
-            }
-        }
-        net.sourceforge.cobertura.merge.Main.main(args as String[])
-        args = []
-        args << '--datafile'
-        args << "${coberturaDir.absolutePath}/result.ser"
-        args << 'format'
-        args << 'html'
-        args << '--destination'
-        args << new File(buildDir,'reports/cobertura')
-        subprojects.each {
-            args.addAll(it.sourceSets.main.java.srcDirs)
-            args.addAll(it.sourceSets.main.groovy.srcDirs)
-        }
-        net.sourceforge.cobertura.reporting.Main.main(args as String[]);
+evaluationDependsOnChildren()
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+    dependsOn = projectsWithCoverage.test
+    group = "Reporting"
+    description = "Aggregate Jacoco coverage reports."
+    additionalSourceDirs = files(projectsWithCoverage.sourceSets.main.allSource.srcDirs)
+    sourceDirectories = files(projectsWithCoverage.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(projectsWithCoverage.sourceSets.main.output)
+    executionData = files(projectsWithCoverage.jacocoTestReport.executionData)
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
     }
 }
