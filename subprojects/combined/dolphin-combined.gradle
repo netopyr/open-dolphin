@@ -31,10 +31,9 @@ ext.depProjects = [
 
 ext.depProjects.each { evaluationDependsOn it }
 
-jacocoTestReport {
-    group = "Reporting"
-    description = "Generate Jacoco coverage reports after running tests."
-
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageExcludes = ['.*org.opendolphin.demo.*', '.*org.opendolphin.logo.*']
     List cd = []
     Set csd = [] as Set
     project.depProjects.each { String projectName ->
@@ -44,12 +43,6 @@ jacocoTestReport {
     cd << sourceSets.main.output.classesDir.path
     csd << sourceSets.main.allSource.srcDirs
 
-    additionalSourceDirs = project.files(cd)
-    sourceDirectories = project.files(cd)
-    classDirectories =  project.files(csd)
-    reports {
-        xml.enabled = true
-        csv.enabled = false
-        html.enabled = true
-    }
+    coverageDirs = cd
+    coverageSourceDirs = csd
 }
