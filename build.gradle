@@ -294,10 +294,12 @@ task(projectCoverage, description: 'This task merges the module cobertura report
             }
         }
         net.sourceforge.cobertura.merge.Main.main(args as String[])
+
+        // for TeamCity
         args = []
         args << '--datafile'
         args << "${coberturaDir.absolutePath}/result.ser"
-        args << 'format'
+        args << '--format'
         args << 'html'
         args << '--destination'
         args << new File(buildDir,'reports/cobertura')
@@ -305,6 +307,20 @@ task(projectCoverage, description: 'This task merges the module cobertura report
             args.addAll(it.sourceSets.main.java.srcDirs)
             args.addAll(it.sourceSets.main.groovy.srcDirs)
         }
-        net.sourceforge.cobertura.reporting.Main.main(args as String[]);
+        net.sourceforge.cobertura.reporting.Main.main(args as String[])
+
+        // for Coveralls
+        args = []
+        args << '--datafile'
+        args << "${coberturaDir.absolutePath}/result.ser"
+        args << '--format'
+        args << 'xml'
+        args << '--destination'
+        args << new File(buildDir,'reports/cobertura')
+        subprojects.each {
+            args.addAll(it.sourceSets.main.java.srcDirs)
+            args.addAll(it.sourceSets.main.groovy.srcDirs)
+        }
+        net.sourceforge.cobertura.reporting.Main.main(args as String[])
     }
 }
