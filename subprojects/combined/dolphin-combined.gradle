@@ -15,34 +15,17 @@
  */
 
 apply from: rootProject.file('gradle/javafx.gradle')
+
+ext.depProjects = [
+    ':shared',
+    ':client',
+    ':server'
+]
+
 apply from: rootProject.file('gradle/coverage.gradle')
 
 dependencies {
     compile project(':client'), project(':server')
     compileOnly project.files(project.jfxrtLocation)
     testCompile project.files(project.jfxrtLocation)
-}
-
-ext.depProjects = [
-    ':client',
-    ':server',
-    ':shared',
-]
-
-ext.depProjects.each { evaluationDependsOn it }
-
-cobertura {
-    coverageFormats = ['html', 'xml']
-    coverageExcludes = ['.*org.opendolphin.demo.*', '.*org.opendolphin.logo.*']
-    List cd = []
-    Set csd = [] as Set
-    project.depProjects.each { String projectName ->
-        cd << project(projectName).sourceSets.main.output.classesDir.path
-        csd << project(projectName).sourceSets.main.allSource.srcDirs
-    }
-    cd << sourceSets.main.output.classesDir.path
-    csd << sourceSets.main.allSource.srcDirs
-
-    coverageDirs = cd
-    coverageSourceDirs = csd
 }

@@ -15,6 +15,12 @@
  */
 
 apply from: rootProject.file('gradle/javafx.gradle')
+
+ext.depProjects = [
+    ':shared',
+    ':client'
+]
+
 apply from: rootProject.file('gradle/coverage.gradle')
 
 dependencies {

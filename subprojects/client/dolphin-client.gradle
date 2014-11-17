@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+ext.depProjects = [
+    ':shared'
+]
+
 apply from: rootProject.file('gradle/coverage.gradle')
 
 dependencies {

@@ -27,6 +27,7 @@ buildscript {
 
 ext {
     projectsWithCoverage = []
+    depProjects = []
 }
 
 allprojects {
