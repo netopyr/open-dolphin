@@ -16,14 +16,6 @@
 
 apply from: rootProject.file('gradle/javafx.gradle')
 
-ext.depProjects = [
-    ':shared',
-    ':client',
-    ':server'
-]
-
-apply from: rootProject.file('gradle/coverage.gradle')
-
 dependencies {
     compile project(':client'), project(':server')
     compileOnly project.files(project.jfxrtLocation)

@@ -25,11 +25,6 @@ buildscript {
     }
 }
 
-ext {
-    projectsWithCoverage = []
-    depProjects = []
-}
-
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
@@ -39,6 +34,7 @@ apply plugin: 'com.github.kt3k.coveralls'
 
 subprojects {
     apply plugin: 'groovy'
+    apply plugin: 'cobertura'
 
     plugins.withType(JavaPlugin) {
         configurations {
@@ -64,6 +60,17 @@ subprojects {
                 scopes.PROVIDED.plus += [configurations.compileOnly]
                 scopes.PROVIDED.plus += [configurations.testCompileOnly]
             }
+        }
+    }
+
+    cobertura {
+        coverageExcludes = ['.*org.opendolphin.demo.*', '.*org.opendolphin.logo.*']
+        rootProject.subprojects.each {
+            coverageDirs << file("subprojects/${it.name}/build/classes/main")
+        }
+        rootProject.subprojects.each {
+            coverageSourceDirs << file("subprojects/${it.name}/src/main/groovy")
+            coverageSourceDirs << file("subprojects/${it.name}/src/main/java")
         }
     }
 

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-apply from: rootProject.file('gradle/coverage.gradle')
-
 dependencies {
     compile 'org.codehaus.gpars:gpars:1.0.0'
 }
