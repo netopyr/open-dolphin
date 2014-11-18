@@ -17,7 +17,6 @@
 apply from: rootProject.file('gradle/javafx.gradle')
 
 dependencies {
-    compile project(':client')
     compileOnly project.files(project.jfxrtLocation)
     testCompile project.files(project.jfxrtLocation)
 }

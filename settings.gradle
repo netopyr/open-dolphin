@@ -19,6 +19,7 @@ include 'server'
 include 'client'
 include 'client-javafx'
 include 'client-javascript'
+include 'logo-javafx'
 
 include 'combined'
 

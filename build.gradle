@@ -96,13 +96,19 @@ subprojects {
     }
 }
 
+def coverageProjects() {
+     [
+             project(':client'),
+             project(':client-javafx'),
+             project(':shared'),
+             project(':server'),
+            project(':combined')
+    ]
+}
+
 def mavenizedProjects() {
-    [
-            project(':client'),
-            project(':client-javafx'),
-            project(':shared'),
-            project(':server'),
-            project(':combined'),
+    coverageProjects() + [
+            project(':logo-javafx'),
             project(':demo-javafx-server'), // for testing with dolphin-grails
             project(':demo-javafx-shared'), // for testing with dolphin-grails
     ]
