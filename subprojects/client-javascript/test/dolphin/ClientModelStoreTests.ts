@@ -77,6 +77,59 @@ module opendolphin {
             this.isFalse(clientModelStore.containsPresentationModel("id1"));
         }
 
+        listenForPresentationModelChangesByType() {
+            var serverCommand:Command[]=[];//to test
+            var transmitter = new TestTransmitter(undefined, serverCommand);
+            var clientDolphin = new ClientDolphin();
+            var clientConnector = new ClientConnector(transmitter,clientDolphin);
+            var clientModelStore = new ClientModelStore(clientDolphin);
+            clientDolphin.setClientConnector(clientConnector);
+            clientDolphin.setClientModelStore(clientModelStore);
+
+            var type:Type;
+            var pm:ClientPresentationModel;
+            // only listen for a specific type
+            clientModelStore.onModelStoreChangeForType("type", (evt:ModelStoreEvent) => {
+                type = evt.eventType;
+                pm = evt.clientPresentationModel;
+            })
+
+            var pm1 = new ClientPresentationModel("id1", "type");
+            var pm2 = new ClientPresentationModel("id2", "type");
+            var pm3 = new ClientPresentationModel("id3", "some other type");
+
+            clientModelStore.add(pm1);
+            this.areIdentical(type, Type.ADDED);
+            this.areIdentical(pm, pm1);
+
+            clientModelStore.add(pm2);
+            this.areIdentical(type, Type.ADDED);
+            this.areIdentical(pm, pm2);
+
+            clientModelStore.add(pm3);
+            this.areIdentical(pm, pm2); // adding pm3 did not change the last pm !!!
+
+            // but it is in the model store
+            var ids:string[] = clientModelStore.listPresentationModelIds();
+            this.areIdentical(ids.length, 3);
+            this.areIdentical(ids[2], "id3");
+
+            var pms:ClientPresentationModel[] = clientModelStore.listPresentationModels();
+            this.areIdentical(pms.length, 3);
+            this.areIdentical(pms[0], pm1);
+
+            var pm = clientModelStore.findPresentationModelById("id3");
+            this.areIdentical(pm, pm3);
+            this.isTrue(clientModelStore.containsPresentationModel("id3"));
+
+            clientModelStore.remove(pm1);
+            this.areIdentical(type, Type.REMOVED);
+            this.areIdentical(pm, pm1);
+
+            clientModelStore.remove(pm3); // listener ist _not_ triggered!
+            this.areIdentical(pm, pm1);
+        }
+
         addAndRemovePresentationModelByType() {
             var pm1 = new ClientPresentationModel("id1", "type");
             var pm2 = new ClientPresentationModel("id2", "type");

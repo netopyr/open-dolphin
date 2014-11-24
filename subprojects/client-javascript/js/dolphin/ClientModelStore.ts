@@ -292,5 +292,12 @@ module opendolphin {
         onModelStoreChange(eventHandler:(event:ModelStoreEvent) => void) {
             this.modelStoreChangeBus.onEvent(eventHandler);
         }
+        onModelStoreChangeForType(presentationModelType:String, eventHandler:(event:ModelStoreEvent) => void) {
+            this.modelStoreChangeBus.onEvent( pmStoreEvent => {
+                if (pmStoreEvent.clientPresentationModel.presentationModelType == presentationModelType) {
+                    eventHandler(pmStoreEvent);
+                }
+            });
+        }
     }
 }
