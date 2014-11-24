@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-apply plugin: 'application'
-apply from: rootProject.file('gradle/javafx.gradle')
+ext.jfxrtLocation = new File("${System.properties['java.home']}/jre/lib/jfxrt.jar").absolutePath
 
-def mainClassPackage = "org.opendolphin.demo."
-mainClassName = mainClassPackage+"startPushDemo"
-
-run.doFirst {
-    if (project.ext.get("demoApplicationName")) {
-        project.setProperty('mainClassName', mainClassPackage+"start"+project.ext.get("demoApplicationName")+"Demo")
+for (location in ['lib/jfxrt.jar', 'jre/lib/jfxrt.jar', 'jre/lib/ext/jfxrt.jar']) {
+    File javaHome = new File(System.properties['java.home'])
+    javaHome = javaHome.name == 'jre' ? javaHome.parentFile : javaHome
+    File file = new File(javaHome, location)
+    if (file.exists()) {
+        ext.jfxrtLocation = file.absolutePath
+        break
     }
-    println "starting demo: "+project.getProperty('mainClassName')
-}
-
-dependencies {
-    compile project(':combined'),
-            project(':demo-javafx-client'),
-            project(':demo-javafx-server')
-    compileOnly project.files(project.jfxrtLocation)
 }

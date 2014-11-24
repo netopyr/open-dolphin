@@ -14,22 +14,9 @@
  * limitations under the License.
  */
 
-apply plugin: 'application'
 apply from: rootProject.file('gradle/javafx.gradle')
 
-def mainClassPackage = "org.opendolphin.demo."
-mainClassName = mainClassPackage+"startPushDemo"
-
-run.doFirst {
-    if (project.ext.get("demoApplicationName")) {
-        project.setProperty('mainClassName', mainClassPackage+"start"+project.ext.get("demoApplicationName")+"Demo")
-    }
-    println "starting demo: "+project.getProperty('mainClassName')
-}
-
 dependencies {
-    compile project(':combined'),
-            project(':demo-javafx-client'),
-            project(':demo-javafx-server')
     compileOnly project.files(project.jfxrtLocation)
+    testCompile project.files(project.jfxrtLocation)
 }

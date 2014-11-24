@@ -1,6 +1,7 @@
 package org.opendolphin.binding
 
 import javafx.collections.FXCollections
+import javafx.embed.swing.JFXPanel
 import javafx.event.EventType
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TablePosition
@@ -9,6 +10,9 @@ import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientPresentationModel
 
 class JavaFxUtilTests extends GroovyTestCase {
+    static {
+        new JFXPanel()
+    }
 
     void testValue() {
         TableColumn column = new TableColumn()
