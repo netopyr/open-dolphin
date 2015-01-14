@@ -16,7 +16,6 @@
 package org.opendolphin.server.adapter
 
 import groovy.util.logging.Log
-import org.opendolphin.core.ModelStore
 import org.opendolphin.core.comm.Codec
 import org.opendolphin.core.comm.JsonCodec;
 import org.opendolphin.core.server.ServerDolphin
@@ -27,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse
+import java.nio.charset.Charset
 
 @Log
 abstract class DolphinServlet extends HttpServlet {
@@ -34,8 +34,9 @@ abstract class DolphinServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding(getCharset())
         def dolphin = checkDolphinInSession(req)
-        def requestJson = req.inputStream.text
+        def requestJson = req.reader.text
         log.finest "received json: $requestJson"
         def commands = dolphin.serverConnector.codec.decode(requestJson)
         def results = new LinkedList()
@@ -51,7 +52,7 @@ abstract class DolphinServlet extends HttpServlet {
 
     private ServerDolphin checkDolphinInSession(HttpServletRequest request) {
         def session = request.session
-        ServerDolphin dolphin = session.getAttribute(DOLPHIN_ATTRIBUTE_ID)
+        ServerDolphin dolphin = (ServerDolphin) session.getAttribute(DOLPHIN_ATTRIBUTE_ID)
         if (!dolphin) {
             log.info "creating new dolphin for session $session.id"
             def modelStore = new ServerModelStore()
@@ -65,6 +66,10 @@ abstract class DolphinServlet extends HttpServlet {
 
     protected Codec getCodec() {
         new JsonCodec()
+    }
+
+    protected String getCharset() {
+        Charset.defaultCharset().name()
     }
 
     protected abstract void registerApplicationActions(ServerDolphin serverDolphin)
