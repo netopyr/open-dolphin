@@ -19,14 +19,14 @@ package org.opendolphin.core.comm
 import org.opendolphin.LogConfig
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
-import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.client.comm.InMemoryClientConnector
-import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.core.server.GServerDolphin
+import org.opendolphin.core.server.ServerDolphinFactory
 
 class DefaultInMemoryConfig {
 
     ClientDolphin clientDolphin = new ClientDolphin()
-    ServerDolphin serverDolphin = new ServerDolphin()
+    GServerDolphin serverDolphin = ServerDolphinFactory.create()
 
     DefaultInMemoryConfig() {
         LogConfig.logCommunication()

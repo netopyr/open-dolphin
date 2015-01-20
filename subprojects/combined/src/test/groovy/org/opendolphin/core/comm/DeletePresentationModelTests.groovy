@@ -17,14 +17,14 @@
 package org.opendolphin.core.comm
 
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.core.server.GServerDolphin
 
 import java.util.concurrent.TimeUnit
 
 class DeletePresentationModelTests extends GroovyTestCase {
 
     volatile TestInMemoryConfig context
-    ServerDolphin serverDolphin
+    GServerDolphin serverDolphin
     ClientDolphin clientDolphin
 
     @Override

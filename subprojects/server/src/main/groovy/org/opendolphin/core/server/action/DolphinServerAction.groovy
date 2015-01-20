@@ -20,7 +20,7 @@ import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.ServerAttribute
-import org.opendolphin.core.server.ServerDolphin
+import org.opendolphin.core.server.GServerDolphin
 import groovy.transform.CompileStatic
 
 /**
@@ -30,20 +30,20 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 abstract class DolphinServerAction implements ServerAction {
-    ServerDolphin serverDolphin
+    GServerDolphin serverDolphin
     List<Command> dolphinResponse
 
 
     void presentationModel(String id, String presentationModelType, DTO dto) {
-        ServerDolphin.presentationModel(dolphinResponse, id, presentationModelType, dto)
+        GServerDolphin.presentationModel(dolphinResponse, id, presentationModelType, dto)
     }
 
     void changeValue(ServerAttribute attribute, value) {
-        ServerDolphin.changeValue(dolphinResponse, attribute, value)
+        GServerDolphin.changeValue(dolphinResponse, attribute, value)
     }
 
     /** Convenience method for the InitializeAttributeCommand */
     void initAt(String pmId, String propertyName, String qualifier, Object newValue = null, Tag tag = Tag.VALUE) {
-        ServerDolphin.initAt(dolphinResponse, pmId, propertyName, qualifier, newValue, tag)
+        GServerDolphin.initAt(dolphinResponse, pmId, propertyName, qualifier, newValue, tag)
     }
 }

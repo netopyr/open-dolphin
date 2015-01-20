@@ -25,7 +25,7 @@ import groovy.transform.CompileStatic
 import org.opendolphin.core.comm.SwitchPresentationModelCommand
 
 @CompileStatic @Log
-class ServerPresentationModel extends BasePresentationModel {
+class ServerPresentationModel extends BasePresentationModel<ServerAttribute> {
 
     public static final String AUTO_ID_SUFFIX = "-AUTO-SRV"
 
@@ -59,21 +59,11 @@ class ServerPresentationModel extends BasePresentationModel {
     void addAttribute(ServerAttribute attribute) {
         _internal_addAttribute(attribute)
         modelStore.registerAttribute(attribute)
-        ServerDolphin.initAt(modelStore.currentResponse, id, attribute.propertyName, attribute.qualifier, attribute.value, attribute.tag)
-    }
-
-// override with server specific return values to avoid casting in client code
-
-    ServerAttribute getAt(String propertyName) {
-        return (ServerAttribute) super.getAt(propertyName)
-    }
-
-    ServerAttribute getAt(String propertyName, Tag tag) {
-        return (ServerAttribute) super.getAt(propertyName, tag)
+        GServerDolphin.initAt(modelStore.currentResponse, id, attribute.propertyName, attribute.qualifier, attribute.value, attribute.tag)
     }
 
     public void rebase() {
-        for (Attribute attr : attributes) {
+        for (ServerAttribute attr : getAttributes()) {
             attr.rebase()
         }
     }

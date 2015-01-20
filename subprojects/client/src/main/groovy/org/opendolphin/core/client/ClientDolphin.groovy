@@ -15,7 +15,8 @@
  */
 
 package org.opendolphin.core.client
-import org.opendolphin.core.Dolphin
+
+import org.opendolphin.core.AbstractDolphin
 import org.opendolphin.core.ModelStore
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
@@ -23,7 +24,6 @@ import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.client.comm.OnFinishedHandler
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
 import org.opendolphin.core.comm.AttributeCreatedNotification
-import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.EmptyNotification
 import org.opendolphin.core.comm.NamedCommand
 import org.opendolphin.core.comm.SignalCommand
@@ -35,7 +35,7 @@ import org.opendolphin.core.comm.SignalCommand
  * Threading model: confined to the UI handling thread.
  */
 // makes use of dynamic dispatch, do not use @CompileStatic
-public class ClientDolphin extends Dolphin {
+public class ClientDolphin extends AbstractDolphin {
 
     // todo dk: the client model store should become a secret of the ClientDolphin
     ClientModelStore clientModelStore

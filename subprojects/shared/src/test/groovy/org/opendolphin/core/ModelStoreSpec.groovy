@@ -37,7 +37,7 @@ class ModelStoreSpec extends Specification {
     def "a pm can be retrieved by type: empty"() {
         given:
         def modelStore = new ModelStore()
-        def dolphin = new Dolphin() {
+        def dolphin = new AbstractDolphin() {
             ModelStore getModelStore() { modelStore}
         }
         expect:
@@ -47,7 +47,7 @@ class ModelStoreSpec extends Specification {
     def "a pm can be retrieved by type: one"() {
         given:
         def modelStore = new ModelStore()
-        def dolphin = new Dolphin() {
+        def dolphin = new AbstractDolphin() {
             ModelStore getModelStore() { modelStore }
         }
         def bpm = new BasePresentationModel(null,[])
@@ -60,7 +60,7 @@ class ModelStoreSpec extends Specification {
     def "a pm can be retrieved by type: many"() {
         given:
         def modelStore = new ModelStore()
-        def dolphin = new Dolphin() {
+        def dolphin = new AbstractDolphin() {
             ModelStore getModelStore() { modelStore }
         }
         def bpm1 = new BasePresentationModel("1",[])
