@@ -18,7 +18,6 @@ package org.opendolphin.core.server
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
-import org.opendolphin.core.Attribute
 import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.Dolphin
 import org.opendolphin.core.ModelStore
@@ -48,7 +47,7 @@ import static org.opendolphin.StringUtil.isBlank
 
 @CompileStatic
 @Log
-class ServerDolphin extends Dolphin {
+class ServerDolphin extends Dolphin implements GroovyServerINterface{
 
     /** the server model store is unique per user session */
     final ServerModelStore serverModelStore
