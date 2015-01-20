@@ -328,34 +328,4 @@ class GServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresentation
     int getId() {
         serverModelStore.id
     }
-
-    // overriding super methods with server-specific return types to avoid casting
-
-    ServerPresentationModel getAt(String pmId) {
-        (ServerPresentationModel) super.getAt(pmId)
-    }
-
-    @Override
-    ServerPresentationModel findPresentationModelById(String id) {
-        return (ServerPresentationModel) super.findPresentationModelById(id)
-    }
-
-    public ServerAttribute findAttributeById(String id) {
-        return (ServerAttribute) super.findAttributeById(id);
-    }
-
-    @Override
-    List<ServerPresentationModel> findAllPresentationModelsByType(String presentationModelType) {
-        return (List<ServerPresentationModel>) super.findAllPresentationModelsByType(presentationModelType)
-    }
-
-    @Override
-    List<ServerAttribute> findAllAttributesByQualifier(String qualifier) {
-        return (List<ServerAttribute>) super.findAllAttributesByQualifier(qualifier)
-    }
-
-    @Override
-    Collection<ServerPresentationModel> listPresentationModels() {
-        return (Collection<ServerPresentationModel>) super.listPresentationModels()
-    }
 }
