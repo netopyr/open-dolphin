@@ -11,4 +11,7 @@ public class ServerDolphinFactory {
         return new GServerDolphin();
     }
 
+    public static ServerDolphin create(ServerModelStore serverModelStore, ServerConnector serverConnector) {
+        return new GServerDolphin(serverModelStore, serverConnector);
+    }
 }
