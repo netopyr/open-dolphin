@@ -26,8 +26,8 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.HBox
 import javafx.stage.Stage
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.demo.FX
 
 import static groovyx.javafx.GroovyFX.start
@@ -50,7 +50,7 @@ import static org.opendolphin.demo.DemoStyle.style
 
 class SimpleFormView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
         start { // we have UI-toolkit specific starting sequence
 
             JavaFxProjector projector = new JavaFxProjector(dolphin: dolphin, stage: primaryStage)
@@ -96,7 +96,7 @@ interface IProjector {
 }
 
 class JavaFxProjector implements IProjector {
-    ClientDolphin   dolphin
+    GClientDolphin   dolphin
     Stage           stage
 
     JavaFxStage createFrame(IPresentation root, double width, double height) {

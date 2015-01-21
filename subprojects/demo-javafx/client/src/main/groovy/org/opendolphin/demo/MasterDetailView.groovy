@@ -21,11 +21,8 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.scene.control.ScrollBar
-import org.opendolphin.core.Tag
-import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.comm.WithPresentationModelHandler
+import org.opendolphin.core.client.GClientDolphin
 
 import static groovyx.javafx.GroovyFX.start
 import static org.opendolphin.binding.JFXBinder.bind
@@ -44,7 +41,7 @@ import static org.opendolphin.demo.MasterDetailConstants.*
 
 class MasterDetailView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
 
         ClientPresentationModel dataMold = dolphin.presentationModel('dataMold',
                 [

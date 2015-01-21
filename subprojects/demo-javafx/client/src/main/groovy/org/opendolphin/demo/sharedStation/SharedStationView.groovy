@@ -2,21 +2,18 @@ package org.opendolphin.demo.sharedStation
 
 import javafx.event.EventHandler
 import javafx.stage.Stage
-import org.opendolphin.core.Attribute
 import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.demo.FX
 
-import java.beans.PropertyChangeListener
-
 import static groovyx.javafx.GroovyFX.start
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 
 import static org.opendolphin.binding.JFXBinder.bind
 
 class SharedStationView {
 
     Stage           primaryStage
-    ClientDolphin   dolphin
+    GClientDolphin   dolphin
     List<String>    users   = "felicitas florian sophie elin".tokenize(' ')
     List<String>    actions = "wakeup play gotobed".tokenize(' ')
     List<String>    stati   = "asleep awake playing".tokenize(' ')
@@ -26,7 +23,7 @@ class SharedStationView {
         primaryStage.scene.lookup("#$name")
     }
 
-    void show(ClientDolphin dolphin) {
+    void show(GClientDolphin dolphin) {
         this.dolphin = dolphin
         start { app ->
             createView(delegate)

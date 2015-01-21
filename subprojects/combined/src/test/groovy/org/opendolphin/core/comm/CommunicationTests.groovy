@@ -18,9 +18,9 @@ package org.opendolphin.core.comm
 
 import org.opendolphin.LogConfig
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.server.ServerConnector
 
@@ -36,7 +36,7 @@ class CommunicationTests extends GroovyTestCase {
 	ServerConnector     serverConnector
 	ClientConnector     clientConnector
     ClientModelStore    clientModelStore
-    ClientDolphin       clientDolphin
+    GClientDolphin       clientDolphin
     TestInMemoryConfig  config
 
     @Override

@@ -21,7 +21,7 @@ import org.opendolphin.LogConfig
 import org.opendolphin.core.ModelStoreConfig
 import org.opendolphin.core.ModelStoreEvent
 import org.opendolphin.core.ModelStoreListener
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.server.*
 import org.opendolphin.core.server.action.DolphinServerAction
 import org.opendolphin.core.server.comm.ActionRegistry
@@ -37,7 +37,7 @@ class ServerPresentationModelTests extends GroovyTestCase {
 
     volatile TestInMemoryConfig context
     GServerDolphin serverDolphin
-    ClientDolphin clientDolphin
+    GClientDolphin clientDolphin
 
     @Override
     protected void setUp() {

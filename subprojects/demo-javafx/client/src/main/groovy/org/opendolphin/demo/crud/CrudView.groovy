@@ -15,7 +15,7 @@
  */
 
 package org.opendolphin.demo.crud
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.demo.FX
 import javafx.beans.value.ChangeListener
@@ -33,7 +33,7 @@ import static groovyx.javafx.GroovyFX.start
 class CrudView {
 
     @SuppressWarnings("GroovyAssignabilityCheck")
-    static show(ClientDolphin clientDolphin) {
+    static show(GClientDolphin clientDolphin) {
 
         Font.loadFont(CrudView.getResourceAsStream('/Eurostile-Demi.ttf'), 72)
 

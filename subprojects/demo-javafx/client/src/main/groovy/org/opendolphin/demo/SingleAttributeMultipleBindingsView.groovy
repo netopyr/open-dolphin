@@ -18,9 +18,9 @@ package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
+import org.opendolphin.core.client.GClientDolphin
 
 import static org.opendolphin.binding.JFXBinder.bind
 import static org.opendolphin.demo.DemoStyle.style
@@ -29,7 +29,7 @@ import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.RIGHT
 
 class SingleAttributeMultipleBindingsView {
-    void show(ClientDolphin clientDolphin) {
+    void show(GClientDolphin clientDolphin) {
         start { app ->
             SceneGraphBuilder builder = delegate
             layoutFrame builder
@@ -57,7 +57,7 @@ class SingleAttributeMultipleBindingsView {
         }
     }
 
-    ClientPresentationModel createPresentationModel(ClientDolphin dolphin) {
+    ClientPresentationModel createPresentationModel(GClientDolphin dolphin) {
         def titleAttr = new ClientAttribute(TITLE, "Some Text: <enter> or <submit>")
         return dolphin.presentationModel('demo', titleAttr)
     }

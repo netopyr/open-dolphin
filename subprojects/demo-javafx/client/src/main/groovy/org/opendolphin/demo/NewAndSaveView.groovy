@@ -16,7 +16,7 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import javafx.event.EventHandler
 
 import static org.opendolphin.binding.JFXBinder.bind
@@ -35,7 +35,7 @@ import static javafx.scene.paint.Color.*
  */
 
 class NewAndSaveView {
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
         start { app ->
 
             def person = dolphin.presentationModel 'selectedPerson', (NAME):'', (LASTNAME):''

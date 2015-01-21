@@ -7,8 +7,7 @@ import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpUriRequest
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.message.BasicStatusLine
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.JsonCodec
@@ -23,7 +22,7 @@ class HttpClientConnectorTests extends GroovyTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        connector = new HttpClientConnector(new ClientDolphin(), 'dummyURL')
+        connector = new HttpClientConnector(new GClientDolphin(), 'dummyURL')
         connector.throwExceptionOnSessionChange = false
         connector.codec = new JsonCodec()
 

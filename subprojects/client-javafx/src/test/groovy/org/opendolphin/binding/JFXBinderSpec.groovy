@@ -16,7 +16,7 @@
 
 package org.opendolphin.binding
 
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.InMemoryClientConnector
@@ -33,7 +33,7 @@ class JFXBinderSpec extends Specification {
     // exposes http://www.canoo.com/jira/browse/DOL-26
     def 'binding the text property of a Swing component to an Attribute should not throw Exceptions'() {
         given:
-        def dolphin = new ClientDolphin()
+        def dolphin = new GClientDolphin()
         dolphin.clientModelStore = new ClientModelStore(dolphin)
         dolphin.clientConnector = new InMemoryClientConnector(dolphin)
         ClientPresentationModel loginPM = dolphin.presentationModel("loginPM", [name: "abc"])

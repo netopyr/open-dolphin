@@ -17,7 +17,7 @@
 package org.opendolphin.core.comm
 
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.server.*
 
 import java.beans.PropertyChangeEvent
@@ -33,7 +33,7 @@ class ServerControlledFunctionalTests extends GroovyTestCase {
 
     volatile TestInMemoryConfig context
     GServerDolphin serverDolphin
-    ClientDolphin clientDolphin
+    GClientDolphin clientDolphin
 
     @Override
     protected void setUp() {

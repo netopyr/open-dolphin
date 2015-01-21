@@ -17,7 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
@@ -33,7 +33,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class DemoSearchView {
 
-    static show(ClientDolphin clientDolphin) {
+    static show(GClientDolphin clientDolphin) {
 
         def searchCriteria = clientDolphin.presentationModel(SEARCH_CRITERIA, [FIRST, SECOND, NAME])
 

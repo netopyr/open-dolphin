@@ -17,7 +17,7 @@
 package org.opendolphin.core.comm
 
 import org.opendolphin.LogConfig
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.server.GServerDolphin
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +30,7 @@ class ControllingWorkflowTests extends GroovyTestCase {
 
     volatile TestInMemoryConfig context
     GServerDolphin serverDolphin
-    ClientDolphin clientDolphin
+    GClientDolphin clientDolphin
 
     @Override
     protected void setUp() {

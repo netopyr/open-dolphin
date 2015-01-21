@@ -18,8 +18,8 @@ package org.opendolphin.demo
 
 import org.opendolphin.binding.Converter
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientDolphin
 
 import static groovyx.javafx.GroovyFX.start
 import static org.opendolphin.binding.JFXBinder.bind
@@ -32,7 +32,7 @@ class MultipleAttributesConverterView {
     private static String defaultTitle = 'Title will be displayed in upper case'
     private static String defaultPurpose = 'Input is limited to 40 characters'
 
-    static show(ClientDolphin clientDolphin) {
+    static show(GClientDolphin clientDolphin) {
 
         start { app ->
             // construct the PM

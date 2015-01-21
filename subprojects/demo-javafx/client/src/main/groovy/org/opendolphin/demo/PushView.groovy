@@ -17,7 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.logo.DolphinLogoBuilder
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
@@ -37,7 +37,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class PushView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
 
         def longPoll = null
         longPoll = { dolphin.send CMD_UPDATE, longPoll }

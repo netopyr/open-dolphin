@@ -19,7 +19,7 @@ package org.opendolphin.core.comm
 import org.opendolphin.LogConfig
 import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.BlindCommandBatcher
 import org.opendolphin.core.client.comm.InMemoryClientConnector
@@ -49,7 +49,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     volatile TestInMemoryConfig context
     GServerDolphin serverDolphin
-    ClientDolphin clientDolphin
+    GClientDolphin clientDolphin
 
     @Override
     protected void setUp() {

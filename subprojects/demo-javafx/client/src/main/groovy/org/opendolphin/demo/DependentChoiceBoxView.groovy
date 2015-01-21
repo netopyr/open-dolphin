@@ -17,8 +17,8 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
+import org.opendolphin.core.client.GClientDolphin
 
 import java.beans.PropertyChangeListener
 
@@ -36,7 +36,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class DependentChoiceBoxView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
 
         def selectedFirst = dolphin.presentationModel 'selectedFirst', value:null
 

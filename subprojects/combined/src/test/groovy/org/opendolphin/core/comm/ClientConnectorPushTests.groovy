@@ -2,7 +2,7 @@ package org.opendolphin.core.comm
 
 import groovyx.gpars.dataflow.DataflowQueue
 import org.opendolphin.LogConfig
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.GServerDolphin
 import spock.lang.Specification
@@ -14,7 +14,7 @@ class ClientConnectorPushTests extends Specification {
 
     volatile TestInMemoryConfig app
     GServerDolphin serverDolphin
-    ClientDolphin clientDolphin
+    GClientDolphin clientDolphin
 
     protected void setup() {
         app = new TestInMemoryConfig()

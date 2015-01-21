@@ -2,7 +2,7 @@ package org.opendolphin.demo.team;
 
 import groovyx.gpars.agent.Agent;
 import javafx.application.Application;
-import org.opendolphin.core.client.ClientDolphin;
+import org.opendolphin.core.client.GClientDolphin;
 import org.opendolphin.core.client.comm.InMemoryClientConnector;
 import org.opendolphin.core.server.DTO;
 import org.opendolphin.core.server.EventBus;
@@ -19,7 +19,7 @@ public class TeamInMemoryStarter {
         final Agent<List<DTO>> history = new Agent<List<DTO>>(new LinkedList<DTO>());
 
         final JavaFxInMemoryConfig config = new JavaFxInMemoryConfig();
-        ClientDolphin clientDolphin = config.getClientDolphin();
+        GClientDolphin clientDolphin = config.getClientDolphin();
         ((InMemoryClientConnector)clientDolphin.getClientConnector()).setSleepMillis(0);
         GServerDolphin serverDolphin = config.getServerDolphin();
         serverDolphin.register(new TeamMemberActions(teamBus, history));

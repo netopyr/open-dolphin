@@ -16,7 +16,7 @@
 
 package org.opendolphin.demo;
 
-import org.opendolphin.core.client.ClientDolphin;
+import org.opendolphin.core.client.GClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandler;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class ConsoleView {
 
-    public static void show(ClientDolphin clientDolphin) {
+    public static void show(GClientDolphin clientDolphin) {
         NamedCommand cmd = new NamedCommand();
         cmd.setId("javaAction");
         OnFinishedHandler callback = new OnFinishedHandlerAdapter() {

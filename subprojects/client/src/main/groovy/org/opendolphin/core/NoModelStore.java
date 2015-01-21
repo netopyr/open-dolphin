@@ -1,6 +1,6 @@
 package org.opendolphin.core;
 
-import org.opendolphin.core.client.ClientDolphin;
+import org.opendolphin.core.client.GClientDolphin;
 import org.opendolphin.core.client.ClientModelStore;
 import org.opendolphin.core.client.ClientPresentationModel;
 
@@ -12,7 +12,7 @@ import org.opendolphin.core.client.ClientPresentationModel;
 
 public class NoModelStore extends ClientModelStore {
 
-    public NoModelStore(ClientDolphin clientDolphin) {
+    public NoModelStore(GClientDolphin clientDolphin) {
         super(clientDolphin);
     }
 

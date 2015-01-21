@@ -19,7 +19,7 @@ package org.opendolphin.core.client.comm
 import org.opendolphin.core.comm.Command
 import groovy.transform.InheritConstructors
 import groovy.util.logging.Log
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 
 @Log @InheritConstructors
 class InMemoryClientConnector extends ClientConnector {
@@ -27,11 +27,11 @@ class InMemoryClientConnector extends ClientConnector {
     def sleepMillis = 0
     def serverConnector // must be injected since the class is only available in a "combined" context
 
-    InMemoryClientConnector(ClientDolphin clientDolphin) {
+    InMemoryClientConnector(GClientDolphin clientDolphin) {
         super(clientDolphin)
     }
 
-    InMemoryClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher) {
+    InMemoryClientConnector(GClientDolphin clientDolphin, CommandBatcher commandBatcher) {
         super(clientDolphin, commandBatcher)
     }
 

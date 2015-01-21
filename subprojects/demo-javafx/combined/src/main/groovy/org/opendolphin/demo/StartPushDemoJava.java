@@ -5,7 +5,7 @@
  */
 package org.opendolphin.demo;
 
-import org.opendolphin.core.client.ClientDolphin;
+import org.opendolphin.core.client.GClientDolphin;
 import org.opendolphin.core.server.GServerDolphin;
 import org.opendolphin.core.server.action.DolphinServerAction;
 
@@ -16,7 +16,7 @@ public class StartPushDemoJava {
         // my company name convention
         JavaFxInMemoryConfig lJavaFxInMemoryConfig = new JavaFxInMemoryConfig();
         GServerDolphin lServerDolphin = lJavaFxInMemoryConfig.getServerDolphin();
-        ClientDolphin lClientDolphin = lJavaFxInMemoryConfig.getClientDolphin();
+        GClientDolphin lClientDolphin = lJavaFxInMemoryConfig.getClientDolphin();
 
         DolphinServerAction action = new VehiclePushActions();
         action.setServerDolphin(lServerDolphin);

@@ -17,10 +17,8 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.Tag
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import javafx.scene.control.Tooltip
-
-import java.beans.PropertyChangeListener
 
 import static org.opendolphin.binding.JFXBinder.bind
 import static org.opendolphin.binding.JFXBinder.bindInfo
@@ -43,7 +41,7 @@ import static groovyx.javafx.GroovyFX.start
  */
 
 class AttributeTagView {
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
         start { app ->
 
             def model = dolphin.presentationModel 'person', (NAME):'', (LASTNAME):'Smith'

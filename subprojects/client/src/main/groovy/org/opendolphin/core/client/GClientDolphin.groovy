@@ -18,7 +18,6 @@ package org.opendolphin.core.client
 
 import org.opendolphin.core.AbstractDolphin
 import org.opendolphin.core.ModelStore
-import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.client.comm.OnFinishedHandler
@@ -35,7 +34,7 @@ import org.opendolphin.core.comm.SignalCommand
  * Threading model: confined to the UI handling thread.
  */
 // makes use of dynamic dispatch, do not use @CompileStatic
-public class ClientDolphin extends AbstractDolphin<ClientAttribute, ClientPresentationModel> {
+public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPresentationModel> implements ClientDolphin {
 
     // todo dk: the client model store should become a secret of the ClientDolphin
     ClientModelStore clientModelStore
@@ -198,7 +197,7 @@ public class ClientDolphin extends AbstractDolphin<ClientAttribute, ClientPresen
 }
 
 class ApplyToAble {
-    ClientDolphin dolphin
+    GClientDolphin dolphin
     ClientPresentationModel source
 
     void to(ClientPresentationModel target) {

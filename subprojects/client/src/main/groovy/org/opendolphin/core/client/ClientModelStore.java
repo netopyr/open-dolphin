@@ -16,10 +16,8 @@
 
 package org.opendolphin.core.client;
 
-import org.opendolphin.core.Attribute;
 import org.opendolphin.core.ModelStore;
 import org.opendolphin.core.ModelStoreConfig;
-import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.client.comm.*;
 import org.opendolphin.core.comm.CreatePresentationModelCommand;
 import org.opendolphin.core.comm.DeletedAllPresentationModelsOfTypeNotification;
@@ -30,14 +28,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ClientModelStore extends ModelStore<ClientAttribute, ClientPresentationModel> {
-    private final ClientDolphin clientDolphin;
+    private final GClientDolphin clientDolphin;
     protected final AttributeChangeListener attributeChangeListener;
 
-    public ClientModelStore(ClientDolphin clientDolphin) {
+    public ClientModelStore(GClientDolphin clientDolphin) {
         this(clientDolphin, new ModelStoreConfig());
     }
 
-    public ClientModelStore(ClientDolphin clientDolphin, ModelStoreConfig config) {
+    public ClientModelStore(GClientDolphin clientDolphin, ModelStoreConfig config) {
         super(config);
         this.clientDolphin = clientDolphin;
         attributeChangeListener = new AttributeChangeListener();

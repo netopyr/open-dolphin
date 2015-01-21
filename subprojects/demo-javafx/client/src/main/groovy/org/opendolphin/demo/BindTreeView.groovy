@@ -18,8 +18,8 @@ package org.opendolphin.demo
 
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
-import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientDolphin
 
 import static groovyx.javafx.GroovyFX.start
 
@@ -30,7 +30,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class BindTreeView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
 
         start { app ->
             TreeView tree

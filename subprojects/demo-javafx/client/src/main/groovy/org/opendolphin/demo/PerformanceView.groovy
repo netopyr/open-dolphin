@@ -17,7 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.LogConfig
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.comm.InMemoryClientConnector
 import groovyx.javafx.SceneGraphBuilder
 import javafx.beans.value.ChangeListener
@@ -25,7 +25,6 @@ import javafx.beans.value.ChangeListener
 import static org.opendolphin.binding.Binder.bind
 import static org.opendolphin.core.ModelStoreEvent.Type.ADDED
 import static org.opendolphin.core.ModelStoreEvent.Type.REMOVED
-import static org.opendolphin.demo.DemoStyle.blueStyle
 import static groovyx.javafx.GroovyFX.start
 import static org.opendolphin.demo.DemoStyle.style
 
@@ -36,7 +35,7 @@ import static org.opendolphin.demo.DemoStyle.style
 
 class PerformanceView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
 
         def input = dolphin.presentationModel "input", count:0, attCount:0, time:0
 
@@ -124,7 +123,7 @@ class PerformanceView {
             primaryStage.show()
         }
     }
-    static String getSleepMillis(ClientDolphin dolphin) {
+    static String getSleepMillis(GClientDolphin dolphin) {
         if ( ! (dolphin.clientConnector instanceof InMemoryClientConnector)) return
         dolphin.clientConnector.sleepMillis
     }

@@ -17,7 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 
 import javafx.collections.FXCollections
@@ -44,7 +44,7 @@ import org.opendolphin.core.ModelStoreEvent
 
 class BindListView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
 
         ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
         ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()

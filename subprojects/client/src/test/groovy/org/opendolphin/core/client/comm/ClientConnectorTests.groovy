@@ -19,7 +19,7 @@ package org.opendolphin.core.client.comm
 import groovy.util.logging.Log
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.comm.*
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
 class ClientConnectorTests extends GroovyTestCase {
 
 	TestClientConnector clientConnector
-	ClientDolphin dolphin
+	GClientDolphin dolphin
     AttributeChangeListener attributeChangeListener
 
 	/**
@@ -52,7 +52,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	@Override
 	protected void setUp() {
 
-		dolphin = new ClientDolphin()
+		dolphin = new GClientDolphin()
 		clientConnector = new TestClientConnector(dolphin)
 		clientConnector.uiThreadHandler = new RunLaterUiThreadHandler()
 		dolphin.clientConnector = clientConnector
@@ -403,7 +403,7 @@ class TestClientConnector extends ClientConnector {
 
 	List<Command> transmittedCommands = []
 
-	TestClientConnector(ClientDolphin clientDolphin) {
+	TestClientConnector(GClientDolphin clientDolphin) {
 		super(clientDolphin)
 	}
 

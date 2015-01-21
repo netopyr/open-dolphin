@@ -17,7 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.LogConfig
-import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.comm.InMemoryClientConnector
 import groovy.swing.SwingBuilder
 
@@ -35,7 +35,7 @@ import static org.opendolphin.core.ModelStoreEvent.Type.REMOVED
 
 class PerformanceSwingView {
 
-    static show(ClientDolphin dolphin) {
+    static show(GClientDolphin dolphin) {
 
         def input = dolphin.presentationModel "input", count:0, attCount:0, time:0
 
@@ -122,7 +122,7 @@ class PerformanceSwingView {
 			}
         }
     }
-    static String getSleepMillis(ClientDolphin dolphin) {
+    static String getSleepMillis(GClientDolphin dolphin) {
         if ( ! (dolphin.clientConnector instanceof InMemoryClientConnector)) return
         dolphin.clientConnector.sleepMillis
     }

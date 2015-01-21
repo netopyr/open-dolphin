@@ -29,7 +29,7 @@ class ClientModelStoreSpec extends Specification {
 	def modelStore, pmType, pm, listener
 
 	def setup(){
-        def clientDolphin = new ClientDolphin()
+        def clientDolphin = new GClientDolphin()
 		modelStore = new ClientModelStore(clientDolphin)
         clientDolphin.clientModelStore = modelStore
         clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin)
