@@ -21,7 +21,6 @@ public interface Attribute extends Observable {
     String DIRTY_PROPERTY       = "dirty";
     String BASE_VALUE           = "baseValue";
     String VALUE                = "value";
-    String TAG                  = "tag";
 
     Object getValue();
 
