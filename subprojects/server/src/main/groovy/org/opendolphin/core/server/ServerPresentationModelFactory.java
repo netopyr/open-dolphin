@@ -25,6 +25,6 @@ public class ServerPresentationModelFactory {
     }
 
     public static ServerPresentationModel create(String id, List<ServerAttribute> attributes, ServerModelStore serverModelStore, String presentationModelType) {
-        return new GServerPresentationModel(id, attributes, serverModelStore);
+        return new GServerPresentationModel(id, attributes, serverModelStore, presentationModelType);
     }
 }
