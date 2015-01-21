@@ -99,7 +99,7 @@ public class ClientModelStore extends ModelStore<ClientAttribute, ClientPresenta
     }
 
     private boolean withPresentationModelFromStore(String requestedPmId, WithPresentationModelHandler withPmHandler) {
-        ClientPresentationModel result = (ClientPresentationModel) findPresentationModelById(requestedPmId);
+        ClientPresentationModel result = findPresentationModelById(requestedPmId);
         if (result != null) {
             withPmHandler.onFinished(result);
             return true;
@@ -122,9 +122,9 @@ public class ClientModelStore extends ModelStore<ClientAttribute, ClientPresenta
     }
 
     public void deleteAllPresentationModelsOfType(String presentationModelType) {
-        List<PresentationModel> models = new LinkedList<PresentationModel>(findAllPresentationModelsByType(presentationModelType));
-        for (PresentationModel model: models) {
-            delete(((ClientPresentationModel) model), false);
+        List<ClientPresentationModel> models = new LinkedList<ClientPresentationModel>(findAllPresentationModelsByType(presentationModelType));
+        for (ClientPresentationModel model: models) {
+            delete(model, false);
         }
         getClientConnector().send(new DeletedAllPresentationModelsOfTypeNotification(presentationModelType));
     }

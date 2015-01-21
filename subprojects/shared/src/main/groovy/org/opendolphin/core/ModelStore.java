@@ -38,7 +38,7 @@ public class ModelStore<A extends Attribute, P extends PresentationModel<A>> {
     private final Map<String, A>                attributesPerId;
     private final Map<String, List<A>>          attributesPerQualifier;
 
-    private final Set<ModelStoreListenerWrapper> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper>();
+    private final Set<ModelStoreListenerWrapper<A, P>> modelStoreListeners = new LinkedHashSet<ModelStoreListenerWrapper<A, P>>();
 
     private final PropertyChangeListener ATTRIBUTE_WORKER = new PropertyChangeListener() {
         @Override
@@ -275,38 +275,38 @@ public class ModelStore<A extends Attribute, P extends PresentationModel<A>> {
         addAttributeById(attribute);
     }
 
-    public void addModelStoreListener(ModelStoreListener listener) {
+    public void addModelStoreListener(ModelStoreListener<A, P> listener) {
         addModelStoreListener(null, listener);
     }
 
-    public void addModelStoreListener(String presentationModelType, ModelStoreListener listener) {
+    public void addModelStoreListener(String presentationModelType, ModelStoreListener<A, P> listener) {
         if (null == listener) return;
-        ModelStoreListenerWrapper wrapper = new ModelStoreListenerWrapper(presentationModelType, listener);
+        ModelStoreListenerWrapper<A, P> wrapper = new ModelStoreListenerWrapper<A, P>(presentationModelType, listener);
         if (!modelStoreListeners.contains(wrapper)) modelStoreListeners.add(wrapper);
     }
 
-    public void removeModelStoreListener(ModelStoreListener listener) {
+    public void removeModelStoreListener(ModelStoreListener<A, P> listener) {
         removeModelStoreListener(null, listener);
     }
 
-    public void removeModelStoreListener(String presentationModelType, ModelStoreListener listener) {
+    public void removeModelStoreListener(String presentationModelType, ModelStoreListener<A, P> listener) {
         if (null == listener) return;
-        modelStoreListeners.remove(new ModelStoreListenerWrapper(presentationModelType, listener));
+        modelStoreListeners.remove(new ModelStoreListenerWrapper<A, P>(presentationModelType, listener));
     }
 
-    public boolean hasModelStoreListener(ModelStoreListener listener) {
+    public boolean hasModelStoreListener(ModelStoreListener<A, P> listener) {
         return hasModelStoreListener(null, listener);
     }
 
-    public boolean hasModelStoreListener(String presentationModelType, ModelStoreListener listener) {
+    public boolean hasModelStoreListener(String presentationModelType, ModelStoreListener<A, P> listener) {
         return null != listener &&
-                modelStoreListeners.contains(new ModelStoreListenerWrapper(presentationModelType, listener));
+                modelStoreListeners.contains(new ModelStoreListenerWrapper<A, P>(presentationModelType, listener));
     }
 
     protected void fireModelStoreChangedEvent(P model, ModelStoreEvent.Type eventType) {
         if (modelStoreListeners.isEmpty()) return;
-        ModelStoreEvent event = new ModelStoreEvent(eventType, model);
-        for (ModelStoreListener listener : modelStoreListeners) {
+        ModelStoreEvent<A, P> event = new ModelStoreEvent<A, P>(eventType, model);
+        for (ModelStoreListener<A, P> listener : modelStoreListeners) {
             listener.modelStoreChanged(event);
         }
     }

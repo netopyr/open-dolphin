@@ -144,7 +144,7 @@ public class ClientDolphin extends AbstractDolphin<ClientAttribute, ClientPresen
     public void addAttributeToModel(ClientPresentationModel presentationModel, ClientAttribute attribute) {
         presentationModel._internal_addAttribute(attribute)
         clientModelStore.registerAttribute(attribute)
-        if (!((ClientPresentationModel)presentationModel).clientSideOnly) {
+        if (!presentationModel.clientSideOnly) {
             clientConnector.send new AttributeCreatedNotification(
                     pmId: presentationModel.id,
                     attributeId: attribute.id,

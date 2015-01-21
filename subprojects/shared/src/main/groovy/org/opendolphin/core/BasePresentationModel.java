@@ -40,10 +40,10 @@ public class BasePresentationModel<A extends Attribute> extends AbstractObservab
     /**
      * @throws AssertionError if the list of attributes is null or empty
      */
-    public BasePresentationModel(String id, List attributes) {
+    public BasePresentationModel(String id, List<A> attributes) {
         this.id = id;
-        for (Object attr : attributes) {
-            _internal_addAttribute((A) attr);
+        for (A attr : attributes) {
+            _internal_addAttribute(attr);
         }
     }
 
