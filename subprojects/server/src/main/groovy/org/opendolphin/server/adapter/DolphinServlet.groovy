@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 Canoo Engineering AG.
+ * Copyright 2012-2015 Canoo Engineering AG.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse
+import java.nio.charset.Charset
 
 @Log
 abstract class DolphinServlet extends HttpServlet {
@@ -33,8 +34,9 @@ abstract class DolphinServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding(getCharset())
         def dolphin = checkDolphinInSession(req)
-        def requestJson = req.inputStream.text
+        def requestJson = req.reader.text
         log.finest "received json: $requestJson"
         def commands = dolphin.serverConnector.codec.decode(requestJson)
         def results = new LinkedList()
@@ -50,7 +52,7 @@ abstract class DolphinServlet extends HttpServlet {
 
     private GServerDolphin checkDolphinInSession(HttpServletRequest request) {
         def session = request.session
-        GServerDolphin dolphin = session.getAttribute(DOLPHIN_ATTRIBUTE_ID)
+        GServerDolphin dolphin = (GServerDolphin) session.getAttribute(DOLPHIN_ATTRIBUTE_ID)
         if (!dolphin) {
             log.info "creating new dolphin for session $session.id"
             def modelStore = new ServerModelStore()
@@ -64,6 +66,10 @@ abstract class DolphinServlet extends HttpServlet {
 
     protected Codec getCodec() {
         new JsonCodec()
+    }
+
+    protected String getCharset() {
+        Charset.defaultCharset().name()
     }
 
     protected abstract void registerApplicationActions(GServerDolphin serverDolphin)
