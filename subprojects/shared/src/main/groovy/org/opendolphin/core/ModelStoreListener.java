@@ -16,6 +16,6 @@
 
 package org.opendolphin.core;
 
-public interface ModelStoreListener {
-    void modelStoreChanged(ModelStoreEvent event);
+public interface ModelStoreListener<U extends Attribute, T extends PresentationModel<U>> {
+    void modelStoreChanged(ModelStoreEvent<U, T> event);
 }

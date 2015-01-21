@@ -21,15 +21,15 @@ import groovy.transform.EqualsAndHashCode;
 
 @CompileStatic
 @EqualsAndHashCode
-public class ModelStoreEvent {
+public class ModelStoreEvent<U extends Attribute, T extends PresentationModel<U>> {
     public enum Type {
         ADDED, REMOVED
     }
 
     private final Type type;
-    private final PresentationModel presentationModel;
+    private final T presentationModel;
 
-    public ModelStoreEvent(Type eventType, PresentationModel presentationModel) {
+    public ModelStoreEvent(Type eventType, T presentationModel) {
         this.type = eventType;
         this.presentationModel = presentationModel;
     }
@@ -38,7 +38,7 @@ public class ModelStoreEvent {
         return type;
     }
 
-    public PresentationModel getPresentationModel() {
+    public T getPresentationModel() {
         return presentationModel;
     }
 
