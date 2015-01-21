@@ -56,7 +56,7 @@ public class TeamMemberActions extends DolphinServerAction {
                     });
                 } catch (InterruptedException e) { /* do nothing */ }
 
-                final GServerPresentationModel mold = getServerDolphin().getAt(PM_ID_MOLD);
+                final ServerPresentationModel mold = getServerDolphin().getAt(PM_ID_MOLD);
                 if (null == mold) System.out.println("SEVERE: Mold PM must be known before calling CMD_INIT.");
                 registerOnValueChange(mold);
 
@@ -102,7 +102,7 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 String selPmId = (String) findSelectedPmAttribute().getValue();
-                GServerPresentationModel pm = getServerDolphin().getAt(selPmId);
+                ServerPresentationModel pm = getServerDolphin().getAt(selPmId);
                 if (null == pm) {
                     System.out.println("cannot find pm to delete with id "+selPmId);
                     return;
@@ -120,7 +120,7 @@ public class TeamMemberActions extends DolphinServerAction {
             @Override
             public void handleCommand(NamedCommand command, List<Command> response) {
                 String pmIdToSave = (String) findSelectedPmAttribute().getValue();
-                GServerPresentationModel pm = getServerDolphin().getAt(pmIdToSave);
+                ServerPresentationModel pm = getServerDolphin().getAt(pmIdToSave);
                 if (null == pm) {
                     System.out.println("Cannot save unknown presentation model with id "+pmIdToSave);
                     return;
@@ -159,7 +159,7 @@ public class TeamMemberActions extends DolphinServerAction {
         }
     };
 
-    private void registerOnValueChange(GServerPresentationModel member) {
+    private void registerOnValueChange(ServerPresentationModel member) {
         for (final Attribute attribute : member.getAttributes()) {
             attribute.addPropertyChangeListener(Attribute.VALUE, proliferator);
         }
@@ -175,8 +175,8 @@ public class TeamMemberActions extends DolphinServerAction {
             }
             if (TeamEvent.Type.CHANGE == event.type) {
                 silent = true; // do not issue additional posts on the bus from value changes that come from the bus
-                List<GServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
-                for (GServerAttribute attribute : attributes) {
+                List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
+                for (ServerAttribute attribute : attributes) {
                     PresentationModel pm = attribute.getPresentationModel();
                     if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
                         attribute.setValue(event.value);
@@ -185,21 +185,21 @@ public class TeamMemberActions extends DolphinServerAction {
                 silent = false;
             }
             if (TeamEvent.Type.REBASE == event.type) {
-                List<GServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
-                for (GServerAttribute attribute : attributes) {
+                List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
+                for (ServerAttribute attribute : attributes) {
                     attribute.rebase();
                 }
             }
             if (TeamEvent.Type.REMOVE == event.type) {
-                List<GServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
-                Set<GServerPresentationModel> toDelete = new HashSet<GServerPresentationModel>();
-                for (GServerAttribute attribute : attributes) {
-                    GServerPresentationModel pm = attribute.getPresentationModel();
+                List<ServerAttribute> attributes = getServerDolphin().findAllAttributesByQualifier(event.qualifier);
+                Set<ServerPresentationModel> toDelete = new HashSet<ServerPresentationModel>();
+                for (ServerAttribute attribute : attributes) {
+                    ServerPresentationModel pm = attribute.getPresentationModel();
                     if (TYPE_TEAM_MEMBER.equals(pm.getPresentationModelType())) {
                         toDelete.add(pm);
                     }
                 }
-                for (GServerPresentationModel pm : toDelete) {
+                for (ServerPresentationModel pm : toDelete) {
                     getServerDolphin().remove(pm);
                 }
             }
@@ -272,7 +272,7 @@ public class TeamMemberActions extends DolphinServerAction {
         } catch (InterruptedException e) { /* do nothing */ }
     }
 
-    private GServerAttribute findSelectedPmAttribute() {
+    private ServerAttribute findSelectedPmAttribute() {
         return getServerDolphin().getAt(PM_ID_SELECTED).getAt(ATT_SEL_PM_ID);
     }
 

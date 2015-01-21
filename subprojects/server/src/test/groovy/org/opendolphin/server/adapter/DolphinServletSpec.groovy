@@ -69,9 +69,9 @@ class DolphinServletSpec extends Specification {
             getAttribute : { serverDolphin },
             getId : { null }
         ] as HttpSession
-        def iS = {} as ServletInputStream
-        iS.metaClass.getText = {-> ' '}
-        def req = [ getSession: {session}, getInputStream: { iS } ] as HttpServletRequest
+        def reader = new BufferedReader({} as Reader)
+        reader.metaClass.getText = {-> ' '}
+        def req = [ getSession: {session}, getReader: { reader }, setCharacterEncoding: { } ] as HttpServletRequest
         def oS = {} as ServletOutputStream
         oS.metaClass.leftShift = {}
         oS.metaClass.close = {->}
