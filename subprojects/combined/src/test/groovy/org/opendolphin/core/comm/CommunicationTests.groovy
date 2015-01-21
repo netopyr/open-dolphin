@@ -17,10 +17,10 @@
 package org.opendolphin.core.comm
 
 import org.opendolphin.LogConfig
-import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientModelStore
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.client.comm.ClientConnector
 import org.opendolphin.core.server.ServerConnector
 
@@ -55,8 +55,8 @@ class CommunicationTests extends GroovyTestCase {
     }
 
 	void testSimpleAttributeChangeIsVisibleOnServer() {
-		def ca  = new ClientAttribute('name')
-        def cpm = new ClientPresentationModel('model', [ca])
+		def ca  = new GClientAttribute('name')
+        def cpm = new GClientPresentationModel('model', [ca])
         clientModelStore.add cpm
 
 		Command receivedCommand = null
@@ -84,7 +84,7 @@ class CommunicationTests extends GroovyTestCase {
 		}
 		serverConnector.registry.register CreatePresentationModelCommand, testServerAction
 
-        clientModelStore.add new ClientPresentationModel('testPm', [new ClientAttribute('name')])
+        clientModelStore.add new GClientPresentationModel('testPm', [new GClientAttribute('name')])
 
         clientDolphin.sync {
             assert receivedCommand.id == "CreatePresentationModel"
@@ -96,7 +96,7 @@ class CommunicationTests extends GroovyTestCase {
 	}
 
 	void testWhenServerChangesValueThisTriggersUpdateOnClient() {
-		def ca = new ClientAttribute('name')
+		def ca = new GClientAttribute('name')
 
 		def setValueAction = { CreatePresentationModelCommand command, response ->
 			response << new ValueChangedCommand(
@@ -119,7 +119,7 @@ class CommunicationTests extends GroovyTestCase {
         serverConnector.registry.register CreatePresentationModelCommand, setValueAction
 		serverConnector.registry.register ValueChangedCommand, valueChangedAction
 
-        clientModelStore.add new ClientPresentationModel('testPm', [ca]) // trigger the whole cycle
+        clientModelStore.add new GClientPresentationModel('testPm', [ca]) // trigger the whole cycle
     }
 
 	void testRequestingSomeGeneralCommandExecution() {

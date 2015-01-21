@@ -49,7 +49,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
     /** Convenience method for a creating a ClientPresentationModel with initial null values for the attributes
      */
     ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
-        def result = new ClientPresentationModel(id, attributeNames.collect() { new ClientAttribute(it)})
+        def result = new GClientPresentationModel(id, attributeNames.collect() { new GClientAttribute(it)})
         clientModelStore.add result
         return result
     }
@@ -61,8 +61,8 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
 
     /** groovy-friendly convenience method for a typical case of creating a ClientPresentationModel with initial values*/
     ClientPresentationModel presentationModel(Map<String, Object> attributeNamesAndValues, String id, String presentationModelType = null) {
-        def attributes = attributeNamesAndValues.collect {key, value -> new ClientAttribute(key, value) }
-        def result = new ClientPresentationModel(id, attributes)
+        def attributes = attributeNamesAndValues.collect {key, value -> new GClientAttribute(key, value) }
+        def result = new GClientPresentationModel(id, attributes)
         result.presentationModelType = presentationModelType
         clientModelStore.add result
         return result
@@ -70,7 +70,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
 
     /** both groovy- and java-friendly full-control factory */
     ClientPresentationModel presentationModel(String id, String presentationModelType = null, ClientAttribute... attributes) {
-        def result = new ClientPresentationModel(id, attributes as List)
+        def result = new GClientPresentationModel(id, attributes as List)
         result.presentationModelType = presentationModelType
         clientModelStore.add result
         return result
@@ -84,7 +84,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
     /** groovy-friendly convenience method for sending a named command that expects only PM responses */
     void send(String commandName, Closure onFinished) {
         clientConnector.send(new NamedCommand(commandName), new OnFinishedHandlerAdapter(){
-            void onFinished(List<ClientPresentationModel> presentationModels) {
+            void onFinished(List<GClientPresentationModel> presentationModels) {
                 onFinished(presentationModels)
             }
         })
@@ -135,7 +135,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
      */
     // todo: make this available on the server side as well
     public ClientAttribute tag(ClientPresentationModel model, String propertyName, Tag tag, def value) {
-        def attribute = new ClientAttribute(propertyName, value, null, tag)
+        def attribute = new GClientAttribute(propertyName, value, null, tag)
         addAttributeToModel(model, attribute)
         return attribute
     }
@@ -157,14 +157,14 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
 
     // todo dk: compare with JS version, todo: same on server
     protected ClientAttribute copyAttribute(ClientAttribute sourceAttribute) {
-        def result = new ClientAttribute(sourceAttribute.propertyName,sourceAttribute.baseValue, sourceAttribute.qualifier, sourceAttribute.tag)
+        def result = new GClientAttribute(sourceAttribute.propertyName,sourceAttribute.baseValue, sourceAttribute.qualifier, sourceAttribute.tag)
         result.value = sourceAttribute.value
         return result
     }
 
     public ClientPresentationModel copy(ClientPresentationModel sourcePM) {
         def attrs  = sourcePM.attributes.collect{ copyAttribute(it) }
-        def result = new ClientPresentationModel(null, attrs)
+        ClientPresentationModel result = new GClientPresentationModel(null, attrs)
         result.presentationModelType = sourcePM.presentationModelType
         result.clientSideOnly = sourcePM.clientSideOnly
         clientModelStore.add(result)
@@ -198,9 +198,9 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
 
 class ApplyToAble {
     GClientDolphin dolphin
-    ClientPresentationModel source
+    GClientPresentationModel source
 
-    void to(ClientPresentationModel target) {
+    void to(GClientPresentationModel target) {
         target.syncWith source
         // at this point, all notifications about value and meta-inf changes
         // have been sent and that way the server is synchronized

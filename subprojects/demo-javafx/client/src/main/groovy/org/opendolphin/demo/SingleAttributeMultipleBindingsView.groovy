@@ -16,12 +16,12 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.client.ClientPresentationModel
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
+import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.GClientPresentationModel
 
 import static org.opendolphin.binding.JFXBinder.bind
 import static org.opendolphin.demo.DemoStyle.style
@@ -58,12 +58,12 @@ class SingleAttributeMultipleBindingsView {
         }
     }
 
-    ClientPresentationModel createPresentationModel(GClientDolphin dolphin) {
-        def titleAttr = new ClientAttribute(TITLE, "Some Text: <enter> or <submit>")
+    GClientPresentationModel createPresentationModel(GClientDolphin dolphin) {
+        def titleAttr = new GClientAttribute(TITLE, "Some Text: <enter> or <submit>")
         return dolphin.presentationModel('demo', titleAttr)
     }
 
-    void bindPmToViews(ClientPresentationModel pm, SceneGraphBuilder sgb) {
+    void bindPmToViews(GClientPresentationModel pm, SceneGraphBuilder sgb) {
         sgb.with {
             bind TITLE of pm to FX.TITLE of primaryStage   // groovy style
 
@@ -79,7 +79,7 @@ class SingleAttributeMultipleBindingsView {
         }
     }
 
-    void attachHandlers(ClientPresentationModel pm, SceneGraphBuilder sgb) {
+    void attachHandlers(GClientPresentationModel pm, SceneGraphBuilder sgb) {
         def copyFieldToPm = { pm[TITLE].value = sgb.input.text } as EventHandler
         sgb.input.onAction  = copyFieldToPm
         sgb.submit.onAction = copyFieldToPm

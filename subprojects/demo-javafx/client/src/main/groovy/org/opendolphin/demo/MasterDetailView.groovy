@@ -22,8 +22,7 @@ import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.GClientPresentationModel
 
 import static groovyx.javafx.GroovyFX.start
 import static org.opendolphin.binding.JFXBinder.bind
@@ -44,7 +43,7 @@ class MasterDetailView {
 
     static show(ClientDolphin dolphin) {
 
-        ClientPresentationModel dataMold = dolphin.presentationModel('dataMold',
+        GClientPresentationModel dataMold = dolphin.presentationModel('dataMold',
                 [
                     ATT_NAME,
                     ATT_RANK,

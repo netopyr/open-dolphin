@@ -16,7 +16,7 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.client.GClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 
@@ -46,8 +46,8 @@ class BindListView {
 
     static show(GClientDolphin dolphin) {
 
-        ObservableList<ClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
-        ObservableList<ClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
+        ObservableList<GClientPresentationModel> observableListOfPms = FXCollections.observableArrayList()
+        ObservableList<GClientPresentationModel> observableListOfMagentaPms = FXCollections.observableArrayList()
 
         dolphin.addModelStoreListener TYPE_VEHICLE, { evt ->
             syncList(observableListOfPms, evt)
@@ -115,7 +115,7 @@ class BindListView {
         }
     }
 
-    def static void syncList(ObservableList<ClientPresentationModel> list, ModelStoreEvent evt) {
+    def static void syncList(ObservableList<GClientPresentationModel> list, ModelStoreEvent evt) {
         switch (evt.type) {
             case ModelStoreEvent.Type.ADDED:
                 list << evt.presentationModel

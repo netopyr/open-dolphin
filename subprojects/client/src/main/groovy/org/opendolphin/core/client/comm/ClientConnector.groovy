@@ -22,11 +22,10 @@ import groovyx.gpars.dataflow.ProcessingNode
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
-import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
-import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.GClientAttribute
+import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.comm.*
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log
@@ -115,19 +114,19 @@ abstract class ClientConnector {
         def commands = response?.id
         me.info "C: server responded with ${response?.size()} command(s): ${commands}"
 
-        List<ClientPresentationModel> touchedPresentationModels = new LinkedList<ClientPresentationModel>()
+        List<GClientPresentationModel> touchedPresentationModels = new LinkedList<GClientPresentationModel>()
         List<Map> touchedDataMaps = new LinkedList<Map>()
         for (Command serverCommand in response) {
             def touched = me.dispatchHandle serverCommand
-            if (touched && touched instanceof ClientPresentationModel) {
-                touchedPresentationModels << (ClientPresentationModel) touched
+            if (touched && touched instanceof GClientPresentationModel) {
+                touchedPresentationModels << (GClientPresentationModel) touched
             } else if (touched && touched instanceof Map) {
                 touchedDataMaps << (Map) touched
             }
         }
         def callback = commandsAndHandlers.first().handler // there can only be one relevant handler anyway
         if (callback) {
-            callback.onFinished((List<ClientPresentationModel>) touchedPresentationModels.unique { ((ClientPresentationModel) it).id })
+            callback.onFinished((List<GClientPresentationModel>) touchedPresentationModels.unique { ((GClientPresentationModel) it).id })
             callback.onFinishedData(touchedDataMaps)
         }
     }
@@ -173,26 +172,26 @@ abstract class ClientConnector {
         return serverCommand.data
     }
 
-    ClientPresentationModel handle(DeletePresentationModelCommand serverCommand) {
-        ClientPresentationModel model = clientDolphin.findPresentationModelById(serverCommand.pmId)
+    GClientPresentationModel handle(DeletePresentationModelCommand serverCommand) {
+        GClientPresentationModel model = clientDolphin.findPresentationModelById(serverCommand.pmId)
         if (!model) return null
         clientModelStore.delete(model)
         return model
     }
 
-    ClientPresentationModel handle(DeleteAllPresentationModelsOfTypeCommand serverCommand) {
+    GClientPresentationModel handle(DeleteAllPresentationModelsOfTypeCommand serverCommand) {
         clientDolphin.deleteAllPresentationModelsOfType(serverCommand.pmType)
         return null // we cannot really return a single pm here
     }
 
     @CompileStatic
-    ClientPresentationModel handle(CreatePresentationModelCommand serverCommand) {
+    GClientPresentationModel handle(CreatePresentationModelCommand serverCommand) {
         if (((ClientModelStore) clientModelStore).containsPresentationModel(serverCommand.pmId)) {
             throw new IllegalStateException("There already is a presentation model with id '$serverCommand.pmId' known to the client.")
         }
-        List<ClientAttribute> attributes = []
+        List<GClientAttribute> attributes = []
         for (attr in serverCommand.attributes) {
-            ClientAttribute attribute = new ClientAttribute(
+            GClientAttribute attribute = new GClientAttribute(
                 attr.propertyName.toString(),
                 attr.value,
                 attr.qualifier?.toString(),
@@ -203,7 +202,7 @@ abstract class ClientConnector {
             attribute.baseValue = attr.baseValue
             attributes << attribute
         }
-        ClientPresentationModel model = new ClientPresentationModel(serverCommand.pmId, attributes)
+        GClientPresentationModel model = new GClientPresentationModel(serverCommand.pmId, attributes)
         model.presentationModelType = serverCommand.pmType
         if (serverCommand.clientSideOnly) {
             model.clientSideOnly = true
@@ -213,7 +212,7 @@ abstract class ClientConnector {
         return model
     }
 
-    ClientPresentationModel handle(ValueChangedCommand serverCommand) {
+    GClientPresentationModel handle(ValueChangedCommand serverCommand) {
         Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot update old value '$serverCommand.oldValue' to new value '$serverCommand.newValue'"
@@ -232,7 +231,7 @@ abstract class ClientConnector {
         return null // this command is not expected to be sent explicitly, so no pm needs to be returned
     }
 
-    ClientPresentationModel handle(BaseValueChangedCommand serverCommand) {
+    GClientPresentationModel handle(BaseValueChangedCommand serverCommand) {
         Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) {
             log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot set initial value."
@@ -243,7 +242,7 @@ abstract class ClientConnector {
         return null // this command is not expected to be sent explicitly, so no pm needs to be returned
     }
 
-    ClientPresentationModel handle(SwitchPresentationModelCommand serverCommand) {
+    GClientPresentationModel handle(SwitchPresentationModelCommand serverCommand) {
         def switchPm = clientModelStore.findPresentationModelById(serverCommand.pmId)
         if (!switchPm) {
             log.warning "C: switch pm with id '$serverCommand.pmId' not found, cannot switch"
@@ -255,11 +254,11 @@ abstract class ClientConnector {
             return null
         }
         switchPm.syncWith sourcePm                  // ==  clientDolphin.apply sourcePm to switchPm
-        return (ClientPresentationModel) switchPm
+        return (GClientPresentationModel) switchPm
     }
 
-    ClientPresentationModel handle(InitializeAttributeCommand serverCommand) {
-        def attribute = new ClientAttribute(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
+    GClientPresentationModel handle(InitializeAttributeCommand serverCommand) {
+        def attribute = new GClientAttribute(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.qualifier) {
@@ -279,7 +278,7 @@ abstract class ClientConnector {
         // here we could have a pmType conflict and we may want to throw an Exception...
         // if there is no pmId, it is most likely an error and CreatePresentationModelCommand should have been used
         if (!presentationModel) {
-            presentationModel = new ClientPresentationModel(serverCommand.pmId, [])
+            presentationModel = new GClientPresentationModel(serverCommand.pmId, [])
             presentationModel.setPresentationModelType(serverCommand.pmType)
             clientModelStore.add(presentationModel)
         }
@@ -294,9 +293,9 @@ abstract class ClientConnector {
         return presentationModel // todo dk: check and test
     }
 
-    ClientPresentationModel handle(SavedPresentationModelNotification serverCommand) {
+    GClientPresentationModel handle(SavedPresentationModelNotification serverCommand) {
         if (!serverCommand.pmId) return null
-        ClientPresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
+        GClientPresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
         if (null == model) {
             log.warning("model with id '$serverCommand.pmId' not found, cannot rebase")
             return null
@@ -305,7 +304,7 @@ abstract class ClientConnector {
         return model
     }
 
-    ClientPresentationModel handle(PresentationModelResetedCommand serverCommand) {
+    GClientPresentationModel handle(PresentationModelResetedCommand serverCommand) {
         if (!serverCommand.pmId) return null
         PresentationModel model = clientModelStore.findPresentationModelById(serverCommand.pmId)
         // reset locally first
@@ -314,14 +313,14 @@ abstract class ClientConnector {
         return model
     }
 
-    ClientPresentationModel handle(AttributeMetadataChangedCommand serverCommand) {
-        ClientAttribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
+    GClientPresentationModel handle(AttributeMetadataChangedCommand serverCommand) {
+        GClientAttribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
         if (!attribute) return null
         attribute[serverCommand.metadataName] = serverCommand.value
         return null
     }
 
-    ClientPresentationModel handle(CallNamedActionCommand serverCommand) {
+    GClientPresentationModel handle(CallNamedActionCommand serverCommand) {
         clientDolphin.send(serverCommand.actionName)
         return null
     }
@@ -347,7 +346,7 @@ abstract class ClientConnector {
         waiting = true
         send(pushListener, new OnFinishedHandlerAdapter() {
             @Override
-            void onFinished(List<ClientPresentationModel> presentationModels) {
+            void onFinished(List<GClientPresentationModel> presentationModels) {
                 // we do nothing here nor do we register a special handler.
                 // The server may have sent commands, though, even CallNamedActionCommand.
                 waiting = false

@@ -18,7 +18,7 @@ package org.opendolphin.binding
 
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientModelStore
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.client.comm.InMemoryClientConnector
 import groovy.beans.Bindable
 import spock.lang.Specification
@@ -36,7 +36,7 @@ class JFXBinderSpec extends Specification {
         def dolphin = new GClientDolphin()
         dolphin.clientModelStore = new ClientModelStore(dolphin)
         dolphin.clientConnector = new InMemoryClientConnector(dolphin)
-        ClientPresentationModel loginPM = dolphin.presentationModel("loginPM", [name: "abc"])
+        GClientPresentationModel loginPM = dolphin.presentationModel("loginPM", [name: "abc"])
 
         JTextField txtName = new JTextField()
 

@@ -16,25 +16,25 @@
 
 package org.opendolphin.core.comm
 
-import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.ClientModelStore
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientPresentationModel
 /**
  * Tests for the approach of using plain attributes as switches by sharing the id.
  */
 
 class AttributeSwitchTests extends GroovyTestCase {
 
-    ClientPresentationModel switchPm
-    ClientPresentationModel sourcePm
+    GClientPresentationModel switchPm
+    GClientPresentationModel sourcePm
     ClientModelStore clientModelStore
 
     protected void setUp() {
         def config = new TestInMemoryConfig()
         clientModelStore = config.clientDolphin.clientModelStore
 
-        switchPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid1')])
-        sourcePm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid2')])
+        switchPm = new GClientPresentationModel([new GClientAttribute(propertyName: 'name', qualifier: 'dataid1')])
+        sourcePm = new GClientPresentationModel([new GClientAttribute(propertyName: 'name', qualifier: 'dataid2')])
         clientModelStore.add switchPm
         clientModelStore.add sourcePm
     }
@@ -66,7 +66,7 @@ class AttributeSwitchTests extends GroovyTestCase {
 
     void testWritingToSwitchesWithSwitchingSources() {
 
-        def otherPm = new ClientPresentationModel([new ClientAttribute(propertyName: 'name', qualifier: 'dataid3')])
+        def otherPm = new GClientPresentationModel([new GClientAttribute(propertyName: 'name', qualifier: 'dataid3')])
         clientModelStore.add otherPm
 
         switchPm.name.syncWith sourcePm.name

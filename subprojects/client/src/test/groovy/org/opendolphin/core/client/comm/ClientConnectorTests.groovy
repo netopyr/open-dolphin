@@ -18,10 +18,10 @@ package org.opendolphin.core.client.comm
 
 import groovy.util.logging.Log
 import org.opendolphin.core.Attribute
-import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientModelStore
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.comm.*
 
 import java.beans.PropertyChangeEvent
@@ -127,7 +127,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
     void testValueChange_noQualifier() {
-        ClientAttribute attribute = new ClientAttribute('attr', 'initialValue')
+        GClientAttribute attribute = new GClientAttribute('attr', 'initialValue')
         dolphin.clientModelStore.registerAttribute(attribute)
         attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
 		syncAndWaitUntilDone()
@@ -139,7 +139,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	void testValueChange_withQualifier() {
 		syncDone = new CountDownLatch(1)
 
-		ClientAttribute attribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
+		GClientAttribute attribute = new GClientAttribute('attr', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(attribute)
         attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
 		syncAndWaitUntilDone()
@@ -151,21 +151,21 @@ class ClientConnectorTests extends GroovyTestCase {
 
     void testAddAttributeToPresentationModel_ClientSideOnly() {
         def clientPM = clientConnector.handle(new CreatePresentationModelCommand(pmId: 'p1', pmType: 'type', clientSideOnly: true, attributes: [[propertyName: '1', value: 'initialValue1', qualifier: 'qualifier']]))
-        clientConnector.clientDolphin.addAttributeToModel(clientPM, new ClientAttribute('2', 'initialValue2'))
+        clientConnector.clientDolphin.addAttributeToModel(clientPM, new GClientAttribute('2', 'initialValue2'))
         syncAndWaitUntilDone()
         assertOnlySyncCommandWasTransmitted()
     }
 
     void testAddTwoAttributesWithSameQualifierToSamePMIsNotAllowed() {
         shouldFail(IllegalStateException) {
-            ClientPresentationModel presentationModel  = clientConnector.clientDolphin.presentationModel("1", new ClientAttribute("a", "0", "QUAL"))
-            clientConnector.clientDolphin.addAttributeToModel(presentationModel, new ClientAttribute("c", "0", "QUAL"))
+            GClientPresentationModel presentationModel  = clientConnector.clientDolphin.presentationModel("1", new GClientAttribute("a", "0", "QUAL"))
+            clientConnector.clientDolphin.addAttributeToModel(presentationModel, new GClientAttribute("c", "0", "QUAL"))
         }
     }
 
     void testAddTwoAttributesInConstructorWithSameQualifierToSamePMIsNotAllowed() {
         shouldFail(IllegalStateException) {
-            clientConnector.clientDolphin.presentationModel("1", new ClientAttribute("a", "0", "QUAL"), new ClientAttribute("b", "0", "QUAL"))
+            clientConnector.clientDolphin.presentationModel("1", new GClientAttribute("a", "0", "QUAL"), new GClientAttribute("b", "0", "QUAL"))
         }
     }
 
@@ -176,8 +176,8 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testBaseValueChange() {
-		ClientAttribute attribute                  = new ClientAttribute('attr', 'initialValue',       'qualifier')
-		ClientAttribute secondAttWithSameQualifier = new ClientAttribute('attr2', 'otherInitialValue', 'qualifier')
+		GClientAttribute attribute                  = new GClientAttribute('attr', 'initialValue',       'qualifier')
+		GClientAttribute secondAttWithSameQualifier = new GClientAttribute('attr2', 'otherInitialValue', 'qualifier')
 		attribute.value = 'newValue'
 		assert attribute.baseValue == 'initialValue'
 		dolphin.clientModelStore.registerAttribute(attribute)
@@ -191,7 +191,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void test_that_notWellKnown_property_causes_MetaDataChange() {
-		ClientAttribute attribute = new ExtendedAttribute('attr', 'initialValue', 'qualifier')
+		GClientAttribute attribute = new ExtendedAttribute('attr', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(attribute)
         attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
 		syncAndWaitUntilDone()
@@ -201,7 +201,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testMetaDataChange_UnregisteredAttribute() {
-		ClientAttribute attribute = new ExtendedAttribute('attr', 'initialValue', 'qualifier')
+		GClientAttribute attribute = new ExtendedAttribute('attr', 'initialValue', 'qualifier')
 		attribute.additionalParam = 'oldValue'
         attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, 'additionalParam', null, 'newTag'))
 		syncAndWaitUntilDone()
@@ -220,7 +220,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testHandle_InitializeAttribute() {
-		def syncedAttribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
+		def syncedAttribute = new GClientAttribute('attr', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(syncedAttribute)
 		clientConnector.handle(new InitializeAttributeCommand('p1', 'newProp', 'qualifier', 'newValue'))
 		assert dolphin.getAt('p1')
@@ -239,7 +239,7 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testHandle_InitializeAttribute_NewValueNotSet() {
-		def syncedAttribute = new ClientAttribute('attr', 'initialValue', 'qualifier')
+		def syncedAttribute = new GClientAttribute('attr', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(syncedAttribute)
 		clientConnector.handle(new InitializeAttributeCommand('p1', 'newProp', 'qualifier', null))
 		assert dolphin.getAt('p1')
@@ -249,8 +249,8 @@ class ClientConnectorTests extends GroovyTestCase {
 
 	}
 	void testHandle_InitializeAttribute_NewValueNotSet_and_firstOtherAttributeValueIsNull() {
-		def syncedAttribute1 = new ClientAttribute('attr', null, 'qualifier')
-		def syncedAttribute2 = new ClientAttribute('attr2', 'initialValue', 'qualifier')
+		def syncedAttribute1 = new GClientAttribute('attr', null, 'qualifier')
+		def syncedAttribute2 = new GClientAttribute('attr2', 'initialValue', 'qualifier')
 		dolphin.clientModelStore.registerAttribute(syncedAttribute1)
 		dolphin.clientModelStore.registerAttribute(syncedAttribute2)
 		// null from 'syncedAttribute1' will be synchronized to other attributes since it is the first in the list of attributes with qualifier 'qualifier'
@@ -269,21 +269,21 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testHandle_SwitchPresentationModel() {
-		ClientPresentationModel model_one = dolphin.presentationModel('p1')
-		model_one._internal_addAttribute(new ClientAttribute('attr', 'one'))
-		ClientPresentationModel model_two = dolphin.presentationModel('p2')
-		model_two._internal_addAttribute(new ClientAttribute('attr', 'two'))
+		GClientPresentationModel model_one = dolphin.presentationModel('p1')
+		model_one._internal_addAttribute(new GClientAttribute('attr', 'one'))
+		GClientPresentationModel model_two = dolphin.presentationModel('p2')
+		model_two._internal_addAttribute(new GClientAttribute('attr', 'two'))
 		assert clientConnector.handle(new SwitchPresentationModelCommand(sourcePmId: 'p1', pmId: 'p2'))
 		assert 'one' == dolphin.getAt('p2').getAt('attr').value
 	}
 
 	void testHandle_InitialValueChanged_AttrNotExists() {
-		def attribute = new ClientAttribute('attr', 'initialValue')
+		def attribute = new GClientAttribute('attr', 'initialValue')
 		assert !clientConnector.handle(new BaseValueChangedCommand(attributeId: attribute.id))
 	}
 
 	void testHandle_InitialValueChanged() {
-		def attribute = new ClientAttribute('attr', 'initialValue')
+		def attribute = new GClientAttribute('attr', 'initialValue')
 		attribute.value = 'newValue'
 		dolphin.clientModelStore.registerAttribute(attribute)
 		clientConnector.handle(new BaseValueChangedCommand(attributeId: attribute.id))
@@ -295,14 +295,14 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
     void testHandle_ValueChangedWithBadBaseValueIsIgnored() {
-   		def attribute = new ClientAttribute('attr', 'initialValue')
+   		def attribute = new GClientAttribute('attr', 'initialValue')
    		dolphin.clientModelStore.registerAttribute(attribute)
         clientConnector.handle(new ValueChangedCommand(attributeId: attribute.id, oldValue: 'no-such-base-value', newValue: 'newValue'))
         assert 'initialValue' == attribute.value
    	}
 
     void testHandle_ValueChanged() {
-   		def attribute = new ClientAttribute('attr', 'initialValue')
+   		def attribute = new GClientAttribute('attr', 'initialValue')
    		dolphin.clientModelStore.registerAttribute(attribute)
    		assert !clientConnector.handle(new ValueChangedCommand(attributeId: attribute.id, oldValue: 'initialValue', newValue: 'newValue'))
    		assert 'newValue' == attribute.value
@@ -345,11 +345,11 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testHandle_DeletePresentationModel() {
-		ClientPresentationModel p1 = dolphin.presentationModel('p1')
+		GClientPresentationModel p1 = dolphin.presentationModel('p1')
 		p1.clientSideOnly = true
-		ClientPresentationModel p2 = dolphin.presentationModel('p2')
+		GClientPresentationModel p2 = dolphin.presentationModel('p2')
 		clientConnector.handle(new DeletePresentationModelCommand(pmId: null))
-		def model = new ClientPresentationModel('p3', [])
+		def model = new GClientPresentationModel('p3', [])
 		clientConnector.handle(new DeletePresentationModelCommand(pmId: model.id))
 		clientConnector.handle(new DeletePresentationModelCommand(pmId: p1.id))
 		clientConnector.handle(new DeletePresentationModelCommand(pmId: p2.id))
@@ -365,8 +365,8 @@ class ClientConnectorTests extends GroovyTestCase {
 	}
 
 	void testHandle_DeleteAllPresentationModelsOfType() {
-		ClientPresentationModel p1 = dolphin.presentationModel('p1','type')
-		ClientPresentationModel p2 = dolphin.presentationModel('p2', 'type')
+		GClientPresentationModel p1 = dolphin.presentationModel('p1','type')
+		GClientPresentationModel p2 = dolphin.presentationModel('p2', 'type')
 		clientConnector.handle(new DeleteAllPresentationModelsOfTypeCommand(pmType: 'type'))
 		assert !dolphin.getAt(p1.id)
 		assert !dolphin.getAt(p2.id)
@@ -440,7 +440,7 @@ class TestClientConnector extends ClientConnector {
 
 }
 
-class ExtendedAttribute extends ClientAttribute {
+class ExtendedAttribute extends GClientAttribute {
 	String additionalParam
 
 	ExtendedAttribute(String propertyName, Object initialValue, String qualifier) {

@@ -17,9 +17,8 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.client.ClientPresentationModel
 import groovyx.javafx.SceneGraphBuilder
-import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.GClientPresentationModel
 
 import java.beans.PropertyChangeListener
 
@@ -84,7 +83,7 @@ class DependentChoiceBoxView {
 }
 
 class PmWrapper {
-    ClientPresentationModel pm
+    GClientPresentationModel pm
     String displayProperty
     String toString() { pm.findAttributeByPropertyName(displayProperty).value }
 }

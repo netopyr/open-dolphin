@@ -1,8 +1,8 @@
 package org.opendolphin.core;
 
-import org.opendolphin.core.client.GClientDolphin;
+import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientModelStore;
-import org.opendolphin.core.client.ClientPresentationModel;
+import org.opendolphin.core.client.GClientPresentationModel;
 
 /**
  * A model store that does not store, i.e. neither adds nor removes presentation models.
@@ -12,17 +12,17 @@ import org.opendolphin.core.client.ClientPresentationModel;
 
 public class NoModelStore extends ClientModelStore {
 
-    public NoModelStore(GClientDolphin clientDolphin) {
+    public NoModelStore(ClientDolphin clientDolphin) {
         super(clientDolphin);
     }
 
     @Override
-    public boolean add(ClientPresentationModel model) {
+    public boolean add(GClientPresentationModel model) {
         return false;
     }
 
     @Override
-    public boolean remove(ClientPresentationModel model) {
+    public boolean remove(GClientPresentationModel model) {
         return false;
     }
 }

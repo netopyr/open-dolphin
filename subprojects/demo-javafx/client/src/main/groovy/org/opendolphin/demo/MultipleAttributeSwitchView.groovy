@@ -17,9 +17,8 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.Tag
-import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.client.GClientDolphin
 
 import static org.opendolphin.binding.JFXBinder.bind
 import static org.opendolphin.demo.DemoStyle.style
@@ -47,20 +46,20 @@ class MultipleAttributeSwitchView {
         start { app ->
 
             def pm1 = dolphin.presentationModel('FirstDemo',
-                new ClientAttribute(TITLE,   'First title',  "pm1-title"),
-                new ClientAttribute(TITLE,   '',             "pm1-title-msg", MESSAGE),
-                new ClientAttribute(PURPOSE, 'First purpose',"pm1-purpose")
+                new GClientAttribute(TITLE,   'First title',  "pm1-title"),
+                new GClientAttribute(TITLE,   '',             "pm1-title-msg", MESSAGE),
+                new GClientAttribute(PURPOSE, 'First purpose',"pm1-purpose")
             )
             def pm2 = dolphin.presentationModel('SecondDemo',
-                new ClientAttribute(TITLE,   'Second title',   "pm2-title"),
-                new ClientAttribute(TITLE,   '',               "pm2-title-msg", MESSAGE),
-                new ClientAttribute(PURPOSE, 'Second purpose', "pm2-purpose")
+                new GClientAttribute(TITLE,   'Second title',   "pm2-title"),
+                new GClientAttribute(TITLE,   '',               "pm2-title-msg", MESSAGE),
+                new GClientAttribute(PURPOSE, 'Second purpose', "pm2-purpose")
             )
 
             def mold = dolphin.presentationModel(MOLD,
-                 new ClientAttribute(TITLE,   ''),
-                 new ClientAttribute(TITLE,   '',  null, MESSAGE),
-                 new ClientAttribute(PURPOSE, '')
+                 new GClientAttribute(TITLE,   ''),
+                 new GClientAttribute(TITLE,   '',  null, MESSAGE),
+                 new GClientAttribute(PURPOSE, '')
              )
 
             dolphin.apply pm1 to mold

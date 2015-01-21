@@ -16,8 +16,7 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientAttribute
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Group
@@ -26,10 +25,10 @@ import javafx.scene.control.Label
 import javafx.scene.control.TextField
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
+import org.opendolphin.core.client.GClientPresentationModel
 
 import static org.opendolphin.binding.Binder.bind
 import static org.opendolphin.demo.MyProps.ATT.*
-import static org.opendolphin.demo.MyProps.TITLE
 
 public class NoGroovyFxPlainApp extends Application {
 
@@ -50,8 +49,8 @@ public class NoGroovyFxPlainApp extends Application {
         root.children << vbox
         
         // construct the PM
-        def titleAttr = new ClientAttribute(TITLE)
-        def pm = new ClientPresentationModel('demo',[titleAttr])
+        def titleAttr = new GClientAttribute(TITLE)
+        def pm = new GClientPresentationModel('demo',[titleAttr])
         pm[TITLE].value = "Hello JavaFX"
 
         stage.titleProperty().bind(label.textProperty()) // JavaFX: changes to label will be propagated to the stage title

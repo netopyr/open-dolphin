@@ -21,7 +21,7 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.text.Font
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.demo.FX
 
 import static groovyx.javafx.GroovyFX.start
@@ -38,7 +38,7 @@ class CrudView {
 
         Font.loadFont(CrudView.getResourceAsStream('/Eurostile-Demi.ttf'), 72)
 
-        ObservableList<ClientPresentationModel> observableListOfPortfolios = FXCollections.observableArrayList()
+        ObservableList<GClientPresentationModel> observableListOfPortfolios = FXCollections.observableArrayList()
 
         // keeping track of the currently visible portfolio (the currently open tab) by
         // having a pm that captures the (dolphin) portfolio id

@@ -6,8 +6,8 @@ import javafx.event.EventType
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TablePosition
 import javafx.scene.control.TableView
-import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientAttribute
+import org.opendolphin.core.client.GClientPresentationModel
 
 class JavaFxUtilTests extends GroovyTestCase {
     static {
@@ -17,14 +17,14 @@ class JavaFxUtilTests extends GroovyTestCase {
     void testValue() {
         TableColumn column = new TableColumn()
         JavaFxUtil.value('attr', column)
-        ClientAttribute attribute = new ClientAttribute('attr', 'content')
+        GClientAttribute attribute = new GClientAttribute('attr', 'content')
         assert column.cellValueFactory
         def result = column.cellValueFactory.call(new TableColumn.CellDataFeatures(null, column, [attr: attribute]))
         assert 'content' == result.value
     }
 
     void testCellEdit() {
-        ClientPresentationModel model = new ClientPresentationModel([new ClientAttribute('attr', 0)])
+        GClientPresentationModel model = new GClientPresentationModel([new GClientAttribute('attr', 0)])
         TableView view = new TableView(FXCollections.observableList([model]))
         TableColumn firstColumn = new TableColumn('firstColumn')
         view.getColumns().add(firstColumn)

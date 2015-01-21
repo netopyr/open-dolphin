@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.opendolphin.core.AbstractObservable;
 import org.opendolphin.core.BasePresentationModel;
 import org.opendolphin.core.Tag;
-import org.opendolphin.core.client.ClientAttribute;
-import org.opendolphin.core.client.ClientPresentationModel;
+import org.opendolphin.core.client.GClientAttribute;
+import org.opendolphin.core.client.GClientPresentationModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,8 +117,8 @@ public class JFXBinderJavaTest {
 
         Tag MESSAGE = Tag.tagFor.get("MESSAGE");
 
-        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("attr_1", "", null, MESSAGE));
-        ClientPresentationModel sourceModel = new ClientPresentationModel("source", attributes);
+        List<GClientAttribute> attributes = Arrays.asList(new GClientAttribute("attr_1", "", null, MESSAGE));
+        GClientPresentationModel sourceModel = new GClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
         JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).to("text").of(targetLabel);
@@ -130,8 +130,8 @@ public class JFXBinderJavaTest {
     @Test
     public void testPresentationModelBindingUsingConverter() {
         Tag MESSAGE = Tag.tagFor.get("MESSAGE");
-        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("attr_1", "", null, MESSAGE));
-        ClientPresentationModel sourceModel = new ClientPresentationModel("source", attributes);
+        List<GClientAttribute> attributes = Arrays.asList(new GClientAttribute("attr_1", "", null, MESSAGE));
+        GClientPresentationModel sourceModel = new GClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
         Converter converter = new Converter() {
@@ -150,8 +150,8 @@ public class JFXBinderJavaTest {
 
     @Test
     public void testUnbindInfo() {
-        List<ClientAttribute> attributes = Arrays.asList(new ClientAttribute("text", ""));
-        ClientPresentationModel sourceModel = new ClientPresentationModel("source", attributes);
+        List<GClientAttribute> attributes = Arrays.asList(new GClientAttribute("text", ""));
+        GClientPresentationModel sourceModel = new GClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
         JFXBinder.bindInfo("dirty").of(sourceModel).to("text").of(targetLabel);
@@ -172,7 +172,7 @@ public class JFXBinderJavaTest {
     @Test
     public void testUnbindFromFX() {
         Label sourceLabel = new Label();
-        ClientAttribute attribute = new ClientAttribute("text", "");
+        GClientAttribute attribute = new GClientAttribute("text", "");
 
         JFXBinder.bind("text").of(sourceLabel).to("value").of(attribute);
         sourceLabel.setText("newValue");
@@ -186,8 +186,8 @@ public class JFXBinderJavaTest {
     @Test
     public void testUnbindFromClientPresentationModel() {
         Label targetLabel = new Label();
-        List<ClientAttribute> attributeList = Arrays.asList(new ClientAttribute("attr", ""));
-        ClientPresentationModel model = new ClientPresentationModel("model", attributeList);
+        List<GClientAttribute> attributeList = Arrays.asList(new GClientAttribute("attr", ""));
+        GClientPresentationModel model = new GClientPresentationModel("model", attributeList);
 
         JFXBinder.bind("attr").of(model).to("text").of(targetLabel);
         model.getAt("attr").setValue("newValue");
@@ -201,8 +201,8 @@ public class JFXBinderJavaTest {
     @Test
     public void testBindAndUnbindFromNodeToClientPresentationModel() {
         Label sourceLabel = new Label();
-        List<ClientAttribute> attributeList = Arrays.asList(new ClientAttribute("attr", ""));
-        ClientPresentationModel targetPm = new ClientPresentationModel("model", attributeList);
+        List<GClientAttribute> attributeList = Arrays.asList(new GClientAttribute("attr", ""));
+        GClientPresentationModel targetPm = new GClientPresentationModel("model", attributeList);
 
         JFXBinder.bind("text").of(sourceLabel).to("attr").of(targetPm);
         sourceLabel.setText("newValue");
@@ -216,7 +216,7 @@ public class JFXBinderJavaTest {
     @Test
     public void testUnbindFromPresentationModel() {
         Label targetLabel = new Label();
-        List<ClientAttribute> attributeList = Arrays.asList(new ClientAttribute("attr", ""));
+        List<GClientAttribute> attributeList = Arrays.asList(new GClientAttribute("attr", ""));
         BasePresentationModel model = new BasePresentationModel("model", attributeList);
 
         JFXBinder.bind("attr").of(model).to("text").of(targetLabel);

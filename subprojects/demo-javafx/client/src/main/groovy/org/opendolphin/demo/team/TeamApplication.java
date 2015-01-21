@@ -30,10 +30,10 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.opendolphin.binding.Converter;
 import org.opendolphin.binding.JavaFxUtil;
 import org.opendolphin.core.*;
-import org.opendolphin.core.client.ClientAttribute;
+import org.opendolphin.core.client.GClientAttribute;
 import org.opendolphin.core.client.ClientAttributeWrapper;
 import org.opendolphin.core.client.ClientDolphin;
-import org.opendolphin.core.client.ClientPresentationModel;
+import org.opendolphin.core.client.GClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
 import java.beans.PropertyChangeEvent;
@@ -74,22 +74,22 @@ public class TeamApplication extends Application {
     GridPane form;
 
     static ClientDolphin clientDolphin;
-    private ClientPresentationModel teamMemberMold;
-    private ClientPresentationModel blankMold;
-    private ClientAttribute         selectedPmId;
+    private GClientPresentationModel teamMemberMold;
+    private GClientPresentationModel blankMold;
+    private GClientAttribute selectedPmId;
 
     public TeamApplication() {
         teamMemberMold = clientDolphin.presentationModel(PM_ID_MOLD, (String) null,
-            new ClientAttribute(ATT_FIRSTNAME, ""),
-            new ClientAttribute(ATT_LASTNAME, ""),
-            new ClientAttribute(ATT_FUNCTION, ""),
-            new ClientAttribute(ATT_AVAILABLE, false),
-            new ClientAttribute(ATT_CONTRACTOR, false),
-            new ClientAttribute(ATT_WORKLOAD, 0));
+            new GClientAttribute(ATT_FIRSTNAME, ""),
+            new GClientAttribute(ATT_LASTNAME, ""),
+            new GClientAttribute(ATT_FUNCTION, ""),
+            new GClientAttribute(ATT_AVAILABLE, false),
+            new GClientAttribute(ATT_CONTRACTOR, false),
+            new GClientAttribute(ATT_WORKLOAD, 0));
 
         blankMold = clientDolphin.copy(teamMemberMold);
 
-        selectedPmId = new ClientAttribute(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
+        selectedPmId = new GClientAttribute(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
         clientDolphin.presentationModel(PM_ID_SELECTED, (String) null, selectedPmId);
 
     }
@@ -256,7 +256,7 @@ public class TeamApplication extends Application {
             getImage(name);
         }
         clientDolphin.send(CMD_INIT, new OnFinishedHandlerAdapter() {
-            @Override public void onFinished(List<ClientPresentationModel> presentationModels) {
+            @Override public void onFinished(List<GClientPresentationModel> presentationModels) {
                 stage.show();
                 clientDolphin.startPushListening(ACTION_ON_PUSH, CMD_RELEASE);
             }
@@ -397,7 +397,7 @@ public class TeamApplication extends Application {
             @Override
             public void changed(ObservableValue<?> observableValue, Object old, Object newSelection) {
                 if (null != newSelection) {
-                    ClientPresentationModel selectedPm = (ClientPresentationModel) newSelection;
+                    GClientPresentationModel selectedPm = (GClientPresentationModel) newSelection;
                     selectedPmId.setValue(selectedPm.getId());
                     clientDolphin.apply(selectedPm).to(teamMemberMold);
                     form.setDisable(false);
@@ -420,7 +420,7 @@ public class TeamApplication extends Application {
                 ADD_BUTTON.setDisable(true);
                 clientDolphin.send(CMD_ADD, new OnFinishedHandlerAdapter() {
                     @Override
-                    public void onFinished(List<ClientPresentationModel> presentationModels) {
+                    public void onFinished(List<GClientPresentationModel> presentationModels) {
                         ADD_BUTTON.setDisable(false);
                     }
                 });
@@ -448,7 +448,7 @@ public class TeamApplication extends Application {
                 DELETE.setDisable(true);
                 clientDolphin.send(CMD_REMOVE, new OnFinishedHandlerAdapter() {
                     @Override
-                    public void onFinished(List<ClientPresentationModel> presentationModels) {
+                    public void onFinished(List<GClientPresentationModel> presentationModels) {
                         DELETE.setDisable(false);
                     }
                 });

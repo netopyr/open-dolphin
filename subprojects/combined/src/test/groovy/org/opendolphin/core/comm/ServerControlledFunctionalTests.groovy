@@ -16,7 +16,7 @@
 
 package org.opendolphin.core.comm
 
-import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.server.*
 
@@ -50,7 +50,7 @@ class ServerControlledFunctionalTests extends GroovyTestCase {
 
     void testPMsWereDeletedAndRecreated() {
         // a pm created on the client side
-        clientDolphin.presentationModel("pm1", new ClientAttribute("a", 0 ))
+        clientDolphin.presentationModel("pm1", new GClientAttribute("a", 0 ))
 
         // register a server-side action that sees the second PM
         serverDolphin.action("checkPmIsThere") { cmd, list ->
@@ -61,7 +61,7 @@ class ServerControlledFunctionalTests extends GroovyTestCase {
 
         assert clientDolphin.getAt("pm1").a.value == 0
         clientDolphin.delete(clientDolphin.getAt("pm1"))
-        clientDolphin.presentationModel("pm1", new ClientAttribute("a", 1 ))
+        clientDolphin.presentationModel("pm1", new GClientAttribute("a", 1 ))
         clientDolphin.send("checkPmIsThere")
     }
 

@@ -35,7 +35,7 @@ class ClientModelStoreSpec extends Specification {
         clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin)
 
 		pmType = 'myType'
-		pm = new ClientPresentationModel('myId', [])
+		pm = new GClientPresentationModel('myId', [])
 		pm.setPresentationModelType(pmType)
 
 		listener = Mock(ModelStoreListener)
@@ -65,7 +65,7 @@ class ClientModelStoreSpec extends Specification {
 
 	void "listeners are not notified for different pmTypes"() {
 		given:
-		def otherPm = new ClientPresentationModel('otherId', [])
+		def otherPm = new GClientPresentationModel('otherId', [])
 		otherPm.setPresentationModelType('otherType')
 
 		when:
