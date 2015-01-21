@@ -2,6 +2,7 @@ package org.opendolphin.demo.sharedStation
 
 import javafx.event.EventHandler
 import javafx.stage.Stage
+import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.demo.FX
@@ -24,7 +25,7 @@ class SharedStationView {
         primaryStage.scene.lookup("#$name")
     }
 
-    void show(GClientDolphin dolphin) {
+    void show(ClientDolphin dolphin) {
         this.dolphin = dolphin
         start { app ->
             createView(delegate)
@@ -48,18 +49,18 @@ class SharedStationView {
     private void createModels() {
         users.each {
             dolphin.presentationModel(it, "user",
-                new GClientAttribute("name", it, "$it-name"),
-                new GClientAttribute("status", "asleep", "$it-status"),
-                new GClientAttribute("wakeup", true, "$it-wakeup-enabled"),
-                new GClientAttribute("play",   false,"$it-play-enabled"),
-                new GClientAttribute("gotobed",false,"$it-gotobed-enabled")
+                    ClientAttributeFactory.create("name", it, "$it-name"),
+                    ClientAttributeFactory.create("status", "asleep", "$it-status"),
+                    ClientAttributeFactory.create("wakeup", true, "$it-wakeup-enabled"),
+                    ClientAttributeFactory.create("play",   false,"$it-play-enabled"),
+                    ClientAttributeFactory.create("gotobed",false,"$it-gotobed-enabled")
             )
         }
         dolphin.presentationModel("current_user", "user", name: null, status:null, wakeup:false, play:false, gotobed:false)
 
         for (user in users) {
             for (status in stati) {
-                dolphin.presentationModel("${user}-${status}", "Detail", new GClientAttribute('detail','',"${user}-${status}-detail"))
+                dolphin.presentationModel("${user}-${status}", "Detail", ClientAttributeFactory.create('detail','',"${user}-${status}-detail"))
             }
         }
         dolphin.presentationModel("current_detail", "Detail", detail:'')

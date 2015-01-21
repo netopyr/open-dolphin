@@ -7,7 +7,7 @@ import org.apache.http.client.ResponseHandler
 import org.apache.http.client.methods.HttpUriRequest
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
-import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.ClientDolphinFactory
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.comm.CreatePresentationModelCommand
 import org.opendolphin.core.comm.JsonCodec
@@ -22,7 +22,7 @@ class HttpClientConnectorTests extends GroovyTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        connector = new HttpClientConnector(new GClientDolphin(), 'dummyURL')
+        connector = new HttpClientConnector(ClientDolphinFactory.create(), 'dummyURL')
         connector.throwExceptionOnSessionChange = false
         connector.codec = new JsonCodec()
 
@@ -50,9 +50,9 @@ class HttpClientConnectorTests extends GroovyTestCase {
         connector.signalHttpClient = new DefaultHttpClient() {
             @Override
             def <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-                StatusLine statusLine = [ getStatusCode: {200}, getReasonPhrase: {"OK"}] as StatusLine
+                StatusLine statusLine = [getStatusCode: { 200 }, getReasonPhrase: { "OK" }] as StatusLine
                 StringEntity entity = new StringEntity("ok")
-                HttpResponse response = [ getStatusLine: {statusLine}, getEntity: {entity} ] as HttpResponse
+                HttpResponse response = [getStatusLine: { statusLine }, getEntity: { entity }] as HttpResponse
                 responseHandler.handleResponse(response)
                 httpWasCalled.countDown()
                 return "[]"
@@ -70,9 +70,11 @@ class HttpClientConnectorTests extends GroovyTestCase {
         connector.signalHttpClient = new DefaultHttpClient() {
             @Override
             def <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-                StatusLine statusLine = [ getStatusCode: {500}, getReasonPhrase: {"Internal Server Error"}] as StatusLine
+                StatusLine statusLine = [getStatusCode: { 500 }, getReasonPhrase: {
+                    "Internal Server Error"
+                }] as StatusLine
                 StringEntity entity = new StringEntity("failed")
-                HttpResponse response = [ getStatusLine: {statusLine}, getEntity: {entity} ] as HttpResponse
+                HttpResponse response = [getStatusLine: { statusLine }, getEntity: { entity }] as HttpResponse
                 try {
                     responseHandler.handleResponse(response)
                 } catch (e) {

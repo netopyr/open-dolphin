@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
@@ -58,8 +59,8 @@ class SingleAttributeMultipleBindingsView {
         }
     }
 
-    GClientPresentationModel createPresentationModel(GClientDolphin dolphin) {
-        def titleAttr = new GClientAttribute(TITLE, "Some Text: <enter> or <submit>")
+    GClientPresentationModel createPresentationModel(ClientDolphin dolphin) {
+        def titleAttr = ClientAttributeFactory.create(TITLE, "Some Text: <enter> or <submit>")
         return dolphin.presentationModel('demo', titleAttr)
     }
 

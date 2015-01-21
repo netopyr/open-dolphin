@@ -2,6 +2,7 @@ package org.opendolphin.demo.team
 
 import groovyx.gpars.agent.Agent
 import org.opendolphin.LogConfig
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.comm.TestInMemoryConfig
 import org.opendolphin.core.server.DTO
@@ -28,7 +29,7 @@ import static org.opendolphin.demo.team.TeamMemberConstants.TYPE_TEAM_MEMBER
 class TeamTests extends Specification {
 
     volatile TestInMemoryConfig app
-    GClientDolphin clientDolphin
+    ClientDolphin clientDolphin
     Agent<List<DTO>> teamHistory = new Agent<List<DTO>>(new LinkedList<DTO>())
     EventBus teamBus = new EventBus()
 

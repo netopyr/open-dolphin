@@ -124,7 +124,7 @@ class PerformanceView {
             primaryStage.show()
         }
     }
-    static String getSleepMillis(GClientDolphin dolphin) {
+    static String getSleepMillis(ClientDolphin dolphin) {
         if ( ! (dolphin.clientConnector instanceof InMemoryClientConnector)) return
         dolphin.clientConnector.sleepMillis
     }

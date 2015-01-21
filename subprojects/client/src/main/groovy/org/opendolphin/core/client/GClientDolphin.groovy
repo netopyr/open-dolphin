@@ -49,7 +49,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
     /** Convenience method for a creating a ClientPresentationModel with initial null values for the attributes
      */
     ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
-        def result = new GClientPresentationModel(id, attributeNames.collect() { new GClientAttribute(it)})
+        def result = new GClientPresentationModel(id, attributeNames.collect() { ClientAttributeFactory.create(it)})
         clientModelStore.add result
         return result
     }
@@ -171,7 +171,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
         return result
     }
 
-    public startPushListening(String pushActionName, String releaseActionName) {
+    public void startPushListening(String pushActionName, String releaseActionName) {
         if (null == pushActionName) {
             // todo dk: think about logging here
 //            log.warning("You must set a pushListener on the client connector if you want to listen for push events")
@@ -187,7 +187,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
         clientConnector.listen()
     }
 
-    public stopPushListening() {
+    public void stopPushListening() {
         clientConnector.pushEnabled = false
     }
 
@@ -197,10 +197,10 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
 }
 
 class ApplyToAble {
-    GClientDolphin dolphin
-    GClientPresentationModel source
+    ClientDolphin dolphin
+    ClientPresentationModel source
 
-    void to(GClientPresentationModel target) {
+    void to(ClientPresentationModel target) {
         target.syncWith source
         // at this point, all notifications about value and meta-inf changes
         // have been sent and that way the server is synchronized

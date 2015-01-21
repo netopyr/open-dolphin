@@ -79,8 +79,8 @@ class GServerAttribute extends BaseAttribute implements ServerAttribute {
             GServerDolphin.rebaseCommand(presentationModel.getServerModelStore().currentResponse, this)
         }
         if (qualifier) { // other attributes with the same qualifier must also rebase
-            for (GServerAttribute sameQualified in (List<GServerAttribute>) presentationModel.getServerModelStore().findAllAttributesByQualifier(qualifier)) {
-                if (sameQualified.dirty) {
+            for (ServerAttribute sameQualified in (List<ServerAttribute>) presentationModel.getServerModelStore().findAllAttributesByQualifier(qualifier)) {
+                if (sameQualified.isDirty()) {
                     sameQualified.rebase()
                 }
             }

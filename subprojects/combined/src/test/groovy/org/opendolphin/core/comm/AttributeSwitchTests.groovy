@@ -16,6 +16,7 @@
 
 package org.opendolphin.core.comm
 
+import org.opendolphin.core.client.ClientPresentationModelFactory
 import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.GClientPresentationModel
@@ -33,8 +34,8 @@ class AttributeSwitchTests extends GroovyTestCase {
         def config = new TestInMemoryConfig()
         clientModelStore = config.clientDolphin.clientModelStore
 
-        switchPm = new GClientPresentationModel([new GClientAttribute(propertyName: 'name', qualifier: 'dataid1')])
-        sourcePm = new GClientPresentationModel([new GClientAttribute(propertyName: 'name', qualifier: 'dataid2')])
+        switchPm = ClientPresentationModelFactory.create([new GClientAttribute(propertyName: 'name', qualifier: 'dataid1')])
+        sourcePm = ClientPresentationModelFactory.create([new GClientAttribute(propertyName: 'name', qualifier: 'dataid2')])
         clientModelStore.add switchPm
         clientModelStore.add sourcePm
     }
@@ -66,7 +67,7 @@ class AttributeSwitchTests extends GroovyTestCase {
 
     void testWritingToSwitchesWithSwitchingSources() {
 
-        def otherPm = new GClientPresentationModel([new GClientAttribute(propertyName: 'name', qualifier: 'dataid3')])
+        def otherPm = ClientPresentationModelFactory.create([new GClientAttribute(propertyName: 'name', qualifier: 'dataid3')])
         clientModelStore.add otherPm
 
         switchPm.name.syncWith sourcePm.name

@@ -2,9 +2,11 @@ package org.opendolphin.core.comm
 
 import groovyx.gpars.dataflow.DataflowQueue
 import org.opendolphin.LogConfig
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.server.EventBus
 import org.opendolphin.core.server.GServerDolphin
+import org.opendolphin.core.server.ServerDolphin
 import spock.lang.Specification
 
 import java.util.concurrent.CountDownLatch
@@ -13,8 +15,8 @@ import java.util.concurrent.TimeUnit
 class ClientConnectorPushTests extends Specification {
 
     volatile TestInMemoryConfig app
-    GServerDolphin serverDolphin
-    GClientDolphin clientDolphin
+    ServerDolphin serverDolphin
+    ClientDolphin clientDolphin
 
     protected void setup() {
         app = new TestInMemoryConfig()

@@ -30,10 +30,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.opendolphin.binding.Converter;
 import org.opendolphin.binding.JavaFxUtil;
 import org.opendolphin.core.*;
-import org.opendolphin.core.client.GClientAttribute;
-import org.opendolphin.core.client.ClientAttributeWrapper;
-import org.opendolphin.core.client.ClientDolphin;
-import org.opendolphin.core.client.GClientPresentationModel;
+import org.opendolphin.core.client.*;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
 import java.beans.PropertyChangeEvent;
@@ -74,22 +71,22 @@ public class TeamApplication extends Application {
     GridPane form;
 
     static ClientDolphin clientDolphin;
-    private GClientPresentationModel teamMemberMold;
-    private GClientPresentationModel blankMold;
-    private GClientAttribute selectedPmId;
+    private ClientPresentationModel teamMemberMold;
+    private ClientPresentationModel blankMold;
+    private ClientAttribute selectedPmId;
 
     public TeamApplication() {
         teamMemberMold = clientDolphin.presentationModel(PM_ID_MOLD, (String) null,
-            new GClientAttribute(ATT_FIRSTNAME, ""),
-            new GClientAttribute(ATT_LASTNAME, ""),
-            new GClientAttribute(ATT_FUNCTION, ""),
-            new GClientAttribute(ATT_AVAILABLE, false),
-            new GClientAttribute(ATT_CONTRACTOR, false),
-            new GClientAttribute(ATT_WORKLOAD, 0));
+                ClientAttributeFactory.create(ATT_FIRSTNAME, ""),
+                ClientAttributeFactory.create(ATT_LASTNAME, ""),
+                ClientAttributeFactory.create(ATT_FUNCTION, ""),
+                ClientAttributeFactory.create(ATT_AVAILABLE, false),
+                ClientAttributeFactory.create(ATT_CONTRACTOR, false),
+                ClientAttributeFactory.create(ATT_WORKLOAD, 0));
 
         blankMold = clientDolphin.copy(teamMemberMold);
 
-        selectedPmId = new GClientAttribute(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
+        selectedPmId = ClientAttributeFactory.create(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
         clientDolphin.presentationModel(PM_ID_SELECTED, (String) null, selectedPmId);
 
     }

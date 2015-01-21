@@ -24,7 +24,7 @@ class ClientAttributeSpec extends Specification {
     void "PropertyChangeListener is notified when an attribute value changes"() {
         given:
 
-        def attribute = new GClientAttribute('name')
+        def attribute = ClientAttributeFactory.create('name')
         attribute.value = ""
         def changeListener = Mock(PropertyChangeListener)
 

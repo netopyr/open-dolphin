@@ -1,13 +1,13 @@
 package org.opendolphin.core
 
-import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.ClientDolphinFactory
 import spock.lang.Specification
 
 class NoModelStoreTest extends Specification {
 
     void "calling the no-model store stores no models"() {
         given:
-        def modelStore = new NoModelStore(new GClientDolphin());
+        def modelStore = new NoModelStore(ClientDolphinFactory.create());
         when:
         def added = modelStore.add(null)
         then:

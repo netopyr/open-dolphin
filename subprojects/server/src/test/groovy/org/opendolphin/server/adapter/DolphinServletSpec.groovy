@@ -3,6 +3,7 @@ package org.opendolphin.server.adapter
 import org.opendolphin.core.comm.Codec
 import org.opendolphin.core.server.ServerConnector
 import org.opendolphin.core.server.GServerDolphin
+import org.opendolphin.core.server.ServerDolphinFactory
 import spock.lang.Specification
 
 import javax.servlet.ServletInputStream
@@ -42,7 +43,7 @@ class DolphinServletSpec extends Specification {
     void "calling doPost in existing session must not reach registration of custom actions"() {
         given:
         DolphinServlet.log.level = Level.ALL // for full branch coverage
-        def (servlet, req, resp) = mockServlet(new GServerDolphin(null, mockServerConnector()))
+        def (servlet, req, resp) = mockServlet(ServerDolphinFactory.create(null, mockServerConnector()))
 
         when:
         servlet.doPost(req, resp)

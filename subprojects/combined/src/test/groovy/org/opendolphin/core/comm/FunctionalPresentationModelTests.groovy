@@ -18,6 +18,10 @@ package org.opendolphin.core.comm
 
 import org.opendolphin.LogConfig
 import org.opendolphin.core.Tag
+import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientAttributeFactory
+import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.ClientPresentationModelFactory
 import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.GClientPresentationModel
@@ -32,6 +36,7 @@ import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.GServerAttribute
 import org.opendolphin.core.server.GServerDolphin
 import org.opendolphin.core.server.GServerPresentationModel
+import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.comm.NamedCommandHandler
 
@@ -48,8 +53,8 @@ import java.util.logging.Level
 class FunctionalPresentationModelTests extends GroovyTestCase {
 
     volatile TestInMemoryConfig context
-    GServerDolphin serverDolphin
-    GClientDolphin clientDolphin
+    ServerDolphin serverDolphin
+    ClientDolphin clientDolphin
 
     @Override
     protected void setUp() {
@@ -65,8 +70,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testQualifiersInClientPMs() {
-        def modelA = clientDolphin.presentationModel("1", new GClientAttribute("a", 0, "QUAL"))
-        def modelB = clientDolphin.presentationModel("2", new GClientAttribute("b", 0, "QUAL"))
+        def modelA = clientDolphin.presentationModel("1", ClientAttributeFactory.create("a", 0, "QUAL"))
+        def modelB = clientDolphin.presentationModel("2", ClientAttributeFactory.create("b", 0, "QUAL"))
 
         modelA.a.value = 1
 
@@ -75,13 +80,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testValueChangeWithQualifiersInClientSideOnlyPMs() {
-        def modelA = new GClientPresentationModel("1", [new GClientAttribute("a", 0, "QUAL")])
+        def modelA = ClientPresentationModelFactory.create("1", [ClientAttributeFactory.create("a", 0, "QUAL")])
         modelA.clientSideOnly = true
         clientDolphin.add modelA
 
-        def modelB = clientDolphin.presentationModel("2", new GClientAttribute("b", 0))
+        def modelB = clientDolphin.presentationModel("2", ClientAttributeFactory.create("b", 0))
         modelB.clientSideOnly = true
-        clientDolphin.addAttributeToModel(modelB, new GClientAttribute("bLate", 0, "QUAL"))
+        clientDolphin.addAttributeToModel(modelB, ClientAttributeFactory.create("bLate", 0, "QUAL"))
 
         modelA.a.value = 1
 
@@ -90,13 +95,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testValueRebaseWithQualifiersInClientSideOnlyPMs() {
-        def modelA = new GClientPresentationModel("1", [new GClientAttribute("a", 0, "QUAL")])
+        def modelA = ClientPresentationModelFactory.create("1", [ClientAttributeFactory.create("a", 0, "QUAL")])
         modelA.clientSideOnly = true
         clientDolphin.add modelA
 
-        def modelB = clientDolphin.presentationModel("2", new GClientAttribute("b", 0))
+        def modelB = clientDolphin.presentationModel("2", ClientAttributeFactory.create("b", 0))
         modelB.clientSideOnly = true
-        clientDolphin.addAttributeToModel(modelB, new GClientAttribute("bLate", 0, "QUAL"))
+        clientDolphin.addAttributeToModel(modelB, ClientAttributeFactory.create("bLate", 0, "QUAL"))
 
         modelA.a.value = 1
         assert modelB.bLate.baseValue == 0
@@ -522,7 +527,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testCopyPresentationModelOnClient() {
 
-        GClientAttribute ca = new GClientAttribute('attr1', true, 'qualifier', Tag.ENABLED)
+        ClientAttribute ca = ClientAttributeFactory.create('attr1', true, 'qualifier', Tag.ENABLED)
         ca.value = false
         def pm1 = clientDolphin.presentationModel("PM1", "type", ca)
         clientDolphin.addAttributeToModel(pm1, ca)

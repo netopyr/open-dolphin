@@ -7,8 +7,8 @@ public class ClientPresentationModelTest extends GroovyTestCase{
         assert model.id == 'x'
     }
     void testNullIdCtor() {
-        def model1 = new GClientPresentationModel([])
-        def model2 = new GClientPresentationModel([])
+        def model1 = ClientPresentationModelFactory.create([])
+        def model2 = ClientPresentationModelFactory.create([])
         assert model1.id != model2.id
     }
     void testBadIdCtor() {

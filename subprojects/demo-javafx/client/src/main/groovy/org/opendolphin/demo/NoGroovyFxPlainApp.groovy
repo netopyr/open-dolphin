@@ -16,6 +16,8 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientAttributeFactory
+import org.opendolphin.core.client.ClientPresentationModelFactory
 import org.opendolphin.core.client.GClientAttribute
 import javafx.application.Application
 import javafx.event.EventHandler
@@ -49,8 +51,8 @@ public class NoGroovyFxPlainApp extends Application {
         root.children << vbox
         
         // construct the PM
-        def titleAttr = new GClientAttribute(TITLE)
-        def pm = new GClientPresentationModel('demo',[titleAttr])
+        def titleAttr = ClientAttributeFactory.create(TITLE)
+        def pm = ClientPresentationModelFactory.create('demo',[titleAttr])
         pm[TITLE].value = "Hello JavaFX"
 
         stage.titleProperty().bind(label.textProperty()) // JavaFX: changes to label will be propagated to the stage title

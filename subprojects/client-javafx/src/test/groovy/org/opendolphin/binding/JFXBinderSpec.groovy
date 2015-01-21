@@ -16,11 +16,11 @@
 
 package org.opendolphin.binding
 
-import org.opendolphin.core.client.GClientDolphin
+import groovy.beans.Bindable
+import org.opendolphin.core.client.ClientDolphinFactory
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.client.comm.InMemoryClientConnector
-import groovy.beans.Bindable
 import spock.lang.Specification
 
 import javax.swing.*
@@ -33,7 +33,7 @@ class JFXBinderSpec extends Specification {
     // exposes http://www.canoo.com/jira/browse/DOL-26
     def 'binding the text property of a Swing component to an Attribute should not throw Exceptions'() {
         given:
-        def dolphin = new GClientDolphin()
+        def dolphin = ClientDolphinFactory.create()
         dolphin.clientModelStore = new ClientModelStore(dolphin)
         dolphin.clientConnector = new InMemoryClientConnector(dolphin)
         GClientPresentationModel loginPM = dolphin.presentationModel("loginPM", [name: "abc"])
@@ -73,5 +73,6 @@ class JFXBinderSpec extends Specification {
 }
 
 class Pojo2 {
-    @Bindable String value
+    @Bindable
+    String value
 }

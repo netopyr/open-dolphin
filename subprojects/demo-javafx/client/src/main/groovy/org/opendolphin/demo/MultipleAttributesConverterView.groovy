@@ -17,7 +17,9 @@
 package org.opendolphin.demo
 
 import org.opendolphin.binding.Converter
+import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.ClientPresentationModelFactory
 import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientPresentationModel
 
@@ -36,9 +38,9 @@ class MultipleAttributesConverterView {
 
         start { app ->
             // construct the PM
-            def titleAttr = new GClientAttribute(TITLE)
-            def purposeAttr = new GClientAttribute(PURPOSE)
-            def pm = new GClientPresentationModel('demo',[titleAttr, purposeAttr])
+            def titleAttr = ClientAttributeFactory.create(TITLE)
+            def purposeAttr = ClientAttributeFactory.create(PURPOSE)
+            def pm = ClientPresentationModelFactory.create('demo',[titleAttr, purposeAttr])
             clientDolphin.clientModelStore.add pm
 
             stage {

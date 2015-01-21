@@ -22,7 +22,7 @@ import spock.lang.Specification
 class ClientAttributeWrapperSpec extends Specification {
     void "ChangeListener is notified when an attribute value changes"() {
         given:
-        def attribute = new GClientAttribute('name')
+        def attribute = ClientAttributeFactory.create('name')
         def wrapper = new ClientAttributeWrapper(attribute)
         attribute.value = ""
         def changeListener = Mock(ChangeListener)

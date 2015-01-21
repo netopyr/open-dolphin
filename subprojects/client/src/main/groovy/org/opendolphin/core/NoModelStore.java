@@ -2,6 +2,7 @@ package org.opendolphin.core;
 
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientModelStore;
+import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.GClientPresentationModel;
 
 /**
@@ -17,12 +18,12 @@ public class NoModelStore extends ClientModelStore {
     }
 
     @Override
-    public boolean add(GClientPresentationModel model) {
+    public boolean add(ClientPresentationModel model) {
         return false;
     }
 
     @Override
-    public boolean remove(GClientPresentationModel model) {
+    public boolean remove(ClientPresentationModel model) {
         return false;
     }
 }

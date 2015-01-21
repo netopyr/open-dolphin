@@ -18,6 +18,7 @@ package org.opendolphin.core.server.action
 
 import org.opendolphin.core.comm.BaseValueChangedCommand
 import org.opendolphin.core.server.GServerAttribute
+import org.opendolphin.core.server.ServerAttribute
 import org.opendolphin.core.server.comm.ActionRegistry
 import groovy.util.logging.Log
 
@@ -26,7 +27,7 @@ class BaseValueChangeAction extends DolphinServerAction {
     void registerIn(ActionRegistry registry) {
         registry.register(BaseValueChangedCommand) { BaseValueChangedCommand command, response ->
             def modelStore = serverDolphin.serverModelStore
-            GServerAttribute attribute = modelStore.findAttributeById(command.attributeId)
+            ServerAttribute attribute = modelStore.findAttributeById(command.attributeId)
             if (attribute) {
                 attribute.silently {
                     attribute.rebase()

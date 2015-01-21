@@ -17,6 +17,7 @@
 package org.opendolphin.demo;
 
 import org.opendolphin.core.client.ClientDolphin;
+import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.GClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandler;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
@@ -30,8 +31,8 @@ public class ConsoleView {
         NamedCommand cmd = new NamedCommand();
         cmd.setId("javaAction");
         OnFinishedHandler callback = new OnFinishedHandlerAdapter() {
-            public void onFinished(List<GClientPresentationModel> pms) {
-                GClientPresentationModel pm = pms.iterator().next();
+            public void onFinished(List<ClientPresentationModel> pms) {
+                ClientPresentationModel pm = pms.iterator().next();
                 System.out.println("pm = " + pm);
             }
         };

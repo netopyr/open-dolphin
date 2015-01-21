@@ -17,6 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.Tag
+import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.ClientDolphin
 
@@ -46,20 +47,20 @@ class MultipleAttributeSwitchView {
         start { app ->
 
             def pm1 = dolphin.presentationModel('FirstDemo',
-                new GClientAttribute(TITLE,   'First title',  "pm1-title"),
-                new GClientAttribute(TITLE,   '',             "pm1-title-msg", MESSAGE),
-                new GClientAttribute(PURPOSE, 'First purpose',"pm1-purpose")
+                    ClientAttributeFactory.create(TITLE,   'First title',  "pm1-title"),
+                    ClientAttributeFactory.create(TITLE,   '',             "pm1-title-msg", MESSAGE),
+                    ClientAttributeFactory.create(PURPOSE, 'First purpose',"pm1-purpose")
             )
             def pm2 = dolphin.presentationModel('SecondDemo',
-                new GClientAttribute(TITLE,   'Second title',   "pm2-title"),
-                new GClientAttribute(TITLE,   '',               "pm2-title-msg", MESSAGE),
-                new GClientAttribute(PURPOSE, 'Second purpose', "pm2-purpose")
+                    ClientAttributeFactory.create(TITLE,   'Second title',   "pm2-title"),
+                    ClientAttributeFactory.create(TITLE,   '',               "pm2-title-msg", MESSAGE),
+                    ClientAttributeFactory.create(PURPOSE, 'Second purpose', "pm2-purpose")
             )
 
             def mold = dolphin.presentationModel(MOLD,
-                 new GClientAttribute(TITLE,   ''),
-                 new GClientAttribute(TITLE,   '',  null, MESSAGE),
-                 new GClientAttribute(PURPOSE, '')
+                    ClientAttributeFactory.create(TITLE,   ''),
+                    ClientAttributeFactory.create(TITLE,   '',  null, MESSAGE),
+                    ClientAttributeFactory.create(PURPOSE, '')
              )
 
             dolphin.apply pm1 to mold

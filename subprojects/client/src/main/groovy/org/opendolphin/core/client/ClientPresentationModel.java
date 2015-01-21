@@ -8,4 +8,6 @@ import org.opendolphin.core.PresentationModel;
 public interface ClientPresentationModel extends PresentationModel<ClientAttribute> {
 
     boolean isClientSideOnly();
+
+    void reset();
 }

@@ -22,8 +22,11 @@ import groovyx.gpars.dataflow.ProcessingNode
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
+import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
+import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.comm.*
@@ -126,7 +129,7 @@ abstract class ClientConnector {
         }
         def callback = commandsAndHandlers.first().handler // there can only be one relevant handler anyway
         if (callback) {
-            callback.onFinished((List<GClientPresentationModel>) touchedPresentationModels.unique { ((GClientPresentationModel) it).id })
+            callback.onFinished((List<ClientPresentationModel>) touchedPresentationModels.unique { ((ClientPresentationModel) it).id })
             callback.onFinishedData(touchedDataMaps)
         }
     }
@@ -189,7 +192,7 @@ abstract class ClientConnector {
         if (((ClientModelStore) clientModelStore).containsPresentationModel(serverCommand.pmId)) {
             throw new IllegalStateException("There already is a presentation model with id '$serverCommand.pmId' known to the client.")
         }
-        List<GClientAttribute> attributes = []
+        List<ClientAttribute> attributes = []
         for (attr in serverCommand.attributes) {
             GClientAttribute attribute = new GClientAttribute(
                 attr.propertyName.toString(),
@@ -258,7 +261,7 @@ abstract class ClientConnector {
     }
 
     GClientPresentationModel handle(InitializeAttributeCommand serverCommand) {
-        def attribute = new GClientAttribute(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
+        def attribute = ClientAttributeFactory.create(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.qualifier) {

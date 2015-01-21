@@ -17,7 +17,9 @@
 package org.opendolphin.demo
 
 import org.opendolphin.binding.Binder
+import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.ClientPresentationModelFactory
 import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.GClientPresentationModel
 
@@ -33,11 +35,11 @@ class MultipleAttributesView {
 
         start { app ->
             // construct the PM
-            def titleAttr = new GClientAttribute(TITLE)
+            def titleAttr = ClientAttributeFactory.create(TITLE)
             titleAttr.value = "A PM with multiple attributes"
-            def purposeAttr = new GClientAttribute(PURPOSE)
+            def purposeAttr = ClientAttributeFactory.create(PURPOSE)
             purposeAttr.value = "Show the need for PMs"
-            def pm = new GClientPresentationModel('demo',[titleAttr, purposeAttr])
+            def pm = ClientPresentationModelFactory.create('demo',[titleAttr, purposeAttr])
             clientDolphin.clientModelStore.add pm
 
             def updateTitle   = { pm.title.value = titleInput.text }
