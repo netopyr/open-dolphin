@@ -8,7 +8,7 @@ import org.opendolphin.core.comm.Command;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ServerModelStore extends ModelStore {
+public class ServerModelStore extends ModelStore<ServerAttribute, ServerPresentationModel> {
 
     protected List<Command> currentResponse = null;
 
@@ -39,10 +39,10 @@ public class ServerModelStore extends ModelStore {
     }
 
     @Override
-    public boolean add(PresentationModel model) {
+    public boolean add(ServerPresentationModel model) {
         boolean added = super.add(model);
         if (! added) return added;
-        ((ServerPresentationModel)model).modelStore = this;
+        ((GServerPresentationModel)model).setServerModelStore(this);
         return true;
     }
 }

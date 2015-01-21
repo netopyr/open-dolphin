@@ -19,7 +19,7 @@ package org.opendolphin.core.server.action
 import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.Command
 import org.opendolphin.core.server.DTO
-import org.opendolphin.core.server.ServerAttribute
+import org.opendolphin.core.server.GServerAttribute
 import org.opendolphin.core.server.GServerDolphin
 import groovy.transform.CompileStatic
 
@@ -38,7 +38,7 @@ abstract class DolphinServerAction implements ServerAction {
         GServerDolphin.presentationModel(dolphinResponse, id, presentationModelType, dto)
     }
 
-    void changeValue(ServerAttribute attribute, value) {
+    void changeValue(GServerAttribute attribute, value) {
         GServerDolphin.changeValue(dolphinResponse, attribute, value)
     }
 
