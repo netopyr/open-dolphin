@@ -29,7 +29,7 @@ import org.opendolphin.core.comm.GetPresentationModelCommand;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ClientModelStore extends ModelStore {
+public class ClientModelStore extends ModelStore<ClientAttribute, ClientPresentationModel> {
     private final ClientDolphin clientDolphin;
     protected final AttributeChangeListener attributeChangeListener;
 
@@ -54,14 +54,14 @@ public class ClientModelStore extends ModelStore {
     }
 
     @Override
-    public boolean add(PresentationModel model) {
+    public boolean add(ClientPresentationModel model) {
         boolean success = super.add(model);
         if (success) {
-            List<Attribute> attributes = model.getAttributes();
-            for (Attribute attribute : attributes) {
+            List<ClientAttribute> attributes = model.getAttributes();
+            for (ClientAttribute attribute : attributes) {
                 attribute.addPropertyChangeListener(attributeChangeListener);
             }
-            if (!((ClientPresentationModel)model).isClientSideOnly()) {
+            if (!model.isClientSideOnly()) {
                 getClientConnector().send(CreatePresentationModelCommand.makeFrom(model));
             }
         }
@@ -69,16 +69,16 @@ public class ClientModelStore extends ModelStore {
     }
 
     @Override
-    public boolean remove(PresentationModel model) {
+    public boolean remove(ClientPresentationModel model) {
         boolean success = super.remove(model);
-        for (Attribute attribute : model.getAttributes()) {
+        for (ClientAttribute attribute : model.getAttributes()) {
             attribute.removePropertyChangeListener(attributeChangeListener);
         }
         return success;
     }
 
     @Override
-    public void registerAttribute(Attribute attribute) {
+    public void registerAttribute(ClientAttribute attribute) {
         super.registerAttribute(attribute);
         attribute.addPropertyChangeListener(attributeChangeListener);
     }

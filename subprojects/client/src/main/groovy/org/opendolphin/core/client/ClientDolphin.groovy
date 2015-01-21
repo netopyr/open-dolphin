@@ -35,7 +35,7 @@ import org.opendolphin.core.comm.SignalCommand
  * Threading model: confined to the UI handling thread.
  */
 // makes use of dynamic dispatch, do not use @CompileStatic
-public class ClientDolphin extends AbstractDolphin {
+public class ClientDolphin extends AbstractDolphin<ClientAttribute, ClientPresentationModel> {
 
     // todo dk: the client model store should become a secret of the ClientDolphin
     ClientModelStore clientModelStore
@@ -115,11 +115,6 @@ public class ClientDolphin extends AbstractDolphin {
         new ApplyToAble(dolphin: this, source: source)
     }
 
-    @Override
-    ClientPresentationModel getAt(String id) {
-        return super.getAt(id)
-    }
-
    /** Removes the modelToDelete from the client model store,
      * detaches all model store listeners,
      * and notifies the server if successful */
@@ -146,7 +141,7 @@ public class ClientDolphin extends AbstractDolphin {
         return attribute
     }
 
-    public void addAttributeToModel(PresentationModel presentationModel, ClientAttribute attribute) {
+    public void addAttributeToModel(ClientPresentationModel presentationModel, ClientAttribute attribute) {
         presentationModel._internal_addAttribute(attribute)
         clientModelStore.registerAttribute(attribute)
         if (!((ClientPresentationModel)presentationModel).clientSideOnly) {
