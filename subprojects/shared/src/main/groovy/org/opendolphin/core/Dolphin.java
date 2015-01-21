@@ -9,25 +9,25 @@ import java.util.Set;
 /**
  * Created by hendrikebbers on 20.01.15.
  */
-public interface Dolphin<U extends Attribute, T extends PresentationModel<U>> {
+public interface Dolphin<A extends Attribute, P extends PresentationModel<A>> {
 
-    boolean add(T model);
+    boolean add(P model);
 
-    boolean remove(T model);
+    boolean remove(P model);
 
-    U findAttributeById(String id);
+    A findAttributeById(String id);
 
-    List<U> findAllAttributesByQualifier(String qualifier);
+    List<A> findAllAttributesByQualifier(String qualifier);
 
     Set<String> listPresentationModelIds();
 
-    Collection<T> listPresentationModels();
+    Collection<P> listPresentationModels();
 
-    List<T> findAllPresentationModelsByType(String presentationModelType);
+    List<P> findAllPresentationModelsByType(String presentationModelType);
 
-    T getAt(String id);
+    P getAt(String id);
 
-    T findPresentationModelById(String id);
+    P findPresentationModelById(String id);
 
     void removeModelStoreListener(ModelStoreListener listener);
 
@@ -45,5 +45,5 @@ public interface Dolphin<U extends Attribute, T extends PresentationModel<U>> {
 
     void addModelStoreListener(Closure listener);
 
-    void updateQualifiers(T presentationModel);
+    void updateQualifiers(P presentationModel);
 }

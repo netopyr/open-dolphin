@@ -24,9 +24,9 @@ import java.util.Set;
 
 import static org.codehaus.groovy.runtime.DefaultGroovyMethods.asType;
 
-public abstract class AbstractDolphin<U extends Attribute, T extends PresentationModel<U>> implements Dolphin<U,T> {
+public abstract class AbstractDolphin<A extends Attribute, P extends PresentationModel<A>> implements Dolphin<A, P> {
 
-    protected abstract ModelStore<U, T> getModelStore();
+    protected abstract ModelStore<A, P> getModelStore();
 
     /**
      * Adds a presentation model to the model store.<br/>
@@ -36,7 +36,7 @@ public abstract class AbstractDolphin<U extends Attribute, T extends Presentatio
      * @param model the model to be added.
      * @return if the add operation was successful or not.
      */
-    public boolean add(T model) {
+    public boolean add(P model) {
         return getModelStore().add(model);
     }
 
@@ -46,7 +46,7 @@ public abstract class AbstractDolphin<U extends Attribute, T extends Presentatio
      * @param model the model to be removed from the store.
      * @return if the remove operation was successful or not.
      */
-    public boolean remove(T model) {
+    public boolean remove(P model) {
         return getModelStore().remove(model);
     }
 
@@ -57,8 +57,8 @@ public abstract class AbstractDolphin<U extends Attribute, T extends Presentatio
      * @param id the id to search for.
      * @return an attribute whose id matches the parameter, {@code null} otherwise.
      */
-    public U findAttributeById(String id) {
-        return (U)getModelStore().findAttributeById(id);
+    public A findAttributeById(String id) {
+        return (A)getModelStore().findAttributeById(id);
     }
 
     /**
@@ -67,8 +67,8 @@ public abstract class AbstractDolphin<U extends Attribute, T extends Presentatio
      *
      * @return a {@code List} of all attributes for which their qualifier was a match.
      */
-    public List<U> findAllAttributesByQualifier(String qualifier) {
-        return (List<U>)getModelStore().findAllAttributesByQualifier(qualifier);
+    public List<A> findAllAttributesByQualifier(String qualifier) {
+        return (List<A>)getModelStore().findAllAttributesByQualifier(qualifier);
     }
 
 
@@ -77,23 +77,23 @@ public abstract class AbstractDolphin<U extends Attribute, T extends Presentatio
         return getModelStore().listPresentationModelIds();
     }
 
-    public Collection<T> listPresentationModels() {
-         return (Collection<T>) getModelStore().listPresentationModels();
+    public Collection<P> listPresentationModels() {
+         return (Collection<P>) getModelStore().listPresentationModels();
     }
 
-    public List<T> findAllPresentationModelsByType(String presentationModelType) {
-        return (List<T>) getModelStore().findAllPresentationModelsByType(presentationModelType);
+    public List<P> findAllPresentationModelsByType(String presentationModelType) {
+        return (List<P>) getModelStore().findAllPresentationModelsByType(presentationModelType);
     }
 
     /**
      * alias for findPresentationModelById
      */
-    public T getAt(String id) {
+    public P getAt(String id) {
         return findPresentationModelById(id);
     }
 
-    public T findPresentationModelById(String id) {
-        return (T) getModelStore().findPresentationModelById(id);
+    public P findPresentationModelById(String id) {
+        return (P) getModelStore().findPresentationModelById(id);
     }
 
     public void removeModelStoreListener(ModelStoreListener listener) {
@@ -133,10 +133,10 @@ public abstract class AbstractDolphin<U extends Attribute, T extends Presentatio
      * all attributes that bear the same qualifier and tag.
      */
     // todo dk: not quite sure whether this should be called automatically in some handle() methods
-    public void updateQualifiers(T presentationModel) {
-        for (U source : presentationModel.getAttributes()) {
+    public void updateQualifiers(P presentationModel) {
+        for (A source : presentationModel.getAttributes()) {
             if (null == source.getQualifier()) continue;
-            for (U target : getModelStore().findAllAttributesByQualifier(source.getQualifier())) {
+            for (A target : getModelStore().findAllAttributesByQualifier(source.getQualifier())) {
                 if (target.getTag() != source.getTag()) continue;
                 target.setValue(source.getValue());
             }

@@ -2,12 +2,12 @@ package org.opendolphin.core;
 
 import org.opendolphin.StringUtil;
 
-public class ModelStoreListenerWrapper<U extends Attribute, T extends PresentationModel<U>> implements ModelStoreListener<U, T> {
+public class ModelStoreListenerWrapper<A extends Attribute, P extends PresentationModel<A>> implements ModelStoreListener<A, P> {
     private static final String ANY_PRESENTATION_MODEL_TYPE = "*";
     private final String presentationModelType;
     private final ModelStoreListener delegate;
 
-    ModelStoreListenerWrapper(String presentationModelType, ModelStoreListener<U, T> delegate) {
+    ModelStoreListenerWrapper(String presentationModelType, ModelStoreListener<A, P> delegate) {
         this.presentationModelType = !StringUtil.isBlank(presentationModelType) ? presentationModelType : ANY_PRESENTATION_MODEL_TYPE;
         this.delegate = delegate;
     }
@@ -36,7 +36,7 @@ public class ModelStoreListenerWrapper<U extends Attribute, T extends Presentati
     }
 
     @Override
-    public void modelStoreChanged(ModelStoreEvent<U, T> event) {
+    public void modelStoreChanged(ModelStoreEvent<A, P> event) {
         String pmType = event.getPresentationModel().getPresentationModelType();
         if (presentationModelTypeMatches(pmType)) {
             delegate.modelStoreChanged(event);

@@ -18,31 +18,31 @@ package org.opendolphin.core;
 
 import java.util.List;
 
-public interface PresentationModel<T extends Attribute> extends Observable {
+public interface PresentationModel<A extends Attribute> extends Observable {
     String DIRTY_PROPERTY = "dirty";
 
     String getId();
 
-    List<T> getAttributes();
+    List<A> getAttributes();
 
-    T getAt(String propertyName);
+    A getAt(String propertyName);
 
-    T getAt(String propertyName, Tag tag);
+    A getAt(String propertyName, Tag tag);
 
     /**
      * Convenience method to get the value of an attribute if it exists or a default value otherwise.
      */
     public int getValue(String attributeName, int defaultValue);
 
-    T findAttributeByPropertyName(String propertyName);
+    A findAttributeByPropertyName(String propertyName);
 
-    List<T> findAllAttributesByPropertyName(String propertyName);
+    List<A> findAllAttributesByPropertyName(String propertyName);
 
-    T findAttributeByPropertyNameAndTag(String propertyName, Tag tag);
+    A findAttributeByPropertyNameAndTag(String propertyName, Tag tag);
 
-    T findAttributeByQualifier(String qualifier);
+    A findAttributeByQualifier(String qualifier);
 
-    T findAttributeById(String id);
+    A findAttributeById(String id);
 
     void syncWith(PresentationModel other);
 
@@ -53,7 +53,7 @@ public interface PresentationModel<T extends Attribute> extends Observable {
      * since it does not register all required listeners. Consider using ClientDolphin.addAttributeToModel().
      * @param attribute
      */
-    void _internal_addAttribute(T attribute);
+    void _internal_addAttribute(A attribute);
 
     boolean isDirty();
     void    updateDirty();
