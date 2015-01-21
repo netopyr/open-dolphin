@@ -17,6 +17,7 @@
 package org.opendolphin.demo
 
 import jfxtras.labs.scene.control.gauge.Gauge
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import jfxtras.labs.scene.control.gauge.Radial
 import jfxtras.labs.scene.control.gauge.StyleModel
@@ -38,7 +39,7 @@ import static jfxtras.labs.scene.control.gauge.Gauge.FrameDesign.CHROME
 
 class SharedTachoView {
 
-    static show(GClientDolphin readDolphin, GClientDolphin writeDolphin) {
+    static show(ClientDolphin readDolphin, ClientDolphin writeDolphin) {
 
         start { app ->
             def gauge = new Radial(

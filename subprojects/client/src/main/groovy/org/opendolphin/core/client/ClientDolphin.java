@@ -2,6 +2,7 @@ package org.opendolphin.core.client;
 
 import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.Tag;
+import org.opendolphin.core.client.comm.ClientConnector;
 import org.opendolphin.core.client.comm.OnFinishedHandler;
 
 import java.util.List;
@@ -40,4 +41,10 @@ public interface ClientDolphin extends Dolphin<ClientAttribute, ClientPresentati
     void stopPushListening();
 
     boolean isPushListening();
+
+    ClientConnector getClientConnector();
+
+    void setClientConnector(ClientConnector connector);
+
+    void setClientModelStore(ClientModelStore store);
 }

@@ -31,4 +31,8 @@ public interface ServerDolphin extends Dolphin<ServerAttribute, ServerPresentati
     ServerPresentationModel presentationModel(String id, String presentationModelType, DTO dto);
 
     void removeAllPresentationModelsOfType(String type);
+
+    ServerModelStore getServerModelStore();
+
+    ServerConnector getServerConnector();
 }

@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import groovy.beans.Bindable
@@ -28,7 +29,7 @@ class SwingView {
 
     @Bindable String boundTitle // a stand-in since swing doesn't support listening for the 'text' prop to change...
 
-    void show(GClientDolphin clientDolphin) {
+    void show(ClientDolphin clientDolphin) {
 
         def pm = clientDolphin.presentationModel('demo', (TITLE):'')
 

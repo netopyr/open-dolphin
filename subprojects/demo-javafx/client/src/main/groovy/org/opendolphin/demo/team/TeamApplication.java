@@ -32,7 +32,7 @@ import org.opendolphin.binding.JavaFxUtil;
 import org.opendolphin.core.*;
 import org.opendolphin.core.client.ClientAttribute;
 import org.opendolphin.core.client.ClientAttributeWrapper;
-import org.opendolphin.core.client.GClientDolphin;
+import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
@@ -73,7 +73,7 @@ public class TeamApplication extends Application {
 
     GridPane form;
 
-    static GClientDolphin clientDolphin;
+    static ClientDolphin clientDolphin;
     private ClientPresentationModel teamMemberMold;
     private ClientPresentationModel blankMold;
     private ClientAttribute         selectedPmId;

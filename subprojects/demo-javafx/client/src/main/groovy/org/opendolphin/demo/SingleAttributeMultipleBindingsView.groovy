@@ -17,6 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
@@ -29,7 +30,7 @@ import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.RIGHT
 
 class SingleAttributeMultipleBindingsView {
-    void show(GClientDolphin clientDolphin) {
+    void show(ClientDolphin clientDolphin) {
         start { app ->
             SceneGraphBuilder builder = delegate
             layoutFrame builder

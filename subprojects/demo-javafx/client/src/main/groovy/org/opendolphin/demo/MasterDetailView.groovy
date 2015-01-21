@@ -21,6 +21,7 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.GClientDolphin
 
@@ -41,7 +42,7 @@ import static org.opendolphin.demo.MasterDetailConstants.*
 
 class MasterDetailView {
 
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
 
         ClientPresentationModel dataMold = dolphin.presentationModel('dataMold',
                 [

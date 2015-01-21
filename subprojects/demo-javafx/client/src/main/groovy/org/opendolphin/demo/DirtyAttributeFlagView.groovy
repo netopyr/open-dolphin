@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 
 import static javafx.scene.paint.Color.*
@@ -36,7 +37,7 @@ import static org.opendolphin.core.Attribute.DIRTY_PROPERTY
 
 
 class DirtyAttributeFlagView {
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
         start { app ->
 
             def model = dolphin.presentationModel 'person', (NAME):'', (LASTNAME):'Smith'

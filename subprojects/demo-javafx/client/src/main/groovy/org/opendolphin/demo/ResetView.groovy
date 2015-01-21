@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 
 import static org.opendolphin.binding.JFXBinder.bind
@@ -28,7 +29,7 @@ import static javafx.scene.paint.Color.RED
 import static javafx.scene.paint.Color.WHITE
 
 class ResetView {
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
         start { app ->
 
             def model = dolphin.presentationModel 'person', (NAME):'', (LASTNAME):'Smith'

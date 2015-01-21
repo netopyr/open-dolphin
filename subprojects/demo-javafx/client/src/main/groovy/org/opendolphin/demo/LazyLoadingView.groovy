@@ -18,6 +18,7 @@ package org.opendolphin.demo
 
 import org.opendolphin.core.ModelStoreEvent
 import org.opendolphin.core.ModelStoreListener
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.comm.WithPresentationModelHandler
@@ -49,7 +50,7 @@ import static org.opendolphin.demo.LazyLoadingConstants.ATT.*
 
 class LazyLoadingView {
 
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
 
         ClientPresentationModel dataMold = dolphin.presentationModel('dataMold', [ID, FIRST_LAST, LAST_FIRST, CITY, PHONE])
 

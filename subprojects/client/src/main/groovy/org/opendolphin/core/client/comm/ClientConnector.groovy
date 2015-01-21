@@ -23,6 +23,7 @@ import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.GClientDolphin
@@ -47,14 +48,14 @@ abstract class ClientConnector {
         uiThreadHandler.executeInsideUiThread { throw up } // not sure whether this is a good default
     }
 
-    protected final GClientDolphin clientDolphin
+    protected final ClientDolphin clientDolphin
     protected final CommandBatcher commandBatcher
 
-    ClientConnector(GClientDolphin clientDolphin) {
+    ClientConnector(ClientDolphin clientDolphin) {
         this(clientDolphin, null)
     }
 
-    ClientConnector(GClientDolphin clientDolphin, CommandBatcher commandBatcher) {
+    ClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher) {
         this.clientDolphin = clientDolphin
         this.commandBatcher = commandBatcher ?: new CommandBatcher()
 

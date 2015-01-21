@@ -18,6 +18,7 @@ package org.opendolphin.demo
 
 import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 
 import static org.opendolphin.binding.JFXBinder.bind
@@ -41,7 +42,7 @@ import static javafx.geometry.HPos.CENTER
 class MultipleAttributeSwitchView {
     static final Tag MESSAGE = new Tag("message")
 
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
 
         start { app ->
 

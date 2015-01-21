@@ -17,6 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.client.ClientAttributeWrapper
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import javafx.beans.value.ChangeListener
@@ -46,7 +47,7 @@ import static javafx.scene.paint.Color.*
  */
 
 class ComposedDirtyView {
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
         start { app ->
 
             def portfolio = dolphin.presentationModel 'portfolio1', name:'Blue chips', date:'14.04.2009', saveable:false

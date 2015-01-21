@@ -17,6 +17,7 @@
 package org.opendolphin.demo
 
 import org.opendolphin.LogConfig
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.comm.InMemoryClientConnector
 import groovyx.javafx.SceneGraphBuilder
@@ -35,7 +36,7 @@ import static org.opendolphin.demo.DemoStyle.style
 
 class PerformanceView {
 
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
 
         def input = dolphin.presentationModel "input", count:0, attCount:0, time:0
 

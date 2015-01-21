@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
@@ -32,7 +33,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class CategoryChangeView {
 
-    static show(GClientDolphin dolphin) {
+    static show(ClientDolphin dolphin) {
 
         def categories = [
                 weight : [

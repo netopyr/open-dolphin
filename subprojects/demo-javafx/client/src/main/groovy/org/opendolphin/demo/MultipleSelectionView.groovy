@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import groovyx.javafx.SceneGraphBuilder
@@ -31,7 +32,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class MultipleSelectionView {
 
-    static show(GClientDolphin clientDolphin) {
+    static show(ClientDolphin clientDolphin) {
 
         ObservableList<ClientPresentationModel> observableSelectionList = FXCollections.observableArrayList()
 

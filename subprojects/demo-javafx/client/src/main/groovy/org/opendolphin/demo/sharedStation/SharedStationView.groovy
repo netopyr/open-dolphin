@@ -3,6 +3,7 @@ package org.opendolphin.demo.sharedStation
 import javafx.event.EventHandler
 import javafx.stage.Stage
 import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.demo.FX
 
 import static groovyx.javafx.GroovyFX.start
@@ -13,7 +14,7 @@ import static org.opendolphin.binding.JFXBinder.bind
 class SharedStationView {
 
     Stage           primaryStage
-    GClientDolphin   dolphin
+    ClientDolphin   dolphin
     List<String>    users   = "felicitas florian sophie elin".tokenize(' ')
     List<String>    actions = "wakeup play gotobed".tokenize(' ')
     List<String>    stati   = "asleep awake playing".tokenize(' ')

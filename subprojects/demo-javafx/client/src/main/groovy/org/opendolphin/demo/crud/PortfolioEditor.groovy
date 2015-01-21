@@ -4,7 +4,7 @@ import javafx.beans.value.ChangeListener
 import org.opendolphin.core.ModelStoreEvent
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.GClientDolphin
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.demo.FX
 import groovyx.javafx.SceneGraphBuilder
 import javafx.collections.FXCollections
@@ -33,13 +33,13 @@ class PortfolioEditor {
     ClientPresentationModel portfolioPM
 
     private javafx.scene.Node view
-    private GClientDolphin clientDolphin
+    private ClientDolphin clientDolphin
     private ObservableList<ClientPresentationModel> observableListOfPositions  = FXCollections.observableArrayList()
     private plus, minus, nameField, tableBox, positions, totalField, fixedField, chart
 
     private ClientPresentationModel selectedPosition = null
 
-    PortfolioEditor(ClientPresentationModel portfolioPM, GClientDolphin clientDolphin) {
+    PortfolioEditor(ClientPresentationModel portfolioPM, ClientDolphin clientDolphin) {
         this.portfolioPM = portfolioPM
         this.clientDolphin = clientDolphin
     }

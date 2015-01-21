@@ -18,6 +18,7 @@ package org.opendolphin.demo
 
 import org.opendolphin.binding.Binder
 import org.opendolphin.core.client.ClientAttribute
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.GClientDolphin
 
@@ -29,7 +30,7 @@ import static javafx.geometry.HPos.RIGHT
 
 class MultipleAttributesView {
 
-    static show(GClientDolphin clientDolphin) {
+    static show(ClientDolphin clientDolphin) {
 
         start { app ->
             // construct the PM

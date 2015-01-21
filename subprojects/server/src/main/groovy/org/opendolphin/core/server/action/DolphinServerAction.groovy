@@ -23,6 +23,7 @@ import org.opendolphin.core.server.GServerAttribute
 import org.opendolphin.core.server.GServerDolphin
 import groovy.transform.CompileStatic
 import org.opendolphin.core.server.ServerAttribute
+import org.opendolphin.core.server.ServerDolphin
 
 /**
  * Common superclass for all actions that need access to
@@ -31,7 +32,7 @@ import org.opendolphin.core.server.ServerAttribute
 
 @CompileStatic
 abstract class DolphinServerAction implements ServerAction {
-    GServerDolphin serverDolphin
+    ServerDolphin serverDolphin
     List<Command> dolphinResponse
 
 

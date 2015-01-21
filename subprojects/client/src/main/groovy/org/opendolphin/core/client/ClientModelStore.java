@@ -28,14 +28,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ClientModelStore extends ModelStore<ClientAttribute, ClientPresentationModel> {
-    private final GClientDolphin clientDolphin;
+    private final ClientDolphin clientDolphin;
     protected final AttributeChangeListener attributeChangeListener;
 
-    public ClientModelStore(GClientDolphin clientDolphin) {
+    public ClientModelStore(ClientDolphin clientDolphin) {
         this(clientDolphin, new ModelStoreConfig());
     }
 
-    public ClientModelStore(GClientDolphin clientDolphin, ModelStoreConfig config) {
+    public ClientModelStore(ClientDolphin clientDolphin, ModelStoreConfig config) {
         super(config);
         this.clientDolphin = clientDolphin;
         attributeChangeListener = new AttributeChangeListener();

@@ -20,6 +20,7 @@ import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
 
@@ -33,7 +34,7 @@ class SmallFootprintView {
 
 
 
-    static show(GClientDolphin providerDolphin, GClientDolphin updateDolphin) {
+    static show(ClientDolphin providerDolphin, ClientDolphin updateDolphin) {
 
         start { app ->
             def sgb = delegate

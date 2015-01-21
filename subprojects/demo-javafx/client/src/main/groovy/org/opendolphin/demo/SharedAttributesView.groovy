@@ -16,6 +16,7 @@
 
 package org.opendolphin.demo
 
+import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.GClientDolphin
 import groovyx.javafx.SceneGraphBuilder
@@ -34,7 +35,7 @@ import static groovyx.javafx.GroovyFX.start
 
 class SharedAttributesView {
 
-    static show(GClientDolphin clientDolphin) {
+    static show(ClientDolphin clientDolphin) {
 
         def selectedVehicle = clientDolphin.presentationModel null, vehiclePmId : null
 
