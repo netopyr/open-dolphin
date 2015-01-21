@@ -20,16 +20,16 @@ import org.opendolphin.core.ModelStoreEvent
 import org.opendolphin.core.ModelStoreListener
 
 public class ServerDolphinTest extends GroovyTestCase {
-    ServerDolphin dolphin
+    GServerDolphin dolphin
 
     @Override
     protected void setUp() throws Exception {
-        dolphin = new ServerDolphin()
+        dolphin = ServerDolphinFactory.create()
         dolphin.serverModelStore.currentResponse = []
     }
 
     void testUniqueIds() {
-        def other = new ServerDolphin()
+        def other = ServerDolphinFactory.create()
         assert dolphin.id != other.id
     }
 
