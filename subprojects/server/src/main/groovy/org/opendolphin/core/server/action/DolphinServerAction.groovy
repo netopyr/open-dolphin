@@ -22,6 +22,7 @@ import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.GServerAttribute
 import org.opendolphin.core.server.GServerDolphin
 import groovy.transform.CompileStatic
+import org.opendolphin.core.server.ServerAttribute
 
 /**
  * Common superclass for all actions that need access to
@@ -38,7 +39,7 @@ abstract class DolphinServerAction implements ServerAction {
         GServerDolphin.presentationModel(dolphinResponse, id, presentationModelType, dto)
     }
 
-    void changeValue(GServerAttribute attribute, value) {
+    void changeValue(ServerAttribute attribute, value) {
         GServerDolphin.changeValue(dolphinResponse, attribute, value)
     }
 
