@@ -17,17 +17,17 @@
 package org.opendolphin.demo
 
 import org.opendolphin.core.Tag
-import org.opendolphin.core.client.ClientAttributeFactory
-import org.opendolphin.core.client.GClientAttribute
 import org.opendolphin.core.client.ClientDolphin
 
-import static org.opendolphin.binding.JFXBinder.bind
-import static org.opendolphin.demo.DemoStyle.style
-import static org.opendolphin.demo.MyProps.ATT.*
-import static org.opendolphin.demo.MyProps.CMD.*
-import static org.opendolphin.demo.MyProps.PM_ID.*
 import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.CENTER
+import static org.opendolphin.binding.JFXBinder.bind
+import static org.opendolphin.demo.DemoStyle.style
+import static org.opendolphin.demo.MyProps.ATT.getPURPOSE
+import static org.opendolphin.demo.MyProps.ATT.getTITLE
+import static org.opendolphin.demo.MyProps.CMD.getSET_PURPOSE
+import static org.opendolphin.demo.MyProps.CMD.getSET_TITLE
+import static org.opendolphin.demo.MyProps.PM_ID.getMOLD
 
 /**
  * The demo shows how to use a presentation model as a "switch", i.e. a stand-in, placeholder, or "mold"
@@ -47,21 +47,21 @@ class MultipleAttributeSwitchView {
         start { app ->
 
             def pm1 = dolphin.presentationModel('FirstDemo',
-                    ClientAttributeFactory.create(TITLE,   'First title',  "pm1-title"),
-                    ClientAttributeFactory.create(TITLE,   '',             "pm1-title-msg", MESSAGE),
-                    ClientAttributeFactory.create(PURPOSE, 'First purpose',"pm1-purpose")
+                    dolphin.create(TITLE, 'First title', "pm1-title"),
+                    dolphin.create(TITLE, '', "pm1-title-msg", MESSAGE),
+                    dolphin.create(PURPOSE, 'First purpose', "pm1-purpose")
             )
             def pm2 = dolphin.presentationModel('SecondDemo',
-                    ClientAttributeFactory.create(TITLE,   'Second title',   "pm2-title"),
-                    ClientAttributeFactory.create(TITLE,   '',               "pm2-title-msg", MESSAGE),
-                    ClientAttributeFactory.create(PURPOSE, 'Second purpose', "pm2-purpose")
+                    dolphin.create(TITLE, 'Second title', "pm2-title"),
+                    dolphin.create(TITLE, '', "pm2-title-msg", MESSAGE),
+                    dolphin.create(PURPOSE, 'Second purpose', "pm2-purpose")
             )
 
             def mold = dolphin.presentationModel(MOLD,
-                    ClientAttributeFactory.create(TITLE,   ''),
-                    ClientAttributeFactory.create(TITLE,   '',  null, MESSAGE),
-                    ClientAttributeFactory.create(PURPOSE, '')
-             )
+                    dolphin.create(TITLE, ''),
+                    dolphin.create(TITLE, '', null, MESSAGE),
+                    dolphin.create(PURPOSE, '')
+            )
 
             dolphin.apply pm1 to mold
 
@@ -69,34 +69,37 @@ class MultipleAttributeSwitchView {
                 scene {
                     gridPane {
 
-                        label id: 'header', row:0, column:0, halignment: CENTER, columnSpan: 2
+                        label id: 'header', row: 0, column: 0, halignment: CENTER, columnSpan: 2
 
-                        label 'Title',          row: 1, column: 0
+                        label 'Title', row: 1, column: 0
                         label id: 'titleLabel', row: 1, column: 1
-                        label id: 'titleMsg',   row: 2, column: 1
+                        label id: 'titleMsg', row: 2, column: 1
 
-                        label 'Purpose',          row: 3, column: 0
+                        label 'Purpose', row: 3, column: 0
                         label id: 'purposeLabel', row: 3, column: 1
 
-                        hbox styleClass:"submit", row:4, column:1, {
+                        hbox styleClass: "submit", row: 4, column: 1, {
                             button "Actual is one",
-                                   onAction: { dolphin.apply pm1 to mold }
+                                    onAction: { dolphin.apply pm1 to mold }
                             button "Actual is two",
-                                   onAction: { dolphin.apply pm2 to mold }
+                                    onAction: { dolphin.apply pm2 to mold }
                         }
-                        hbox styleClass:"submit", row:5, column:1, {
+                        hbox styleClass: "submit", row: 5, column: 1, {
                             button "Set title",
-                                   onAction: { dolphin.send SET_TITLE }
+                                    onAction: { dolphin.send SET_TITLE }
                             button "Set purpose",
-                                   onAction: { dolphin.send SET_PURPOSE }
-            }   }   }   }
+                                    onAction: { dolphin.send SET_PURPOSE }
+                        }
+                    }
+                }
+            }
 
             style delegate
 
-            bind TITLE       of mold to FX.TITLE of primaryStage
-            bind TITLE       of mold to FX.TEXT  of header
-            bind TITLE       of mold to FX.TEXT  of titleLabel
-            bind PURPOSE     of mold to FX.TEXT  of purposeLabel
+            bind TITLE of mold to FX.TITLE of primaryStage
+            bind TITLE of mold to FX.TEXT of header
+            bind TITLE of mold to FX.TEXT of titleLabel
+            bind PURPOSE of mold to FX.TEXT of purposeLabel
 
             bind TITLE, MESSAGE of mold to FX.TEXT of titleMsg
 

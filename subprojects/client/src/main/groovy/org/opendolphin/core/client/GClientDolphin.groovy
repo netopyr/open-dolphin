@@ -194,6 +194,46 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
     public boolean isPushListening() {
         return clientConnector.pushEnabled
     }
+
+    @Override
+    ClientPresentationModel create(List<ClientAttribute> attributes) {
+        return ClientPresentationModelFactory.create(attributes)
+    }
+
+    @Override
+    ClientPresentationModel create(String id, List<ClientAttribute> attributes) {
+        return ClientPresentationModelFactory.create(id, attributes)
+    }
+
+    @Override
+    ClientAttribute create(String propertyName) {
+        return ClientAttributeFactory.create(propertyName)
+    }
+
+    @Override
+    ClientAttribute create(String propertyName, Object initialValue, String qualifier, Tag tag) {
+        return ClientAttributeFactory.create(propertyName, initialValue, qualifier, tag)
+    }
+
+    @Override
+    ClientAttribute create(String propertyName, Object initialValue, Tag tag) {
+        return ClientAttributeFactory.create(propertyName, initialValue, tag)
+    }
+
+    @Override
+    ClientAttribute create(String propertyName, Object initialValue, String qualifier) {
+        return ClientAttributeFactory.create(propertyName, initialValue, qualifier)
+    }
+
+    @Override
+    ClientAttribute create(String propertyName, Object initialValue) {
+        return ClientAttributeFactory.create(propertyName, initialValue)
+    }
+
+    @Override
+    ClientAttribute create(Map props) {
+        return ClientAttributeFactory.create(props)
+    }
 }
 
 class ApplyToAble {

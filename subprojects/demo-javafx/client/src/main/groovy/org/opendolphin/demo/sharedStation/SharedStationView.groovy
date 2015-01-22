@@ -49,18 +49,18 @@ class SharedStationView {
     private void createModels() {
         users.each {
             dolphin.presentationModel(it, "user",
-                    ClientAttributeFactory.create("name", it, "$it-name"),
-                    ClientAttributeFactory.create("status", "asleep", "$it-status"),
-                    ClientAttributeFactory.create("wakeup", true, "$it-wakeup-enabled"),
-                    ClientAttributeFactory.create("play",   false,"$it-play-enabled"),
-                    ClientAttributeFactory.create("gotobed",false,"$it-gotobed-enabled")
+                    dolphin.create("name", it, "$it-name"),
+                    dolphin.create("status", "asleep", "$it-status"),
+                    dolphin.create("wakeup", true, "$it-wakeup-enabled"),
+                    dolphin.create("play",   false,"$it-play-enabled"),
+                    dolphin.create("gotobed",false,"$it-gotobed-enabled")
             )
         }
         dolphin.presentationModel("current_user", "user", name: null, status:null, wakeup:false, play:false, gotobed:false)
 
         for (user in users) {
             for (status in stati) {
-                dolphin.presentationModel("${user}-${status}", "Detail", ClientAttributeFactory.create('detail','',"${user}-${status}-detail"))
+                dolphin.presentationModel("${user}-${status}", "Detail", dolphin.create('detail','',"${user}-${status}-detail"))
             }
         }
         dolphin.presentationModel("current_detail", "Detail", detail:'')

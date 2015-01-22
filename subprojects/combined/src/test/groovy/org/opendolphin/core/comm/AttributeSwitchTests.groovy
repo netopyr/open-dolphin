@@ -16,10 +16,11 @@
 
 package org.opendolphin.core.comm
 
+import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.ClientPresentationModelFactory
 import org.opendolphin.core.client.GClientAttribute
-import org.opendolphin.core.client.ClientModelStore
 import org.opendolphin.core.client.GClientPresentationModel
+
 /**
  * Tests for the approach of using plain attributes as switches by sharing the id.
  */

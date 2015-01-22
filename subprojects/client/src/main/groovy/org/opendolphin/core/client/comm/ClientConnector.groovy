@@ -16,23 +16,17 @@
 
 package org.opendolphin.core.client.comm
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Log
 import groovyx.gpars.dataflow.KanbanFlow
 import groovyx.gpars.dataflow.KanbanTray
 import groovyx.gpars.dataflow.ProcessingNode
+import org.codehaus.groovy.runtime.StackTraceUtils
 import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
-import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientAttributeFactory
-import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.client.ClientModelStore
-import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.GClientAttribute
-import org.opendolphin.core.client.GClientPresentationModel
+import org.opendolphin.core.client.*
 import org.opendolphin.core.comm.*
-import groovy.transform.CompileStatic
-import groovy.util.logging.Log
-import org.codehaus.groovy.runtime.StackTraceUtils
 
 import java.util.logging.Level
 
@@ -71,13 +65,15 @@ abstract class ClientConnector {
             List<Command> commands = commandsAndHandlers.collect { it.command }
             if (log.isLoggable(Level.INFO)) {
                 log.info "C: sending batch of size " + commands.size()
-                for (command in commands) { log.info("C:           -> " + command) }
+                for (command in commands) {
+                    log.info("C:           -> " + command)
+                }
             }
 
             def answer = null
 
             Runnable transmitter = { answer = transmit(commands) }
-            Runnable postWorker  = { trayOut << [response: answer, request: commandsAndHandlers] }
+            Runnable postWorker = { trayOut << [response: answer, request: commandsAndHandlers] }
             doExceptionSafe(transmitter, postWorker)
         }
 
@@ -129,7 +125,9 @@ abstract class ClientConnector {
         }
         def callback = commandsAndHandlers.first().handler // there can only be one relevant handler anyway
         if (callback) {
-            callback.onFinished((List<ClientPresentationModel>) touchedPresentationModels.unique { ((ClientPresentationModel) it).id })
+            callback.onFinished((List<ClientPresentationModel>) touchedPresentationModels.unique {
+                ((ClientPresentationModel) it).id
+            })
             callback.onFinishedData(touchedDataMaps)
         }
     }
@@ -195,11 +193,11 @@ abstract class ClientConnector {
         List<ClientAttribute> attributes = []
         for (attr in serverCommand.attributes) {
             GClientAttribute attribute = new GClientAttribute(
-                attr.propertyName.toString(),
-                attr.value,
-                attr.qualifier?.toString(),
-                attr.tag ? Tag.tagFor[(String) attr.tag] : Tag.VALUE)
-            if(attr.id?.toString()?.endsWith('S')) {
+                    attr.propertyName.toString(),
+                    attr.value,
+                    attr.qualifier?.toString(),
+                    attr.tag ? Tag.tagFor[(String) attr.tag] : Tag.VALUE)
+            if (attr.id?.toString()?.endsWith('S')) {
                 attribute.id = attr.id
             }
             attribute.baseValue = attr.baseValue
@@ -210,7 +208,7 @@ abstract class ClientConnector {
         if (serverCommand.clientSideOnly) {
             model.clientSideOnly = true
         }
-        ((ClientModelStore)clientModelStore).add(model)
+        ((ClientModelStore) clientModelStore).add(model)
         clientDolphin.updateQualifiers(model)
         return model
     }
@@ -261,7 +259,7 @@ abstract class ClientConnector {
     }
 
     GClientPresentationModel handle(InitializeAttributeCommand serverCommand) {
-        def attribute = ClientAttributeFactory.create(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
+        def attribute = clientDolphin.create(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.qualifier) {
@@ -328,11 +326,10 @@ abstract class ClientConnector {
         return null
     }
 
-
     //////////////////////////////// push support ////////////////////////////////////////
 
     /** The named command that waits for pushes on the server side */
-    NamedCommand  pushListener   = null;
+    NamedCommand pushListener = null;
     /** The signal command that publishes a "release" event on the respective bus */
     SignalCommand releaseCommand = null;
 
@@ -345,7 +342,7 @@ abstract class ClientConnector {
     /** listens for the pushListener to return. The pushListener must be set and pushEnabled must be true. */
     protected void listen() {
         if (!pushEnabled) return // allow the loop to end
-        if (waiting) return      // avoid second call while already waiting (?) -> two different push actions not supported
+        if (waiting) return// avoid second call while already waiting (?) -> two different push actions not supported
         waiting = true
         send(pushListener, new OnFinishedHandlerAdapter() {
             @Override

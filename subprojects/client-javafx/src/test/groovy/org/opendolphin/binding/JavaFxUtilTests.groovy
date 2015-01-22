@@ -10,8 +10,6 @@ import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.ClientPresentationModelFactory
-import org.opendolphin.core.client.GClientAttribute
-import org.opendolphin.core.client.GClientPresentationModel
 
 class JavaFxUtilTests extends GroovyTestCase {
     static {

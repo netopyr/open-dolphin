@@ -21,23 +21,9 @@ import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientDolphin
-import org.opendolphin.core.client.ClientPresentationModelFactory
-import org.opendolphin.core.client.GClientAttribute
-import org.opendolphin.core.client.GClientDolphin
 import org.opendolphin.core.client.GClientPresentationModel
-import org.opendolphin.core.client.comm.BlindCommandBatcher
-import org.opendolphin.core.client.comm.InMemoryClientConnector
-import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter
-import org.opendolphin.core.client.comm.RunLaterUiThreadHandler
-import org.opendolphin.core.client.comm.SynchronousInMemoryClientConnector
-import org.opendolphin.core.client.comm.UiThreadHandler
-import org.opendolphin.core.client.comm.WithPresentationModelHandler
-import org.opendolphin.core.server.DTO
-import org.opendolphin.core.server.GServerAttribute
-import org.opendolphin.core.server.GServerDolphin
-import org.opendolphin.core.server.GServerPresentationModel
-import org.opendolphin.core.server.ServerDolphin
-import org.opendolphin.core.server.Slot
+import org.opendolphin.core.client.comm.*
+import org.opendolphin.core.server.*
 import org.opendolphin.core.server.comm.NamedCommandHandler
 
 import java.util.concurrent.CountDownLatch
@@ -70,8 +56,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testQualifiersInClientPMs() {
-        def modelA = clientDolphin.presentationModel("1", ClientAttributeFactory.create("a", 0, "QUAL"))
-        def modelB = clientDolphin.presentationModel("2", ClientAttributeFactory.create("b", 0, "QUAL"))
+        def modelA = clientDolphin.presentationModel("1", clientDolphin.create("a", 0, "QUAL"))
+        def modelB = clientDolphin.presentationModel("2", clientDolphin.create("b", 0, "QUAL"))
 
         modelA.a.value = 1
 
@@ -80,13 +66,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testValueChangeWithQualifiersInClientSideOnlyPMs() {
-        def modelA = ClientPresentationModelFactory.create("1", [ClientAttributeFactory.create("a", 0, "QUAL")])
+        def modelA = clientDolphin.create("1", [clientDolphin.create("a", 0, "QUAL")])
         modelA.clientSideOnly = true
         clientDolphin.add modelA
 
-        def modelB = clientDolphin.presentationModel("2", ClientAttributeFactory.create("b", 0))
+        def modelB = clientDolphin.presentationModel("2", clientDolphin.create("b", 0))
         modelB.clientSideOnly = true
-        clientDolphin.addAttributeToModel(modelB, ClientAttributeFactory.create("bLate", 0, "QUAL"))
+        clientDolphin.addAttributeToModel(modelB, clientDolphin.create("bLate", 0, "QUAL"))
 
         modelA.a.value = 1
 
@@ -95,13 +81,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testValueRebaseWithQualifiersInClientSideOnlyPMs() {
-        def modelA = ClientPresentationModelFactory.create("1", [ClientAttributeFactory.create("a", 0, "QUAL")])
+        def modelA = clientDolphin.create("1", [clientDolphin.create("a", 0, "QUAL")])
         modelA.clientSideOnly = true
         clientDolphin.add modelA
 
-        def modelB = clientDolphin.presentationModel("2", ClientAttributeFactory.create("b", 0))
+        def modelB = clientDolphin.presentationModel("2", clientDolphin.create("b", 0))
         modelB.clientSideOnly = true
-        clientDolphin.addAttributeToModel(modelB, ClientAttributeFactory.create("bLate", 0, "QUAL"))
+        clientDolphin.addAttributeToModel(modelB, clientDolphin.create("bLate", 0, "QUAL"))
 
         modelA.a.value = 1
         assert modelB.bLate.baseValue == 0
@@ -117,7 +103,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testPerformanceWithBlindCommandBatcher() {
-        def batcher = new BlindCommandBatcher(mergeValueChanges:true, deferMillis: 100)
+        def batcher = new BlindCommandBatcher(mergeValueChanges: true, deferMillis: 100)
         def connector = new InMemoryClientConnector(context.clientDolphin, batcher)
         connector.uiThreadHandler = new RunLaterUiThreadHandler()
         connector.serverConnector = serverDolphin.serverConnector
@@ -149,7 +135,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
         clientDolphin.send "performance", { List<GClientPresentationModel> pms ->
             assert pms.size() == 100
-            println ((System.nanoTime() - start).intdiv(1_000_000))
+            println((System.nanoTime() - start).intdiv(1_000_000))
             context.assertionsDone() // make sure the assertions are really executed
         }
     }
@@ -210,14 +196,16 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testFetchingAnInitialListOfData() {
         serverDolphin.action "fetchData", { cmd, response ->
             ('a'..'z').each {
-                DTO dto = new DTO(new Slot('char',it))
+                DTO dto = new DTO(new Slot('char', it))
                 // sending CreatePresentationModelCommand _without_ adding the pm to the server model store
                 serverDolphin.presentationModel(response, it, null, dto)
             }
         }
         clientDolphin.send "fetchData", { List<GClientPresentationModel> pms ->
             assert pms.size() == 26
-            assert pms.collect { it.id }.sort(false) == pms.collect { it.id }   // pmIds from a single action should come in sequence
+            assert pms.collect { it.id }.sort(false) == pms.collect {
+                it.id
+            }   // pmIds from a single action should come in sequence
             assert 'a' == context.clientDolphin.findPresentationModelById('a').char.value
             assert 'z' == context.clientDolphin.findPresentationModelById('z').char.value
             context.assertionsDone() // make sure the assertions are really executed
@@ -274,7 +262,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testAsynchronousExceptionInOnFinishedHandler() {
 
-        clientDolphin.clientConnector.uiThreadHandler = { it() } as UiThreadHandler // not "run later" we need it immediately here
+        clientDolphin.clientConnector.uiThreadHandler = { it() } as UiThreadHandler
+        // not "run later" we need it immediately here
         clientDolphin.clientConnector.onException = { context.assertionsDone() }
 
         serverDolphin.action "someCmd", { cmd, response ->
@@ -292,6 +281,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         }
         context.assertionsDone()
     }
+
     void testUnregisteredCommandWithoutLog() {
         serverDolphin.serverConnector.log.level = Level.OFF
         clientDolphin.send "no-such-action-registered"
@@ -299,9 +289,9 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testRebaseIsTransferred() {
-        GClientPresentationModel person = clientDolphin.presentationModel("person",null,name:'Dierk',other:'Dierk')
+        GClientPresentationModel person = clientDolphin.presentationModel("person", null, name: 'Dierk', other: 'Dierk')
 
-        person.name.qualifier  = 'qualifier'
+        person.name.qualifier = 'qualifier'
         person.other.qualifier = 'qualifier'
 
         assert person.name.value == "Dierk"
@@ -311,13 +301,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
         clientDolphin.sync { assert serverDolphin["person"].name.value == "Mittie" }
         person.name.rebase()
-        assert ! person.name.dirty
-        assert person.name.value      == "Mittie" // value unchanged
-        assert person.other.value     == "Mittie" // proliferated to attributes with same qualifier
-        assert person.name.baseValue  == "Mittie" // base value changed
+        assert !person.name.dirty
+        assert person.name.value == "Mittie" // value unchanged
+        assert person.other.value == "Mittie" // proliferated to attributes with same qualifier
+        assert person.name.baseValue == "Mittie" // base value changed
         assert person.other.baseValue == "Mittie" // proliferated to attributes with same qualifier
         clientDolphin.sync {
-            assert serverDolphin["person"].name.baseValue  == "Mittie" // rebase is done on server
+            assert serverDolphin["person"].name.baseValue == "Mittie" // rebase is done on server
             assert serverDolphin["person"].other.baseValue == "Mittie" // rebase is done on server
             context.assertionsDone()
         }
@@ -328,17 +318,17 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.clientConnector.send new BaseValueChangedCommand(attributeId: 0)
         clientDolphin.clientConnector.send new ValueChangedCommand(attributeId: 0)
         GServerDolphin.changeValue(null, null, null)
-        GServerDolphin.changeValue(null, new GServerAttribute('a',42), 42)
+        GServerDolphin.changeValue(null, new GServerAttribute('a', 42), 42)
         context.assertionsDone()
     }
 
     void testApplyPm() {
         serverDolphin.action("checkPmWasApplied") { cmd, resp ->
-            assert 1 == serverDolphin['second'].getAt('a',Tag.VALUE).value
+            assert 1 == serverDolphin['second'].getAt('a', Tag.VALUE).value
             context.assertionsDone()
         }
-        def first = clientDolphin.presentationModel("first", null, a:1)
-        def second = clientDolphin.presentationModel("second", null, a:2)
+        def first = clientDolphin.presentationModel("first", null, a: 1)
+        def second = clientDolphin.presentationModel("second", null, a: 2)
         clientDolphin.apply first to second
         assert 1 == second.a.value
         clientDolphin.send "checkPmWasApplied"
@@ -354,7 +344,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testDataRequest() {
         serverDolphin.action("myData") { cmd, resp ->
-            resp << new DataCommand([a:1, b:2])
+            resp << new DataCommand([a: 1, b: 2])
         }
         clientDolphin.data "myData", { data ->
             assert data.size() == 1
@@ -365,31 +355,31 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testPmReset() {
-        def myPm = clientDolphin.presentationModel("myPm", null, a:1)
-        assert ! myPm.dirty
+        def myPm = clientDolphin.presentationModel("myPm", null, a: 1)
+        assert !myPm.dirty
         myPm.a.value = 2
         assert myPm.dirty
         myPm.reset()
         assert myPm.a.value == 1
-        assert ! myPm.dirty
+        assert !myPm.dirty
         myPm.a.value = 1
-        assert ! myPm.dirty
+        assert !myPm.dirty
         context.assertionsDone()
     }
 
     void testPmRebase() {
-        def myPm = clientDolphin.presentationModel("myPm", null, a:1)
+        def myPm = clientDolphin.presentationModel("myPm", null, a: 1)
         myPm.a.value = 2
         assert myPm.dirty
         myPm.rebase()
         assert myPm.a.value == 2
-        assert ! myPm.dirty
+        assert !myPm.dirty
         context.assertionsDone()
     }
 
     void testWithPresentationModelFetchedFromServer() {
         serverDolphin.serverConnector.registry.register(GetPresentationModelCommand) { GetPresentationModelCommand cmd, response ->
-            serverDolphin.presentationModel(response, "newPm", null, new DTO(new Slot('a','1')))
+            serverDolphin.presentationModel(response, "newPm", null, new DTO(new Slot('a', '1')))
         }
         clientDolphin.modelStore.withPresentationModel("newPm", { pm ->
             assert pm.id == 'newPm'
@@ -446,7 +436,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
         clientDolphin.send 'reset', {
             assert pm.attr.value == 1
-            assert ! pm.attr.dirty
+            assert !pm.attr.dirty
             context.assertionsDone()
         }
     }
@@ -462,7 +452,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
         clientDolphin.send 'reset', {
             assert pm.attr.value == 1
-            assert ! pm.dirty
+            assert !pm.dirty
             context.assertionsDone()
         }
     }
@@ -527,7 +517,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testCopyPresentationModelOnClient() {
 
-        ClientAttribute ca = ClientAttributeFactory.create('attr1', true, 'qualifier', Tag.ENABLED)
+        ClientAttribute ca = clientDolphin.create('attr1', true, 'qualifier', Tag.ENABLED)
         ca.value = false
         def pm1 = clientDolphin.presentationModel("PM1", "type", ca)
         clientDolphin.addAttributeToModel(pm1, ca)
@@ -535,13 +525,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
         assert pm1.id != pm2.id
         assert pm1.presentationModelType == pm2.presentationModelType
-        assert pm1.attributes.size()    == pm2.attributes.size()
+        assert pm1.attributes.size() == pm2.attributes.size()
         def orig = pm1.getAt('attr1', Tag.ENABLED)
         def copy = pm2.getAt('attr1', Tag.ENABLED)
-        assert orig.value     == copy.value
+        assert orig.value == copy.value
         assert orig.baseValue == copy.baseValue
         assert orig.qualifier == copy.qualifier
-        assert orig.tag       == copy.tag
+        assert orig.tag == copy.tag
 
         serverDolphin.action('assert') { cmd, response ->
             def pms = serverDolphin.findAllPresentationModelsByType('type')
@@ -550,13 +540,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             def spm2 = pms[1]
             assert spm1.id != spm2.id
             assert spm1.presentationModelType == spm2.presentationModelType
-            assert spm1.attributes.size()    == spm2.attributes.size()
+            assert spm1.attributes.size() == spm2.attributes.size()
             def sorig = spm1.getAt('attr1', Tag.ENABLED)
             def scopy = spm2.getAt('attr1', Tag.ENABLED)
-            assert sorig.value     == scopy.value
+            assert sorig.value == scopy.value
             assert sorig.baseValue == scopy.baseValue
             assert sorig.qualifier == scopy.qualifier
-            assert sorig.tag       == scopy.tag
+            assert sorig.tag == scopy.tag
         }
 
         clientDolphin.send 'assert', {
@@ -577,12 +567,12 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
             serverDolphin.delete([], (GServerPresentationModel) null)
             serverDolphin.delete([], '')
             serverDolphin.delete(null, '')
-            serverDolphin.presentationModel(null, null,null,null)
+            serverDolphin.presentationModel(null, null, null, null)
             serverDolphin.clientSideModel(null, null, null, null)
             serverDolphin.changeValue([], null, null)
             serverDolphin.initAt(null, '', '', '')
         }
-        clientDolphin.send('arbitrary'){
+        clientDolphin.send('arbitrary') {
             context.assertionsDone()
         }
     }
@@ -596,7 +586,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         serverDolphin.action('set2') { cmd, response ->
             latch.await() // mimic a server delay such that the client has enough time to change the value concurrently
             serverDolphin.getAt('pm').getAt('attr').value == 1
-            serverDolphin.getAt('pm').getAt('attr').value  = 2
+            serverDolphin.getAt('pm').getAt('attr').value = 2
             serverDolphin.getAt('pm').getAt('attr').value == 2 // immediate change of server state
         }
         serverDolphin.action('assert3') { cmd, response ->
@@ -606,11 +596,12 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.send('set2') // a conflict could arise when the server value is changed ...
         attr.value = 3            // ... while the client value is changed concurrently
         latch.countDown()
-        clientDolphin.send('assert3') // since from the client perspective, the last change was to 3, server and client should both see the 3
+        clientDolphin.send('assert3')
+        // since from the client perspective, the last change was to 3, server and client should both see the 3
 
         // in between these calls a conflicting value change could be transferred, setting both value to 2
 
-        clientDolphin.send('assert3'){
+        clientDolphin.send('assert3') {
             assert attr.value == 3
             context.assertionsDone()
         }

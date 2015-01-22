@@ -25,8 +25,6 @@ import org.opendolphin.core.client.ClientAttribute
 import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.ClientPresentationModelFactory
-import org.opendolphin.core.client.GClientAttribute
-import org.opendolphin.core.client.GClientPresentationModel
 
 import static org.opendolphin.binding.JFXBinder.*
 
@@ -64,7 +62,7 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        bind "text" of sourceLabel to "text" of targetLabel, {"[" + it + "]"}
+        bind "text" of sourceLabel to "text" of targetLabel, { "[" + it + "]" }
 
         assert targetLabel.text == "[initialValue]"
 
@@ -85,7 +83,7 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        bind "text" of sourceLabel using {"[" + it + "]"} to "text" of targetLabel
+        bind "text" of sourceLabel using { "[" + it + "]" } to "text" of targetLabel
 
         assert targetLabel.text == "[initialValue]"
 
@@ -168,7 +166,6 @@ class JFXBinderTest extends GroovyTestCase {
         assert label.text == 'Dolphin'
     }
 
-
     // TODO (DOL-93) remove legacy code
     void testPojoBindingWithConverterClosure_OldStyle() {
         given:
@@ -178,7 +175,7 @@ class JFXBinderTest extends GroovyTestCase {
 
         when:
 
-        bindInfo 'value' of bean to 'textFill' of label, {it == 'white' ? Color.WHITE : Color.BLACK}
+        bindInfo 'value' of bean to 'textFill' of label, { it == 'white' ? Color.WHITE : Color.BLACK }
 
         then:
 
@@ -201,7 +198,7 @@ class JFXBinderTest extends GroovyTestCase {
 
         when:
 
-        bindInfo 'value' of bean using {it == 'white' ? Color.WHITE : Color.BLACK} to 'textFill' of label
+        bindInfo 'value' of bean using { it == 'white' ? Color.WHITE : Color.BLACK } to 'textFill' of label
 
         then:
 
@@ -376,5 +373,6 @@ class JFXBinderTest extends GroovyTestCase {
 }
 
 class PojoBean {
-    @Bindable String value
+    @Bindable
+    String value
 }

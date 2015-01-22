@@ -6,6 +6,7 @@ import org.opendolphin.core.client.comm.ClientConnector;
 import org.opendolphin.core.client.comm.OnFinishedHandler;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hendrikebbers on 21.01.15.
@@ -47,4 +48,22 @@ public interface ClientDolphin extends Dolphin<ClientAttribute, ClientPresentati
     void setClientConnector(ClientConnector connector);
 
     void setClientModelStore(ClientModelStore store);
+
+    ClientPresentationModel create(List<ClientAttribute> attributes);
+
+    ClientPresentationModel create(String id, List<ClientAttribute> attributes);
+
+    @Deprecated
+    ClientAttribute create(String propertyName);
+
+    ClientAttribute create(String propertyName, Object initialValue, String qualifier, Tag tag);
+
+    ClientAttribute create(String propertyName, Object initialValue, Tag tag);
+
+    ClientAttribute create(String propertyName, Object initialValue, String qualifier);
+
+    ClientAttribute create(String propertyName, Object initialValue);
+
+    @Deprecated
+    ClientAttribute create(Map props);
 }

@@ -8,6 +8,6 @@ public class ClientDolphinFactory {
     private ClientDolphinFactory() {}
 
     public static ClientDolphin create() {
-        return null;
+        return new GClientDolphin();
     }
 }

@@ -16,19 +16,16 @@
 
 package org.opendolphin.demo
 
-import org.opendolphin.core.client.ClientAttributeFactory
-import org.opendolphin.core.client.ClientDolphin
 import groovyx.javafx.SceneGraphBuilder
 import javafx.event.EventHandler
-import org.opendolphin.core.client.GClientAttribute
-import org.opendolphin.core.client.GClientDolphin
-import org.opendolphin.core.client.GClientPresentationModel
+import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.ClientPresentationModel
 
-import static org.opendolphin.binding.JFXBinder.bind
-import static org.opendolphin.demo.DemoStyle.style
-import static org.opendolphin.demo.MyProps.ATT.*
 import static groovyx.javafx.GroovyFX.start
 import static javafx.geometry.HPos.RIGHT
+import static org.opendolphin.binding.JFXBinder.bind
+import static org.opendolphin.demo.DemoStyle.style
+import static org.opendolphin.demo.MyProps.ATT.getTITLE
 
 class SingleAttributeMultipleBindingsView {
     void show(ClientDolphin clientDolphin) {
@@ -49,22 +46,22 @@ class SingleAttributeMultipleBindingsView {
         sgb.stage {
             scene {
                 gridPane {
-                    label id: 'header',     row: 0, column: 1
-                    label id: 'label',      row: 1, column: 0
-                    textField id: 'input',  row: 1, column: 1
-                    button id: 'submit',    row: 3, column: 1, halignment: RIGHT,
+                    label id: 'header', row: 0, column: 1
+                    label id: 'label', row: 1, column: 0
+                    textField id: 'input', row: 1, column: 1
+                    button id: 'submit', row: 3, column: 1, halignment: RIGHT,
                             "Update labels and title"
                 }
             }
         }
     }
 
-    GClientPresentationModel createPresentationModel(ClientDolphin dolphin) {
-        def titleAttr = ClientAttributeFactory.create(TITLE, "Some Text: <enter> or <submit>")
+    ClientPresentationModel createPresentationModel(ClientDolphin dolphin) {
+        def titleAttr = dolphin.create(TITLE, "Some Text: <enter> or <submit>")
         return dolphin.presentationModel('demo', titleAttr)
     }
 
-    void bindPmToViews(GClientPresentationModel pm, SceneGraphBuilder sgb) {
+    void bindPmToViews(ClientPresentationModel pm, SceneGraphBuilder sgb) {
         sgb.with {
             bind TITLE of pm to FX.TITLE of primaryStage   // groovy style
 
@@ -80,9 +77,9 @@ class SingleAttributeMultipleBindingsView {
         }
     }
 
-    void attachHandlers(GClientPresentationModel pm, SceneGraphBuilder sgb) {
+    void attachHandlers(ClientPresentationModel pm, SceneGraphBuilder sgb) {
         def copyFieldToPm = { pm[TITLE].value = sgb.input.text } as EventHandler
-        sgb.input.onAction  = copyFieldToPm
+        sgb.input.onAction = copyFieldToPm
         sgb.submit.onAction = copyFieldToPm
     }
 }
