@@ -19,6 +19,7 @@ package org.opendolphin.demo
 import org.opendolphin.core.ModelStoreEvent
 import org.opendolphin.core.ModelStoreListener
 import org.opendolphin.core.client.ClientDolphin
+import org.opendolphin.core.client.ClientPresentationModel
 import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.client.comm.WithPresentationModelHandler
 import groovyx.javafx.SceneGraphBuilder
@@ -139,7 +140,7 @@ class LazyLoadingView {
             // when a table row is selected, we fill the mold and the detail view gets updated
             table.selectionModel.selectedItemProperty().addListener( { o, oldVal, selectedPm ->
                 dolphin.clientModelStore.withPresentationModel(selectedPm.id.toString(), new WithPresentationModelHandler() {
-                    void onFinished(GClientPresentationModel presentationModel) {
+                    void onFinished(ClientPresentationModel presentationModel) {
                         dolphin.apply presentationModel to dataMold
                     }
                 } )
