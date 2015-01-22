@@ -48,6 +48,8 @@ public interface PresentationModel<A extends Attribute> extends Observable {
 
     String getPresentationModelType();
 
+    void setPresentationModelType(String type);
+
     /**
      * Warning: should only be called from the open-dolphin command layer, not from applications,
      * since it does not register all required listeners. Consider using ClientDolphin.addAttributeToModel().
