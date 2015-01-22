@@ -51,7 +51,7 @@ class ServerControlledFunctionalTests extends GroovyTestCase {
 
     void testPMsWereDeletedAndRecreated() {
         // a pm created on the client side
-        clientDolphin.presentationModel("pm1", clientDolphin.create("a", 0))
+        clientDolphin.presentationModel("pm1", clientDolphin.createAttribute("a", 0))
 
         // register a server-side action that sees the second PM
         serverDolphin.action("checkPmIsThere") { cmd, list ->
@@ -62,7 +62,7 @@ class ServerControlledFunctionalTests extends GroovyTestCase {
 
         assert clientDolphin.getAt("pm1").a.value == 0
         clientDolphin.delete(clientDolphin.getAt("pm1"))
-        clientDolphin.presentationModel("pm1", clientDolphin.create("a", 1))
+        clientDolphin.presentationModel("pm1", clientDolphin.createAttribute("a", 1))
         clientDolphin.send("checkPmIsThere")
     }
 

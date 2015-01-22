@@ -34,9 +34,9 @@ class MultipleAttributesConverterView {
 
         start { app ->
             // construct the PM
-            def titleAttr = clientDolphin.create(TITLE)
-            def purposeAttr = clientDolphin.create(PURPOSE)
-            def pm = clientDolphin.create('demo', [titleAttr, purposeAttr])
+            def titleAttr = clientDolphin.createAttribute(TITLE)
+            def purposeAttr = clientDolphin.createAttribute(PURPOSE)
+            def pm = clientDolphin.createPresentationModel('demo', [titleAttr, purposeAttr])
             clientDolphin.clientModelStore.add pm
 
             stage {

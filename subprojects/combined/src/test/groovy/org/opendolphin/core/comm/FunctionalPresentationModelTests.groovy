@@ -19,7 +19,6 @@ package org.opendolphin.core.comm
 import org.opendolphin.LogConfig
 import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientAttributeFactory
 import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.GClientPresentationModel
 import org.opendolphin.core.client.comm.*
@@ -56,8 +55,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testQualifiersInClientPMs() {
-        def modelA = clientDolphin.presentationModel("1", clientDolphin.create("a", 0, "QUAL"))
-        def modelB = clientDolphin.presentationModel("2", clientDolphin.create("b", 0, "QUAL"))
+        def modelA = clientDolphin.presentationModel("1", clientDolphin.createAttribute("a", 0, "QUAL"))
+        def modelB = clientDolphin.presentationModel("2", clientDolphin.createAttribute("b", 0, "QUAL"))
 
         modelA.a.value = 1
 
@@ -66,13 +65,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testValueChangeWithQualifiersInClientSideOnlyPMs() {
-        def modelA = clientDolphin.create("1", [clientDolphin.create("a", 0, "QUAL")])
+        def modelA = clientDolphin.createPresentationModel("1", [clientDolphin.createAttribute("a", 0, "QUAL")])
         modelA.clientSideOnly = true
         clientDolphin.add modelA
 
-        def modelB = clientDolphin.presentationModel("2", clientDolphin.create("b", 0))
+        def modelB = clientDolphin.presentationModel("2", clientDolphin.createAttribute("b", 0))
         modelB.clientSideOnly = true
-        clientDolphin.addAttributeToModel(modelB, clientDolphin.create("bLate", 0, "QUAL"))
+        clientDolphin.addAttributeToModel(modelB, clientDolphin.createAttribute("bLate", 0, "QUAL"))
 
         modelA.a.value = 1
 
@@ -81,13 +80,13 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     }
 
     void testValueRebaseWithQualifiersInClientSideOnlyPMs() {
-        def modelA = clientDolphin.create("1", [clientDolphin.create("a", 0, "QUAL")])
+        def modelA = clientDolphin.createPresentationModel("1", [clientDolphin.createAttribute("a", 0, "QUAL")])
         modelA.clientSideOnly = true
         clientDolphin.add modelA
 
-        def modelB = clientDolphin.presentationModel("2", clientDolphin.create("b", 0))
+        def modelB = clientDolphin.presentationModel("2", clientDolphin.createAttribute("b", 0))
         modelB.clientSideOnly = true
-        clientDolphin.addAttributeToModel(modelB, clientDolphin.create("bLate", 0, "QUAL"))
+        clientDolphin.addAttributeToModel(modelB, clientDolphin.createAttribute("bLate", 0, "QUAL"))
 
         modelA.a.value = 1
         assert modelB.bLate.baseValue == 0
@@ -517,7 +516,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testCopyPresentationModelOnClient() {
 
-        ClientAttribute ca = clientDolphin.create('attr1', true, 'qualifier', Tag.ENABLED)
+        ClientAttribute ca = clientDolphin.createAttribute('attr1', true, 'qualifier', Tag.ENABLED)
         ca.value = false
         def pm1 = clientDolphin.presentationModel("PM1", "type", ca)
         clientDolphin.addAttributeToModel(pm1, ca)

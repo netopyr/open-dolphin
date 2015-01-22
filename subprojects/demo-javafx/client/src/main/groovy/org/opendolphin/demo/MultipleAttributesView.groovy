@@ -32,11 +32,11 @@ class MultipleAttributesView {
 
         start { app ->
             // construct the PM
-            def titleAttr = clientDolphin.create(TITLE)
+            def titleAttr = clientDolphin.createAttribute(TITLE)
             titleAttr.value = "A PM with multiple attributes"
-            def purposeAttr = clientDolphin.create(PURPOSE)
+            def purposeAttr = clientDolphin.createAttribute(PURPOSE)
             purposeAttr.value = "Show the need for PMs"
-            def pm = clientDolphin.create('demo', [titleAttr, purposeAttr])
+            def pm = clientDolphin.createPresentationModel('demo', [titleAttr, purposeAttr])
             clientDolphin.clientModelStore.add pm
 
             def updateTitle = { pm.title.value = titleInput.text }

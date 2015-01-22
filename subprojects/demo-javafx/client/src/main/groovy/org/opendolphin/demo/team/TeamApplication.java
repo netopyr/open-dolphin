@@ -77,16 +77,16 @@ public class TeamApplication extends Application {
 
     public TeamApplication() {
         teamMemberMold = clientDolphin.presentationModel(PM_ID_MOLD, (String) null,
-                clientDolphin.create(ATT_FIRSTNAME, ""),
-                clientDolphin.create(ATT_LASTNAME, ""),
-                clientDolphin.create(ATT_FUNCTION, ""),
-                clientDolphin.create(ATT_AVAILABLE, false),
-                clientDolphin.create(ATT_CONTRACTOR, false),
-                clientDolphin.create(ATT_WORKLOAD, 0));
+                clientDolphin.createAttribute(ATT_FIRSTNAME, ""),
+                clientDolphin.createAttribute(ATT_LASTNAME, ""),
+                clientDolphin.createAttribute(ATT_FUNCTION, ""),
+                clientDolphin.createAttribute(ATT_AVAILABLE, false),
+                clientDolphin.createAttribute(ATT_CONTRACTOR, false),
+                clientDolphin.createAttribute(ATT_WORKLOAD, 0));
 
         blankMold = clientDolphin.copy(teamMemberMold);
 
-        selectedPmId = clientDolphin.create(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
+        selectedPmId = clientDolphin.createAttribute(ATT_SEL_PM_ID, null, QUAL_SEL_PM_ID, null); /* null for no selection*/
         clientDolphin.presentationModel(PM_ID_SELECTED, (String) null, selectedPmId);
 
     }

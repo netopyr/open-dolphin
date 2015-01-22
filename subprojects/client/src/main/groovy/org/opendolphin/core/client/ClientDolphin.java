@@ -49,21 +49,21 @@ public interface ClientDolphin extends Dolphin<ClientAttribute, ClientPresentati
 
     void setClientModelStore(ClientModelStore store);
 
-    ClientPresentationModel create(List<ClientAttribute> attributes);
+    ClientPresentationModel createPresentationModel(List<ClientAttribute> attributes);
 
-    ClientPresentationModel create(String id, List<ClientAttribute> attributes);
-
-    @Deprecated
-    ClientAttribute create(String propertyName);
-
-    ClientAttribute create(String propertyName, Object initialValue, String qualifier, Tag tag);
-
-    ClientAttribute create(String propertyName, Object initialValue, Tag tag);
-
-    ClientAttribute create(String propertyName, Object initialValue, String qualifier);
-
-    ClientAttribute create(String propertyName, Object initialValue);
+    ClientPresentationModel createPresentationModel(String id, List<ClientAttribute> attributes);
 
     @Deprecated
-    ClientAttribute create(Map props);
+    ClientAttribute createAttribute(String propertyName);
+
+    ClientAttribute createAttribute(String propertyName, Object initialValue, String qualifier, Tag tag);
+
+    ClientAttribute createAttribute(String propertyName, Object initialValue, Tag tag);
+
+    ClientAttribute createAttribute(String propertyName, Object initialValue, String qualifier);
+
+    ClientAttribute createAttribute(String propertyName, Object initialValue);
+
+    @Deprecated
+    ClientAttribute createAttribute(Map props);
 }

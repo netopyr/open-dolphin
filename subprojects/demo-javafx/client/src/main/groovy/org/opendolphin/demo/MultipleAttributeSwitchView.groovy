@@ -47,20 +47,20 @@ class MultipleAttributeSwitchView {
         start { app ->
 
             def pm1 = dolphin.presentationModel('FirstDemo',
-                    dolphin.create(TITLE, 'First title', "pm1-title"),
-                    dolphin.create(TITLE, '', "pm1-title-msg", MESSAGE),
-                    dolphin.create(PURPOSE, 'First purpose', "pm1-purpose")
+                    dolphin.createAttribute(TITLE, 'First title', "pm1-title"),
+                    dolphin.createAttribute(TITLE, '', "pm1-title-msg", MESSAGE),
+                    dolphin.createAttribute(PURPOSE, 'First purpose', "pm1-purpose")
             )
             def pm2 = dolphin.presentationModel('SecondDemo',
-                    dolphin.create(TITLE, 'Second title', "pm2-title"),
-                    dolphin.create(TITLE, '', "pm2-title-msg", MESSAGE),
-                    dolphin.create(PURPOSE, 'Second purpose', "pm2-purpose")
+                    dolphin.createAttribute(TITLE, 'Second title', "pm2-title"),
+                    dolphin.createAttribute(TITLE, '', "pm2-title-msg", MESSAGE),
+                    dolphin.createAttribute(PURPOSE, 'Second purpose', "pm2-purpose")
             )
 
             def mold = dolphin.presentationModel(MOLD,
-                    dolphin.create(TITLE, ''),
-                    dolphin.create(TITLE, '', null, MESSAGE),
-                    dolphin.create(PURPOSE, '')
+                    dolphin.createAttribute(TITLE, ''),
+                    dolphin.createAttribute(TITLE, '', null, MESSAGE),
+                    dolphin.createAttribute(PURPOSE, '')
             )
 
             dolphin.apply pm1 to mold

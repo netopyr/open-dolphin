@@ -259,7 +259,7 @@ abstract class ClientConnector {
     }
 
     GClientPresentationModel handle(InitializeAttributeCommand serverCommand) {
-        def attribute = clientDolphin.create(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
+        def attribute = clientDolphin.createAttribute(serverCommand.propertyName, serverCommand.newValue, serverCommand.qualifier, serverCommand.tag)
 
         // todo: add check for no-value; null is a valid value
         if (serverCommand.qualifier) {

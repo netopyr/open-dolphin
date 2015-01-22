@@ -196,42 +196,42 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
     }
 
     @Override
-    ClientPresentationModel create(List<ClientAttribute> attributes) {
+    ClientPresentationModel createPresentationModel(List<ClientAttribute> attributes) {
         return ClientPresentationModelFactory.create(attributes)
     }
 
     @Override
-    ClientPresentationModel create(String id, List<ClientAttribute> attributes) {
+    ClientPresentationModel createPresentationModel(String id, List<ClientAttribute> attributes) {
         return ClientPresentationModelFactory.create(id, attributes)
     }
 
     @Override
-    ClientAttribute create(String propertyName) {
+    ClientAttribute createAttribute(String propertyName) {
         return ClientAttributeFactory.create(propertyName)
     }
 
     @Override
-    ClientAttribute create(String propertyName, Object initialValue, String qualifier, Tag tag) {
+    ClientAttribute createAttribute(String propertyName, Object initialValue, String qualifier, Tag tag) {
         return ClientAttributeFactory.create(propertyName, initialValue, qualifier, tag)
     }
 
     @Override
-    ClientAttribute create(String propertyName, Object initialValue, Tag tag) {
+    ClientAttribute createAttribute(String propertyName, Object initialValue, Tag tag) {
         return ClientAttributeFactory.create(propertyName, initialValue, tag)
     }
 
     @Override
-    ClientAttribute create(String propertyName, Object initialValue, String qualifier) {
+    ClientAttribute createAttribute(String propertyName, Object initialValue, String qualifier) {
         return ClientAttributeFactory.create(propertyName, initialValue, qualifier)
     }
 
     @Override
-    ClientAttribute create(String propertyName, Object initialValue) {
+    ClientAttribute createAttribute(String propertyName, Object initialValue) {
         return ClientAttributeFactory.create(propertyName, initialValue)
     }
 
     @Override
-    ClientAttribute create(Map props) {
+    ClientAttribute createAttribute(Map props) {
         return ClientAttributeFactory.create(props)
     }
 }

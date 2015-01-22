@@ -57,7 +57,7 @@ class SingleAttributeMultipleBindingsView {
     }
 
     ClientPresentationModel createPresentationModel(ClientDolphin dolphin) {
-        def titleAttr = dolphin.create(TITLE, "Some Text: <enter> or <submit>")
+        def titleAttr = dolphin.createAttribute(TITLE, "Some Text: <enter> or <submit>")
         return dolphin.presentationModel('demo', titleAttr)
     }
 

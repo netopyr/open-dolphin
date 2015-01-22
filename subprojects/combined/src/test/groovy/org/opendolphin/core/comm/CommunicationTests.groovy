@@ -53,8 +53,8 @@ class CommunicationTests extends GroovyTestCase {
     }
 
     void testSimpleAttributeChangeIsVisibleOnServer() {
-        def ca = clientDolphin.create('name')
-        def cpm = clientDolphin.create('model', [ca])
+        def ca = clientDolphin.createAttribute('name')
+        def cpm = clientDolphin.createPresentationModel('model', [ca])
         clientModelStore.add cpm
 
         Command receivedCommand = null
@@ -82,7 +82,7 @@ class CommunicationTests extends GroovyTestCase {
         }
         serverConnector.registry.register CreatePresentationModelCommand, testServerAction
 
-        clientModelStore.add clientDolphin.create('testPm', [clientDolphin.create('name')])
+        clientModelStore.add clientDolphin.createPresentationModel('testPm', [clientDolphin.createAttribute('name')])
 
         clientDolphin.sync {
             assert receivedCommand.id == "CreatePresentationModel"
@@ -94,7 +94,7 @@ class CommunicationTests extends GroovyTestCase {
     }
 
     void testWhenServerChangesValueThisTriggersUpdateOnClient() {
-        def ca = clientDolphin.create('name')
+        def ca = clientDolphin.createAttribute('name')
 
         def setValueAction = { CreatePresentationModelCommand command, response ->
             response << new ValueChangedCommand(
@@ -118,7 +118,7 @@ class CommunicationTests extends GroovyTestCase {
         serverConnector.registry.register CreatePresentationModelCommand, setValueAction
         serverConnector.registry.register ValueChangedCommand, valueChangedAction
 
-        clientModelStore.add clientDolphin.create('testPm', [ca]) // trigger the whole cycle
+        clientModelStore.add clientDolphin.createPresentationModel('testPm', [ca]) // trigger the whole cycle
     }
 
     void testRequestingSomeGeneralCommandExecution() {
