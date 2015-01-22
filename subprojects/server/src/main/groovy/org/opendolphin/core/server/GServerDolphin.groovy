@@ -122,13 +122,13 @@ class GServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresentation
      */
     ServerPresentationModel presentationModel(String id, String presentationModelType, DTO dto) {
         List<ServerAttribute> attributes = dto.slots.collect { Slot slot ->
-            ServerAttribute result = ServerPresentationModelFactory.create(slot.propertyName, slot.baseValue, slot.qualifier, slot.tag)
+            ServerAttribute result = createAttribute(slot.propertyName, slot.baseValue, slot.qualifier, slot.tag)
             result.silently {
                 result.value = slot.value
             }
             return result
         }
-        ServerPresentationModel model = ServerPresentationModelFactory.create(id, attributes, serverModelStore, presentationModelType)
+        ServerPresentationModel model = createPresentationModel(id, attributes, presentationModelType)
         add model
         return model
     }
@@ -202,7 +202,26 @@ class GServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresentation
         GServerDolphin.deleteAllPresentationModelsOfTypeCommand(serverModelStore.currentResponse, type)
     }
 
-    /** @deprecated use {@link #deleteCommand(java.util.List, GServerPresentationModel)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
+    @Override
+    ServerAttribute createAttribute(String propertyName, Object initialValue) {
+        return ServerPresentationModelFactory.create(propertyName, initialValue);
+    }
+
+    @Override
+    ServerAttribute createAttribute(String propertyName, Object baseValue, String qualifier, Tag tag) {
+        return ServerPresentationModelFactory.create(propertyName, baseValue, qualifier, tag);
+    }
+
+    @Override
+    ServerPresentationModel createPresentationModel(String id, List<ServerAttribute> attributes) {
+        return ServerPresentationModelFactory.create(id, attributes, serverModelStore);
+    }
+
+    @Override
+    ServerPresentationModel createPresentationModel(String id, List<ServerAttribute> attributes, String presentationModelType) {
+        return ServerPresentationModelFactory.create(id, attributes, serverModelStore, presentationModelType);
+    }
+/** @deprecated use {@link #deleteCommand(java.util.List, GServerPresentationModel)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
     static void delete(List<Command> response, ServerPresentationModel pm){
         deleteCommand(response, pm)
     }

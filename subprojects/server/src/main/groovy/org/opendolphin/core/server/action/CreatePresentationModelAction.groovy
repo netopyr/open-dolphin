@@ -16,18 +16,12 @@
 
 package org.opendolphin.core.server.action
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log
-import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import org.opendolphin.core.comm.CreatePresentationModelCommand
-import org.opendolphin.core.server.GServerAttribute
-import org.opendolphin.core.server.GServerDolphin
-import org.opendolphin.core.server.GServerPresentationModel
-import org.opendolphin.core.server.ServerAttribute
-import org.opendolphin.core.server.ServerDolphin
-import org.opendolphin.core.server.ServerPresentationModel
+import org.opendolphin.core.server.*
 import org.opendolphin.core.server.comm.ActionRegistry
-import groovy.transform.CompileStatic
 
 @Log
 @CompileStatic
@@ -40,7 +34,7 @@ class CreatePresentationModelAction extends DolphinServerAction {
     }
 
     private static void createPresentationModel(CreatePresentationModelCommand command, ServerDolphin serverDolphin) {
-        if(serverDolphin.getAt(command.pmId) != null) {
+        if (serverDolphin.getAt(command.pmId) != null) {
             log.info("Ignoring create PM '$command.pmId' since it is already in the model store.")
             return
         }
@@ -53,7 +47,7 @@ class CreatePresentationModelAction extends DolphinServerAction {
             attribute.id = attr.id
             attributes << attribute
         }
-        ServerPresentationModel model = new GServerPresentationModel(command.pmId, attributes, serverDolphin.serverModelStore)
+        ServerPresentationModel model = serverDolphin.createPresentationModel(command.pmId, attributes)
         model.presentationModelType = command.pmType
         if (serverDolphin.serverModelStore.containsPresentationModel(model.id)) {
             log.info("There already is a PM with id ${model.id}. Create PM ignored.")

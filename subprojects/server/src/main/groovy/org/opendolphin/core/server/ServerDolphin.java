@@ -17,8 +17,11 @@
 package org.opendolphin.core.server;
 
 import org.opendolphin.core.Dolphin;
+import org.opendolphin.core.Tag;
 import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.NamedCommandHandler;
+
+import java.util.List;
 
 public interface ServerDolphin extends Dolphin<ServerAttribute, ServerPresentationModel> {
 
@@ -35,4 +38,13 @@ public interface ServerDolphin extends Dolphin<ServerAttribute, ServerPresentati
     ServerModelStore getServerModelStore();
 
     ServerConnector getServerConnector();
+
+    ServerAttribute createAttribute(String propertyName, Object initialValue);
+
+    ServerAttribute createAttribute(String propertyName, Object baseValue, String qualifier, Tag tag);
+
+    ServerPresentationModel createPresentationModel(String id, List<ServerAttribute> attributes);
+
+    ServerPresentationModel createPresentationModel(String id, List<ServerAttribute> attributes, String presentationModelType);
+
 }

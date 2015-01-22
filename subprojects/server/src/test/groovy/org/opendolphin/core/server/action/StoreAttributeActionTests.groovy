@@ -3,10 +3,9 @@ package org.opendolphin.core.server.action
 import org.opendolphin.core.comm.AttributeCreatedNotification
 import org.opendolphin.core.comm.ChangeAttributeMetadataCommand
 import org.opendolphin.core.server.GServerAttribute
-import org.opendolphin.core.server.GServerDolphin
+import org.opendolphin.core.server.GServerPresentationModel
 import org.opendolphin.core.server.ServerDolphin
 import org.opendolphin.core.server.ServerDolphinFactory
-import org.opendolphin.core.server.GServerPresentationModel
 import org.opendolphin.core.server.comm.ActionRegistry
 
 class StoreAttributeActionTests extends GroovyTestCase {

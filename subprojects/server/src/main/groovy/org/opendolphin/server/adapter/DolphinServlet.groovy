@@ -17,16 +17,12 @@ package org.opendolphin.server.adapter
 
 import groovy.util.logging.Log
 import org.opendolphin.core.comm.Codec
-import org.opendolphin.core.comm.JsonCodec;
-import org.opendolphin.core.server.GServerDolphin
-import org.opendolphin.core.server.ServerConnector
-import org.opendolphin.core.server.ServerDolphin
-import org.opendolphin.core.server.ServerDolphinFactory
-import org.opendolphin.core.server.ServerModelStore;
+import org.opendolphin.core.comm.JsonCodec
+import org.opendolphin.core.server.*
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletException
+import javax.servlet.http.HttpServlet
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.nio.charset.Charset
 
@@ -52,7 +48,7 @@ abstract class DolphinServlet extends HttpServlet {
         resp.outputStream.close()
     }
 
-    private GServerDolphin checkDolphinInSession(HttpServletRequest request) {
+    private ServerDolphin checkDolphinInSession(HttpServletRequest request) {
         def session = request.session
         ServerDolphin dolphin = (ServerDolphin) session.getAttribute(DOLPHIN_ATTRIBUTE_ID)
         if (!dolphin) {

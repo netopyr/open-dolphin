@@ -1,12 +1,11 @@
 package org.opendolphin.server.adapter
 
 import org.opendolphin.core.comm.Codec
-import org.opendolphin.core.server.ServerConnector
 import org.opendolphin.core.server.GServerDolphin
+import org.opendolphin.core.server.ServerConnector
 import org.opendolphin.core.server.ServerDolphinFactory
 import spock.lang.Specification
 
-import javax.servlet.ServletInputStream
 import javax.servlet.ServletOutputStream
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -55,29 +54,33 @@ class DolphinServletSpec extends Specification {
 
     def mockServerConnector() {
         [
-            getCodec: { [encode: {}, decode: { [null] }] as Codec },
-            receive: { [] },
-            serverModelStore: { setCurrentResponse: { } }
+                getCodec: { [encode: {}, decode: { [null] }] as Codec },
+                receive: { [] },
+                serverModelStore: {
+                    setCurrentResponse:
+                    {
+                    }
+                }
         ] as ServerConnector
     }
 
     def mockServlet(GServerDolphin serverDolphin) {
-        GServerDolphin.metaClass.getServerConnector = {-> mockServerConnector() }
+        GServerDolphin.metaClass.getServerConnector = { -> mockServerConnector() }
 
         def servlet = new TestDolphinServlet()
         def session = [
-            setAttribute : { key, value -> },
-            getAttribute : { serverDolphin },
-            getId : { null }
+                setAttribute: { key, value -> },
+                getAttribute: { serverDolphin },
+                getId       : { null }
         ] as HttpSession
         def reader = new BufferedReader({} as Reader)
-        reader.metaClass.getText = {-> ' '}
-        def req = [ getSession: {session}, getReader: { reader }, setCharacterEncoding: { } ] as HttpServletRequest
+        reader.metaClass.getText = { -> ' ' }
+        def req = [getSession: { session }, getReader: { reader }, setCharacterEncoding: {}] as HttpServletRequest
         def oS = {} as ServletOutputStream
         oS.metaClass.leftShift = {}
-        oS.metaClass.close = {->}
-        def resp = [ getOutputStream: { oS } ] as HttpServletResponse
-        return [ servlet, req, resp ]
+        oS.metaClass.close = { -> }
+        def resp = [getOutputStream: { oS }] as HttpServletResponse
+        return [servlet, req, resp]
     }
 
 }

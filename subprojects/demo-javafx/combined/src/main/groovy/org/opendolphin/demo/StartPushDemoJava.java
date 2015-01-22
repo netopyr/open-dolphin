@@ -6,13 +6,12 @@
 package org.opendolphin.demo;
 
 import org.opendolphin.core.client.ClientDolphin;
-import org.opendolphin.core.client.GClientDolphin;
-import org.opendolphin.core.server.GServerDolphin;
 import org.opendolphin.core.server.ServerDolphin;
 import org.opendolphin.core.server.action.DolphinServerAction;
 
 public class StartPushDemoJava {
-    private StartPushDemoJava() { } // Schnickschnack :)
+    private StartPushDemoJava() {
+    } // Schnickschnack :)
 
     public static void main(String[] args) {
         // my company name convention
