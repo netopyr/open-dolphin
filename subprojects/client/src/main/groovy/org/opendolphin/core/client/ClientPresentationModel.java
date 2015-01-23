@@ -18,6 +18,8 @@ package org.opendolphin.core.client;
 
 import org.opendolphin.core.PresentationModel;
 
+// todo he: the main abstractions need to have a javadoc
+
 public interface ClientPresentationModel extends PresentationModel<ClientAttribute> {
 
     boolean isClientSideOnly();

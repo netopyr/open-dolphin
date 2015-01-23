@@ -16,6 +16,8 @@
 
 package org.opendolphin.core.client;
 
+// todo he: the main abstractions need to have a javadoc
+
 public class ClientDolphinFactory {
 
     private ClientDolphinFactory() {}

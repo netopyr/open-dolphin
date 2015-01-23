@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+// todo he: the main abstractions need to have a javadoc
+
 public interface Dolphin<A extends Attribute, P extends PresentationModel<A>> {
 
     boolean add(P model);

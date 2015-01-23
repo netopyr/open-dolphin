@@ -16,6 +16,8 @@
 
 package org.opendolphin.core;
 
+// todo he: the main abstractions need to have a javadoc
+
 public interface Attribute extends Observable {
     String QUALIFIER_PROPERTY   = "qualifier";
     String DIRTY_PROPERTY       = "dirty";

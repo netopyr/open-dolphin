@@ -24,6 +24,8 @@ import org.opendolphin.core.client.comm.OnFinishedHandler;
 import java.util.List;
 import java.util.Map;
 
+// todo he: the main abstractions need to have a javadoc
+
 public interface ClientDolphin extends Dolphin<ClientAttribute, ClientPresentationModel> {
 
     ClientPresentationModel presentationModel(String id, List<String> attributeNames);

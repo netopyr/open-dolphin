@@ -69,6 +69,7 @@ public class JFXBinderJavaTest {
             }
         };
 
+// todo he: why is this commented?
 //      target:
 //        JFXBinder.bind("text").of(sourceLabel).using(converter).to("text").of(targetLabel);
         JFXBinder.bind("text").of(sourceLabel).to("text").of(targetLabel, converter);
@@ -139,6 +140,7 @@ public class JFXBinderJavaTest {
                 return "my" + value;
             }
         };
+// todo he: why is this commented?
 //        target:
 //        JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).using(converter).to("text").of(targetLabel);
         JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).to("text").of(targetLabel, converter);

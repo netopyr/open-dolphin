@@ -18,5 +18,7 @@ package org.opendolphin.core.client;
 
 import org.opendolphin.core.Attribute;
 
+// todo he: the main abstractions need to have a javadoc
+
 public interface ClientAttribute extends Attribute {
 }
