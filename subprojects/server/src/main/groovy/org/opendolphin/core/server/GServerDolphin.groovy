@@ -204,22 +204,22 @@ class GServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresentation
 
     @Override
     ServerAttribute createAttribute(String propertyName, Object initialValue) {
-        return ServerPresentationModelFactory.create(propertyName, initialValue);
+        return new GServerAttribute(propertyName, initialValue);
     }
 
     @Override
     ServerAttribute createAttribute(String propertyName, Object baseValue, String qualifier, Tag tag) {
-        return ServerPresentationModelFactory.create(propertyName, baseValue, qualifier, tag);
+        return new GServerAttribute(propertyName, baseValue, qualifier, tag);
     }
 
     @Override
     ServerPresentationModel createPresentationModel(String id, List<ServerAttribute> attributes) {
-        return ServerPresentationModelFactory.create(id, attributes, serverModelStore);
+        return new GServerPresentationModel(id, attributes, serverModelStore);
     }
 
     @Override
     ServerPresentationModel createPresentationModel(String id, List<ServerAttribute> attributes, String presentationModelType) {
-        return ServerPresentationModelFactory.create(id, attributes, serverModelStore, presentationModelType);
+        return new GServerPresentationModel(id, attributes, serverModelStore, presentationModelType);
     }
 /** @deprecated use {@link #deleteCommand(java.util.List, GServerPresentationModel)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
     static void delete(List<Command> response, ServerPresentationModel pm){

@@ -24,8 +24,7 @@ import javafx.scene.control.Label
 import javafx.scene.control.TextField
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
-import org.opendolphin.core.client.ClientAttributeFactory
-import org.opendolphin.core.client.ClientPresentationModelFactory
+
 
 import static org.opendolphin.binding.Binder.bind
 import static org.opendolphin.demo.MyProps.ATT.getTITLE

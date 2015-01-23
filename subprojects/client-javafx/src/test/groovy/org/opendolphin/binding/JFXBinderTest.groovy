@@ -22,9 +22,8 @@ import org.opendolphin.core.BasePresentationModel
 import org.opendolphin.core.PresentationModel
 import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientAttributeFactory
+
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.ClientPresentationModelFactory
 
 import static org.opendolphin.binding.JFXBinder.*
 

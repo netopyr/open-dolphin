@@ -62,6 +62,8 @@ public interface ClientDolphin extends Dolphin<ClientAttribute, ClientPresentati
 
     void setClientModelStore(ClientModelStore store);
 
+    ClientModelStore getClientModelStore();
+
     ClientPresentationModel createPresentationModel(List<ClientAttribute> attributes);
 
     ClientPresentationModel createPresentationModel(String id, List<ClientAttribute> attributes);

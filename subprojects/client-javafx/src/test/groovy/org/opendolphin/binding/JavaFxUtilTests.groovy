@@ -7,9 +7,8 @@ import javafx.scene.control.TableColumn
 import javafx.scene.control.TablePosition
 import javafx.scene.control.TableView
 import org.opendolphin.core.client.ClientAttribute
-import org.opendolphin.core.client.ClientAttributeFactory
+
 import org.opendolphin.core.client.ClientPresentationModel
-import org.opendolphin.core.client.ClientPresentationModelFactory
 
 class JavaFxUtilTests extends GroovyTestCase {
     static {
