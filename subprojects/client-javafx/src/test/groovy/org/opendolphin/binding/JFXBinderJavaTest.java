@@ -116,8 +116,8 @@ public class JFXBinderJavaTest {
 
         Tag MESSAGE = Tag.tagFor.get("MESSAGE");
 
-        List<ClientAttribute> attributes = Arrays.asList(ClientAttributeFactory.create("attr_1", "", null, MESSAGE));
-        ClientPresentationModel sourceModel = ClientPresentationModelFactory.create("source", attributes);
+        List<ClientAttribute> attributes = Arrays.asList((ClientAttribute) new GClientAttribute("attr_1", "", null, MESSAGE));
+        ClientPresentationModel sourceModel = new GClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
         JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).to("text").of(targetLabel);
@@ -129,8 +129,8 @@ public class JFXBinderJavaTest {
     @Test
     public void testPresentationModelBindingUsingConverter() {
         Tag MESSAGE = Tag.tagFor.get("MESSAGE");
-        List<ClientAttribute> attributes = Arrays.asList(ClientAttributeFactory.create("attr_1", "", null, MESSAGE));
-        ClientPresentationModel sourceModel = ClientPresentationModelFactory.create("source", attributes);
+        List<ClientAttribute> attributes = Arrays.asList((ClientAttribute) new GClientAttribute("attr_1", "", null, MESSAGE));
+        ClientPresentationModel sourceModel = new GClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
         Converter converter = new Converter() {
@@ -149,8 +149,8 @@ public class JFXBinderJavaTest {
 
     @Test
     public void testUnbindInfo() {
-        List<ClientAttribute> attributes = Arrays.asList(ClientAttributeFactory.create("text", ""));
-        ClientPresentationModel sourceModel = ClientPresentationModelFactory.create("source", attributes);
+        List<ClientAttribute> attributes = Arrays.asList((ClientAttribute) new GClientAttribute("text", ""));
+        ClientPresentationModel sourceModel = new GClientPresentationModel("source", attributes);
         Label targetLabel = new Label();
 
         JFXBinder.bindInfo("dirty").of(sourceModel).to("text").of(targetLabel);
@@ -171,7 +171,7 @@ public class JFXBinderJavaTest {
     @Test
     public void testUnbindFromFX() {
         Label sourceLabel = new Label();
-        ClientAttribute attribute = ClientAttributeFactory.create("text", "");
+        ClientAttribute attribute = new GClientAttribute("text", "");
 
         JFXBinder.bind("text").of(sourceLabel).to("value").of(attribute);
         sourceLabel.setText("newValue");
@@ -185,8 +185,8 @@ public class JFXBinderJavaTest {
     @Test
     public void testUnbindFromClientPresentationModel() {
         Label targetLabel = new Label();
-        List<ClientAttribute> attributeList = Arrays.asList(ClientAttributeFactory.create("attr", ""));
-        ClientPresentationModel model = ClientPresentationModelFactory.create("model", attributeList);
+        List<ClientAttribute> attributeList = Arrays.asList((ClientAttribute) new GClientAttribute("attr", ""));
+        ClientPresentationModel model = new GClientPresentationModel("model", attributeList);
 
         JFXBinder.bind("attr").of(model).to("text").of(targetLabel);
         model.getAt("attr").setValue("newValue");
@@ -200,8 +200,8 @@ public class JFXBinderJavaTest {
     @Test
     public void testBindAndUnbindFromNodeToClientPresentationModel() {
         Label sourceLabel = new Label();
-        List<ClientAttribute> attributeList = Arrays.asList(ClientAttributeFactory.create("attr", ""));
-        ClientPresentationModel targetPm = ClientPresentationModelFactory.create("model", attributeList);
+        List<ClientAttribute> attributeList = Arrays.asList((ClientAttribute) new GClientAttribute("attr", ""));
+        ClientPresentationModel targetPm = new GClientPresentationModel("model", attributeList);
 
         JFXBinder.bind("text").of(sourceLabel).to("attr").of(targetPm);
         sourceLabel.setText("newValue");
@@ -215,7 +215,7 @@ public class JFXBinderJavaTest {
     @Test
     public void testUnbindFromPresentationModel() {
         Label targetLabel = new Label();
-        List<ClientAttribute> attributeList = Arrays.asList(ClientAttributeFactory.create("attr", ""));
+        List<ClientAttribute> attributeList = Arrays.asList((ClientAttribute) new GClientAttribute("attr", ""));
         BasePresentationModel model = new BasePresentationModel("model", attributeList);
 
         JFXBinder.bind("attr").of(model).to("text").of(targetLabel);

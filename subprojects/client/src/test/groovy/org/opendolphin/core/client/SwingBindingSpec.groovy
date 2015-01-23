@@ -23,7 +23,7 @@ class DirtyBindingSpec extends Specification{
     void "binding the dirty state of a presentation model to an attribute"() {
         given:
         def sourcePm = new GClientPresentationModel([])
-        def targetPm = new GClientPresentationModel([ClientAttributeFactory.create("dirt",true)])
+        def targetPm = new GClientPresentationModel([new GClientAttribute("dirt",true)])
         when:
         bindInfo("dirty").of(sourcePm).to("dirt").of(targetPm)
         then:

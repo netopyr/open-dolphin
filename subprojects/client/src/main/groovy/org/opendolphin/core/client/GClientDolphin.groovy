@@ -49,7 +49,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
     /** Convenience method for a creating a ClientPresentationModel with initial null values for the attributes
      */
     ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
-        def result = new GClientPresentationModel(id, attributeNames.collect() { ClientAttributeFactory.create(it)})
+        def result = new GClientPresentationModel(id, attributeNames.collect() { new GClientAttribute(it)})
         clientModelStore.add result
         return result
     }
@@ -197,42 +197,42 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
 
     @Override
     ClientPresentationModel createPresentationModel(List<ClientAttribute> attributes) {
-        return ClientPresentationModelFactory.create(attributes)
+        return new GClientPresentationModel(attributes)
     }
 
     @Override
     ClientPresentationModel createPresentationModel(String id, List<ClientAttribute> attributes) {
-        return ClientPresentationModelFactory.create(id, attributes)
+        return new GClientPresentationModel(id, attributes)
     }
 
     @Override
     ClientAttribute createAttribute(String propertyName) {
-        return ClientAttributeFactory.create(propertyName)
+        return new GClientAttribute(propertyName)
     }
 
     @Override
     ClientAttribute createAttribute(String propertyName, Object initialValue, String qualifier, Tag tag) {
-        return ClientAttributeFactory.create(propertyName, initialValue, qualifier, tag)
+        return new GClientAttribute(propertyName, initialValue, qualifier, tag)
     }
 
     @Override
     ClientAttribute createAttribute(String propertyName, Object initialValue, Tag tag) {
-        return ClientAttributeFactory.create(propertyName, initialValue, tag)
+        return new GClientAttribute(propertyName, initialValue, tag)
     }
 
     @Override
     ClientAttribute createAttribute(String propertyName, Object initialValue, String qualifier) {
-        return ClientAttributeFactory.create(propertyName, initialValue, qualifier)
+        return new GClientAttribute(propertyName, initialValue, qualifier)
     }
 
     @Override
     ClientAttribute createAttribute(String propertyName, Object initialValue) {
-        return ClientAttributeFactory.create(propertyName, initialValue)
+        return new GClientAttribute(propertyName, initialValue)
     }
 
     @Override
     ClientAttribute createAttribute(Map props) {
-        return ClientAttributeFactory.create(props)
+        return new GClientAttribute(props)
     }
 }
 

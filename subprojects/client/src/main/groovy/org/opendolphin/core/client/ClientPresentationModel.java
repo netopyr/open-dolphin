@@ -22,5 +22,7 @@ public interface ClientPresentationModel extends PresentationModel<ClientAttribu
 
     boolean isClientSideOnly();
 
+    void setClientSideOnly(boolean clientSideOnly);
+
     void reset();
 }

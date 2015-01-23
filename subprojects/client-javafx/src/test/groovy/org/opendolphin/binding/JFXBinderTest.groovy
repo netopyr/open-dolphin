@@ -24,6 +24,8 @@ import org.opendolphin.core.Tag
 import org.opendolphin.core.client.ClientAttribute
 
 import org.opendolphin.core.client.ClientPresentationModel
+import org.opendolphin.core.client.GClientAttribute
+import org.opendolphin.core.client.GClientPresentationModel
 
 import static org.opendolphin.binding.JFXBinder.*
 
@@ -273,7 +275,7 @@ class JFXBinderTest extends GroovyTestCase {
 
     void testPresentationModelBinding() {
         final Tag MESSAGE = Tag.tagFor.MESSAGE
-        ClientPresentationModel sourceModel = ClientPresentationModelFactory.create('source', [ClientAttributeFactory.create('attr_1', "", null, MESSAGE)])
+        ClientPresentationModel sourceModel = new GClientPresentationModel('source', [new GClientAttribute('attr_1', "", null, MESSAGE)])
         def targetLabel = new javafx.scene.control.Label()
 
         bind 'attr_1', MESSAGE of sourceModel to 'text' of targetLabel
@@ -283,7 +285,7 @@ class JFXBinderTest extends GroovyTestCase {
 
     // TODO (DOL-93) remove legacy code
     void testPresentationModelBindingUsingConverter_OldStyle() {
-        ClientPresentationModel sourceModel = ClientPresentationModelFactory.create('source', [ClientAttributeFactory.create('attr_1', "", null, Tag.tagFor.MESSAGE)])
+        ClientPresentationModel sourceModel = new GClientPresentationModel('source', [new GClientAttribute('attr_1', "", null, Tag.tagFor.MESSAGE)])
         def targetLabel = new javafx.scene.control.Label()
 
         bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel to 'text' of targetLabel, { 'my' + it }
@@ -292,7 +294,7 @@ class JFXBinderTest extends GroovyTestCase {
     }
 
     void testPresentationModelBindingUsingConverter() {
-        ClientPresentationModel sourceModel = ClientPresentationModelFactory.create('source', [ClientAttributeFactory.create('attr_1', "", null, Tag.tagFor.MESSAGE)])
+        ClientPresentationModel sourceModel = new GClientPresentationModel('source', [new GClientAttribute('attr_1', "", null, Tag.tagFor.MESSAGE)])
         def targetLabel = new javafx.scene.control.Label()
 
         bind 'attr_1', Tag.tagFor.MESSAGE of sourceModel using { 'my' + it } to 'text' of targetLabel
@@ -301,7 +303,7 @@ class JFXBinderTest extends GroovyTestCase {
     }
 
     void testUnbindInfo() {
-        ClientPresentationModel sourceModel = ClientPresentationModelFactory.create('source', [ClientAttributeFactory.create('text', "")])
+        ClientPresentationModel sourceModel = new GClientPresentationModel('source', [new GClientAttribute('text', "")])
         def targetLabel = new javafx.scene.control.Label()
         bindInfo 'dirty' of sourceModel to 'text' of targetLabel
         assert 'false' == targetLabel.text
@@ -314,7 +316,7 @@ class JFXBinderTest extends GroovyTestCase {
 
     void testUnbindFromFX() {
         def sourceLabel = new javafx.scene.control.Label()
-        ClientAttribute attribute = ClientAttributeFactory.create('text', '')
+        ClientAttribute attribute = new GClientAttribute('text', '')
         bind 'text' of sourceLabel to 'value' of attribute
         sourceLabel.text = 'newValue'
         assert 'newValue' == attribute.value
@@ -326,7 +328,7 @@ class JFXBinderTest extends GroovyTestCase {
 
     void testUnbindFromClientPresentationModel() {
         def targetLabel = new javafx.scene.control.Label()
-        ClientPresentationModel model = ClientPresentationModelFactory.create('model', [ClientAttributeFactory.create('attr', '')])
+        ClientPresentationModel model = new GClientPresentationModel('model', [new GClientAttribute('attr', '')])
         bind 'attr' of model to 'text' of targetLabel
         model.getAt('attr').value = 'newValue'
         assert 'newValue' == targetLabel.text
@@ -337,7 +339,7 @@ class JFXBinderTest extends GroovyTestCase {
 
     void testBindAndUnbindFromNodeToClientPresentationModel() {
         def sourceLabel = new javafx.scene.control.Label()
-        ClientPresentationModel targetPm = ClientPresentationModelFactory.create('model', [ClientAttributeFactory.create('attr', '')])
+        ClientPresentationModel targetPm = new GClientPresentationModel('model', [new GClientAttribute('attr', '')])
         bind 'text' of sourceLabel to 'attr' of targetPm
         sourceLabel.text = 'newValue'
         assert 'newValue' == targetPm.attr.value
@@ -348,7 +350,7 @@ class JFXBinderTest extends GroovyTestCase {
 
     void testUnbindFromPresentationModel() {
         def targetLabel = new javafx.scene.control.Label()
-        PresentationModel model = new BasePresentationModel('model', [ClientAttributeFactory.create('attr', '')])
+        PresentationModel model = new BasePresentationModel('model', [new GClientAttribute('attr', '')])
         bind 'attr' of model to 'text' of targetLabel
         model.getAt('attr').value = 'newValue'
         assert 'newValue' == targetLabel.text
