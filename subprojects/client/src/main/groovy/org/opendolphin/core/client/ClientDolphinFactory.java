@@ -16,12 +16,17 @@
 
 package org.opendolphin.core.client;
 
-// todo he: the main abstractions need to have a javadoc
-
+/**
+ * Factory that creates a client dolphin instance. Application developers should always use this method to create a dolphin on client side.
+ */
 public class ClientDolphinFactory {
 
     private ClientDolphinFactory() {}
 
+    /**
+     * Returns a client dolphin instance
+     * @return the dolphin
+     */
     public static ClientDolphin create() {
         return new GClientDolphin();
     }
