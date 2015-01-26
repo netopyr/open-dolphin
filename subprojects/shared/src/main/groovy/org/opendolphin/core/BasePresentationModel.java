@@ -32,7 +32,6 @@ import java.util.List;
  */
 
 public class BasePresentationModel<A extends Attribute> extends AbstractObservable implements PresentationModel<A> {
-    String DIRTY_PROPERTY = "dirty";
 
     protected final List<A> attributes = new LinkedList<A>();
     private final String id;

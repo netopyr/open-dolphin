@@ -17,7 +17,6 @@
 package org.opendolphin.core.client.comm
 
 import groovy.util.logging.Log
-import org.opendolphin.core.Attribute
 import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.client.*
 import org.opendolphin.core.comm.*

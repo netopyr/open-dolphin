@@ -17,10 +17,30 @@
 package org.opendolphin.core;
 
 /**
- * Defines an attribvute in a presentation model. Each attribute can store a value and is indentified by its property name,
+ * Defines an attribute in a presentation model. Each attribute can store a value and is identified by its property name,
  * qualifier and tag.
  */
 public interface Attribute extends Observable {
+
+    /**
+     * Defines the property name for the qualifier property of an attribute. This can be used to register a {@link java.beans.PropertyChangeListener} for example.
+     */
+    public static final String QUALIFIER_PROPERTY   = "qualifier";
+
+    /**
+     * Defines the property name for the dirty property of an attribute. This can be used to register a {@link java.beans.PropertyChangeListener} for example.
+     */
+    public static final String DIRTY_PROPERTY       = "dirty";
+
+    /**
+     * Defines the property name for the baseValue property of an attribute. This can be used to register a {@link java.beans.PropertyChangeListener} for example.
+     */
+    public static final String BASE_VALUE           = "baseValue";
+
+    /**
+     * Defines the property name for the value property of an attribute. This can be used to register a {@link java.beans.PropertyChangeListener} for example.
+     */
+    public static final String VALUE                = "value";
 
     /**
      * Returns the value of the attribute
@@ -51,7 +71,7 @@ public interface Attribute extends Observable {
 
     /**
      * Returns the tag of the attribute
-     * @return nthe tag
+     * @return the tag
      */
     Tag getTag();
 

@@ -27,6 +27,11 @@ import java.util.List;
 public interface PresentationModel<A extends Attribute> extends Observable {
 
     /**
+     * Defines the property name for the dirty property of an presentation model. This can be used to register a {@link java.beans.PropertyChangeListener} for example.
+     */
+    public static final String DIRTY_PROPERTY = "dirty";
+
+    /**
      * Returns the id of the presentation model
      * @return the id
      */

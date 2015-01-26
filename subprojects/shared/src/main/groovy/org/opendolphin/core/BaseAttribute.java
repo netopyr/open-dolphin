@@ -28,11 +28,6 @@ import java.util.logging.Logger;
 
 public abstract class BaseAttribute extends AbstractObservable implements Attribute {
 
-    static final public String QUALIFIER_PROPERTY   = "qualifier";
-    static final public String DIRTY_PROPERTY       = "dirty";
-    static final public String BASE_VALUE           = "baseValue";
-    static final public String VALUE                = "value";
-
     static final public  Class[] SUPPORTED_VALUE_TYPES = {Character.class, String.class, Number.class, Boolean.class, Date.class};
     static final private Logger  log                   = Logger.getLogger(BaseAttribute.class.getName());
     static private long  instanceCount = 0;
