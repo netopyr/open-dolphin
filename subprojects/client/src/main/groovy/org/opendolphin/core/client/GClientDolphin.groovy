@@ -46,8 +46,6 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
         return clientModelStore
     }
 
-    /** Convenience method for a creating a ClientPresentationModel with initial null values for the attributes
-     */
     ClientPresentationModel presentationModel(String id, List<String> attributeNames) {
         def result = new GClientPresentationModel(id, attributeNames.collect() { new GClientAttribute(it)})
         clientModelStore.add result
@@ -68,7 +66,6 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
         return result
     }
 
-    /** both groovy- and java-friendly full-control factory */
     ClientPresentationModel presentationModel(String id, String presentationModelType = null, ClientAttribute... attributes) {
         def result = new GClientPresentationModel(id, attributes as List)
         result.presentationModelType = presentationModelType
@@ -76,7 +73,6 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
         return result
     }
 
-    /** java-friendly convenience method for sending a named command*/
     void send(String commandName, OnFinishedHandler onFinished = null) {
         clientConnector.send new NamedCommand(commandName), onFinished
     }
@@ -90,8 +86,6 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
         })
     }
 
-    /** both java- and groovy-friendly convenience method to send an empty command, which will have no
-     * presentation models nor data in the callback */
     void sync(Runnable runnable) {
         clientConnector.send(new EmptyNotification(), new OnFinishedHandlerAdapter() {
             void onFinished(List<ClientPresentationModel> presentationModels) {
@@ -114,10 +108,7 @@ public class GClientDolphin extends AbstractDolphin<ClientAttribute, ClientPrese
         new ApplyToAble(dolphin: this, source: source)
     }
 
-   /** Removes the modelToDelete from the client model store,
-     * detaches all model store listeners,
-     * and notifies the server if successful */
-    public void delete(ClientPresentationModel modelToDelete) {
+   public void delete(ClientPresentationModel modelToDelete) {
         clientModelStore.delete(modelToDelete)
     }
 

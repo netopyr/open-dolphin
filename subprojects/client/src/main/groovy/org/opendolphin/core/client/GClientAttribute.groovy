@@ -32,6 +32,7 @@ import groovy.transform.CompileStatic
 class GClientAttribute extends BaseAttribute implements ClientAttribute {
 
     /** @deprecated you should not create Client Attributes without initial values */
+    @Deprecated
     GClientAttribute(String propertyName) {
         this(propertyName, null)
     }
@@ -43,6 +44,7 @@ class GClientAttribute extends BaseAttribute implements ClientAttribute {
 
 
     /** @deprecated too much dependent on key names and doesn't allow setting the tag */
+    @Deprecated
     GClientAttribute(Map props) {
         this(props.propertyName.toString(), props.initialValue)
         this.qualifier = props.qualifier

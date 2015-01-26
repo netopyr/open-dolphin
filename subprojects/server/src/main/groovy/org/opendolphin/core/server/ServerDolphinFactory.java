@@ -16,15 +16,30 @@
 
 package org.opendolphin.core.server;
 
+/**
+ * Factory that creates a server dolphin instance. Application developers should always use this method to create a dolphin on server side.
+ */
 public class ServerDolphinFactory {
 
     private ServerDolphinFactory() {}
 
+    /**
+     * Creates a new server dolphin instance
+     * @return the new server dolphin instance
+     */
     public static ServerDolphin create() {
         return new GServerDolphin();
     }
 
+    /**
+     * Creates a new server dolphin instance that is configured by the given {@link org.opendolphin.core.server.ServerModelStore} and {@link org.opendolphin.core.server.ServerConnector}
+     * @param serverModelStore THE MODEL STORE
+     * @param serverConnector THE CONNECTOR
+     * @return the new server dolphin instance
+     */
     public static ServerDolphin create(ServerModelStore serverModelStore, ServerConnector serverConnector) {
+        ServerAttribute a = create().createAttribute("", "");
+        a.getPresentationModel();
         return new GServerDolphin(serverModelStore, serverConnector);
     }
 }

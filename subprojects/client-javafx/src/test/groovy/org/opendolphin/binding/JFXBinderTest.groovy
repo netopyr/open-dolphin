@@ -139,9 +139,7 @@ class JFXBinderTest extends GroovyTestCase {
         assert !targetLabel.text
 
         when:
-        // target
-//        bind "text" of sourceLabel using converter to "text" of targetLabel
-        bind "text" of sourceLabel to "text" of targetLabel, converter
+        bind "text" of sourceLabel using converter to "text" of targetLabel
 
         assert targetLabel.text == "[initialValue]"
 

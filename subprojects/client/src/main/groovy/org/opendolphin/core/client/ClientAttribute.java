@@ -18,5 +18,9 @@ package org.opendolphin.core.client;
 
 import org.opendolphin.core.Attribute;
 
+/**
+ * Defines an attribute on client side. For more information see {@link org.opendolphin.core.Attribute} and
+ * {@link org.opendolphin.core.client.ClientDolphin}
+ */
 public interface ClientAttribute extends Attribute {
 }

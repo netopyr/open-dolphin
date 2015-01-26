@@ -69,9 +69,7 @@ public class JFXBinderJavaTest {
             }
         };
 
-//      target:
-//        JFXBinder.bind("text").of(sourceLabel).using(converter).to("text").of(targetLabel);
-        JFXBinder.bind("text").of(sourceLabel).to("text").of(targetLabel, converter);
+        JFXBinder.bind("text").of(sourceLabel).using(converter).to("text").of(targetLabel);
 
         assertEquals("[initialValue]", targetLabel.getText());
 
@@ -139,9 +137,8 @@ public class JFXBinderJavaTest {
                 return "my" + value;
             }
         };
-//        target:
-//        JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).using(converter).to("text").of(targetLabel);
-        JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).to("text").of(targetLabel, converter);
+
+        JFXBinder.bind("attr_1", MESSAGE).of(sourceModel).using(converter).to("text").of(targetLabel);
         sourceModel.getAt("attr_1", MESSAGE).setValue("Dummy");
 
         assertEquals("myDummy", targetLabel.getText());

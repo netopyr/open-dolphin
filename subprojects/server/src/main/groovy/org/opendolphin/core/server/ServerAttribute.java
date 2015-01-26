@@ -19,9 +19,15 @@ package org.opendolphin.core.server;
 import org.opendolphin.core.Attribute;
 import org.opendolphin.core.PresentationModel;
 
+/**
+ * Defines an attribute on server side. For more information see {@link org.opendolphin.core.Attribute} and
+ * {@link org.opendolphin.core.server.ServerDolphin}
+ */
 public interface ServerAttribute extends Attribute  {
 
+    //TODO: Should this method be part of the interface?
     void silently(Runnable applyChange);
+
 
     ServerPresentationModel getPresentationModel();
 }

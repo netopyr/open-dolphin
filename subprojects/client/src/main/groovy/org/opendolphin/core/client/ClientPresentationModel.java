@@ -18,11 +18,18 @@ package org.opendolphin.core.client;
 
 import org.opendolphin.core.PresentationModel;
 
+/**
+ * Defines a presentation model on client side. For more information see {@link org.opendolphin.core.PresentationModel} and
+ * {@link org.opendolphin.core.client.ClientDolphin}
+ */
 public interface ClientPresentationModel extends PresentationModel<ClientAttribute> {
 
+    //TODO: Should we remove this method from the interface?
     boolean isClientSideOnly();
 
+    //TODO: Should we remove this method from the interface?
     void setClientSideOnly(boolean clientSideOnly);
 
+    //TODO: Should we remove this method from the interface?
     void reset();
 }

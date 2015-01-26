@@ -18,6 +18,7 @@ package org.opendolphin.core.client.comm
 
 import groovy.util.logging.Log
 import org.opendolphin.core.Attribute
+import org.opendolphin.core.BaseAttribute
 import org.opendolphin.core.client.*
 import org.opendolphin.core.comm.*
 
@@ -112,13 +113,13 @@ class ClientConnectorTests extends GroovyTestCase {
     }
 
     void testPropertyChange_DirtyPropertyIgnored() {
-        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", Attribute.DIRTY_PROPERTY, null, null))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", BaseAttribute.DIRTY_PROPERTY, null, null))
         syncAndWaitUntilDone()
         assertOnlySyncCommandWasTransmitted()
     }
 
     void testValueChange_OldAndNewValueSame() {
-        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", Attribute.VALUE, 'sameValue', 'sameValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", BaseAttribute.VALUE, 'sameValue', 'sameValue'))
         syncAndWaitUntilDone()
         assertOnlySyncCommandWasTransmitted()
     }
@@ -126,7 +127,7 @@ class ClientConnectorTests extends GroovyTestCase {
     void testValueChange_noQualifier() {
         ClientAttribute attribute = dolphin.createAttribute('attr', 'initialValue')
         dolphin.clientModelStore.registerAttribute(attribute)
-        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, BaseAttribute.VALUE, attribute.value, 'newValue'))
         syncAndWaitUntilDone()
         assertCommandsTransmitted(2)
         assert attribute.value == 'initialValue'
@@ -138,7 +139,7 @@ class ClientConnectorTests extends GroovyTestCase {
 
         ClientAttribute attribute = dolphin.createAttribute('attr', 'initialValue', 'qualifier')
         dolphin.clientModelStore.registerAttribute(attribute)
-        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.VALUE, attribute.value, 'newValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, BaseAttribute.VALUE, attribute.value, 'newValue'))
         syncAndWaitUntilDone()
 
         assertCommandsTransmitted(3)
@@ -167,7 +168,7 @@ class ClientConnectorTests extends GroovyTestCase {
     }
 
     void testBaseValueChange_OldAndNewValueSame() {
-        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", Attribute.BASE_VALUE, 'sameValue', 'sameValue'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent("dummy", BaseAttribute.BASE_VALUE, 'sameValue', 'sameValue'))
         syncAndWaitUntilDone()
         assertOnlySyncCommandWasTransmitted()
     }
@@ -179,7 +180,7 @@ class ClientConnectorTests extends GroovyTestCase {
         assert attribute.baseValue == 'initialValue'
         dolphin.clientModelStore.registerAttribute(attribute)
         dolphin.clientModelStore.registerAttribute(secondAttWithSameQualifier)
-        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, Attribute.BASE_VALUE, 'old_base_value', 'new_base_value'))
+        attributeChangeListener.propertyChange(new PropertyChangeEvent(attribute, BaseAttribute.BASE_VALUE, 'old_base_value', 'new_base_value'))
         syncAndWaitUntilDone()
         assertCommandsTransmitted(3 + 1)
         assert attribute.baseValue == 'new_base_value'
