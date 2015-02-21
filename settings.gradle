@@ -28,6 +28,8 @@ include 'demo-javafx/server'
 include 'demo-javafx/client'
 include 'demo-javafx/combined'
 
+include 'documentation'
+
 rootProject.name = 'dolphin'
 rootProject.children.each { project ->
     String fileBaseName = project.name
