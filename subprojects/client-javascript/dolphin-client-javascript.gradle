@@ -99,10 +99,12 @@ publishing {
     }
 }
 
+// Please configure your personal bintray credentials via 'bintrayUser' and 'bintrayKey' in '~/.gradle/gradle.properties' to
+// be able execute the following task:
 bintray {
     dryRun = false
-    user = bintrayUser
-    key = bintrayKey
+    user = project.hasProperty('bintrayUser') ? bintrayUser : '-'
+    key = project.hasProperty('bintrayKey') ? bintrayKey : '-'
     publications = ['mavenJavascript']
     pkg {
         userOrg = 'opendolphin'
