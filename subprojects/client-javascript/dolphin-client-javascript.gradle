@@ -83,7 +83,7 @@ task install (dependsOn: [compileTypeScript, jsZip, updateGrailsJs])
 
 // ------------- Create webjar for OpenDolphinJS: --------------------
 jar {
-    dependsOn compileTypeScript
+    // dependsOn compileTypeScript // disabled until typescript is installed on Teamcity server
     from(fileTree(dir: "${projectDir}/build", includes: ['*.js', '*.js.map'])) {
         into "META-INF/resources/webjars/org/opendolphin/${version}"
     }
