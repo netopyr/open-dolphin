@@ -45,7 +45,7 @@ import static org.opendolphin.StringUtil.isBlank
  * Threading model: confined to a single controller thread.
  */
 
-@CompileStatic
+//@CompileStatic
 @Log
 class GServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresentationModel> implements ServerDolphin{
 

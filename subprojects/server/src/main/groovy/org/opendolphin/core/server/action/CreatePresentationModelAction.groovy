@@ -27,7 +27,7 @@ import org.opendolphin.core.server.comm.ActionRegistry
 import groovy.transform.CompileStatic
 
 @Log
-@CompileStatic
+//@CompileStatic
 class CreatePresentationModelAction extends DolphinServerAction {
 
     void registerIn(ActionRegistry registry) {

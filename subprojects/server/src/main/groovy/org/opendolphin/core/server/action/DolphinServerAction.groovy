@@ -28,7 +28,7 @@ import groovy.transform.CompileStatic
  * the ServerDolphin, e.g. to work with the server model store.
  */
 
-@CompileStatic
+//@CompileStatic
 abstract class DolphinServerAction implements ServerAction {
     GServerDolphin serverDolphin
     List<Command> dolphinResponse

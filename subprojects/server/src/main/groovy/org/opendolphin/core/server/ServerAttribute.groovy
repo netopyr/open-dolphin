@@ -22,7 +22,7 @@ import org.opendolphin.core.Tag
 import groovy.transform.CompileStatic
 import org.opendolphin.core.comm.AttributeMetadataChangedCommand
 
-@CompileStatic
+//@CompileStatic
 class ServerAttribute extends BaseAttribute {
 
     private boolean notifyClient = true;

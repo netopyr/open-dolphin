@@ -24,7 +24,8 @@ import org.opendolphin.core.Tag
 import groovy.transform.CompileStatic
 import org.opendolphin.core.comm.SwitchPresentationModelCommand
 
-@CompileStatic @Log
+//@CompileStatic
+@Log
 class ServerPresentationModel extends BasePresentationModel<ServerAttribute> {
 
     public static final String AUTO_ID_SUFFIX = "-AUTO-SRV"

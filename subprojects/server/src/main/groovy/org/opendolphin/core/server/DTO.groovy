@@ -2,7 +2,7 @@ package org.opendolphin.core.server
 
 import groovy.transform.CompileStatic
 
-@CompileStatic
+//@CompileStatic
 class DTO {
     List<Slot> slots
 

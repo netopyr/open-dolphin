@@ -21,7 +21,7 @@ import org.opendolphin.core.Attribute
 import org.opendolphin.core.PresentationModel
 import groovy.transform.CompileStatic
 
-@CompileStatic
+//@CompileStatic
 @Log
 class CreatePresentationModelCommand extends Command {
     String pmId
