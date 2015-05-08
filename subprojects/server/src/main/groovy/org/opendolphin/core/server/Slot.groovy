@@ -4,7 +4,7 @@ import org.opendolphin.core.Tag
 import groovy.transform.CompileStatic
 
 // should be immutable?
-//@CompileStatic
+//CompileStatic
 class Slot {
     String propertyName
     Object value

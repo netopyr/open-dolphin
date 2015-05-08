@@ -17,14 +17,11 @@
 package org.opendolphin.core.server
 
 import groovy.util.logging.Log
-import org.opendolphin.core.Attribute
 import org.opendolphin.core.BasePresentationModel
 import org.opendolphin.core.PresentationModel
-import org.opendolphin.core.Tag
-import groovy.transform.CompileStatic
 import org.opendolphin.core.comm.SwitchPresentationModelCommand
 
-//@CompileStatic
+//CompileStatic
 @Log
 class ServerPresentationModel extends BasePresentationModel<ServerAttribute> {
 
@@ -60,7 +57,7 @@ class ServerPresentationModel extends BasePresentationModel<ServerAttribute> {
     void addAttribute(ServerAttribute attribute) {
         _internal_addAttribute(attribute)
         modelStore.registerAttribute(attribute)
-        GServerDolphin.initAt(modelStore.currentResponse, id, attribute.propertyName, attribute.qualifier, attribute.value, attribute.tag)
+        DefaultServerDolphin.initAt(modelStore.currentResponse, id, attribute.propertyName, attribute.qualifier, attribute.value, attribute.tag)
     }
 
     public void rebase() {
