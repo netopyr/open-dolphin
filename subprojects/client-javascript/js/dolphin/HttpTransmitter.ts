@@ -44,6 +44,7 @@ module opendolphin {
             }
 
             this.http.open('POST', this.url, true);
+            //this.http.overrideMimeType("text/html; charset=ISO-8859-1"); // todo make injectable
             this.http.send(this.codec.encode(commands));
 
         }
