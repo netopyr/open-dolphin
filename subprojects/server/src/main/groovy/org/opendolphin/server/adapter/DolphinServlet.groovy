@@ -69,7 +69,7 @@ abstract class DolphinServlet extends HttpServlet {
     }
 
     protected String getCharset() {
-        Charset.defaultCharset().name()
+        "UTF-8"
     }
 
     protected abstract void registerApplicationActions(DefaultServerDolphin serverDolphin)

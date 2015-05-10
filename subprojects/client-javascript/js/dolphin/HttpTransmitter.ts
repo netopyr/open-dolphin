@@ -16,7 +16,7 @@ module opendolphin {
             finished: 4,
             success : 200
         }
-        constructor(public url: string, reset: boolean = true) {
+        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8") {
             this.http = new XMLHttpRequest();
             this.sig  = new XMLHttpRequest();
 //            this.http.withCredentials = true; // not supported in all browsers
@@ -47,7 +47,7 @@ module opendolphin {
             }
 
             this.http.open('POST', this.url, true);
-            //this.http.overrideMimeType("text/html; charset=ISO-8859-1"); // todo make injectable
+            this.http.overrideMimeType("application/json; charset=" + this.charset ); // todo make injectable
             this.http.send(this.codec.encode(commands));
 
         }
