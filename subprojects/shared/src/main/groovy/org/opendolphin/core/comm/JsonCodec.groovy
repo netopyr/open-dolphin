@@ -57,11 +57,11 @@ class JsonCodec implements Codec {
             }
             entry
         }
-        JsonBuilder builder = new JsonBuilder(content) // todo dk: here and in Slurper: think about charset UTF-8
+        JsonBuilder builder = new JsonBuilder(content)
         builder.toString()
     }
 
-    private Object encodeBaseValue(entryValue) {
+    protected Object encodeBaseValue(entryValue) {
         def result = BaseAttribute.checkValue(entryValue);
         if (result instanceof Date) {
             def map = [:];
