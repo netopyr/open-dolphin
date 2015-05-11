@@ -53,6 +53,7 @@ public class ClientModelStore extends ModelStore<ClientAttribute, ClientPresenta
         return clientConnector;
     }
 
+    // MSL ADDED will be notified before server is notified.
     @Override
     public boolean add(ClientPresentationModel model) {
         boolean success = super.add(model);
@@ -121,12 +122,13 @@ public class ClientModelStore extends ModelStore<ClientAttribute, ClientPresenta
         }
     }
 
+    // REMOVE MSL will be notified after the server is notified.
     public void deleteAllPresentationModelsOfType(String presentationModelType) {
+        getClientConnector().send(new DeletedAllPresentationModelsOfTypeNotification(presentationModelType));
         List<ClientPresentationModel> models = new LinkedList<ClientPresentationModel>(findAllPresentationModelsByType(presentationModelType));
         for (ClientPresentationModel model: models) {
             delete(model, false);
         }
-        getClientConnector().send(new DeletedAllPresentationModelsOfTypeNotification(presentationModelType));
     }
 
 }

@@ -46,7 +46,7 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
-        compile 'org.codehaus.gpars:gpars:1.0.0'
+        compile 'org.codehaus.gpars:gpars:1.2.1'
 
         def dolphinVersion = '0.12-SNAPSHOT'
 
@@ -61,7 +61,7 @@ grails.project.dependency.resolution = {
         build ":tomcat:7.0.55"
 
         // plugins for the compile step
-        compile ":scaffolding:2.1.2"
+//        compile ":scaffolding:2.1.2"
 //        compile ':cache:1.1.7'
 //        compile ":asset-pipeline:1.9.6"
 

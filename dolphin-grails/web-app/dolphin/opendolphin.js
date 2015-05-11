@@ -1646,14 +1646,17 @@ var opendolphin;
 var opendolphin;
 (function (opendolphin) {
     var HttpTransmitter = (function () {
-        function HttpTransmitter(url, reset) {
+        function HttpTransmitter(url, reset, charset) {
             if (typeof reset === "undefined") { reset = true; }
+            if (typeof charset === "undefined") { charset = "UTF-8"; }
             this.url = url;
+            this.charset = charset;
             this.HttpCodes = {
                 finished: 4,
                 success: 200
             };
             this.http = new XMLHttpRequest();
+            this.sig = new XMLHttpRequest();
 
             //            this.http.withCredentials = true; // not supported in all browsers
             this.codec = new opendolphin.Codec();
@@ -1680,13 +1683,13 @@ var opendolphin;
             };
 
             this.http.open('POST', this.url, true);
+            this.http.overrideMimeType("application/json; charset=" + this.charset); // todo make injectable
             this.http.send(this.codec.encode(commands));
         };
 
         HttpTransmitter.prototype.signal = function (command) {
-            var sig = new XMLHttpRequest();
-            sig.open('POST', this.url, true);
-            sig.send(this.codec.encode([command]));
+            this.sig.open('POST', this.url, true);
+            this.sig.send(this.codec.encode([command]));
         };
 
         HttpTransmitter.prototype.invalidate = function () {

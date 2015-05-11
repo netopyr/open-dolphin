@@ -30,7 +30,7 @@ import org.opendolphin.core.client.comm.UiThreadHandler
 import org.opendolphin.core.client.comm.WithPresentationModelHandler
 import org.opendolphin.core.server.DTO
 import org.opendolphin.core.server.ServerAttribute
-import org.opendolphin.core.server.GServerDolphin
+import org.opendolphin.core.server.DefaultServerDolphin
 import org.opendolphin.core.server.ServerPresentationModel
 import org.opendolphin.core.server.Slot
 import org.opendolphin.core.server.comm.NamedCommandHandler
@@ -48,7 +48,7 @@ import java.util.logging.Level
 class FunctionalPresentationModelTests extends GroovyTestCase {
 
     volatile TestInMemoryConfig context
-    GServerDolphin serverDolphin
+    DefaultServerDolphin serverDolphin
     ClientDolphin clientDolphin
 
     @Override
@@ -223,7 +223,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         serverDolphin.action "loginCmd", { cmd, response ->
             def user = context.serverDolphin.findPresentationModelById('user')
             if (user.name.value == 'Dierk' && user.password.value == 'Koenig') {
-                GServerDolphin.changeValue(response, user.loggedIn, 'true')
+                DefaultServerDolphin.changeValue(response, user.loggedIn, 'true')
             }
         }
         def user = clientDolphin.presentationModel 'user', name: null, password: null, loggedIn: null
@@ -322,8 +322,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testIdNotFoundInVariousCommands() {
         clientDolphin.clientConnector.send new BaseValueChangedCommand(attributeId: 0)
         clientDolphin.clientConnector.send new ValueChangedCommand(attributeId: 0)
-        GServerDolphin.changeValue(null, null, null)
-        GServerDolphin.changeValue(null, new ServerAttribute('a',42), 42)
+        DefaultServerDolphin.changeValue(null, null, null)
+        DefaultServerDolphin.changeValue(null, new ServerAttribute('a',42), 42)
         context.assertionsDone()
     }
 
