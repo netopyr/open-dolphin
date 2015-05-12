@@ -34,11 +34,11 @@ abstract class DolphinServerAction implements ServerAction {
 
 
     void presentationModel(String id, String presentationModelType, DTO dto) {
-        DefaultServerDolphin.presentationModel(dolphinResponse, id, presentationModelType, dto)
+        DefaultServerDolphin.presentationModelCommand(dolphinResponse, id, presentationModelType, dto)
     }
 
     void changeValue(ServerAttribute attribute, value) {
-        DefaultServerDolphin.changeValue(dolphinResponse, attribute, value)
+        DefaultServerDolphin.changeValueCommand(dolphinResponse, attribute, value)
     }
 
     /** Convenience method for the InitializeAttributeCommand */

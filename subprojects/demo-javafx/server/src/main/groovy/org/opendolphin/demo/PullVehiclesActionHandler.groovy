@@ -39,7 +39,7 @@ class PullVehiclesActionHandler implements NamedCommandHandler {
                 new Slot(ATT_ROTATE,   rand(),  "vehicle-${ pmId }.rotate"),
                 new Slot(ATT_COLOR,    pmId,    "vehicle-${ pmId }.color")
             )
-            DefaultServerDolphin.presentationModel(response, pmId, TYPE_VEHICLE, model)
+            DefaultServerDolphin.presentationModelCommand(response, pmId, TYPE_VEHICLE, model)
         }
     }
 }

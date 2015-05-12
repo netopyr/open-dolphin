@@ -85,7 +85,7 @@ class DeletePresentationModelTests extends GroovyTestCase {
         }
 
         serverDolphin.action('triggerDelete') { cmd, List<Command> response ->
-            serverDolphin.delete(response, modelId)
+            serverDolphin.deleteCommand(response, modelId)
         }
         // when we now delete the pm
         clientDolphin.send 'triggerDelete', {
