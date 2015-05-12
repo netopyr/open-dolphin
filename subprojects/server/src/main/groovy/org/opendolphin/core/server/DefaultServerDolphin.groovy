@@ -134,21 +134,11 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
         return model
     }
 
-    /** @deprecated use {@link #presentationModelCommand(java.util.List, java.lang.String, java.lang.String, org.opendolphin.core.server.DTO)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-     static void presentationModel(List<Command> response, String id, String presentationModelType, DTO dto){
-        presentationModelCommand(response, id, presentationModelType, dto)
-    }
-
     /** Convenience method to let the client (!) dolphin create a presentation model as specified by the DTO.
      * The server model store remains untouched until the client has issued the notification.*/
      static void presentationModelCommand(List<Command> response, String id, String presentationModelType, DTO dto){
         if (null == response) return
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable())
-    }
-
-    /** @deprecated use {@link #clientSideModelCommand(java.util.List, java.lang.String, java.lang.String, org.opendolphin.core.server.DTO)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void clientSideModel(List<Command> response, String id, String presentationModelType, DTO dto){
-        clientSideModelCommand(response, id, presentationModelType, dto)
     }
 
     /** Convenience method to let Dolphin create a
@@ -159,11 +149,6 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
         response << new CreatePresentationModelCommand(pmId: id, pmType: presentationModelType, attributes: dto.encodable(), clientSideOnly:true)
     }
 
-    /** @deprecated use {@link #rebaseCommand(java.util.List, org.opendolphin.core.server.ServerAttribute)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void rebase(List<Command> response, ServerAttribute attribute){
-        rebaseCommand(response, attribute)
-    }
-
     /** Convenience method to let Dolphin rebase the value of an attribute */
     static void rebaseCommand(List<Command> response, ServerAttribute attribute){
         if (null == attribute) {
@@ -171,11 +156,6 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
             return
         }
         rebaseCommand(response, attribute.id)
-    }
-
-    /** @deprecated use {@link #rebaseCommand(java.util.List, java.lang.String)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void rebase(List<Command> response, String attributeId){
-        rebaseCommand(response, attributeId)
     }
 
     /** Convenience method to let Dolphin rebase the value of an attribute */
@@ -188,7 +168,7 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
     boolean remove(ServerPresentationModel pm){
         boolean deleted = serverModelStore.remove(pm)
         if (deleted) {
-            DefaultServerDolphin.deleteCommand(serverModelStore.currentResponse, pm)
+            deleteCommand(serverModelStore.currentResponse, pm)
         }
         return deleted
     }
@@ -200,12 +180,7 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
         for (ServerPresentationModel model in models ){
             serverModelStore.remove(model) // go through the model store to avoid single commands being sent to the client
         }
-        DefaultServerDolphin.deleteAllPresentationModelsOfTypeCommand(serverModelStore.currentResponse, type)
-    }
-
-    /** @deprecated use {@link #deleteCommand(java.util.List, org.opendolphin.core.server.ServerPresentationModel)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void delete(List<Command> response, ServerPresentationModel pm){
-        deleteCommand(response, pm)
+        deleteAllPresentationModelsOfTypeCommand(serverModelStore.currentResponse, type)
     }
 
     /** Convenience method to let Dolphin delete a presentation model on the client side */
@@ -217,31 +192,16 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
         deleteCommand(response, pm.id)
     }
 
-    /** @deprecated use {@link #deleteCommand(java.util.List, java.lang.String)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void delete(List<Command> response, String pmId){
-        deleteCommand(response, pmId)
-    }
-
     /** Convenience method to let Dolphin delete a presentation model on the client side */
     static void deleteCommand(List<Command> response, String pmId){
         if (null == response || isBlank(pmId)) return
         response << new DeletePresentationModelCommand(pmId: pmId)
     }
 
-    /** @deprecated use {@link #deleteAllPresentationModelsOfTypeCommand(java.util.List, java.lang.String)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void deleteAllPresentationModelsOfType(List<Command> response, String pmType){
-        deleteAllPresentationModelsOfTypeCommand(response, pmType)
-    }
-
     /** Convenience method to let Dolphin delete all presentation models of a given type on the client side */
     static void deleteAllPresentationModelsOfTypeCommand(List<Command> response, String pmType){
         if (null == response || isBlank(pmType)) return
         response << new DeleteAllPresentationModelsOfTypeCommand(pmType: pmType)
-    }
-
-    /** @deprecated use {@link #resetCommand(java.util.List, org.opendolphin.core.server.ServerPresentationModel)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void reset(List<Command> response, ServerPresentationModel pm){
-        resetCommand(response, pm)
     }
 
     /** Convenience method to let Dolphin reset a presentation model */
@@ -253,20 +213,10 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
         resetCommand(response, pm.id)
     }
 
-    /** @deprecated use {@link #resetCommand(java.util.List, java.lang.String)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void reset(List<Command> response, String pmId){
-        resetCommand(response, pmId)
-    }
-
     /** Convenience method to let Dolphin reset a presentation model */
     static void resetCommand(List<Command> response, String pmId){
         if (null == response || isBlank(pmId)) return
         response << new PresentationModelResetedCommand(pmId: pmId)
-    }
-
-    /** @deprecated use {@link #resetCommand(java.util.List, org.opendolphin.core.server.ServerAttribute)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void reset(List<Command> response, ServerAttribute attribute) {
-        resetCommand(response, attribute)
     }
 
     /** Convenience method to let Dolphin reset the value of an attribute */
@@ -282,11 +232,6 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
         )
     }
 
-    /** @deprecated use {@link #changeValueCommand(java.util.List, org.opendolphin.core.server.ServerAttribute, java.lang.Object)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void changeValue(List<Command>response, ServerAttribute attribute, value){
-        changeValueCommand(response, attribute, value)
-    }
-
     /**
      * Convenience method to change an attribute value on the server side.
      * @param response must not be null or the method silently ignores the call
@@ -298,16 +243,6 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
             log.severe("Cannot change value on a null attribute to '$value'")
             return
         }
-        forceChangeValue(value, response, attribute)
-    }
-
-    /** @deprecated use {@link #forceChangeValueCommand(java.lang.Object, java.util.List, org.opendolphin.core.server.ServerAttribute)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
-    static void forceChangeValue(value, List<Command> response, ServerAttribute attribute) {
-        forceChangeValueCommand(value, response, attribute)
-    }
-
-    /** @deprecated use {@link #changeValueCommand(java.util.List, org.opendolphin.core.server.ServerAttribute, java.lang.Object)}, which enforces the value change by default. Will be removed in version 1.0! */
-    static void forceChangeValueCommand(value, List<Command> response, ServerAttribute attribute) {
         value = BaseAttribute.checkValue(value)
         response << new ValueChangedCommand(attributeId: attribute.id, newValue: value, oldValue: attribute.value)
     }
