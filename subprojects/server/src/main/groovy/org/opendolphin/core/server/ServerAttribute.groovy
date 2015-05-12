@@ -67,7 +67,7 @@ class ServerAttribute extends BaseAttribute {
     void reset() {
         super.reset()
         if (notifyClient) {
-            DefaultServerDolphin.reset(presentationModel.modelStore.currentResponse, this)
+            DefaultServerDolphin.resetCommand(presentationModel.modelStore.currentResponse, this)
         }
     }
 

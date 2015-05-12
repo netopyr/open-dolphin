@@ -214,7 +214,7 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
             log.severe("Cannot delete null presentation model")
             return
         }
-        delete(response, pm.id)
+        deleteCommand(response, pm.id)
     }
 
     /** @deprecated use {@link #deleteCommand(java.util.List, java.lang.String)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
@@ -250,7 +250,7 @@ class DefaultServerDolphin extends AbstractDolphin<ServerAttribute, ServerPresen
             log.severe("Cannot reset null presentation model")
             return
         }
-        reset(response, pm.id)
+        resetCommand(response, pm.id)
     }
 
     /** @deprecated use {@link #resetCommand(java.util.List, java.lang.String)}. You can use the "inline method refactoring". Will be removed in version 1.0! */
