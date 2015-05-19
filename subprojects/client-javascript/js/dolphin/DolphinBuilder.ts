@@ -1,5 +1,10 @@
 /// <reference path="ClientDolphin.ts"/>
 /// <reference path="OpenDolphin.ts"/>
+/// <reference path="ClientConnector.ts"/>
+/// <reference path="ClientModelStore.ts"/>
+/// <reference path="NoTransmitter.ts"/>
+/// <reference path="HttpTransmitter.ts"/>
+/// <reference path="ClientAttribute.ts"/>
 
 module opendolphin {
 

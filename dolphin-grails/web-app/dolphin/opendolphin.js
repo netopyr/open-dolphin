@@ -1615,6 +1615,11 @@ var opendolphin;
 })(opendolphin || (opendolphin = {}));
 /// <reference path="ClientDolphin.ts"/>
 /// <reference path="OpenDolphin.ts"/>
+/// <reference path="ClientConnector.ts"/>
+/// <reference path="ClientModelStore.ts"/>
+/// <reference path="NoTransmitter.ts"/>
+/// <reference path="HttpTransmitter.ts"/>
+/// <reference path="ClientAttribute.ts"/>
 var opendolphin;
 (function (opendolphin) {
     var DolphinBuilder = (function () {
@@ -1653,12 +1658,7 @@ var opendolphin;
     })();
     opendolphin.DolphinBuilder = DolphinBuilder;
 })(opendolphin || (opendolphin = {}));
-/// <reference path="ClientAttribute.ts"/>
 /// <reference path="ClientDolphin.ts"/>
-/// <reference path="ClientModelStore.ts"/>
-/// <reference path="ClientConnector.ts"/>
-/// <reference path="NoTransmitter.ts"/>
-/// <reference path="HttpTransmitter.ts"/>
 /// <reference path="DolphinBuilder.ts"/>
 /**
  * JS-friendly facade to avoid too many dependencies in plain JS code.
