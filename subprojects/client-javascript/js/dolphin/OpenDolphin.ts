@@ -4,6 +4,7 @@
 /// <reference path="ClientConnector.ts"/>
 /// <reference path="NoTransmitter.ts"/>
 /// <reference path="HttpTransmitter.ts"/>
+/// <reference path="DolphinBuilder.ts"/>
 
 /**
  * JS-friendly facade to avoid too many dependencies in plain JS code.
@@ -15,7 +16,8 @@
  */
 
 module opendolphin {
-// factory method for the initialized dolphin
+    // factory method for the initialized dolphin
+    // Deprecated ! Use 'makeDolphin() instead
     export function dolphin(url:string, reset:boolean, slackMS:number = 300):ClientDolphin {
         console.log("OpenDolphin js found");
         var clientDolphin = new ClientDolphin();
@@ -30,4 +32,9 @@ module opendolphin {
         console.log("ClientDolphin initialized");
         return clientDolphin;
     }
+
+    export function makeDolphin():DolphinBuilder {
+        return new DolphinBuilder();
+    }
+
 }
