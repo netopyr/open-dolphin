@@ -34,7 +34,7 @@ module opendolphin {
     }
 
     export interface Transmitter {
-        transmit(commands: Command[], onDone:(result: Command[]) => void) : void ;
+        transmit(commands: Command[], onDone:(result: Command[]) => void, errorHandler:(any) => void) : void ;
         signal(command: SignalCommand) : void;
     }
 
@@ -53,11 +53,13 @@ module opendolphin {
         private releaseCommand:      SignalCommand;
         private pushEnabled:        boolean = false;
         private waiting:            boolean = false;
+        private errorHandler: (any) => void;
 
 
-        constructor(transmitter:Transmitter, clientDolphin: ClientDolphin, slackMS: number = 0) {
+        constructor(transmitter:Transmitter, clientDolphin: ClientDolphin, errorHandler: (any) => void, slackMS: number = 0) {
             this.transmitter = transmitter;
             this.clientDolphin = clientDolphin;
+            this.errorHandler = errorHandler;
             this.slackMS = slackMS;
             this.codec = new  Codec();
         }
@@ -112,7 +114,8 @@ module opendolphin {
                 // recursive call: fetch the next in line but allow a bit of slack such that
                 // document events can fire, rendering is done and commands can batch up
                 setTimeout( () => this.doSendNext() , this.slackMS );
-            });
+            },
+            this.errorHandler);
         }
 
 

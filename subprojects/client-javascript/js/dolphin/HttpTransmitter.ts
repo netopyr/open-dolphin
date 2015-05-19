@@ -32,10 +32,10 @@ module opendolphin {
             }
         }
 
-        transmit(commands:Command[], onDone:(result:Command[]) => void):void {
+        transmit(commands:Command[], onDone:(result:Command[]) => void, errorHandler:(any) => void):void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                alert("could not fetch " + this.url + ", message: " + evt.message); // todo dk: make this injectable
+                errorHandler({url: this.url, cause: evt});
                 onDone([]);
             };
 

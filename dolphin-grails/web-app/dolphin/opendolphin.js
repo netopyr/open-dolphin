@@ -773,7 +773,7 @@ var opendolphin;
 var opendolphin;
 (function (opendolphin) {
     var ClientConnector = (function () {
-        function ClientConnector(transmitter, clientDolphin, slackMS) {
+        function ClientConnector(transmitter, clientDolphin, errorHandler, slackMS) {
             if (slackMS === void 0) { slackMS = 0; }
             this.commandQueue = [];
             this.currentlySending = false;
@@ -782,6 +782,7 @@ var opendolphin;
             this.waiting = false;
             this.transmitter = transmitter;
             this.clientDolphin = clientDolphin;
+            this.errorHandler = errorHandler;
             this.slackMS = slackMS;
             this.codec = new opendolphin.Codec();
         }
@@ -830,7 +831,7 @@ var opendolphin;
                 // recursive call: fetch the next in line but allow a bit of slack such that
                 // document events can fire, rendering is done and commands can batch up
                 setTimeout(function () { return _this.doSendNext(); }, _this.slackMS);
-            });
+            }, this.errorHandler);
         };
         ClientConnector.prototype.handle = function (command) {
             if (command.id == "Data") {
@@ -1587,10 +1588,10 @@ var opendolphin;
                 this.invalidate();
             }
         }
-        HttpTransmitter.prototype.transmit = function (commands, onDone) {
+        HttpTransmitter.prototype.transmit = function (commands, onDone, errorHandler) {
             var _this = this;
             this.http.onerror = function (evt) {
-                alert("could not fetch " + _this.url + ", message: " + evt.message); // todo dk: make this injectable
+                errorHandler({ url: _this.url, cause: evt });
                 onDone([]);
             };
             this.http.onreadystatechange = function (evt) {
@@ -1656,7 +1657,7 @@ var opendolphin;
             else {
                 transmitter = new opendolphin.NoTransmitter();
             }
-            clientDolphin.setClientConnector(new opendolphin.ClientConnector(transmitter, clientDolphin, this.slackMS_));
+            clientDolphin.setClientConnector(new opendolphin.ClientConnector(transmitter, clientDolphin, this.errorHandler_, this.slackMS_));
             clientDolphin.setClientModelStore(new opendolphin.ClientModelStore(clientDolphin));
             console.log("ClientDolphin initialized");
             return clientDolphin;

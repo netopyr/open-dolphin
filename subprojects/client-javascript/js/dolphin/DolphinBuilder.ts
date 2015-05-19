@@ -7,12 +7,12 @@
 /// <reference path="ClientAttribute.ts"/>
 
 module opendolphin {
-
     export class DolphinBuilder {
 
         url_: string;
         reset_: boolean = false;
         slackMS_ :number = 300;
+        errorHandler_:(any) => void;
 
         constructor(){
         }
@@ -38,7 +38,7 @@ module opendolphin {
             } else {
                 transmitter = new NoTransmitter();
             }
-            clientDolphin.setClientConnector(new ClientConnector(transmitter, clientDolphin, this.slackMS_));
+            clientDolphin.setClientConnector(new ClientConnector(transmitter, clientDolphin, this.errorHandler_, this.slackMS_));
             clientDolphin.setClientModelStore(new ClientModelStore(clientDolphin));
             console.log("ClientDolphin initialized");
             return clientDolphin;
