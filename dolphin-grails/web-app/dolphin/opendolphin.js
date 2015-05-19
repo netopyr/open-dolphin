@@ -1619,6 +1619,7 @@ var opendolphin;
 (function (opendolphin) {
     var DolphinBuilder = (function () {
         function DolphinBuilder() {
+            this.reset_ = false;
             this.slackMS_ = 300;
         }
         DolphinBuilder.prototype.url = function (url) {
@@ -1634,7 +1635,19 @@ var opendolphin;
             return this;
         };
         DolphinBuilder.prototype.build = function () {
-            return opendolphin.dolphin(this.url_, this.reset_, this.slackMS_);
+            console.log("OpenDolphin js found");
+            var clientDolphin = new opendolphin.ClientDolphin();
+            var transmitter;
+            if (this.url_ != null && this.url_.length > 0) {
+                transmitter = new opendolphin.HttpTransmitter(this.url_, this.reset_);
+            }
+            else {
+                transmitter = new opendolphin.NoTransmitter();
+            }
+            clientDolphin.setClientConnector(new opendolphin.ClientConnector(transmitter, clientDolphin, this.slackMS_));
+            clientDolphin.setClientModelStore(new opendolphin.ClientModelStore(clientDolphin));
+            console.log("ClientDolphin initialized");
+            return clientDolphin;
         };
         return DolphinBuilder;
     })();
@@ -1661,19 +1674,7 @@ var opendolphin;
     // Deprecated ! Use 'makeDolphin() instead
     function dolphin(url, reset, slackMS) {
         if (slackMS === void 0) { slackMS = 300; }
-        console.log("OpenDolphin js found");
-        var clientDolphin = new opendolphin.ClientDolphin();
-        var transmitter;
-        if (url != null && url.length > 0) {
-            transmitter = new opendolphin.HttpTransmitter(url, reset);
-        }
-        else {
-            transmitter = new opendolphin.NoTransmitter();
-        }
-        clientDolphin.setClientConnector(new opendolphin.ClientConnector(transmitter, clientDolphin, slackMS));
-        clientDolphin.setClientModelStore(new opendolphin.ClientModelStore(clientDolphin));
-        console.log("ClientDolphin initialized");
-        return clientDolphin;
+        return makeDolphin().url(url).reset(reset).slackMS(slackMS).build();
     }
     opendolphin.dolphin = dolphin;
     function makeDolphin() {
