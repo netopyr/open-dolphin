@@ -6,7 +6,7 @@ module opendolphin {
     export class DolphinBuilder {
 
         private url_: string;
-        private reset_: boolean;
+        private reset_: boolean = false;
         private slackMS_ :number = 300;
 
         constructor(){
@@ -26,7 +26,18 @@ module opendolphin {
             return this;
         }
         public build():ClientDolphin {
-            return opendolphin.dolphin(this.url_, this.reset_, this.slackMS_);
+            console.log("OpenDolphin js found");
+            var clientDolphin = new ClientDolphin();
+            var transmitter;
+            if (this.url_ != null && this.url_.length > 0) {
+                transmitter = new HttpTransmitter(this.url_, this.reset_);
+            } else {
+                transmitter = new NoTransmitter();
+            }
+            clientDolphin.setClientConnector(new ClientConnector(transmitter, clientDolphin, this.slackMS_));
+            clientDolphin.setClientModelStore(new ClientModelStore(clientDolphin));
+            console.log("ClientDolphin initialized");
+            return clientDolphin;
         }
     }
 }
