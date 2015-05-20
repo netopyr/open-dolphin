@@ -47,7 +47,9 @@ module opendolphin {
             }
 
             this.http.open('POST', this.url, true);
-            this.http.overrideMimeType("application/json; charset=" + this.charset ); // todo make injectable
+            if ("overrideMimeType" in this.http) {
+                this.http.overrideMimeType("application/json; charset=" + this.charset ); // todo make injectable
+            }
             this.http.send(this.codec.encode(commands));
 
         }
