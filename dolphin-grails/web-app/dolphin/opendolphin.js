@@ -310,12 +310,10 @@ var opendolphin;
                 return;
             }
             if (this.findAttributeByPropertyNameAndTag(attribute.propertyName, attribute.tag)) {
-                throw new Error("There already is an attribute with property name: " + attribute.propertyName
-                    + " and tag: " + attribute.tag + " in presentation model with id: " + this.id);
+                throw new Error("There already is an attribute with property name: " + attribute.propertyName + " and tag: " + attribute.tag + " in presentation model with id: " + this.id);
             }
             if (attribute.getQualifier() && this.findAttributeByQualifier(attribute.getQualifier())) {
-                throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier()
-                    + " in presentation model with id: " + this.id);
+                throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier() + " in presentation model with id: " + this.id);
             }
             attribute.setPresentationModel(this);
             this.attributes.push(attribute);
@@ -569,10 +567,7 @@ var opendolphin;
             else {
                 batch.push(candidate);
             }
-            if (!candidate.handler &&
-                !(candidate.command['className'] == "org.opendolphin.core.comm.NamedCommand") &&
-                !(candidate.command['className'] == "org.opendolphin.core.comm.EmptyNotification") // and no unknown client side effect
-            ) {
+            if (!candidate.handler && !(candidate.command['className'] == "org.opendolphin.core.comm.NamedCommand") && !(candidate.command['className'] == "org.opendolphin.core.comm.EmptyNotification")) {
                 this.processNext(queue, batch); // then we can proceed with batching
             }
         };
@@ -815,7 +810,9 @@ var opendolphin;
             this.currentlySending = true;
             var cmdsAndHandlers = this.commandBatcher.batch(this.commandQueue);
             var callback = cmdsAndHandlers[cmdsAndHandlers.length - 1].handler;
-            var commands = cmdsAndHandlers.map(function (cah) { return cah.command; });
+            var commands = cmdsAndHandlers.map(function (cah) {
+                return cah.command;
+            });
             this.transmitter.transmit(commands, function (response) {
                 //console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
                 var touchedPMs = [];
@@ -1029,9 +1026,9 @@ var opendolphin;
             this.waiting = true;
             var me = this; // oh, boy, this took some time to find...
             this.send(this.pushListener, { onFinished: function (models) {
-                    me.waiting = false;
-                    me.listen();
-                }, onFinishedData: null });
+                me.waiting = false;
+                me.listen();
+            }, onFinishedData: null });
         };
         ClientConnector.prototype.release = function () {
             if (!this.waiting)
@@ -1598,7 +1595,9 @@ var opendolphin;
                 }
             };
             this.http.open('POST', this.url, true);
-            this.http.overrideMimeType("application/json; charset=" + this.charset); // todo make injectable
+            if ("overrideMimeType" in this.http) {
+                this.http.overrideMimeType("application/json; charset=" + this.charset); // todo make injectable
+            }
             this.http.send(this.codec.encode(commands));
         };
         HttpTransmitter.prototype.signal = function (command) {
