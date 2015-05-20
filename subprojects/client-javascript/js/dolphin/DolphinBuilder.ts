@@ -29,6 +29,10 @@ module opendolphin {
             this.slackMS_ = slackMS;
             return this;
         }
+        public errorHandler(errorHandler:(any) => void):DolphinBuilder {
+            this.errorHandler_ = errorHandler;
+            return this;
+        }
         public build():ClientDolphin {
             console.log("OpenDolphin js found");
             var clientDolphin = new ClientDolphin();
