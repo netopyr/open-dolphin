@@ -310,10 +310,12 @@ var opendolphin;
                 return;
             }
             if (this.findAttributeByPropertyNameAndTag(attribute.propertyName, attribute.tag)) {
-                throw new Error("There already is an attribute with property name: " + attribute.propertyName + " and tag: " + attribute.tag + " in presentation model with id: " + this.id);
+                throw new Error("There already is an attribute with property name: " + attribute.propertyName
+                    + " and tag: " + attribute.tag + " in presentation model with id: " + this.id);
             }
             if (attribute.getQualifier() && this.findAttributeByQualifier(attribute.getQualifier())) {
-                throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier() + " in presentation model with id: " + this.id);
+                throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier()
+                    + " in presentation model with id: " + this.id);
             }
             attribute.setPresentationModel(this);
             this.attributes.push(attribute);
@@ -567,7 +569,10 @@ var opendolphin;
             else {
                 batch.push(candidate);
             }
-            if (!candidate.handler && !(candidate.command['className'] == "org.opendolphin.core.comm.NamedCommand") && !(candidate.command['className'] == "org.opendolphin.core.comm.EmptyNotification")) {
+            if (!candidate.handler &&
+                !(candidate.command['className'] == "org.opendolphin.core.comm.NamedCommand") &&
+                !(candidate.command['className'] == "org.opendolphin.core.comm.EmptyNotification") // and no unknown client side effect
+            ) {
                 this.processNext(queue, batch); // then we can proceed with batching
             }
         };
@@ -810,9 +815,7 @@ var opendolphin;
             this.currentlySending = true;
             var cmdsAndHandlers = this.commandBatcher.batch(this.commandQueue);
             var callback = cmdsAndHandlers[cmdsAndHandlers.length - 1].handler;
-            var commands = cmdsAndHandlers.map(function (cah) {
-                return cah.command;
-            });
+            var commands = cmdsAndHandlers.map(function (cah) { return cah.command; });
             this.transmitter.transmit(commands, function (response) {
                 //console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
                 var touchedPMs = [];
@@ -1026,9 +1029,9 @@ var opendolphin;
             this.waiting = true;
             var me = this; // oh, boy, this took some time to find...
             this.send(this.pushListener, { onFinished: function (models) {
-                me.waiting = false;
-                me.listen();
-            }, onFinishedData: null });
+                    me.waiting = false;
+                    me.listen();
+                }, onFinishedData: null });
         };
         ClientConnector.prototype.release = function () {
             if (!this.waiting)
@@ -1573,7 +1576,12 @@ var opendolphin;
             };
             this.http = new XMLHttpRequest();
             this.sig = new XMLHttpRequest();
-            //            this.http.withCredentials = true; // not supported in all browsers
+            if ("withCredentials" in this.http) {
+                this.http.withCredentials = true; // NOTE: doing this for non CORS requests has no impact
+                this.sig.withCredentials = true;
+            }
+            // NOTE: Browser might support CORS partially so we simply try to use 'this.http' for CORS requests instead of forbidding it
+            // NOTE: XDomainRequest for IE 8, IE 9 not supported by dolphin because XDomainRequest does not support cookies in CORS requests (which are needed for the JSESSIONID cookie)
             this.codec = new opendolphin.Codec();
             if (reset) {
                 this.invalidate();
@@ -1657,7 +1665,6 @@ var opendolphin;
     })();
     opendolphin.DolphinBuilder = DolphinBuilder;
 })(opendolphin || (opendolphin = {}));
-/// <reference path="ClientDolphin.ts"/>
 /// <reference path="DolphinBuilder.ts"/>
 /**
  * JS-friendly facade to avoid too many dependencies in plain JS code.
@@ -1676,6 +1683,7 @@ var opendolphin;
         return makeDolphin().url(url).reset(reset).slackMS(slackMS).build();
     }
     opendolphin.dolphin = dolphin;
+    // factory method to build an initialized dolphin
     function makeDolphin() {
         return new opendolphin.DolphinBuilder();
     }
