@@ -10,9 +10,9 @@ module opendolphin {
 
     export class DolphinBuilder {
 
-        private url_: string;
-        private reset_: boolean = false;
-        private slackMS_ :number = 300;
+        url_: string;
+        reset_: boolean = false;
+        slackMS_ :number = 300;
 
         constructor(){
         }
