@@ -253,7 +253,8 @@ module tsUnit {
         private setRefreshOnLinksWithHash() {
             var previousHandler = window.onhashchange;
 
-            window.onhashchange = function (ev: HashChangeEvent) {
+            //original (sven, 22.5.2015: HashChangeEvent not known to tsc 1.4.1): window.onhashchange = function (ev: HashChangeEvent) {
+            window.onhashchange = function (ev: any) { // (sven, 22.5.2015) make it compile with tsc 1.4.1 and 1.5.0-beta: HashChangeEvent -> any
                 window.location.reload();
 
                 if (typeof previousHandler === 'function') {
