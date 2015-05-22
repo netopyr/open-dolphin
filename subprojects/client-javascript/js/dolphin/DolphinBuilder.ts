@@ -15,7 +15,6 @@ module opendolphin {
         private slackMS_ :number = 300;
 
         constructor(){
-
         }
 
         public url(url:string):DolphinBuilder {
