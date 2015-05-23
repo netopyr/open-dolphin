@@ -10,13 +10,15 @@ module opendolphin {
         http:XMLHttpRequest;
         sig:XMLHttpRequest; // for the signal command, which needs an extra connection
         codec:Codec;
+        private errorHandler: (any) => void;
 
 
         HttpCodes = {
             finished: 4,
             success : 200
         };
-        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8") {
+        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8", errorHandler: (any) => void = null) {
+            this.errorHandler = errorHandler;
             this.http = new XMLHttpRequest();
             this.sig  = new XMLHttpRequest();
             if ("withCredentials" in this.http) { // browser supports CORS
@@ -32,10 +34,12 @@ module opendolphin {
             }
         }
 
-        transmit(commands:Command[], onDone:(result:Command[]) => void, errorHandler:(any) => void):void {
+        transmit(commands:Command[], onDone:(result:Command[]) => void):void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                errorHandler({url: this.url, cause: evt});
+                if (this.errorHandler) {
+                    this.errorHandler({url: this.url, cause: evt});
+                }
                 onDone([]);
             };
 

@@ -38,11 +38,11 @@ module opendolphin {
             var clientDolphin = new ClientDolphin();
             var transmitter;
             if (this.url_ != null && this.url_.length > 0) {
-                transmitter = new HttpTransmitter(this.url_, this.reset_);
+                transmitter = new HttpTransmitter(this.url_, this.reset_, "UTF-8", this.errorHandler_);
             } else {
                 transmitter = new NoTransmitter();
             }
-            clientDolphin.setClientConnector(new ClientConnector(transmitter, clientDolphin, this.errorHandler_, this.slackMS_));
+            clientDolphin.setClientConnector(new ClientConnector(transmitter, clientDolphin, this.slackMS_));
             clientDolphin.setClientModelStore(new ClientModelStore(clientDolphin));
             console.log("ClientDolphin initialized");
             return clientDolphin;

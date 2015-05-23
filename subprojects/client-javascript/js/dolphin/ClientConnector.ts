@@ -34,7 +34,7 @@ module opendolphin {
     }
 
     export interface Transmitter {
-        transmit(commands: Command[], onDone:(result: Command[]) => void, errorHandler:(any) => void) : void ;
+        transmit(commands: Command[], onDone:(result: Command[]) => void) : void ;
         signal(command: SignalCommand) : void;
     }
 
@@ -53,13 +53,11 @@ module opendolphin {
         private releaseCommand:      SignalCommand;
         private pushEnabled:        boolean = false;
         private waiting:            boolean = false;
-        private errorHandler: (any) => void;
 
 
-        constructor(transmitter:Transmitter, clientDolphin: ClientDolphin, errorHandler: (any) => void, slackMS: number = 0) {
+        constructor(transmitter:Transmitter, clientDolphin: ClientDolphin, slackMS: number = 0) {
             this.transmitter = transmitter;
             this.clientDolphin = clientDolphin;
-            this.errorHandler = errorHandler;
             this.slackMS = slackMS;
             this.codec = new  Codec();
         }
