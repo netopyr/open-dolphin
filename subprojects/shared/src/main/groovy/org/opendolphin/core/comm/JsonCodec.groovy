@@ -98,6 +98,14 @@ class JsonCodec implements Codec {
                     return
                 }
                 if (key == 'tag') value = Tag.tagFor[value]
+                else
+                if (value instanceof List) {        // some commands may have collective values
+                    for (Map entryMap in value) {
+                        entryMap.each { entryKey, entryValue ->
+                            entryMap[entryKey] = decodeBaseValue(entryValue)
+                        }
+                    }
+                }
                 else value = decodeBaseValue(value)
                 responseCommand[key] = value
             }
@@ -112,13 +120,13 @@ class JsonCodec implements Codec {
         if (encodedValue instanceof Map && encodedValue.size() == 1) {
             if (encodedValue.containsKey(DATE_TYPE_KEY)) {
                 result = DateFormat.getDateInstance().parse(encodedValue[DATE_TYPE_KEY]);
-            }
+            } else
             if (encodedValue.containsKey(BIGDECIMAL_TYPE_KEY)) {
                 result = new BigDecimal(encodedValue[BIGDECIMAL_TYPE_KEY]);
-            }
+            } else
             if (encodedValue.containsKey(FLOAT_TYPE_KEY)) {
                 result = Float.parseFloat(encodedValue[FLOAT_TYPE_KEY]);
-            }
+            } else
             if (encodedValue.containsKey(DOUBLE_TYPE_KEY)) {
                 result = Double.parseDouble(encodedValue[DOUBLE_TYPE_KEY]);
             }
