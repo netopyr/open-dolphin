@@ -142,5 +142,64 @@ public class JsonCodecTest extends GroovyTestCase {
         assert in_command.newValue == out_command.newValue
     }
 
+    /**
+     * this test works until 7fd89dd but not beyond
+     * crashes at [2] with "Attribute values of this type are not allowed: LazyMap"
+     */
+    void testProperTypeEnAndDeAndEnAndDecodingADate() {
 
+        def cpmc = new CreatePresentationModelCommand();
+        cpmc.attributes << [
+                propertyName: "theDate",
+                id          : "0",
+                qualifier   : "1",
+                value       : new Date(),
+                baseValue   : new Date()
+        ]
+        cpmc.pmId = "untilDate0"
+        cpmc.pmType = "aDate"
+
+        def codec = new JsonCodec()
+
+        // [0] from one end
+        def encoded0 = codec.encode([cpmc])
+        // [1] to the other
+        def decoded0 = codec.decode(encoded0)[0];
+        // [2] and back
+        def encoded1 = codec.encode([decoded0])
+        // should work too
+        def decoded1 = codec.decode(encoded1)[0];
+
+        assert decoded1 != null;
+    }
+
+    /**
+     * this test works until 7fd89dd and beyond
+     */
+    void testProperTypeEnAndDeAndEnAndDecodingAString() {
+
+        def cpmc = new CreatePresentationModelCommand();
+        cpmc.attributes << [
+                propertyName: "theMessage",
+                id          : "0",
+                qualifier   : "1",
+                value       : "momo was here",
+                baseValue   : "momo was here"
+        ]
+        cpmc.pmId = "aName"
+        cpmc.pmType = "aString"
+
+        def codec = new JsonCodec()
+
+        // from one end
+        def encoded0 = codec.encode([cpmc])
+        // to the other
+        def decoded0 = codec.decode(encoded0)[0];
+        // and back
+        def encoded1 = codec.encode([decoded0])
+        // should work too
+        def decoded1 = codec.decode(encoded1)[0];
+
+        assert decoded1 != null;
+    }
 }
