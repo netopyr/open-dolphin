@@ -112,8 +112,7 @@ module opendolphin {
                 // recursive call: fetch the next in line but allow a bit of slack such that
                 // document events can fire, rendering is done and commands can batch up
                 setTimeout( () => this.doSendNext() , this.slackMS );
-            },
-            this.errorHandler);
+            });
         }
 
 
