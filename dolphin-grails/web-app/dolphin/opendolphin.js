@@ -1629,8 +1629,12 @@ var opendolphin;
             this.http.send(this.codec.encode(commands));
         };
         HttpTransmitter.prototype.handleError = function (kind, message) {
+            var errorEvent = { kind: kind, url: this.url, httpStatus: this.http.status, message: message };
             if (this.errorHandler) {
-                this.errorHandler({ kind: kind, url: this.url, httpStatus: this.http.status, message: message });
+                this.errorHandler(errorEvent);
+            }
+            else {
+                console.log("Error occurred: ", errorEvent);
             }
         };
         HttpTransmitter.prototype.signal = function (command) {

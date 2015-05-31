@@ -79,8 +79,12 @@ module opendolphin {
         }
 
         private handleError(kind:String, message:String) {
+            var errorEvent:any = {kind: kind, url: this.url, httpStatus: this.http.status, message: message};
             if (this.errorHandler) {
-                this.errorHandler({kind: kind, url: this.url, httpStatus: this.http.status, message: message});
+                this.errorHandler(errorEvent);
+            }
+            else {
+                console.log("Error occurred: ", errorEvent);
             }
         }
 
