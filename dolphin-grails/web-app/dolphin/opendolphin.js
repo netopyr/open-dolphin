@@ -1592,17 +1592,33 @@ var opendolphin;
         HttpTransmitter.prototype.transmit = function (commands, onDone) {
             var _this = this;
             this.http.onerror = function (evt) {
-                if (_this.errorHandler) {
-                    _this.errorHandler({ url: _this.url, cause: evt });
-                }
+                _this.handleError('onerror', "");
                 onDone([]);
             };
             this.http.onreadystatechange = function (evt) {
                 if (_this.http.readyState == _this.HttpCodes.finished) {
                     if (_this.http.status == _this.HttpCodes.success) {
                         var responseText = _this.http.responseText;
-                        var responseCommands = _this.codec.decode(responseText);
-                        onDone(responseCommands);
+                        if (responseText.trim().length > 0) {
+                            try {
+                                var responseCommands = _this.codec.decode(responseText);
+                                onDone(responseCommands);
+                            }
+                            catch (err) {
+                                console.log("Error occurred parsing responseText: ", err);
+                                console.log("Incorrect responseText: ", responseText);
+                                _this.handleError('application', "HttpTransmitter: Incorrect responseText: " + responseText);
+                                onDone([]);
+                            }
+                        }
+                        else {
+                            _this.handleError('application', "HttpTransmitter: empty responseText");
+                            onDone([]);
+                        }
+                    }
+                    else {
+                        _this.handleError('application', "HttpTransmitter: HTTP Status != 200");
+                        onDone([]);
                     }
                 }
             };
@@ -1611,6 +1627,11 @@ var opendolphin;
                 this.http.overrideMimeType("application/json; charset=" + this.charset); // todo make injectable
             }
             this.http.send(this.codec.encode(commands));
+        };
+        HttpTransmitter.prototype.handleError = function (kind, message) {
+            if (this.errorHandler) {
+                this.errorHandler({ kind: kind, url: this.url, httpStatus: this.http.status, message: message });
+            }
         };
         HttpTransmitter.prototype.signal = function (command) {
             this.sig.open('POST', this.url, true);

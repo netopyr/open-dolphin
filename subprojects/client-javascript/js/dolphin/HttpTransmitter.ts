@@ -37,22 +37,36 @@ module opendolphin {
         transmit(commands:Command[], onDone:(result:Command[]) => void):void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                if (this.errorHandler) {
-                    this.errorHandler({url: this.url, cause: evt});
-                }
+                this.handleError('onerror', "");
                 onDone([]);
             };
 
             this.http.onreadystatechange= (evt:ProgressEvent) => {
                 if (this.http.readyState == this.HttpCodes.finished){
-
                     if(this.http.status == this.HttpCodes.success)
                     {
                         var responseText = this.http.responseText;
-                        var responseCommands = this.codec.decode(responseText);
-                        onDone(responseCommands);
+                        if (responseText.trim().length > 0) {
+                            try {
+                                var responseCommands = this.codec.decode(responseText);
+                                onDone(responseCommands);
+                            }
+                            catch (err) {
+                                console.log("Error occurred parsing responseText: ", err);
+                                console.log("Incorrect responseText: ", responseText);
+                                this.handleError('application', "HttpTransmitter: Incorrect responseText: " + responseText);
+                                onDone([]);
+                            }
+                        }
+                        else {
+                            this.handleError('application', "HttpTransmitter: empty responseText");
+                            onDone([]);
+                        }
                     }
-                    //todo ks: if status is not 200 then show error
+                    else {
+                        this.handleError('application', "HttpTransmitter: HTTP Status != 200");
+                        onDone([]);
+                    }
                 }
             };
 
@@ -62,6 +76,12 @@ module opendolphin {
             }
             this.http.send(this.codec.encode(commands));
 
+        }
+
+        private handleError(kind:String, message:String) {
+            if (this.errorHandler) {
+                this.errorHandler({kind: kind, url: this.url, httpStatus: this.http.status, message: message});
+            }
         }
 
         signal(command : SignalCommand) {
