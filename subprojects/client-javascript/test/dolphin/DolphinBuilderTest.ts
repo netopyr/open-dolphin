@@ -9,6 +9,7 @@ module opendolphin {
             this.areIdentical(builder.url_, undefined, "ERROR: url_ must be 'undefined'");
             this.areIdentical(builder.reset_, false, "ERROR: reset_ must be 'false'");
             this.areIdentical(builder.slackMS_, 300, "ERROR: slackMS_ must be '300'");
+            this.areIdentical(builder.errorHandler_, undefined, "ERROR: errorHandler_ must be 'undefined'");
         }
 
         url() {
@@ -25,6 +26,11 @@ module opendolphin {
             var slackMS = 500;
             var builder = new DolphinBuilder().slackMS(slackMS);
             this.areIdentical(builder.slackMS_, slackMS, "ERROR: slackMS_ must be '" + slackMS + "'");
+        }
+        errorHandler() {
+            var errorHandler = function(evt) { };
+            var builder = new DolphinBuilder().errorHandler(errorHandler);
+            this.areIdentical(builder.errorHandler_, errorHandler, "ERROR: errorHandler_ must be '" + errorHandler + "'");
         }
 
         built_clientDolphin() {

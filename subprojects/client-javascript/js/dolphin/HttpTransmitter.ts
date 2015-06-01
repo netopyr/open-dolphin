@@ -10,13 +10,15 @@ module opendolphin {
         http:XMLHttpRequest;
         sig:XMLHttpRequest; // for the signal command, which needs an extra connection
         codec:Codec;
+        private errorHandler: (any) => void;
 
 
         HttpCodes = {
             finished: 4,
             success : 200
         };
-        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8") {
+        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8", errorHandler: (any) => void = null) {
+            this.errorHandler = errorHandler;
             this.http = new XMLHttpRequest();
             this.sig  = new XMLHttpRequest();
             if ("withCredentials" in this.http) { // browser supports CORS
@@ -35,20 +37,36 @@ module opendolphin {
         transmit(commands:Command[], onDone:(result:Command[]) => void):void {
 
             this.http.onerror = (evt:ErrorEvent) => {
-                alert("could not fetch " + this.url + ", message: " + evt.message); // todo dk: make this injectable
+                this.handleError('onerror', "");
                 onDone([]);
             };
 
             this.http.onreadystatechange= (evt:ProgressEvent) => {
                 if (this.http.readyState == this.HttpCodes.finished){
-
                     if(this.http.status == this.HttpCodes.success)
                     {
                         var responseText = this.http.responseText;
-                        var responseCommands = this.codec.decode(responseText);
-                        onDone(responseCommands);
+                        if (responseText.trim().length > 0) {
+                            try {
+                                var responseCommands = this.codec.decode(responseText);
+                                onDone(responseCommands);
+                            }
+                            catch (err) {
+                                console.log("Error occurred parsing responseText: ", err);
+                                console.log("Incorrect responseText: ", responseText);
+                                this.handleError('application', "HttpTransmitter: Incorrect responseText: " + responseText);
+                                onDone([]);
+                            }
+                        }
+                        else {
+                            this.handleError('application', "HttpTransmitter: empty responseText");
+                            onDone([]);
+                        }
                     }
-                    //todo ks: if status is not 200 then show error
+                    else {
+                        this.handleError('application', "HttpTransmitter: HTTP Status != 200");
+                        onDone([]);
+                    }
                 }
             };
 
@@ -58,6 +76,16 @@ module opendolphin {
             }
             this.http.send(this.codec.encode(commands));
 
+        }
+
+        private handleError(kind:String, message:String) {
+            var errorEvent:any = {kind: kind, url: this.url, httpStatus: this.http.status, message: message};
+            if (this.errorHandler) {
+                this.errorHandler(errorEvent);
+            }
+            else {
+                console.log("Error occurred: ", errorEvent);
+            }
         }
 
         signal(command : SignalCommand) {

@@ -1565,15 +1565,17 @@ var opendolphin;
 var opendolphin;
 (function (opendolphin) {
     var HttpTransmitter = (function () {
-        function HttpTransmitter(url, reset, charset) {
+        function HttpTransmitter(url, reset, charset, errorHandler) {
             if (reset === void 0) { reset = true; }
             if (charset === void 0) { charset = "UTF-8"; }
+            if (errorHandler === void 0) { errorHandler = null; }
             this.url = url;
             this.charset = charset;
             this.HttpCodes = {
                 finished: 4,
                 success: 200
             };
+            this.errorHandler = errorHandler;
             this.http = new XMLHttpRequest();
             this.sig = new XMLHttpRequest();
             if ("withCredentials" in this.http) {
@@ -1590,15 +1592,33 @@ var opendolphin;
         HttpTransmitter.prototype.transmit = function (commands, onDone) {
             var _this = this;
             this.http.onerror = function (evt) {
-                alert("could not fetch " + _this.url + ", message: " + evt.message); // todo dk: make this injectable
+                _this.handleError('onerror', "");
                 onDone([]);
             };
             this.http.onreadystatechange = function (evt) {
                 if (_this.http.readyState == _this.HttpCodes.finished) {
                     if (_this.http.status == _this.HttpCodes.success) {
                         var responseText = _this.http.responseText;
-                        var responseCommands = _this.codec.decode(responseText);
-                        onDone(responseCommands);
+                        if (responseText.trim().length > 0) {
+                            try {
+                                var responseCommands = _this.codec.decode(responseText);
+                                onDone(responseCommands);
+                            }
+                            catch (err) {
+                                console.log("Error occurred parsing responseText: ", err);
+                                console.log("Incorrect responseText: ", responseText);
+                                _this.handleError('application', "HttpTransmitter: Incorrect responseText: " + responseText);
+                                onDone([]);
+                            }
+                        }
+                        else {
+                            _this.handleError('application', "HttpTransmitter: empty responseText");
+                            onDone([]);
+                        }
+                    }
+                    else {
+                        _this.handleError('application', "HttpTransmitter: HTTP Status != 200");
+                        onDone([]);
                     }
                 }
             };
@@ -1607,6 +1627,15 @@ var opendolphin;
                 this.http.overrideMimeType("application/json; charset=" + this.charset); // todo make injectable
             }
             this.http.send(this.codec.encode(commands));
+        };
+        HttpTransmitter.prototype.handleError = function (kind, message) {
+            var errorEvent = { kind: kind, url: this.url, httpStatus: this.http.status, message: message };
+            if (this.errorHandler) {
+                this.errorHandler(errorEvent);
+            }
+            else {
+                console.log("Error occurred: ", errorEvent);
+            }
         };
         HttpTransmitter.prototype.signal = function (command) {
             this.sig.open('POST', this.url, true);
@@ -1646,12 +1675,16 @@ var opendolphin;
             this.slackMS_ = slackMS;
             return this;
         };
+        DolphinBuilder.prototype.errorHandler = function (errorHandler) {
+            this.errorHandler_ = errorHandler;
+            return this;
+        };
         DolphinBuilder.prototype.build = function () {
             console.log("OpenDolphin js found");
             var clientDolphin = new opendolphin.ClientDolphin();
             var transmitter;
             if (this.url_ != null && this.url_.length > 0) {
-                transmitter = new opendolphin.HttpTransmitter(this.url_, this.reset_);
+                transmitter = new opendolphin.HttpTransmitter(this.url_, this.reset_, "UTF-8", this.errorHandler_);
             }
             else {
                 transmitter = new opendolphin.NoTransmitter();
