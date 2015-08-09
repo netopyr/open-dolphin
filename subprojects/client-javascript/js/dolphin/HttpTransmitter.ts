@@ -11,22 +11,26 @@ module opendolphin {
         sig:XMLHttpRequest; // for the signal command, which needs an extra connection
         codec:Codec;
         private errorHandler: (any) => void;
+        supportCORS: boolean;
 
 
         HttpCodes = {
             finished: 4,
             success : 200
         };
-        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8", errorHandler: (any) => void = null) {
+        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8", errorHandler: (any) => void = null, supportCORS: boolean = true) {
             this.errorHandler = errorHandler;
+            this.supportCORS = supportCORS;
             this.http = new XMLHttpRequest();
             this.sig  = new XMLHttpRequest();
-            if ("withCredentials" in this.http) { // browser supports CORS
-                this.http.withCredentials = true; // NOTE: doing this for non CORS requests has no impact
-                this.sig.withCredentials = true;
+            if (this.supportCORS) {
+                if ("withCredentials" in this.http) { // browser supports CORS
+                    this.http.withCredentials = true; // NOTE: doing this for non CORS requests has no impact
+                    this.sig.withCredentials = true;
+                }
+                // NOTE: Browser might support CORS partially so we simply try to use 'this.http' for CORS requests instead of forbidding it
+                // NOTE: XDomainRequest for IE 8, IE 9 not supported by dolphin because XDomainRequest does not support cookies in CORS requests (which are needed for the JSESSIONID cookie)
             }
-            // NOTE: Browser might support CORS partially so we simply try to use 'this.http' for CORS requests instead of forbidding it
-            // NOTE: XDomainRequest for IE 8, IE 9 not supported by dolphin because XDomainRequest does not support cookies in CORS requests (which are needed for the JSESSIONID cookie)
 
             this.codec = new Codec();
             if (reset) {

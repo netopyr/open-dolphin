@@ -12,6 +12,7 @@ module opendolphin {
         url_: string;
         reset_: boolean = false;
         slackMS_ :number = 300;
+        supportCORS_: boolean = true;
         errorHandler_:(any) => void;
 
         constructor(){
@@ -29,6 +30,10 @@ module opendolphin {
             this.slackMS_ = slackMS;
             return this;
         }
+        public supportCORS(supportCORS:boolean):DolphinBuilder {
+            this.supportCORS_ = supportCORS;
+            return this;
+        }
         public errorHandler(errorHandler:(any) => void):DolphinBuilder {
             this.errorHandler_ = errorHandler;
             return this;
@@ -38,7 +43,7 @@ module opendolphin {
             var clientDolphin = new ClientDolphin();
             var transmitter;
             if (this.url_ != null && this.url_.length > 0) {
-                transmitter = new HttpTransmitter(this.url_, this.reset_, "UTF-8", this.errorHandler_);
+                transmitter = new HttpTransmitter(this.url_, this.reset_, "UTF-8", this.errorHandler_, this.supportCORS_);
             } else {
                 transmitter = new NoTransmitter();
             }
