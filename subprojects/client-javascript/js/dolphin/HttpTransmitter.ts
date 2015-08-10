@@ -18,7 +18,7 @@ module opendolphin {
             finished: 4,
             success : 200
         };
-        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8", errorHandler: (any) => void = null, supportCORS: boolean = true) {
+        constructor(public url: string, reset: boolean = true, public charset: string = "UTF-8", errorHandler: (any) => void = null, supportCORS: boolean = false) {
             this.errorHandler = errorHandler;
             this.supportCORS = supportCORS;
             this.http = new XMLHttpRequest();

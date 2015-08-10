@@ -12,7 +12,7 @@ module opendolphin {
         url_: string;
         reset_: boolean = false;
         slackMS_ :number = 300;
-        supportCORS_: boolean = true;
+        supportCORS_: boolean = false;
         errorHandler_:(any) => void;
 
         constructor(){

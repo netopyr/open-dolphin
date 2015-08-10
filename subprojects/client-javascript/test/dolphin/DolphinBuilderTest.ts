@@ -10,7 +10,7 @@ module opendolphin {
             this.areIdentical(builder.reset_, false, "ERROR: reset_ must be 'false'");
             this.areIdentical(builder.slackMS_, 300, "ERROR: slackMS_ must be '300'");
             this.areIdentical(builder.errorHandler_, undefined, "ERROR: errorHandler_ must be 'undefined'");
-            this.areIdentical(builder.supportCORS_, true, "ERROR: supportCORS_ must be 'true'");
+            this.areIdentical(builder.supportCORS_, false, "ERROR: supportCORS_ must be 'false'");
         }
 
         url() {
@@ -24,7 +24,7 @@ module opendolphin {
             this.areIdentical(builder.reset_, reset, "ERROR: reset_ must be '" + reset + "'");
         }
         supportCORS() {
-            var supportCORS = false;
+            var supportCORS = true;
             var builder = new DolphinBuilder().supportCORS(supportCORS);
             this.areIdentical(builder.supportCORS_, supportCORS, "ERROR: supportCORS_ must be '" + supportCORS + "'");
         }
