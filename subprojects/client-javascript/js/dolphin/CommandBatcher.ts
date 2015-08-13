@@ -25,11 +25,11 @@ module opendolphin {
     export class BlindCommandBatcher implements CommandBatcher {
 
         /** folding: whether we should try folding ValueChangedCommands */
-        constructor(public folding:boolean = true){}
+        constructor(public folding:boolean = true, public maxBatchSize : number = 50){}
 
         batch(queue : CommandAndHandler[]) : CommandAndHandler[] {
             var result = [];
-            this.processNext(50, queue, result); // do not batch more than 50 commands to avoid stack overflow on recursion.
+            this.processNext(this.maxBatchSize, queue, result); // do not batch more than this.maxBatchSize commands to avoid stack overflow on recursion.
             return result;
         }
 

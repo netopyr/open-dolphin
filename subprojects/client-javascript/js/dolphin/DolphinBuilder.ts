@@ -12,6 +12,7 @@ module opendolphin {
         url_: string;
         reset_: boolean = false;
         slackMS_ :number = 300;
+        maxBatchSize_ :number = 50;
         supportCORS_: boolean = false;
         errorHandler_:(any) => void;
 
@@ -28,6 +29,10 @@ module opendolphin {
         }
         public slackMS(slackMS:number):DolphinBuilder {
             this.slackMS_ = slackMS;
+            return this;
+        }
+        public maxBatchSize(maxBatchSize:number):DolphinBuilder {
+            this.maxBatchSize_ = maxBatchSize;
             return this;
         }
         public supportCORS(supportCORS:boolean):DolphinBuilder {
@@ -47,7 +52,7 @@ module opendolphin {
             } else {
                 transmitter = new NoTransmitter();
             }
-            clientDolphin.setClientConnector(new ClientConnector(transmitter, clientDolphin, this.slackMS_));
+            clientDolphin.setClientConnector(new ClientConnector(transmitter, clientDolphin, this.slackMS_, this.maxBatchSize_));
             clientDolphin.setClientModelStore(new ClientModelStore(clientDolphin));
             console.log("ClientDolphin initialized");
             return clientDolphin;
