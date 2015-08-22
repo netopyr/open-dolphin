@@ -330,6 +330,7 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
     void testApplyPm() {
         serverDolphin.action("checkPmWasApplied") { cmd, resp ->
             assert 1 == serverDolphin['second'].getAt('a',Tag.VALUE).value
+            assert 1 == serverDolphin['second'].getAt('a',Tag.VALUE).baseValue // apply must also set base value
             context.assertionsDone()
         }
         def first = clientDolphin.presentationModel("first", null, a:1)
