@@ -5,11 +5,12 @@ Prerequisites
 -------------
 Install node globally
 
-Install karma-cli globally
+Install karma-cli globally to use karma in the command line
+
 `> npm install -g karma-cli`
-(to avoid typing ./node_modules/karma/bin/karma start)
 
 Before karma execution make sure to run
+
 `> npm install`
 
 This will install all dependencies specified in package.json into node_modules in your current working directory 
