@@ -29,6 +29,7 @@ buildscript {
     }
     dependencies {
 		classpath 'de.richsource.gradle.plugins:typescript-gradle-plugin:1.0.6'
+        classpath 'com.moowork.gradle:gradle-node-plugin:0.6'
     }
 }
 
@@ -37,6 +38,9 @@ plugins {
 }
 
 apply plugin: 'typescript'
+
+// used to enable run node scripts
+apply plugin: 'com.moowork.node'
 
 // used to produce webjar:
 apply plugin: 'java'
@@ -76,6 +80,19 @@ compileTypeScript {
 	sourcemap = true
 	out = file('build/opendolphin.js')
 }
+
+npm_install {
+    args = ['--prefix=./testrunner','--loglevel', 'warn']
+}
+
+// TODO review and it should use ci against sauce labs
+task runKarmaJsTestRunner(dependsOn: [npm_install], type: Exec) {
+    description 'Execute js test runner karma'
+    commandLine 'sh', '-c', 'cd ./testrunner && karma start'
+}
+
+//include js unit tests into project build lifecycle
+test.dependsOn runKarmaJsTestRunner
 
 task install (dependsOn: [compileTypeScript, jsZip, updateGrailsJs])
 
