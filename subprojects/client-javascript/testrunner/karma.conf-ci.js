@@ -1,7 +1,27 @@
 // Karma configuration
 // Generated on Fri Aug 21 2015 16:37:20 GMT+0200 (Romance Daylight Time)
-
 module.exports = function(config) {
+
+  // Browsers to run on Sauce Labs
+  var customLaunchers = {
+    'SL_Chrome': {
+      base: 'SauceLabs',
+      browserName: 'chrome'
+    },
+    'SL_InternetExplorer': {
+      base: 'SauceLabs',
+      browserName: 'internet explorer'
+    },
+    'SL_FireFox': {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+    },
+    'SL_Opera': {
+      base: 'SauceLabs',
+      browserName: 'opera'
+    }
+  };
+
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -42,7 +62,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'saucelabs'],
 
 
     // web server port
@@ -58,16 +78,24 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
 
+    sauceLabs: {
+      testName: 'Karma and Sauce Labs'
+    },
+
+
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
+
+    // If browser does not capture in given timeout [ms], kill it
+    captureTimeout: 60000,
+
+
+    customLaunchers: customLaunchers,
 
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-
-    // If browser does not capture in given timeout [ms], kill it
-    captureTimeout: 60000,
+    browsers: Object.keys(customLaunchers),
 
 
     // Continuous Integration mode
