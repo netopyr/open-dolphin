@@ -337,19 +337,19 @@ abstract class ClientConnector {
     protected boolean pushEnabled = false;
 
     /** whether we currently wait for push events (internal state) and may need to release */
-    protected boolean waiting = false;
+//    protected boolean waiting = false;
 
     /** listens for the pushListener to return. The pushListener must be set and pushEnabled must be true. */
     protected void listen() {
         if (!pushEnabled) return // allow the loop to end
-        if (waiting) return      // avoid second call while already waiting (?) -> two different push actions not supported
-        waiting = true
+//        if (waiting) return      // avoid second call while already waiting (?) -> two different push actions not supported
+//        waiting = true
         send(pushListener, new OnFinishedHandlerAdapter() {
             @Override
             void onFinished(List<ClientPresentationModel> presentationModels) {
                 // we do nothing here nor do we register a special handler.
                 // The server may have sent commands, though, even CallNamedActionCommand.
-                waiting = false
+//                waiting = false
                 listen() // not a real recursion; is added to event queue
             }
         })
@@ -359,10 +359,10 @@ abstract class ClientConnector {
      *  Does nothing in case that the push listener is not active.
      * */
     protected void release() {
-        if (!waiting) {
-            return      // there is no point in releasing if we do not wait. Avoid excessive releasing.
-        }
-        waiting = false // release is under way
+//        if (!waiting) {
+//            return      // there is no point in releasing if we do not wait. Avoid excessive releasing.
+//        }
+//        waiting = false // release is under way
         withPool {
             def transmitAsynchronously = this.&transmit.asyncFun()
             transmitAsynchronously([releaseCommand]) // sneaks by the strict command sequence
