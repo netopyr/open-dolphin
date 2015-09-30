@@ -40,11 +40,11 @@ class ServerAttribute extends BaseAttribute {
     }
 
     @Override
-    void setValue(Object value) {
+    void setValue(Object newValue) {
         if (notifyClient) {
-            DefaultServerDolphin.changeValueCommand(presentationModel.modelStore.currentResponse, this, value)
+            DefaultServerDolphin.changeValueCommand(presentationModel.modelStore.currentResponse, this, newValue)
         }
-        super.setValue(value)
+        super.setValue(newValue)
     }
 
     @Override
