@@ -3,7 +3,7 @@ link:http://martinfowler.com/eaaDev/PresentationModel.html[design pattern] by Ma
 
 They also come under different names like _Application Model_ or _View Model_.
 
-There is a lot of information about presentation models on the web, e.g.
+There is a lot of information about presentation models on the web, i.e
 
 * from link:http://msdn.microsoft.com/en-us/magazine/dd419663.aspx[Microsoft Developer Network]
 * from link:http://www.canoo.com/blog/2008/01/28/mvc-and-the-brave-new-world-of-ria/[Canoo]
@@ -31,7 +31,7 @@ above, which led us to calling our abstraction a presentation model.
 * They make replacing the GUI toolkit easier.
 * They decouple business logic from view logic.
 * They make UI code easily testable.
-* They consist of @Attribute@s (like many but not all other implementations).
+* They consist of *Attribute*s (like many but not all other implementations).
 * They support declarative binding between attributes and GUI elements.
 
 *What is special*
@@ -56,4 +56,4 @@ When there is the least bit of business logic, it goes into an action.
 Actions live in controller classes of the server module.
 
 There is a small fraction of logic that resides on the client, which is
-_view_ logic like e.g. for calculating component bounds when layouting.
+_view_ logic like i.e for calculating component bounds when layouting.
