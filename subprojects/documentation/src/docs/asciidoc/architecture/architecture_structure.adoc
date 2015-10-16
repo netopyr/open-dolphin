@@ -45,9 +45,10 @@ The layering is visible through the respective package structure.
 WARNING: The application programmer should only use the facade layer.
 
 The figure below summarizes the vertical and horizontal structuring
-// TODO shouldn't this be a diagram?. There is an error when PDF is generated.(review folder)
+// TODO we shouldn't include the images directory in each image reference, but it didn't work
+#REVIEW should it be a diagram?#
 
-image::dolphin.025.png[]
+image::./resources/img/dolphin.025.png[]
 
 While the structural part of the Dolphin architecture is rather
 obvious and straight-forward, the concepts and rules that stand behind

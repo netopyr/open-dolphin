@@ -1,4 +1,3 @@
-:imagedir: ./resources/img/
 :icons: font
 :sectnums:
 
@@ -67,6 +66,82 @@ include::architecture/concepts_command_sequence.adoc[]
 
 === Discussion
 include::architecture/concepts_discussion.adoc[]
+
+== How to get started with OpenDolphin
+include::howto.adoc[]
+
+=== Adding nodes to a stage, registering an onAction handler
+include::howto/howtoStep1.adoc[]
+
+=== Introducing a presentation model with one attribute and bind the value
+include::howto/howtoStep2.adoc[]
+
+=== Logical separation between client and server
+include::howto/howtoStep3.adoc[]
+
+=== Bind the "dirty" of presentation models to the view
+include::howto/howtoStep4.adoc[]
+
+=== Split into modules/projects
+include::howto/howtoStep5.adoc[]
+
+=== Enhanced view, let the "director" wire all application actions
+include::howto/howtoStep6.adoc[]
+
+=== Remote setup
+include::howto/howtoStep7.adoc[]
+
+== OpenDolphin on the web
+include::web.adoc[]
+
+=== Using OpenDolphin from a web page
+include::web/web_intro.adoc[]
+
+== Use Cases and Demos
+include::demos.adoc[]
+
+=== The general approach of OpenDolphin with a Login dialog
+include::demos/demo_login.adoc[]
+
+=== Immediate and deferred binding
+include::demos/demo_singleAttMultBindings.adoc[]
+
+=== The container yard monitoring application
+include::demos/demo_yard.adoc[]
+
+=== The push capability
+include::demos/demo_push.adoc[]
+
+=== One application on multiple devices
+include::demos/demo_multi_device.adoc[]
+
+=== Follow-me applications with re-connect
+include::demos/demo_follow_me.adoc[]
+
+=== Team applications for collaborative work
+include::demos/demo_team_app.adoc[]
+
+=== Floating workstations in a point-of-sale solution
+include::demos/demo_point_of_sale.adoc[]
+
+=== Integration of many technologies into one app
+include::demos/demo_integration.adoc[]
+
+== tbd Configuration and Setup
+include::config.adoc[]
+
+=== Standalone in-memory usage
+include::config/config_standalone.adoc[]
+
+=== Remote setup
+include::config/config_remote.adoc[]
+
+== tbd Developer Zone
+include::devzone.adoc[]
+
+=== How to build
+include::devzone_build.adoc[]
+
 
 == API Reference
 

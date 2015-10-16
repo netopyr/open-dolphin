@@ -32,11 +32,10 @@ OpenDolphin allows to bind the detail view against a stable _placeholder_
 presentation model that is automatically synchronized (both read and write)
 with the selection.
 
-NOTE: The detail view *never* has to change its binding!
+WARNING: The detail view *never* has to change its binding!
 
 In fact, this feature goes beyond master-detail views and applies to all
 referential structures, which otherwise are a very difficult to handle
 consistently in a user interface.
 
-// TODO review once it's defined
-See also <<Usage of Binding>>.
+See also <<Usage of Binding>>. #TODO [concepts_binding.adoc]#

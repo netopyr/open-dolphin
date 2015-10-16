@@ -20,7 +20,7 @@ Conceptually, one can see the model store as
 * a specialized event bus (event provider is only the store itself and only ModelStoreEvents are issued)
 
 The application programmer should not access the model store directly
-but only through the facade layer, see [Usage|Dolphin].
+but only through the facade layer, see <<Dolphin Usage>>. #TODO [concepts_model_store.adoc]#
 
 The model store is used internally as a value change listener to all known attributes in order to
 

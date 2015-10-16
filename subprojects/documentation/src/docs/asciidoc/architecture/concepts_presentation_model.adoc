@@ -17,7 +17,6 @@ WARNING: In fact, we do not even claim to implement the "presentation model *des
  _We are happy to give them all due credit, though, since we are building on their work._
 
 
-// TODO to review
 It just happens that the Dolphin approach has a lot of similarities with the patterns
 above, which led us to calling our abstraction a presentation model.
 
@@ -38,8 +37,7 @@ above, which led us to calling our abstraction a presentation model.
 
 * Dolphin presentation models are _generic_. You never implement a new class for a new type of presentation model.
 * They do not contain any custom behavior (only what's provided by Dolphin for binding and remoting).
-// TODO to review anchor once is defined
-* They allow <<stable bindings>>
+* They allow <<Stable bindings>> #REVIEW-[concepts_presentation_model.adoc]#
 * They are _flat._ Their attributes contain no object references, only primitive values. There is no object graph.
 * In particular, they do not maintain an object reference to a domain model (but maybe a key).
 * They are _shared_ between a client and a server. Dolphin cares for consistent synchronization.
@@ -47,8 +45,7 @@ above, which led us to calling our abstraction a presentation model.
 * They have a unique _id_, which either the application programmer provides or is automatically assigned otherwise.
 * They optionally have a _type_ parameter for logical grouping.
 
-// TODO to review anchor once is defined
-See also: <<Usage of presentation model>> and link:http://open-dolphin.org/download/api/org/opendolphin/core/PresentationModel.html[API doc]
+See also: <<Usage of presentation model>> #TODO-[concepts_presentation_model.adoc]# and link:http://open-dolphin.org/download/api/org/opendolphin/core/PresentationModel.html[API doc]
 
 *Where the logic goes*
 

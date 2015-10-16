@@ -8,6 +8,7 @@ Commands are simple POJOs and there is a limited set of commands available for s
 client and server.
 
 On the application level only the following commands are used:
+
 * NamedCommand is a generic command to trigger a server side action that was registered for this name
 * DataCommand requests arbitrary data that is unrelated to presentation models
 There is no need to implement any application specific command classes.
@@ -26,5 +27,4 @@ When sending a command, though, one can provide an *OnFinishedHandler* that is c
 as soon as the command has returned. The list of all presentation models that were affected by that
 command is passed as argument into the callback methods.
 
-// TODO Review once it's defined
-See also <<Usage Command>>.
+See also <<Usage Command>>.#TODO [concepts_commands.adoc]#
