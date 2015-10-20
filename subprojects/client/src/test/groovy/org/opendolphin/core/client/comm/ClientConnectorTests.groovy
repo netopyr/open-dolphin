@@ -301,6 +301,15 @@ class ClientConnectorTests extends GroovyTestCase {
         assert 'initialValue' == attribute.value
    	}
 
+    void testHandle_ValueChangedWithBadBaseValueIgnoredInNonStrictMode() {
+		clientConnector.strictMode = false
+   		def attribute = new ClientAttribute('attr', 'initialValue')
+   		dolphin.clientModelStore.registerAttribute(attribute)
+        clientConnector.handle(new ValueChangedCommand(attributeId: attribute.id, oldValue: 'no-such-base-value', newValue: 'newValue'))
+        assert 'newValue' == attribute.value
+		clientConnector.strictMode = true // re-setting for later tests
+   	}
+
     void testHandle_ValueChanged() {
    		def attribute = new ClientAttribute('attr', 'initialValue')
    		dolphin.clientModelStore.registerAttribute(attribute)
