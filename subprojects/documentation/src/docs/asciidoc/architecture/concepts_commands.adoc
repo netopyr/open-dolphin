@@ -27,4 +27,4 @@ When sending a command, though, one can provide an *OnFinishedHandler* that is c
 as soon as the command has returned. The list of all presentation models that were affected by that
 command is passed as argument into the callback methods.
 
-See also <<Usage Command>>.#TODO [concepts_commands.adoc]#
+See also <<Usage Command>>.#TODO [link to ref.Guide in concepts_commands.adoc]#

@@ -74,13 +74,17 @@ quite badly named since it is neither long nor actually polling if done right).
 You can plug in your own transport protocol (e.g. websockets) and there is no change at all
 for the application programmer.
 
-WARNING:
+[WARNING]
+====
 *How can a release command be sent when the communication channel is blocked?*
+
 When sending the release command, the communication layer uses a second channel that is
 solely used for signalling purposes by using the SignalCommand. This is the one and only
 exception from the rule of <<Relying on the command sequence,strict command sequencing>>
 and <<Understanding the client-server split and threading model,server-side thread confinement>>
+
 The takeaway from this consideration is that
 *the release action should do the release but nothing else*.
 Particularly it should not access the model store. See also
 link:http://open-dolphin.org/download/api/org/opendolphin/core/comm/SignalCommand.html[SignalCommand API]
+====

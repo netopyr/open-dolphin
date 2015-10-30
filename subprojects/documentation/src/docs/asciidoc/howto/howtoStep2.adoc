@@ -4,9 +4,7 @@ to make use of OpenDolphin.
 
 The visual appearance and the behavior has not changed
 
-// TODO we shouldn't include the images directory in each image reference, but it didn't work
-
-image::./resources/img/dolphin_pics/step1.png[]
+image::./dolphin_pics/step1.png[]
 
 but the code has.
 
@@ -44,11 +42,15 @@ JFXBinder.bind("text").of(field).to("text").of(input);
 
 Note the fluent API for setting up the binding.
 
-WARNING: The above is plain Java. When we use Groovy, we can make use of Groovy's command chain syntax
+[WARNING]
+====
+The above is plain Java. When we use Groovy, we can make use of Groovy's command chain syntax
 that allows writing the *exact same code* as
+
 [source,groovy]
 bind "text" of field to "text" of input
 
+====
 
 Finally, the action handler that was part of the (client) view before now moves to the
 (server) controller. We register it as an "action" on the server-dolphin.

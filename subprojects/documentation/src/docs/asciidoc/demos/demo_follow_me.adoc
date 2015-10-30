@@ -18,13 +18,13 @@ The OpenDolphin architecture makes it particularly easy to accommodate the follo
 
 It is the combination of both aspects that makes the next-generation apps possible.
 
-WARNING
-----
+[WARNING]
+====
 With presentation state on the server, you can re-connect anywhere, anytime, from any device,
 without even having saved your work!
 
 Even if you go *offline* accidentally for technical reasons, no problem. Just re-connect.
-----
+====
 
 Again, link:https://klondike.canoo.com/dolphin-grails/demo/js/teammember/TeamMemberDetails.html[the team-members live demo]
 is a perfect example how to achieve this. It uses a simple "history" of the presentation state to allow the

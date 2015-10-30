@@ -18,9 +18,8 @@ The figure below depicts the chain of events that happens when three independent
 are sent in immediate sequence. Time goes from top to bottom and the three columns represent three concurrent
 processing units: the command queue, the controller actions (can even be remote), and the onFinished activity after the
 action returned.
-// TODO we shouldn't include the images directory in each image reference, but it didn't work
 
-image::./resources/img/OpenDolphin-Command-Sequence-default.png[]
+image::OpenDolphin-Command-Sequence-default.png[]
 
 
 *1)* A, B, and C sit in the command queue (column 1).
@@ -35,7 +34,7 @@ processed concurrently outside the UI thread (column 2).
 The execution of A.onFinished often triggers further commands (A1 and A2) that are fed into the queue (column 1)
 just like any other ordinary command.
 
-NOTE: At this point the B actions are processed without the effects of A being visible.
+WARNING: At this point the B actions are processed without the effects of A being visible.
 *B must not depend on the effects of A!*
 
 *4, 5, 6, 7)* Emptying out the command queue.
@@ -79,9 +78,8 @@ clientDolphin.send "A", {
 clientDolphin.send "C"
 
 The figure below shows the resulting command sequence:
-// TODO we shouldn't include the images directory in each image reference, but it didn't work
 
-image::./resources/img/OpenDolphin-Command-Sequence-onFinished.png[]
+image::OpenDolphin-Command-Sequence-onFinished.png[]
 
 Note row number *3*. Only in the course of A.onFinished being executed (column 3) is the B command added to the
 command queue (column 1) and _guaranteed after_ A1 and A2, which notify the server of the created presentation model.
@@ -134,4 +132,4 @@ without any other command possibly sneeking in between the two,
 no matter whether it originates from user input or preceding commands.
 In that sense you can see the *sync* as enclosing an atomic operation.
 
-See also <<Usage of Command>> #TODO [concepts_command_sequence.adoc]#
+See also <<Usage of Command>> #TODO [link to ref.Guide in concepts_command_sequence.adoc]#

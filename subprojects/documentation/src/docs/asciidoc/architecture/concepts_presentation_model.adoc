@@ -11,11 +11,14 @@ There is a lot of information about presentation models on the web, i.e
 
 Dolphin doesn't claim to have "the best" implementation of this pattern in any sense of the word.
 
-WARNING: In fact, we do not even claim to implement the "presentation model *design pattern*" at all!
- _We would like to avoid any discussion about whether we meet all requirements of_
- _any pattern or structure as proposed by any authority._
- _We are happy to give them all due credit, though, since we are building on their work._
+[WARNING]
+====
+In fact, we do not even claim to implement the "presentation model *design pattern*" at all!
 
+_We would like to avoid any discussion about whether we meet all requirements of_
+_any pattern or structure as proposed by any authority._
+_We are happy to give them all due credit, though, since we are building on their work._
+====
 
 It just happens that the Dolphin approach has a lot of similarities with the patterns
 above, which led us to calling our abstraction a presentation model.
@@ -37,7 +40,7 @@ above, which led us to calling our abstraction a presentation model.
 
 * Dolphin presentation models are _generic_. You never implement a new class for a new type of presentation model.
 * They do not contain any custom behavior (only what's provided by Dolphin for binding and remoting).
-* They allow <<Stable bindings>> #REVIEW-[concepts_presentation_model.adoc]#
+* They allow <<Stable bindings>>
 * They are _flat._ Their attributes contain no object references, only primitive values. There is no object graph.
 * In particular, they do not maintain an object reference to a domain model (but maybe a key).
 * They are _shared_ between a client and a server. Dolphin cares for consistent synchronization.
@@ -45,7 +48,7 @@ above, which led us to calling our abstraction a presentation model.
 * They have a unique _id_, which either the application programmer provides or is automatically assigned otherwise.
 * They optionally have a _type_ parameter for logical grouping.
 
-See also: <<Usage of presentation model>> #TODO-[concepts_presentation_model.adoc]# and link:http://open-dolphin.org/download/api/org/opendolphin/core/PresentationModel.html[API doc]
+See also: <<Usage of presentation model>> #REVIEW [link to ref.Guide in concepts_presentation_model.adoc]# and link:http://open-dolphin.org/download/api/org/opendolphin/core/PresentationModel.html[API doc]
 
 *Where the logic goes*
 

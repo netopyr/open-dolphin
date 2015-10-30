@@ -3,9 +3,8 @@ link:https://github.com/canoo/DolphinJumpStart/blob/master/combined/src/main/jav
 just slightly with a TextField and a Button that prints the content of the TextField when clicked.
 
 The application should appear on your screen like:
-// TODO we shouldn't include the images directory in each image reference, but it didn't work
 
-image::./resources/img/dolphin_pics/step1.png[]
+image::./dolphin_pics/step1.png[]
 
 
 // TODO  Selecting parts of a document to include content from URI by tagged regions

@@ -9,7 +9,7 @@ that you can connect to
 * from a tablet
 * from a smartphone
 
-image::./resources/img/dolphin_pics/dolphinFamily.png[]
+image::./dolphin_pics/dolphinFamily.png[]
 
 The way to achieve this is to have
 
