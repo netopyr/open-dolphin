@@ -22,7 +22,7 @@ If you need bidirectional binding, you use two binding statements, one for eithe
 
 The demo looks like
 
-image::./dolphin_pics/singleAttMultBindings.png[]
+image::./dolphin_pics/OpenDolphin-Demo-singleAttMultBindings.png[]
 
 When you edit the text field, the header is immediately updated.
 

@@ -4,7 +4,7 @@ to make use of OpenDolphin.
 
 The visual appearance and the behavior has not changed
 
-image::./dolphin_pics/step1.png[]
+image::./dolphin_pics/OpenDolphin-HowTo-step1.png[]
 
 but the code has.
 

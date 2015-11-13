@@ -37,7 +37,7 @@ Otherwise use the command line launcher as described in the readme.
 When your setup is correct, it should appear on your screen like:
 // TODO we shouldn't include the images directory in each image reference, but it didn't work
 
-image::./dolphin_pics/step0.png[]
+image::./dolphin_pics/OpenDolphin-HowTo-step0.png[]
 
 This code illustrates a simple call to the JavaFX API. This code displays a window with the title "Dolphin Jump Start"
 displayed in the title of the window.
