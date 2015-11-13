@@ -19,7 +19,7 @@ are sent in immediate sequence. Time goes from top to bottom and the three colum
 processing units: the command queue, the controller actions (can even be remote), and the onFinished activity after the
 action returned.
 
-image::OpenDolphin-Command-Sequence-default.png[]
+image::./resources/img/OpenDolphin-Command-Sequence-default.png[]
 
 
 *1)* A, B, and C sit in the command queue (column 1).
@@ -79,7 +79,7 @@ clientDolphin.send "C"
 
 The figure below shows the resulting command sequence:
 
-image::OpenDolphin-Command-Sequence-onFinished.png[]
+image::./resources/img/OpenDolphin-Command-Sequence-onFinished.png[]
 
 Note row number *3*. Only in the course of A.onFinished being executed (column 3) is the B command added to the
 command queue (column 1) and _guaranteed after_ A1 and A2, which notify the server of the created presentation model.

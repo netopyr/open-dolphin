@@ -1,6 +1,11 @@
 = Dolphin User Guide Documentation
 :toc: left
+
+////
+TODO we shouldn't include the images directory in each image reference, but it didn't work for PDF generation
 :imagesdir: ./resources/img
+////
+
 :sectnums:
 
 OpenDolphin

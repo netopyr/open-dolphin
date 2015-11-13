@@ -62,7 +62,7 @@ public void start(Stage stage) throws Exception {
 
 We add an additional labeled checkbox to visualize the status: whether the text field - or more precisely the dolphin attribute that backs it - is considered "dirty".
 
-image::./dolphin_pics/OpenDolphin-HowTo-step3.png[]
+image::./resources/img/dolphin_pics/OpenDolphin-HowTo-step3.png[]
 
 As soon as we change the content of the text field, this checkbox will become selected (checked).
 If we remove our edits, it should become unselected (unchecked) again!

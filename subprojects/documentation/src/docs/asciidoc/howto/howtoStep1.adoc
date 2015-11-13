@@ -4,7 +4,7 @@ just slightly with a TextField and a Button that prints the content of the TextF
 
 The application should appear on your screen like:
 
-image::./dolphin_pics/OpenDolphin-HowTo-step1.png[]
+image::./resources/img/dolphin_pics/OpenDolphin-HowTo-step1.png[]
 
 
 // TODO  Selecting parts of a document to include content from URI by tagged regions
