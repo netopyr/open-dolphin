@@ -1,6 +1,5 @@
-// TODO Review once is defined guide:config_remote] and guide:config_standalone]
 A dolphin application has a client and a server module.
-As we will see in <<Remote setup,remote config>> #REVIEW [concepts_remoting.adoc]# and <<Standalone in-memory usage,standalone config>> #REVIEW [concepts_remoting.adoc]#
+As we will see in <<Remote setup,remote config>> and <<Standalone in-memory usage,standalone config>>
 this does not necessarily mean that client and server live in different VMs, but they can.
 
 With OpenDolphin, the client is responsible to visualize presentation models,

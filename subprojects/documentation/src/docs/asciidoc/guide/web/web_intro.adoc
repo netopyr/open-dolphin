@@ -73,7 +73,6 @@ you can happily use the view generation and binding facilities of these technolo
 Simply use OpenDolphin attributes as the binding sources or targets.
 
 You will find more information about how to use the OpenDolphin.js features in the
-// TODO include when this part is done
-[Demos chapter|guide:demos] and in the live demos that are available on the
+<<Use Cases and Demos>> and in the live demos that are available on the
 link:https://klondike.canoo.com/dolphin-grails/[live OpenDolphin.js demos] server.
 They show the combination of various features and technologies with cross-linking to all sources.

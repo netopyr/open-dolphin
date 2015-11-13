@@ -102,8 +102,7 @@ WebLogic, WebSphere, you name it.
 
 Of course, a full application has more use cases than managing a single text field.
 
-// TODO include when this part is done
-The [use cases and demos|guide:demos] chapter leads you through the typical use cases of
+The <<Use Cases and Demos>> chapter leads you through the typical use cases of
 master-detail views, form-based pages, collections of data, lazy loading, shared attributes,
 CRUD operations, and much more by describing the use case, explaining the
 OpenDolphin approach of solving it, and pointing to the respective demos.

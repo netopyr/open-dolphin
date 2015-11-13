@@ -132,4 +132,4 @@ without any other command possibly sneeking in between the two,
 no matter whether it originates from user input or preceding commands.
 In that sense you can see the *sync* as enclosing an atomic operation.
 
-See also <<Usage of Command>> #TODO [link to ref.Guide in concepts_command_sequence.adoc]#
+See also link:./../ref/command/usage.html[Usage of Command]

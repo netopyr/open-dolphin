@@ -38,4 +38,4 @@ In fact, this feature goes beyond master-detail views and applies to all
 referential structures, which otherwise are a very difficult to handle
 consistently in a user interface.
 
-See also <<Usage of Binding>>. #TODO [link to ref.Guide in concepts_binding.adoc]#
+See also link:./../ref/binding/usage.html[Usage of Binding].

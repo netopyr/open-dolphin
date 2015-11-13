@@ -8,20 +8,17 @@ TODO we shouldn't include the images directory in each image reference, but it d
 
 :sectnums:
 
-OpenDolphin
-===========
-
 Welcome to the OpenDolphin documentation
 
 .The documentation comes in two parts
+The Quick Reference::
+    lets you quickly look up code snippets that you need when using OpenDolphin in your
+    own projects. It is all about the implementation details.
+
 The User Guide::
     explains the architecture, the concepts, and possible usages.
     It is like a book that you may want to read to understand what OpenDolphin
     is all about, what drives its design, and how it works in general.
-
-The API Reference::
-    lets you quickly look up code snippets that you need when using OpenDolphin in your
-    own projects. It is all about the implementation details.
 
 The user guide and the references are cross-linked such that you can always jump back and forth
 between the overall picture and how it materializes in the details.
@@ -34,6 +31,14 @@ ____
 Understanding means recognizing the details in the whole and the whole from its details.
 ____
 
+// TODO It's needed to set specific style
+
+link:./../ref/RefGuideLeftToc.html[Quick Reference]
+===================================================
+An overview of the OpenDolphin syntax you will probably need to develop
+
+User Guide
+==========
 
 == Introduction
 include::introduction.adoc[]
@@ -106,6 +111,9 @@ include::web.adoc[]
 
 === Using OpenDolphin from a web page
 include::web/web_intro.adoc[]
+
+OpenDolphin Demos
+=================
 
 == Use Cases and Demos
 include::demos.adoc[]

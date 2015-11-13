@@ -45,7 +45,7 @@ The layering is visible through the respective package structure.
 WARNING: The application programmer should only use the facade layer.
 
 The figure below summarizes the vertical and horizontal structuring
-#REVIEW should it be a diagram?#
+#TODO REVIEW should it be a diagram?#
 
 image::./resources/img/OpenDolphin-Architecture-Structure.png[]
 

@@ -1,4 +1,3 @@
-// TODO add web client example and split
 For an easy entry into OpenDolphin, we will follow the steps of the
 link:https://github.com/canoo/DolphinJumpStart[DolphinJumpStart] project.
 

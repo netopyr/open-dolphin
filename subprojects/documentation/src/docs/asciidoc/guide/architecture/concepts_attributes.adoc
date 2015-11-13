@@ -32,5 +32,4 @@ Tags can be used to i.e. describe whether the person firstname is a *MANDATORY* 
 whether it is *ENABLED*, *VISIBLE*, and so on.
 Attributes with a tag are observable in the usual way.
 
-// TODO review anchor once is defined
-See also <<Usage of Attribute>> #REVIEW [concepts_attributes.adoc]# and link:http://open-dolphin.org/download/api/org/opendolphin/core/Attribute.html[API doc].
+See also link:./../ref/attribute/usage.html[Usage of Attribute] and link:http://open-dolphin.org/download/api/org/opendolphin/core/Attribute.html[API doc].

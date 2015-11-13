@@ -48,7 +48,8 @@ above, which led us to calling our abstraction a presentation model.
 * They have a unique _id_, which either the application programmer provides or is automatically assigned otherwise.
 * They optionally have a _type_ parameter for logical grouping.
 
-See also: <<Usage of presentation model>> #REVIEW [link to ref.Guide in concepts_presentation_model.adoc]# and link:http://open-dolphin.org/download/api/org/opendolphin/core/PresentationModel.html[API doc]
+See also: link:./../ref/presentationModel/usage.html[Usage of presentation model]
+and link:http://open-dolphin.org/download/api/org/opendolphin/core/PresentationModel.html[API doc]
 
 *Where the logic goes*
 

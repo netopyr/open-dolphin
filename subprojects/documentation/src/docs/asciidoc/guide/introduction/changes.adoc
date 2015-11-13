@@ -213,7 +213,7 @@ The "linking" feature is no longer available. See i.e. the Crud demo for alterna
 _Deprecations_
 In the future, we will disallow direct access to the connector or model store.
 
-Please prepare by using the dolphin (@ClientDolphin@ and @ServerDolphin@) facade whenever possible.
+Please prepare by using the dolphin (_ClientDolphin_ and _ServerDolphin_) facade whenever possible.
 This also true for all the cases where application code on the server side directly invokes constructors of
 commands, presentation models or attributes. Please use factory methods instead.
 
