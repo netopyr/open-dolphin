@@ -232,17 +232,6 @@ abstract class ClientConnector {
         return null // this command is not expected to be sent explicitly, so no pm needs to be returned
     }
 
-    ClientPresentationModel handle(BaseValueChangedCommand serverCommand) {
-        Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
-        if (!attribute) {
-            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot set initial value."
-            return null
-        }
-        log.info "C: updating id '$serverCommand.attributeId' setting initialValue to '$attribute.value'"
-        attribute.rebase()
-        return null // this command is not expected to be sent explicitly, so no pm needs to be returned
-    }
-
     ClientPresentationModel handle(SwitchPresentationModelCommand serverCommand) {
         def switchPm = clientModelStore.findPresentationModelById(serverCommand.pmId)
         if (!switchPm) {

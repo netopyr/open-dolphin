@@ -10,7 +10,6 @@
 /// <reference path="SavedPresentationModelNotification.ts" />
 /// <reference path="InitializeAttributeCommand.ts" />
 /// <reference path="SwitchPresentationModelCommand.ts" />
-/// <reference path="BaseValueChangedCommand.ts" />
 /// <reference path="ValueChangedCommand.ts" />
 /// <reference path="DeleteAllPresentationModelsOfTypeCommand.ts" />
 /// <reference path="DeleteAllPresentationModelsOfTypeCommand.ts" />
@@ -138,8 +137,6 @@ module opendolphin {
                 return this.handleCreatePresentationModelCommand(< CreatePresentationModelCommand>command);
             }else if(command.id == "ValueChanged"){
                 return this.handleValueChangedCommand(< ValueChangedCommand>command);
-            }else if(command.id == "BaseValueChanged"){
-                return this.handleBaseValueChangedCommand(< BaseValueChangedCommand>command);
             }else if(command.id == "SwitchPresentationModel"){
                 return this.handleSwitchPresentationModelCommand(< SwitchPresentationModelCommand>command);
             }else if(command.id == "InitializeAttribute"){
@@ -213,15 +210,6 @@ module opendolphin {
 //                            " was set to value " + serverCommand.newValue + " even though the change was based on an outdated old value of " + serverCommand.oldValue);
 //            }
             clientAttribute.setValue(serverCommand.newValue);
-            return null;
-        }
-        private handleBaseValueChangedCommand(serverCommand: BaseValueChangedCommand): ClientPresentationModel{
-            var clientAttribute:  ClientAttribute = this.clientDolphin.getClientModelStore().findAttributeById(serverCommand.attributeId);
-            if(!clientAttribute){
-                console.log("attribute with id "+serverCommand.attributeId+" not found, cannot set base value.");
-                return null;
-            }
-            clientAttribute.rebase();
             return null;
         }
         private handleSwitchPresentationModelCommand(serverCommand: SwitchPresentationModelCommand): ClientPresentationModel{

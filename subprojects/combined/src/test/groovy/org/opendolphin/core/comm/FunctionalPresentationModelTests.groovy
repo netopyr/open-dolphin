@@ -320,7 +320,6 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     // silly and only for the coverage, we test behavior when id is wrong ...
     void testIdNotFoundInVariousCommands() {
-        clientDolphin.clientConnector.send new BaseValueChangedCommand(attributeId: 0)
         clientDolphin.clientConnector.send new ValueChangedCommand(attributeId: 0)
         DefaultServerDolphin.changeValueCommand(null, null, null)
         DefaultServerDolphin.changeValueCommand(null, new ServerAttribute('a',42), 42)
@@ -564,8 +563,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.presentationModel('pm', attr: 1)
 
         serverDolphin.action('arbitrary') { cmd, response ->
-            serverDolphin.rebase(null, serverDolphin['pm'].attr)
-            serverDolphin.rebase([], null)
+            shouldFail { serverDolphin.rebase(null, serverDolphin['pm'].attr) }
+            shouldFail { serverDolphin.rebase([], null) }
             serverDolphin.resetCommand(null, serverDolphin['pm'])
             serverDolphin.resetCommand([], '')
             serverDolphin.resetCommand([], (ServerAttribute) null)

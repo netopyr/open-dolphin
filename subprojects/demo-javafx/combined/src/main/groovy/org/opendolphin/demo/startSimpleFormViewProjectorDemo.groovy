@@ -34,6 +34,7 @@ dolphin.action "init", { cmd, response ->
         new Slot(NAME,      "First name: ",         null, Tag.LABEL),
         new Slot(NAME,      ".*a.*",                null, Tag.REGEX),
         new Slot(NAME,      "must contain an 'a' ", null, Tag.TOOLTIP),
+
         new Slot(LASTNAME,  'Smith'),
         new Slot(LASTNAME,  "Last name: ",          null, Tag.LABEL),
     ))
@@ -42,6 +43,7 @@ dolphin.action "init", { cmd, response ->
         new Slot('submit',  'person.toGerman'),      // the action to be triggered on submit
         new Slot('submit',  "sets all labels to german ", null, Tag.TOOLTIP),
         new Slot('submit',  "German",                null, Tag.LABEL),
+
         new Slot('reset',   'person.reset'),         // the action to be triggered on reset
         new Slot('reset',   "setting contents and labels back to english ", null, Tag.TOOLTIP),
         new Slot('reset',   "Reset",                 null, Tag.LABEL),

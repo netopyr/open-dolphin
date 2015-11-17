@@ -10,7 +10,7 @@
 /// <reference path="../../js/dolphin/CallNamedActionCommand.ts" />
 /// <reference path="../../js/dolphin/SavedPresentationModelNotification.ts" />
 /// <reference path="../../js/dolphin/InitializeAttributeCommand.ts" />
-/// <reference path="../../js/dolphin/BaseValueChangedCommand.ts" />");
+/// <reference path="../../js/dolphin/RebaseCommand.ts" />");
 /// <reference path="../../js/dolphin/ValueChangedCommand.ts" />
 /// <reference path="../../js/dolphin/DeleteAllPresentationModelsOfTypeCommand.ts" />
 /// <reference path="../../js/dolphin/DeletePresentationModelCommand.ts" />
@@ -119,23 +119,6 @@ module opendolphin {
             attribute = TestHelper.clientDolphin.getClientModelStore().findAttributeById(TestHelper.attr1.id);
             this.areIdentical(attribute.getValue(), TestHelper.attr1.getValue());
             this.areIdentical(attribute.getValue(),10);
-        }
-
-        handleBaseValueChangedCommand(){
-            TestHelper.initialize();
-            var serverCommand:BaseValueChangedCommand = new BaseValueChangedCommand(TestHelper.attr1.id);
-
-            //before calling ValueChangedCommand
-            var attribute = TestHelper.clientDolphin.getClientModelStore().findAttributeById(TestHelper.attr1.id);
-            this.areIdentical(attribute.getBaseValue(), TestHelper.attr1.getBaseValue());
-            this.areIdentical(attribute.getBaseValue(),0);
-
-            TestHelper.attr1.setValue(10); //change value
-            //call BaseValueChangedCommand
-            TestHelper.clientConnector.handle(serverCommand);
-            attribute = TestHelper.clientDolphin.getClientModelStore().findAttributeById(TestHelper.attr1.id);
-            this.areIdentical(attribute.getBaseValue(), TestHelper.attr1.getBaseValue());
-            this.areIdentical(attribute.getBaseValue(),10);
         }
 
         handleSwitchPresentationModelCommand(){
