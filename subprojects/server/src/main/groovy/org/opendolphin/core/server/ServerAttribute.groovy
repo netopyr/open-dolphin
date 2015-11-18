@@ -103,11 +103,33 @@ class ServerAttribute extends BaseAttribute {
         return "S";
     }
 
-    /** Do the applyChange without create commands that are sent to the client */
+    /** Do the applyChange without creating commands that are sent to the client */
     public void silently(Runnable applyChange) {
         def temp = notifyClient
         notifyClient = false
         applyChange.run()
         notifyClient = temp
+    }
+
+    /** Do the applyChange with enforced creation of commands that are sent to the client */
+    protected void verbosely(Runnable applyChange) {
+        def temp = notifyClient
+        notifyClient = true
+        applyChange.run()
+        notifyClient = temp
+    }
+
+    /**
+     * Overriding the standard behavior of PCLs such that firing is enforced to be done
+     * verbosely. This is safe since on the server side PCLs are never used for the control
+     * of the client notification as part of the OpenDolphin infrastructure
+     * (as opposed to the java client).
+     * That is: all remaining PCLs are application specific and _must_ be called verbosely.
+     */
+    @Override
+    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        verbosely {
+            super.firePropertyChange(propertyName, oldValue, newValue)
+        }
     }
 }

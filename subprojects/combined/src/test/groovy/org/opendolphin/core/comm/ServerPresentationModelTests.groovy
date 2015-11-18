@@ -173,6 +173,34 @@ class ServerPresentationModelTests extends GroovyTestCase {
         }
     }
 
+    void testServerSideEventListenerCanChangeSelfValue() {
+        def model = clientDolphin.presentationModel("PM1", att1:'base')
+
+        serverDolphin.action "attachListener", { cmd, response ->
+            ServerAttribute at1 = serverDolphin.getAt("PM1").getAt("att1")
+            at1.addPropertyChangeListener("value") { event ->
+                at1.setValue("changed from PCL")
+            }
+        }
+
+        serverDolphin.action "changeBaseValue", { cmd, response ->
+            def at1 = serverDolphin.getAt("PM1").getAt("att1")
+            assert at1.baseValue == 'base'
+            at1.baseValue = 'changedBase'
+            assert serverDolphin.getAt("PM1").getAt("att2").baseValue == 'changedBase'
+        }
+
+        clientDolphin.send "attachListener"
+
+        clientDolphin.sync {
+            model.getAt("att1").setValue("changed")
+            clientDolphin.sync {
+                assert model.getAt("att1").getValue() == "changed from PCL"
+                context.assertionsDone()
+            }
+        }
+    }
+
 
     void testSecondServerActionCanRelyOnPmReset() {
         def model = clientDolphin.presentationModel("PM1", att1:'base' )
