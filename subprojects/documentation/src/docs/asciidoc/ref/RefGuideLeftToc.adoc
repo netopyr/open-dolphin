@@ -1,6 +1,5 @@
 = Dolphin Quick Reference
 :toc: left
-
 :sectnums:
 
 Welcome to the OpenDolphin quick reference
@@ -27,11 +26,10 @@ ____
 Understanding means recognizing the details in the whole and the whole from its details.
 ____
 
-// TODO It's needed to set specific style
 
 link:./../guide/UserGuideLeftToc.html[User Guide]
 =================================================
-A comprehensive tutorial with examples that explains you architecture, concepts and how to use OpenDolphin syntax
+
 
 Quick Reference
 ===============

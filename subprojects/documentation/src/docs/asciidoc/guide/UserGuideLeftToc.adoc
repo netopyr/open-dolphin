@@ -1,11 +1,9 @@
 = Dolphin User Guide Documentation
-:toc: left
-
 ////
 TODO we shouldn't include the images directory in each image reference, but it didn't work for PDF generation
 :imagesdir: ./resources/img
 ////
-
+:toc: left
 :sectnums:
 
 Welcome to the OpenDolphin documentation
@@ -31,11 +29,10 @@ ____
 Understanding means recognizing the details in the whole and the whole from its details.
 ____
 
-// TODO It's needed to set specific style
 
 link:./../ref/RefGuideLeftToc.html[Quick Reference]
 ===================================================
-An overview of the OpenDolphin syntax you will probably need to develop
+
 
 User Guide
 ==========

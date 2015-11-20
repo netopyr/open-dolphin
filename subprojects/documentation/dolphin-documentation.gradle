@@ -32,14 +32,14 @@ asciidoctor {
     // let's convert to PDF while we're at it
     backends = ['html5', 'pdf']
 
-    attributes 'source-highlighter'    : 'coderay',
-               'coderay-linenums-mode' : 'table',
-               'author'                : 'Authors: The dolphin team',
-               'revnumber'             : 'PRE-1.0',
-               /*toc                     : 'left',*/
-               icons                   : 'font',
-               linkattrs               : true,
-               encoding                : 'utf-8'
+    attributes 'stylesheet'             : './../stylesheet/dolphin.css',
+               'source-highlighter'     : 'coderay',
+               'coderay-linenums-mode'  : 'table',
+               'author'                 : 'Authors: The dolphin team',
+               'revnumber'              : 'PRE-1.0',
+               'icons'                  : 'font',
+               'linkattrs'              : true,
+               'encoding'               : 'utf-8'
 
     resources {
         from('src/docs/asciidoc') {
