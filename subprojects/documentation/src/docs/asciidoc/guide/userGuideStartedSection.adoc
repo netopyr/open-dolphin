@@ -1,0 +1,29 @@
+== How to get started with OpenDolphin
+include::howto.adoc[]
+
+=== Adding nodes to a stage, registering an onAction handler
+include::howto/howtoStep1.adoc[]
+
+=== Introducing a presentation model with one attribute and bind the value
+include::howto/howtoStep2.adoc[]
+
+=== Logical separation between client and server
+include::howto/howtoStep3.adoc[]
+
+=== Bind the "dirty" of presentation models to the view
+include::howto/howtoStep4.adoc[]
+
+=== Split into modules/projects
+include::howto/howtoStep5.adoc[]
+
+=== Enhanced view, let the "director" wire all application actions
+include::howto/howtoStep6.adoc[]
+
+=== Remote setup
+include::howto/howtoStep7.adoc[]
+
+== OpenDolphin on the web
+include::web.adoc[]
+
+=== Using OpenDolphin from a web page
+include::web/web_intro.adoc[]

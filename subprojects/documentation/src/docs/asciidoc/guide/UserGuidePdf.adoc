@@ -3,31 +3,19 @@
 TODO we shouldn't include the images directory in each image reference, but it didn't work for PDF generation
 :imagesdir: ./resources/img
 ////
-:toc: left
+:toc: macro
 :sectnums:
 
 include::userGuideWelcome.adoc[]
 
+toc::[]
 
-
-link:./../ref/RefGuide.html[Quick Reference]
-============================================
-
-
-
-User Guide
-==========
 
 include::userGuideSection.adoc[]
 
 
-Get Started
-===========
-
 include::userGuideStartedSection.adoc[]
 
 
-OpenDolphin Demos
-=================
-
 include::userGuideDemoSection.adoc[]
+

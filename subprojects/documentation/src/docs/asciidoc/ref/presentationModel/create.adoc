@@ -16,7 +16,7 @@ presentationModel factory method that sets
 * the type (may be null if no type is required)
 * a variable argument list of link:http://open-dolphin.org/download/api/org/opendolphin/core/client/ClientAttribute.html[ClientAttributes],
 // TODO link to document section
-see also the link:./../guide/UserGuideLeftToc.html#_the_purpose_of_attributes[Attribute] guide.
+see also the link:./../guide/UserGuide.html#_the_purpose_of_attributes[Attribute] guide.
 
 [source,java]
 ClientPresentationModel pm = clientDolphin.presentationModel("myPmId", "myPmType", firstNameAtt, lastNameAtt);
