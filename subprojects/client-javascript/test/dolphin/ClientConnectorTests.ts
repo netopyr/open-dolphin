@@ -28,6 +28,7 @@ module opendolphin {
             onDone(this.serverCommands);
         }
         signal(command: SignalCommand) : void { /** do nothing */ }
+        reset(successHandler:OnSuccessHandler) : void { /** do nothing */ }
     }
 
     export class ClientConnectorTests extends tsUnit.TestClass {

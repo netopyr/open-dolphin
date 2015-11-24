@@ -23,6 +23,10 @@
 
 module opendolphin {
 
+    export interface OnSuccessHandler {
+        onSuccess():void
+    }
+
     export interface OnFinishedHandler {
         onFinished(models: ClientPresentationModel[]):void
         onFinishedData(listOfData:any[]):void
@@ -36,6 +40,7 @@ module opendolphin {
     export interface Transmitter {
         transmit(commands: Command[], onDone:(result: Command[]) => void) : void ;
         signal(command: SignalCommand) : void;
+        reset(successHandler:OnSuccessHandler): void;
     }
 
     export class ClientConnector {
@@ -74,6 +79,10 @@ module opendolphin {
         }
         setReleaseCommand(newCommand:  SignalCommand) {
             this.releaseCommand = newCommand
+        }
+
+        reset(successHandler:OnSuccessHandler) {
+            this.transmitter.reset(successHandler);
         }
 
         send(command: Command, onFinished:OnFinishedHandler) {
