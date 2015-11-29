@@ -5,7 +5,6 @@
 include::userGuideWelcome.adoc[]
 
 
-
 link:./../guide/UserGuide.html[User Guide]
 ===========================================
 
