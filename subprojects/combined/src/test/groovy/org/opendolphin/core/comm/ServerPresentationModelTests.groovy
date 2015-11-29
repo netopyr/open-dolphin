@@ -208,14 +208,15 @@ class ServerPresentationModelTests extends GroovyTestCase {
         serverDolphin.action "attachListener", { cmd, response ->
             ServerAttribute at1 = serverDolphin.getAt("PM1").getAt("att1")
             at1.addPropertyChangeListener("value") { event ->
+                at1.setValue("anotherChange")
                 at1.rebase()
             }
         }
 
         serverDolphin.action "assertRebased", { cmd, response ->
             def at1 = serverDolphin.getAt("PM1").getAt("att1")
-            assert at1.baseValue == 'changed'
-            assert at1.value == 'changed'
+            assert at1.baseValue == 'anotherChange'
+            assert at1.value == 'anotherChange'
             assert at1.dirty == false
         }
 
@@ -226,8 +227,8 @@ class ServerPresentationModelTests extends GroovyTestCase {
             assert model.getAt("att1").dirty
             clientDolphin.send "assertRebased", {
                 def at1 =  model.getAt("att1")
-                assert at1.baseValue == 'changed'
-                assert at1.value == 'changed'
+                assert at1.baseValue == 'anotherChange'
+                assert at1.value == 'anotherChange'
                 assert at1.dirty == false
                 context.assertionsDone()
             }
