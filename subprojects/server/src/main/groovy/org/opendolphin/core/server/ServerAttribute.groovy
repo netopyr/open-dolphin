@@ -63,6 +63,7 @@ class ServerAttribute extends BaseAttribute {
 
     protected void forAllQualified(Closure yield) {
         if (! qualifier) return
+        if (! presentationModel) return // we may not know the pm, yet
         for (ServerAttribute sameQualified in (List<ServerAttribute>) presentationModel.modelStore.findAllAttributesByQualifier(qualifier)) {
             if (sameQualified.is(this)) continue
             yield sameQualified
