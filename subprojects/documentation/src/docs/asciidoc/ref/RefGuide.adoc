@@ -2,7 +2,29 @@
 :toc: left
 :sectnums:
 
-include::userGuideWelcome.adoc[]
+Welcome to the OpenDolphin quick reference
+
+.The documentation comes in two parts
+
+The User Guide::
+    explains the architecture, the concepts, and possible usages.
+    It is like a book that you may want to read to understand what OpenDolphin
+    is all about, what drives its design, and how it works in general.
+
+This Quick Reference part::
+    lets you quickly look up code snippets that you need when using OpenDolphin in your
+    own projects. It is all about the implementation details.
+
+The user guide and the references are cross-linked such that you can always jump back and forth
+between the overall picture and how it materializes in the details.
+No matter where you start, you can always refer from detailed explanations to its place in the
+architecture and vice versa.
+
+
+[quote, Johann Wolfgang v. Goethe, Farbenlehre]
+____
+Understanding means recognizing the details in the whole and the whole from its details.
+____
 
 
 link:./../guide/UserGuide.html[User Guide]

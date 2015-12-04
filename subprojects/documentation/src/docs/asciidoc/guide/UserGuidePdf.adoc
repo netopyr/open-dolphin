@@ -6,8 +6,6 @@ TODO we shouldn't include the images directory in each image reference, but it d
 :toc: macro
 :sectnums:
 
-include::userGuideWelcome.adoc[]
-
 toc::[]
 
 
