@@ -6,8 +6,6 @@ client-server split. The only thing that is optionally shared are constants.
 It is always a good idea to refactor literal values into constants, especially if they
 are used in more than one place for a unique purpose.
 Therefore, we will extract our String literals into static references:
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 private static final String MODEL_ID           = "modelId";
@@ -16,9 +14,6 @@ private static final String COMMAND_ID         = "LogOnServer";
 
 
 The configuration setup now moves into the constructor:
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 public JumpStart() {
@@ -31,9 +26,6 @@ public JumpStart() {
 
 This leaves the "start" method with "view" responsibilities only:
 the initial contruction and separate method calls for binding and registering actions.
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 ----
@@ -68,9 +60,6 @@ As soon as we change the content of the text field, this checkbox will become se
 If we remove our edits, it should become unselected (unchecked) again!
 
 Here is how the binding for that requirement looks like:
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 JFXBinder.bind("text").of(textField).to(MODEL_ATTRIBUTE_ID).of(textAttributeModel);

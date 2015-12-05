@@ -10,9 +10,6 @@ link:https://www.youtube.com/watch?v=-oGEnyWN9zM[Video intro].
 Here is a typical structure of an HTML page that uses OpenDolphin.js
 (extracted from link:https://github.com/canoo/open-dolphin/blob/master/subprojects/client-javascript/testsuite/functional/BasicFunctionalTestsJs.html[BasicFunctionalTestsJs.html]) :
 
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
-
 [source,html]
 ----
 <!DOCTYPE html>

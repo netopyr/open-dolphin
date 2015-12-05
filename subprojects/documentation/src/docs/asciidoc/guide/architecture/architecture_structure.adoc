@@ -49,6 +49,32 @@ The figure below summarizes the vertical and horizontal structuring
 
 image::./resources/img/OpenDolphin-Architecture-Structure.png[]
 
+////
+
+TODO work in progress
+
+.The figure below summarizes the vertical and horizontal structuring of dolphin modules and layers
+[ditaa]
+----
+               dolphin modules and layers
+                /---------------------\
+                |                     |
+/-----------------------------------------------------\
+|   demo/app    |       demo/app      |   demo/app    |
++-----------------------------------------------------|
+|   facade      |       facade        |   facade      |
++-----------------------------------------------------|
+|   comm        |       comm          |   comm        |
++-----------------------------------------------------|
+|   infra       |       infra         |   infra       |
+\-----------------------------------------------------/
+    client      |                     |   server
+                \---------------------/
+                        shared
+
+----
+
+////
 While the structural part of the Dolphin architecture is rather
 obvious and straight-forward, the concepts and rules that stand behind
 its inception require a bit of explanation, which is the topic of the next section.

@@ -39,8 +39,6 @@ image::./resources/img/dolphin_pics/OpenDolphin-HowTo-step0.png[]
 
 This code illustrates a simple call to the JavaFX API. This code displays a window with the title "Dolphin Jump Start"
 displayed in the title of the window.
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 public class JumpStart extends Application {

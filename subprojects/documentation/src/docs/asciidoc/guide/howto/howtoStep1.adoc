@@ -6,10 +6,6 @@ The application should appear on your screen like:
 
 image::./resources/img/dolphin_pics/OpenDolphin-HowTo-step1.png[]
 
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
-
 The code now contains references to the widgets
 [source,java]
 private TextField field;

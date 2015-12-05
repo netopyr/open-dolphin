@@ -6,9 +6,6 @@ connect to the correct URL.
 The link:https://github.com/canoo/DolphinJumpStart/blob/master/server/src/main/java/step_7/servlet/TutorialServlet.java[server adapter]
 is a plain-old Servlet such that the code can run in any servlet container. It is as small as can be:
 
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
-
 [source,java]
 public class TutorialServlet extends DolphinServlet{
     @Override
@@ -19,9 +16,6 @@ public class TutorialServlet extends DolphinServlet{
 
 As with any servlet, you need to register it in the
 link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/webapp/WEB-INF/web.xml[web.xml] :
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,xml]
 <servlet>
@@ -40,9 +34,6 @@ link:https://github.com/canoo/DolphinJumpStart/blob/master/client/src/main/java/
 can now move to the "client" module since it is no longer dependent on the combination of client and server.
 It can be cleaned from setting up the in-memory server and must of course point to the server URL:
 
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
-
 [source,java]
     public static void main(String[] args) throws Exception {
         ClientDolphin clientDolphin = new ClientDolphin();
@@ -59,8 +50,6 @@ It can be cleaned from setting up the in-memory server and must of course point 
 *That is it!*
 
 We can now start the provided jetty server
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source]
 ----

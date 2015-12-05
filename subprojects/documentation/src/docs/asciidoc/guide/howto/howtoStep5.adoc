@@ -19,8 +19,6 @@ if the error-free execution of the command would imply a correct "save".
 The "disabled" state of the button will reflect the new non-dirty state.
 
 To this end, we make use of an @onFinished@ handler:
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 public void handle(ActionEvent actionEvent) {
@@ -47,9 +45,6 @@ known to both parties. The shared module itself does not depend on anything.
 
 The code that contains the shared constants now also cares for the uniqueness of
 certain Strings, particularly of IDs used to retrieve presentation models and named commands.
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 public static final String PM_PERSON = unique("modelId");

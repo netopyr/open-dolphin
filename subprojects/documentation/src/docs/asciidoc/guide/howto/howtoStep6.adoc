@@ -11,9 +11,6 @@ set back to the original state when the dirty state is set back.
 To make this happen, we enhance the binding with a little trick in the converter that
 adds the "dirty" style class to the text field when needed and removes it otherwise.
 
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
-
 [source,java]
 Converter converter = new Converter<Boolean,Boolean>() {
     public Boolean convert(Boolean dirty) {
@@ -30,9 +27,6 @@ JFXBinder.bindInfo("dirty").of(textAttributeModel).using(converter).to("style").
 
 The tutorial.css contains the definition of that style, which makes the code very flexible
 should we later decide to visualize the dirty state differently.
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
-
 
 [source,css]
 ----
@@ -60,9 +54,6 @@ and a "shake" animation is played on the text field.
 
 A shake is a rotation of the field around its center by an angle from -3 to +3 degrees.
 This is done 3 times during 100 ms each. It makes for a funny effect.
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 ----

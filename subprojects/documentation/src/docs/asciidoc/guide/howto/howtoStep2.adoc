@@ -14,8 +14,6 @@ Don't worry if this looks ugly. We will clean it up in a minute.
 Focus on these lines in the code:
 
 We create a presentation model with the distinctive name "input" and an attribute for the "text" property.
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 PresentationModel input = clientDolphin.presentationModel("input", new ClientAttribute("text"));
@@ -32,9 +30,6 @@ Behind the scenes (no pun intended) happens quite a lot:
 
 While this happens, we bind the text property of the TextField (this is a JavaFX property) to the "text" attribute of
 the input presentation model
-
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 JFXBinder.bind("text").of(field).to("text").of(input);
@@ -54,8 +49,6 @@ bind "text" of field to "text" of input
 
 Finally, the action handler that was part of the (client) view before now moves to the
 (server) controller. We register it as an "action" on the server-dolphin.
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 config.getServerDolphin().action("PrintText", new NamedCommandHandler() {
@@ -72,8 +65,6 @@ The dolphin server action must therefore ask the server-dolphin for the "text" v
 of the "input" presentation model before he can print it.
 
 Triggering the server action becomes the remaining statement in the button's onAction handler.
-// TODO  Selecting parts of a document to include content from URI by tagged regions
-// -a allow-uri-read, :allow-uri-read: :safe: unsafe
 
 [source,java]
 button.setOnAction(new EventHandler<ActionEvent>() {
