@@ -37,6 +37,7 @@ import static groovyx.gpars.GParsPool.withPool
 
 @Log
 abstract class ClientConnector {
+    boolean strictMode = true // disallow value changes that are based on improper old values
     Codec codec
     UiThreadHandler uiThreadHandler // must be set from the outside - toolkit specific
 
@@ -221,24 +222,13 @@ abstract class ClientConnector {
         if (attribute.value?.toString() == serverCommand.newValue?.toString()) {
             return null
         }
-        if (attribute.value?.toString() != serverCommand.oldValue?.toString()) {
+        if (strictMode && attribute.value?.toString() != serverCommand.oldValue?.toString()) {
             // todo dk: think about sending a RejectCommand here to tell the server about a possible lost update
             log.warning "C: attribute with id '$serverCommand.attributeId' and value '$attribute.value' cannot be set to new value '$serverCommand.newValue' because the change was based on an outdated old value of '$serverCommand.oldValue'."
             return null
         }
         log.info "C: updating '$attribute.propertyName' id '$serverCommand.attributeId' from '$attribute.value' to '$serverCommand.newValue'"
         attribute.value = serverCommand.newValue
-        return null // this command is not expected to be sent explicitly, so no pm needs to be returned
-    }
-
-    ClientPresentationModel handle(BaseValueChangedCommand serverCommand) {
-        Attribute attribute = clientModelStore.findAttributeById(serverCommand.attributeId)
-        if (!attribute) {
-            log.warning "C: attribute with id '$serverCommand.attributeId' not found, cannot set initial value."
-            return null
-        }
-        log.info "C: updating id '$serverCommand.attributeId' setting initialValue to '$attribute.value'"
-        attribute.rebase()
         return null // this command is not expected to be sent explicitly, so no pm needs to be returned
     }
 

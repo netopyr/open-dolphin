@@ -64,10 +64,18 @@ class SimpleFormView {
     }
 }
 
+
+/** Abstract Factory pattern */
+interface IProjector {
+    IPresentation createFrame(IPresentation root, double width, double height)
+    IPresentation createSimpleForm(String pmId)
+}
+
 interface IPresentation {
     void setVisible(boolean visible)
     Object getWidget()
 }
+
 class JavaFxPresentation implements IPresentation {
     javafx.scene.Node node
     void setVisible(boolean visible) {
@@ -89,12 +97,6 @@ class JavaFxStage implements IPresentation {
     }
 }
 
-/** Abstract Factory pattern */
-interface IProjector {
-    IPresentation createFrame(IPresentation root, double width, double height)
-    IPresentation createSimpleForm(String pmId)
-}
-
 class JavaFxProjector implements IProjector {
     ClientDolphin   dolphin
     Stage           stage
@@ -112,6 +114,7 @@ class JavaFxProjector implements IProjector {
         dolphin.send 'init', { pms ->        // only do binding after server has initialized the tags
             ClientPresentationModel model = dolphin.getAt(pmId)
             int row = 0
+            try { grid.add(new Label(""), 0,0); } catch (ignore) {} // fake workaround for Java 8_60}
 
             // make a new row in the grid for each attribute in the form's presentation model
             for (ClientAttribute valAtt in model.attributes.findAll{it.tag == VALUE}) {
