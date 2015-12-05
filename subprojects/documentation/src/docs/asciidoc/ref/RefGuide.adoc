@@ -26,9 +26,10 @@ ____
 Understanding means recognizing the details in the whole and the whole from its details.
 ____
 
-
+ifeval::["{backend}"=="html5"]
 link:./../guide/UserGuide.html[User Guide]
 ===========================================
+endif::[]
 
 
 Quick Reference

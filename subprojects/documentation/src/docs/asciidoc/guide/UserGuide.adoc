@@ -6,6 +6,7 @@ TODO we shouldn't include the images directory in each image reference, but it d
 :toc: left
 :sectnums:
 
+ifeval::["{backend}"=="html5"]
 Welcome to the OpenDolphin documentation
 
 .The documentation comes in two parts
@@ -33,20 +34,22 @@ ____
 link:./../ref/RefGuide.html[Quick Reference]
 ============================================
 
-
 User Guide
 ==========
+endif::[]
 
 include::userGuideSection.adoc[]
 
-
+ifeval::["{backend}"=="html5"]
 Get Started
 ===========
+endif::[]
 
 include::userGuideStartedSection.adoc[]
 
-
+ifeval::["{backend}"=="html5"]
 OpenDolphin Demos
 =================
+endif::[]
 
 include::userGuideDemoSection.adoc[]
