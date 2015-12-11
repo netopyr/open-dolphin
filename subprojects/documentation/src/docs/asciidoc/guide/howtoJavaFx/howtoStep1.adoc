@@ -21,14 +21,6 @@ button.setOnAction(new EventHandler<ActionEvent>() {
     }
 });
 
-
-[source,java]
-.Sample.groovy
-----
-DolphinJumpStart/combined/src/main/java/step_1/JumpStart.java
-include::Sample.groovy[tags=step1]
-----
-
 The printing of the field content is our "stand-in" for a real business logic.
 You can easily assume some persistence action at this point or
 "service" calls in general.

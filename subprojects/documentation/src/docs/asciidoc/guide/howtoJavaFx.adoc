@@ -1,4 +1,4 @@
-For an easy entry into OpenDolphin, we will follow the steps of the
+For an easy entry into OpenDolphin, we will follow the steps described in section "JavaFx example" of the
 link:https://github.com/canoo/DolphinJumpStart[DolphinJumpStart] project.
 
 We implement a very simple application that contains only one text field and two buttons to 'save' or 'reset' the value.
@@ -6,6 +6,7 @@ We implement a very simple application that contains only one text field and two
 
 Both buttons are only enabled if there is really something to save/reset, i.e. the field value is dirty.
 The dirty state is also visualized via a CSS class (background color changes). Resetting triggers a 'shake' animation.
+This chapter covers the usage of OpenDolphin for Java Desktop clients using JavaFX.
 
 Steps 0 to 4 solely live in the "combined" module for a simple jumpstart
 before we properly split client and server in step 5 and only keep a starter class in "combined".
@@ -58,4 +59,4 @@ Swing, AWT, SWT, Eclipse RCP, or any other UI toolkit that runs in a JVM (Java V
 OpenDolphin doesn't care which UI toolkit is used.
 
 Of course, the application needs some sensible content, which we will add right away.
-Note that we haven added any OpenDolphin specific code to our samples (yet).
+Note that we haven added any OpenDolphin specific code to our examples (yet).

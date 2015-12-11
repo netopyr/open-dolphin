@@ -1,29 +1,41 @@
-== How to get started with OpenDolphin
-include::howto.adoc[]
+== How to get started with OpenDolphin JavaFx client example
+include::howtoJavaFx.adoc[]
 
 === Adding nodes to a stage, registering an onAction handler
-include::howto/howtoStep1.adoc[]
+include::howtoJavaFx/howtoStep1.adoc[]
 
 === Introducing a presentation model with one attribute and bind the value
-include::howto/howtoStep2.adoc[]
+include::howtoJavaFx/howtoStep2.adoc[]
 
 === Logical separation between client and server
-include::howto/howtoStep3.adoc[]
+include::howtoJavaFx/howtoStep3.adoc[]
 
 === Bind the "dirty" of presentation models to the view
-include::howto/howtoStep4.adoc[]
+include::howtoJavaFx/howtoStep4.adoc[]
 
 === Split into modules/projects
-include::howto/howtoStep5.adoc[]
+include::howtoJavaFx/howtoStep5.adoc[]
 
 === Enhanced view, let the "director" wire all application actions
-include::howto/howtoStep6.adoc[]
+include::howtoJavaFx/howtoStep6.adoc[]
 
 === Remote setup
-include::howto/howtoStep7.adoc[]
+include::howtoJavaFx/howtoStep7.adoc[]
 
-== OpenDolphin on the web
-include::web.adoc[]
+== How to get started with OpenDolphin web client example
+include::howtoWeb.adoc[]
 
-=== Using OpenDolphin from a web page
-include::web/web_intro.adoc[]
+=== Introducing a presentation model with one attribute and bind the value
+include::howtoWeb/howtoStep0.adoc[]
+
+=== Bind the "dirty" of presentation models to the view
+include::howtoWeb/howtoStep1.adoc[]
+
+=== Reset and use "dirty" of dolphin attribute to set style
+include::howtoWeb/howtoStep2.adoc[]
+
+=== Rebase and use "dirty" of dolphin attribute to set style
+include::howtoWeb/howtoStep3.adoc[]
+
+=== Remote setup
+include::howtoWeb/howtoStep4.adoc[]

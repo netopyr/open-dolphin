@@ -1,6 +1,6 @@
 With the application being properly structured into its modules, we can now finally distribute it as a
 true client-server application without any of the application code being touched at all.
-Only the the server adapter needs to be in place and the client starter needs to
+Only the server adapter needs to be in place and the client starter needs to
 connect to the correct URL.
 
 The link:https://github.com/canoo/DolphinJumpStart/blob/master/server/src/main/java/step_7/servlet/TutorialServlet.java[server adapter]
