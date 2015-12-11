@@ -6,20 +6,20 @@ If we remove our edits, it should become unselected (unchecked) again!
 
 It should appear on your screen like:
 
-image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step1.png[]
+image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step1.png[width=500,height=500]
 
 
 Here is how the code to bind looks like:
 
 [source,html]
 ----
-        // get html element to bind dirty of dolphin attribute
-        var dirtyStatusHtmlElement = document.getElementById("dirty-status");
+// get html element to bind dirty of dolphin attribute
+var dirtyStatusHtmlElement = document.getElementById("dirty-status");
 
-        // bind dirty of dolphin attribute to html element value (when server change)
-        instantUpdateAttributePM.onDirty(function (event) {
-            dirtyStatusHtmlElement.checked = event.newValue;
-        });
+// bind dirty of dolphin attribute to html element value (when server change)
+instantUpdateAttributePM.onDirty(function (event) {
+    dirtyStatusHtmlElement.checked = event.newValue;
+});
 ----
 
 At this point we see the next benefit of presentation model and attribute abstractions:

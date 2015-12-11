@@ -58,7 +58,7 @@ link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/w
 
 It should appear on your screen like:
 
-image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step4.png[]
+image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step4.png[width=500,height=500]
 
 Code is in link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/webapp/step4.html[step4.JumpStart]
 
@@ -66,32 +66,31 @@ Here is how the code has to connect to server has to be:
 
 [source,html]
 ----
-        var PM_PERSON = "step_7.TutorialConstants.modelId";
-        var ATT_FIRSTNAME = "attrId";
+var PM_PERSON = "step_7.TutorialConstants.modelId";
+var ATT_FIRSTNAME = "attrId";
 
-        //SET SERVER CONNECTION
-        var SERVER_URL = "http://localhost:8080/myFirstDolphin/tutorial/";
+//SET SERVER CONNECTION
+var SERVER_URL = "http://localhost:8080/myFirstDolphin/tutorial/";
 ----
 
 Here is the code to send save command to server
 
 [source,html]
 ----
-        var saveButton = document.getElementById("save-button");
 
-        // Bind dirty of dolphin attribute to enable save button
-        instantUpdateAttributePM.onDirty(function (event) {
-            saveButton.disabled = !event.newValue;
-        });
+// Bind dirty of dolphin attribute to enable save button
+instantUpdateAttributePM.onDirty(function (event) {
+    saveButton.disabled = !event.newValue;
+});
 
-        // send request value changed to server
-        saveButton.onclick = function () {
-            dolphin.send(CMD_LOG, {
-                onFinished: function (models) {
-                    instantUpdateAttributePM.rebase();
-                }
-            });
-        };
+// send request value changed to server
+saveButton.onclick = function () {
+    dolphin.send(CMD_LOG, {
+       onFinished: function (models) {
+        instantUpdateAttributePM.rebase();
+      }
+    });
+};
 ----
 
 

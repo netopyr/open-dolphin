@@ -15,7 +15,7 @@ presentationModel factory method that sets
 * the unique id (if null it will be set to a generated id)
 * the type (may be null if no type is required)
 * a variable argument list of link:http://open-dolphin.org/download/api/org/opendolphin/core/client/ClientAttribute.html[ClientAttributes],
-// TODO link to document section
+
 see also the link:./../guide/UserGuide.html#_the_purpose_of_attributes[Attribute] guide.
 
 [source,java]
@@ -62,9 +62,6 @@ any presentation models themselves, there also are no attributes to
 create the models from. Instead, we use Data Transfer Objects
 (link:http://open-dolphin.org/download/api/org/opendolphin/core/server/DTO.html[DTOs])
 and link:http://open-dolphin.org/download/api/org/opendolphin/core/server/Slot.html[Slots].
-
-#TODO REVIEW it doesn't exist#
-See also ["The purpose of DTOs"|Guide:dto_purpose].
 
 The _presentationModel_ convenience method needs to know the current
 response (list of commands) such that it can send the

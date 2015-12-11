@@ -36,42 +36,29 @@ Quick Reference
 ===============
 
 == Action
-=== Usage
-include::action/usage.adoc[Usage]
+include::action/action.adoc[]
 
 == Attribute
-=== Usage
-include::attribute/usage.adoc[Usage]
+include::attribute/attribute.adoc[]
+
+=== create
+include::attribute/create.adoc[Create]
 
 === Dirty
 include::attribute/dirty.adoc[Dirty]
-
-=== Id
-include::attribute/id.adoc[Id]
 
 === Qualifier
 include::attribute/qualifier.adoc[Qualifier]
 
 == Binding
-=== Usage
-include::binding/usage.adoc[Usage]
+include::binding/binding.adoc[]
 
 == Command
-=== Usage
-include::command/usage.adoc[Usage]
-
-== Dolphin
-=== Usage
-include::dolphin/usage.adoc[Usage]
+include::command/command.adoc[]
 
 == EventBus
-=== Usage
-include::eventBus/usage.adoc[Usage]
+include::eventBus/eventBus.adoc[]
 
 == Presentation Model
-=== Usage
-include::presentationModel/usage.adoc[Usage]
-
-=== Create
 include::presentationModel/create.adoc[Create]
 

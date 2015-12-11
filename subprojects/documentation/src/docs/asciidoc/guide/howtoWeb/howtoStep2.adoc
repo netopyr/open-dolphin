@@ -8,21 +8,21 @@ in business applications.
 
 It should appear on your screen like:
 
-image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step2.png[]
+image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step2.png[width=500,height=500]
 
 Here is how the code to reset looks like:
 
 [source,html]
 ----
-        var resetButton = document.getElementById("reset-button");
+ var resetButton = document.getElementById("reset-button");
 
-        // Bind dirty of dolphin attribute to enable reset button
-        instantUpdateAttributePM.onDirty(function (event) {
-            resetButton.disabled = !event.newValue;
-        });
+  // Bind dirty of dolphin attribute to enable reset button
+  instantUpdateAttributePM.onDirty(function (event) {
+      resetButton.disabled = !event.newValue;
+  });
 
-        // Reset dolphin attribute
-        resetButton.onclick = function () {
-            instantUpdateAttributePM.reset();
-        };
+  // Reset dolphin attribute
+  resetButton.onclick = function () {
+      instantUpdateAttributePM.reset();
+  };
 ----
