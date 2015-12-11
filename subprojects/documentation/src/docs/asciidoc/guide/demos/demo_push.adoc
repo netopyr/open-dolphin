@@ -47,8 +47,7 @@ This can look like so:
 eventBus.publish(null, "release");
 
 
-WARNING:
-The push action may be any link:http://open-dolphin.org/download/api/org/opendolphin/core/server/action/DolphinServerAction.html[DolphinServerAction] but the
+WARNING: The push action may be any link:http://open-dolphin.org/download/api/org/opendolphin/core/server/action/DolphinServerAction.html[DolphinServerAction] but the
 release action should not have access the ServerDolphin and should therefore be a
 plain link:http://open-dolphin.org/download/api/org/opendolphin/core/server/action/ServerAction.html[ServerAction].
 

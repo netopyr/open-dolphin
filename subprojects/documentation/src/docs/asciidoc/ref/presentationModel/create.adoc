@@ -109,8 +109,7 @@ presentationModel "MyPmId", "MyType", new DTO(Slot.slots(data))
 OpenDolphin supports presentation models that are only created on the
 client (view) and synchronized back to the server (controller).
 
-WARNING:
-Client-side only presentation models remain fully functional
+WARNING: Client-side only presentation models remain fully functional
 on the client side, i.e. binding, updates, and handling of
 qualifiers is exactly the same.
 They are just not visible on the server.
