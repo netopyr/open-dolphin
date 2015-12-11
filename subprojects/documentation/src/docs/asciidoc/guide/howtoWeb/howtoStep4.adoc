@@ -4,15 +4,42 @@ Only the server adapter needs to be in place and the client needs to connect to 
 
 As we are reusing the same servlet as for JavaFx example
 the link:https://github.com/canoo/DolphinJumpStart/blob/master/server/src/main/java/step_7/servlet/TutorialServlet.java[server adapter]
-is a plain-old Servlet such that the code can run in any servlet container. It is as small as can be:
+is a plain-old Servlet such that the code can run in any servlet container and registers actions with the server dolphin.
 
 [source,java]
+----
 public class TutorialServlet extends DolphinServlet{
     @Override
     protected void registerApplicationActions(ServerDolphin serverDolphin) {
         serverDolphin.register(new TutorialDirector());
     }
 }
+----
+
+The link:https://github.com/canoo/DolphinJumpStart/blob/master/server/src/main/java/step_7/TutorialDirector.java[Tutorial director]
+dolphin server action registers the available actions
+
+[source,java]
+----
+public void registerIn(ActionRegistry registry) {
+    // register all your actions here.
+    getServerDolphin().register(new TutorialAction(logService));
+}
+----
+
+The link:https://github.com/canoo/DolphinJumpStart/blob/master/server/src/main/java/step_7/TutorialAction.java[Tutorial action]
+defines the command handler for the action id "CMD_LOG"
+
+[source,java]
+----
+public void registerIn(ActionRegistry actionRegistry) {
+       actionRegistry.register(CMD_LOG, new CommandHandler<Command>() {
+          public void handleCommand(Command command, List<Command> response) {
+            service.log(getServerDolphin().getAt(PM_PERSON).getAt(ATT_FIRSTNAME).getValue());
+          }
+       });
+}
+----
 
 As with any servlet, you need to register it in the
 link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/webapp/WEB-INF/web.xml[web.xml] :
