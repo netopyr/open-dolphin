@@ -92,7 +92,7 @@ abstract class ClientConnector {
         flow.start(1)
     }
 
-    protected getClientModelStore() {
+    protected ClientModelStore getClientModelStore() {
         clientDolphin.clientModelStore
     }
 
@@ -187,7 +187,7 @@ abstract class ClientConnector {
 
     @CompileStatic
     ClientPresentationModel handle(CreatePresentationModelCommand serverCommand) {
-        if (((ClientModelStore) clientModelStore).containsPresentationModel(serverCommand.pmId)) {
+        if (clientModelStore.containsPresentationModel(serverCommand.pmId)) {
             throw new IllegalStateException("There already is a presentation model with id '$serverCommand.pmId' known to the client.")
         }
         List<ClientAttribute> attributes = []
@@ -208,7 +208,7 @@ abstract class ClientConnector {
         if (serverCommand.clientSideOnly) {
             model.clientSideOnly = true
         }
-        ((ClientModelStore)clientModelStore).add(model)
+        clientModelStore.add(model)
         clientDolphin.updateQualifiers(model)
         return model
     }
