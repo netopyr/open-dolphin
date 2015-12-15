@@ -466,7 +466,8 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
         clientDolphin.presentationModel('pm', attr: 1)
 
         serverDolphin.action('delete') { cmd, response ->
-            serverDolphin.delete(response, serverDolphin['pm'])
+//            serverDolphin.delete(response, serverDolphin['pm']) // deprecated
+            serverDolphin.remove(serverDolphin['pm'])
         }
         assert clientDolphin['pm']
 
