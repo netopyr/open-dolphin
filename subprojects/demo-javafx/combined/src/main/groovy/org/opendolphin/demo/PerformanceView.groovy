@@ -17,65 +17,65 @@
 package org.opendolphin.demo
 
 import org.opendolphin.LogConfig
-import org.opendolphin.core.client.ClientDolphin
 import org.opendolphin.core.client.comm.InMemoryClientConnector
-import groovy.swing.SwingBuilder
-
-import javax.swing.BorderFactory
-import javax.swing.WindowConstants
+import org.opendolphin.core.client.ClientDolphin
+import groovyx.javafx.SceneGraphBuilder
+import javafx.beans.value.ChangeListener
 
 import static org.opendolphin.binding.Binder.bind
 import static org.opendolphin.core.ModelStoreEvent.Type.ADDED
 import static org.opendolphin.core.ModelStoreEvent.Type.REMOVED
+import static groovyx.javafx.GroovyFX.start
+import static org.opendolphin.demo.DemoStyle.style
 
 /**
  * Measuring the response time when requesting so-many presentation models
  * from the server.
  */
 
-class PerformanceSwingView {
+class PerformanceView {
 
     static show(ClientDolphin dolphin) {
 
         def input = dolphin.presentationModel "input", count:0, attCount:0, time:0
 
-        SwingBuilder builder = new SwingBuilder()
-        builder.build {
-            frame title: 'Measure Dolphin Response Times', pack:true, visible:true, size:[400,250], location:[100,100], defaultCloseOperation: WindowConstants.EXIT_ON_CLOSE, {
-                panel border:BorderFactory.createEmptyBorder(10,10,10,10),  {
-                    gridLayout(rows:8, cols:2, vgap: 8, hgap: 5)
+        start { app ->
+            SceneGraphBuilder sgb = delegate as SceneGraphBuilder
+            stage title: 'Measure Dolphin Response Times', {
+                scene width: 400, height: 250, {
+                    gridPane {
+                        label "Number of PMs", row:0, column:0
+                        textField id:'number', row:0, column:1, text:'1'
 
-                    label "Number of PMs"
-                    textField id:'number', text:'1'
+                        label "Number of Attributes", row:1, column:0
+                        textField id:'attCount', row:1, column:1, text:'1'
 
-                    label "Number of Attributes"
-                    textField id:'attCount',      text:'1'
+                        hbox row:2, column:1, spacing:10, {
+                            button 'Request',id:'request'
+                            button 'Clear',  id:'clear'
+                        }
 
-                    label ""
-                    hbox {
-                        button 'Request',id:'request'
-                        button 'Clear',  id:'clear'
+                        label "Last request (ms)", row:3, column:0
+                        textField id:'time',       row:3, column:1
+
+                        checkBox 'Show logs', id:'doLog', selected:true, row:4, column:1
+
+                        label "Connector sleep (ms)", row:5, column:0
+                        textField id:'conSleep',      row:5, column:1, text:getSleepMillis(dolphin)
+
+                        label "PMs in store", row:6, column:0
+                        label id:'store',     row:6, column:1, text:0
+
+                        label "Memory (MB)", row:7, column:0
+                        label id:'mem',      row:7, column:1, text: memString
+
                     }
-
-                    label "Last request (ms)"
-                    textField id:'time'
-
-                    label ""
-                    checkBox 'Show logs', id:'doLog', selected:true
-
-                    label "Connector sleep (ms)"
-                    textField id:'conSleep',      text:getSleepMillis(dolphin)
-
-                    label "PMs in store"
-                    label id:'store',     text:0
-
-                    label "Memory (MB)"
-                    label id:'mem',    text: memString
-
                 }
             }
 
             bind 'time' of input to 'text' of time
+
+            style sgb
 
             dolphin.addModelStoreListener { event ->
                 if (event.type == ADDED)   store.text = store.text.toInteger() + 1
@@ -83,19 +83,19 @@ class PerformanceSwingView {
                 mem.text = memString
             }
 
-            doLog.actionPerformed = {
+            doLog.onAction {
                 if (doLog.selected) {
                     LogConfig.logCommunication()
                 } else {
                     LogConfig.noLogs()
                 }
             }
-            conSleep.actionPerformed = {
+            conSleep.text().addListener ({ obj, old, newVal ->
                 if (dolphin.clientConnector instanceof InMemoryClientConnector) dolphin.clientConnector.sleepMillis = conSleep.text.toInteger()
-            }
+            } as ChangeListener)
 
-			request.actionPerformed = {
-                request.enabled = false
+			request.onAction {
+                request.disable = true
                 input.count.value = number.text
                 input.attCount.value = attCount.text
                 long start = System.nanoTime()
@@ -103,12 +103,12 @@ class PerformanceSwingView {
                     long end = System.nanoTime()
                     long ms = (end - start).intdiv 1000000
                     input.time.value = ms
-                    request.enabled = true
+                    request.disable = false
                 }
 
 			}
-			clear.actionPerformed = {
-                clear.enabled = false
+			clear.onAction {
+                clear.disable = true
                 long start = System.nanoTime()
                 def all = dolphin.findAllPresentationModelsByType('all')
                 def temp = new LinkedList(all)
@@ -117,9 +117,10 @@ class PerformanceSwingView {
                     long end = System.nanoTime()
                     long ms = (end - start).intdiv 1000000
                     input.time.value = ms
-                    clear.enabled = true
+                    clear.disable = false
                 }
 			}
+            primaryStage.show()
         }
     }
     static String getSleepMillis(ClientDolphin dolphin) {
