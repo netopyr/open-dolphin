@@ -31,7 +31,7 @@ class InMemoryClientConnector extends ClientConnector {
         super(clientDolphin)
     }
 
-    InMemoryClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher) {
+    InMemoryClientConnector(ClientDolphin clientDolphin, ICommandBatcher commandBatcher) {
         super(clientDolphin, commandBatcher)
     }
 
