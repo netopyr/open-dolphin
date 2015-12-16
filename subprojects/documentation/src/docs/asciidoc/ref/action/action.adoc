@@ -1,1 +1,45 @@
+When there is the least bit of business logic, it goes into an action. Actions live in controller classes of the server module.
+In server side the action will be registered and it will register the command and its command handler to apply the business logic.
+In client side commands will be sent to that action.
 
+[ditaa]
+----
+Client                Server
+ |                    |               |               |
+ |   Send command     |               |               |
+ |------------------->|               |               |
+ |                    |  handle       |               |
+ |                    |-------------->|               |
+ |                    |               | call service  |
+ |                    |               |-------------->|
+ |                    |               |               |
+ |                    |               | serv.response |
+ |                    |               |<--------------|
+ |on finished handler |<--------------|               |
+ |<-------------------|               |               |
+ |                    |               |               |
+----
+
+
+The common superclass for all actions that need access to the ServerDolphin is DolphinServerAction.
+
+We could register for example an action to save our model into DB.
+For this is needed to create and register our action by DolphinServerAction
+[source,java]
+----
+public class SaveAction extends DolphinServerAction {
+    final ISaveService service;
+
+    public SaveAction(ISaveService service) {
+        this.service = service;
+    }
+
+    public void registerIn(ActionRegistry actionRegistry) {
+        actionRegistry.register(CMD_SAVE, new CommandHandler<Command>() {
+            public void handleCommand(Command command, List<Command> response) {
+                // convert model and invoke service save
+            }
+        });
+    }
+}
+----

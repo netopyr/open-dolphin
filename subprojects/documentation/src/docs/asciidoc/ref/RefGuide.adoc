@@ -4,27 +4,16 @@
 
 Welcome to the OpenDolphin quick reference
 
-.The documentation comes in two parts
+The 3 most important interfaces of Open Dolphin are
 
-The User Guide::
-    explains the architecture, the concepts, and possible usages.
-    It is like a book that you may want to read to understand what OpenDolphin
-    is all about, what drives its design, and how it works in general.
+* Dolphin
+* PresentationModel
+* Attribute
 
-This Quick Reference part::
-    lets you quickly look up code snippets that you need when using OpenDolphin in your
-    own projects. It is all about the implementation details.
-
-The user guide and the references are cross-linked such that you can always jump back and forth
-between the overall picture and how it materializes in the details.
-No matter where you start, you can always refer from detailed explanations to its place in the
-architecture and vice versa.
-
-
-[quote, Johann Wolfgang v. Goethe, Farbenlehre]
-____
-Understanding means recognizing the details in the whole and the whole from its details.
-____
+All three interfaces are defined in the dolphin-core module.
+In addition to the core model Open Dolphin provides a module for the client and the server side.
+Each of this modules contains a specialization of the interfaces.
+The dolphin-client module contains the ClientDolphin, ClientPresentationModel and ClientAttribute interfaces that extend the base ones for example.
 
 ifeval::["{backend}"=="html5"]
 link:./../guide/UserGuide.html[User Guide]

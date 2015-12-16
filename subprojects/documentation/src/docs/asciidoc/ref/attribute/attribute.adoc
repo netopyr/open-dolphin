@@ -1,3 +1,7 @@
+A presentation model contains a set of attributes and each attribute defines a value in the presentation model.
+Once the attributes are created we can create a presentation model that will automatically synced between client and server
+whenever anything in it will be changed. This will happen if the value of an attribute will be changed.
+
 In open dolphin attributes
 
 * Are _generic_.
@@ -14,11 +18,4 @@ automatically updated and available for binding.
 * Have an optional _qualifier_ property to capture the fact that this attribute
 represents a qualified feature in the domain world.
 
-Remote ClientAttribute is considered a remote representation of a ServerAttribute.
-
-Changes to a remote ClientAttribute are sent to the server. This happens by using a dedicated one can bind against a ClientAttribute
-in two ways
-
-* as a PropertyChangeListener
-* through the valueProperty() method for JavaFx
-
+* Have a type _Tag_ , with the type of presentation models attributes can be found by using its tag

@@ -1,1 +1,81 @@
-NOTE: #TODO# Section Pending
+Other important feature of open dolphin are server commands.
+
+In open dolphin commands
+
+* Are generics.
+* Notifications from the client to the server are sent as commands.
+* Instructions from the server to the client are sent as commands.
+* Commands are sent asynchronously. When sending a command you can provide an _OnFinishedHandler_ that is called back
+as soon as the command has returned. The list of all presentation models that were affected by that command is passed
+as an argument into the callback methods.
+* Commands are always sent in strict sequence such that we can rely on all value changes being synced
+to the server model store before a command is processed on the server that depends on these values
+
+A command is registered in an action of a controller. The client can send commands by unique name facing events,
+ triggering server commands from client side.
+
+[ditaa]
+----
+     /-------------------\                  /-------------------\
+     |                   |  Command         |                   |
+     |     Client        |----------------->|     Server        |
+     |                   |                ^ |                   |
+     \-------------------/                | \-------------------/
+                                          |
+                                          Action
+----
+
+In a server command the presentation models can be accessed and modified.
+So for example it's possible to define a save command.
+Once the client triggers that command, current content of presentation model is converted into business entities and are stored in a DB.
+
+=== Server-side Commands
+Server dolphin interface provides a groovy-friendly convenience method to register a named action, for example
+
+[source, groovy]
+----
+serverDolphin.action("saveActionName", (command, response) -> {
+   //  logic
+}
+----
+
+Server dolphin interface provides a java-friendly convenience method to register a named action, for example
+
+[source, java]
+----
+serverDolphin.action("saveActionName", new NamedCommandHandler() {
+    public void handleCommand(NamedCommand namedCommand, List<Command> commands) {
+        // logic
+    }
+});
+----
+
+=== Triggering a command from the Client
+
+Client dophin interface provides a java-friendly convenience method for sending a named command and
+a groovy-friendly convenience method for sending a named command that expects only PM responses
+
+Java example
+[source,java]
+----
+clientDolphin.send("saveActionName", new OnFinishedHandlerAdapter() {
+  @Override
+  public void onFinished(List<ClientPresentationModel> presentationModels) {
+     // list of all presentation models that were affected by that command is passed
+     // as an argument into the callback methods.
+  }
+});
+----
+
+Web example
+[source,html]
+----
+saveButton.onclick = function () {
+   dolphin.send("saveActionName", {
+       onFinished: function (models) {
+          // list of all presentation models that were affected by that command is passed
+          // as an argument into the callback methods.
+        }
+   });
+};
+----

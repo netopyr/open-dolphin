@@ -1,8 +1,7 @@
 Attributes contains unique Id and unique property name per presentation model.
+Attributes can be created on the client and on the server side via the dolphin facade.
 
-A client side ClientAttribute is considered a remote representation of a ServerAttribute.
-
-But it's possible to create attributes that exist only in the client side as per presentation models.
+=== Create client-side Attributes
 
 To create a new clientAttribute in java the preferred constructor
 
@@ -29,6 +28,55 @@ A javascript example
 var firstNameAttr = clientDolphin.attribute(ATT_FIRSTNAME, null, "Initial Value");
 ----
 
+Groovy style
+
+You can do the same as in Java but you can also use one of the shortcuts.
+
+Generate attributes with null values from a list of attribute names.
+[source,groovy]
+def pm = clientDolphin.presentationModel("myPmId", ["firstName", "lastName"])
+
+Generate attributes from named arguments or a map.
+[source,groovy]
+----
+def pm = clientDolphin.presentationModel("myPmId", firstName:"Dierk", lastName:"Koenig")
+
+Using constants (recommended) for any variant of the above.
+[source,groovy]
+final FIRST = "firstName"
+final LAST  = "lastName"
+// mind the parentheses
+def pm = clientDolphin.presentationModel("myPmId", (FIRST):"Dierk", (LAST):"Koenig")
+----
+
+=== Server-side Attributes
+
+Server-side constructions of presentation models do not instantiate
+any presentation models themselves and there also are no attributes to
+create the models from. Instead, we use Data Transfer Objects
+(link:http://open-dolphin.org/download/api/org/opendolphin/core/server/DTO.html[DTOs])
+and link:http://open-dolphin.org/download/api/org/opendolphin/core/server/Slot.html[Slots].
+
+[source,java]
+----
+new DTO(
+    new Slot("firstName", "Dierk"),
+    new Slot("lastName", "Koenig")
+);
+----
+
+*Groovy style or any other functional language*
+
+You may want to create DTOs from a map.
+
+[source,groovy]
+----
+Map data = [firstName: "Dierk", lastName:"Koenig"]
+new DTO(Slot.slots(data))
+----
+
+
+An attribute can have a type _Tag_ allowing to find attributes by its tag with the type of presentation models.
 
 .OpenDolphin attributes tags
 |===
@@ -65,5 +113,5 @@ var firstNameAttr = clientDolphin.attribute(ATT_FIRSTNAME, null, "Initial Value"
 |"true" or "false"
 |===
 
-
-
+See also the link:./../guide/UserGuide.html#_the_purpose_of_attributes[Attribute] guide and
+the link:./../guide/UserGuide.html#_the_concept_of_presentation_models[Presentation models] guid.
