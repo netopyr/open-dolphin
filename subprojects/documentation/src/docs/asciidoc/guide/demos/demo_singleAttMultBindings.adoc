@@ -35,12 +35,18 @@ This code makes sure that whenever the title attribute of the presentation model
 the title of the frame is updated:
 
 [source,groovy]
-bind TITLE of pm to FX.TITLE of primaryStage   // groovy style
+----
+bind TITLE of pm to FX.TITLE of primaryStage   // <1>
+----
+<1> groovy style
 
 The same is true for the label, but here we are more Java-stylish:
 
 [source,java]
-bind(TITLE).of(pm).to(FX.TEXT).of(label)       // java fluent-interface style
+----
+bind(TITLE).of(pm).to(FX.TEXT).of(label) // <1>
+----
+<1> java fluent-interface style
 
 The input text field shall always show the value of the title attribute:
 
@@ -63,8 +69,10 @@ If we need a mixture of both immediate and deferred update, then we have a bit o
 a problem. We can resolve it by directly binding the views (ignoring the attribute):
 
 [source,groovy]
-// auto-update the header with every keystroke
-bind FX.TEXT of input to FX.TEXT of header
+----
+bind FX.TEXT of input to FX.TEXT of header // <1>
+----
+<1> auto-update the header with every keystroke
 
 The views now act as one "combined" view, but this situation should be avoided since
 we do not want the views to know each other. They shall only know their attributes.
@@ -76,9 +84,11 @@ every keystroke. This is effectively a bidirectional binding:
 
 [source,groovy]
 ----
-// the below is an alternative that updates the pm with every keystroke and thus all bound listeners
-bind TEXT of input to TITLE of pm
+bind TEXT of input to TITLE of pm // <1>
 ----
+<1> It is an alternative that updates the pm with every keystroke and thus all bound listeners
+    bind TEXT of input to TITLE of pm
+
 
 
 

@@ -28,8 +28,10 @@ it returns if there hasn't been any recent news. It waits *at most* the waiting 
 returns *immediately* if there was a new value on the bus.
 
 [source]
-queue.getVal(1, TimeUnit.MINUTES); // returns null if there was no value
-
+----
+queue.getVal(1, TimeUnit.MINUTES); // <1>
+----
+<1> returns null if there was no value
 
 While the push action waits for new values on the bus, the communication channel is
 blocked. Remember: OpenDolphin sends commands in strict sequence and therefore, the client

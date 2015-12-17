@@ -34,7 +34,6 @@ the input presentation model
 [source,java]
 JFXBinder.bind("text").of(field).to("text").of(input);
 
-
 Note the fluent API for setting up the binding.
 
 [WARNING]

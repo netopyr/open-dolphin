@@ -1,5 +1,6 @@
 One important feature of open dolphin is the binding. Binding is just an event listener listening to an event source.
-OpenDolphin supports binding between attributes and arbitrary other objects and listens automatically for value changes in order to notify the server.
+OpenDolphin supports binding between attributes and arbitrary other objects and listens automatically
+for value changes in order to notify the server.
 
 Bind against a ClientAttribute can be done in two ways
 

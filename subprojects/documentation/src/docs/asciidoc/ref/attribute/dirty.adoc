@@ -1,7 +1,7 @@
 An open dolphin attribute can provide more information and can carry additional state that is automatically updated
 and available for binding.
 
-The dirty state is observable such that you can bind against it. As soon as at least one attribute of a presentation model is dirty,
+The dirty state is observable which you can bind against it. As soon as at least one attribute of a presentation model is dirty,
 that presentation model is also considered dirty.
 Each attribute has a "base" value. When a value is dirty it differs from the base value.
 
@@ -21,18 +21,17 @@ Converter converter = new Converter<Boolean,Boolean>() {
 JFXBinder.bindInfo("dirty").of(textAttributeModel).using(converter).to("disabled").of(button);
 ----
 
-
 Groovy example
 [source,groovy]
 ----
 bindInfo "dirty" of textAttributeModel using { state -> !state } to "disabled" of button
 ----
 
-Js client example
+Javascript example
 [source,js]
 ----
-// Bind dirty of dolphin attribute to enable save button
-textAttributeModel.onDirty(function (event) {
+textAttributeModel.onDirty(function (event) { // <1>
     button.disabled = !event.newValue;
 });
 ----
+<1> Bind dirty of dolphin attribute to enable save button

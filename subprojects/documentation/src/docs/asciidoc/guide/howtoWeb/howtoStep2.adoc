@@ -16,13 +16,13 @@ Here is how the code to reset looks like:
 ----
  var resetButton = document.getElementById("reset-button");
 
-  // Bind dirty of dolphin attribute to enable reset button
-  instantUpdateAttributePM.onDirty(function (event) {
+  instantUpdateAttributePM.onDirty(function (event) { // <1>
       resetButton.disabled = !event.newValue;
   });
 
-  // Reset dolphin attribute
-  resetButton.onclick = function () {
+  resetButton.onclick = function () { // <2>
       instantUpdateAttributePM.reset();
   };
 ----
+<1> Bind dirty of dolphin attribute to enable reset button
+<2> Reset dolphin attribute

@@ -22,10 +22,10 @@ dolphin server action registers the available actions
 [source,java]
 ----
 public void registerIn(ActionRegistry registry) {
-    // register all your actions here.
-    getServerDolphin().register(new TutorialAction(logService));
+    getServerDolphin().register(new TutorialAction(logService)); // <1>
 }
 ----
+<1> register all your actions here.
 
 The link:https://github.com/canoo/DolphinJumpStart/blob/master/server/src/main/java/step_7/TutorialAction.java[Tutorial action]
 defines the command handler for the action id "CMD_LOG"
@@ -45,6 +45,7 @@ As with any servlet, you need to register it in the
 link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/webapp/WEB-INF/web.xml[web.xml] :
 
 [source,xml]
+----
 <servlet>
     <display-name>TutorialServlet</display-name>
     <servlet-name>tutorial</servlet-name>
@@ -55,6 +56,7 @@ link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/w
     <servlet-name>tutorial</servlet-name>
     <url-pattern>/tutorial/</url-pattern>
 </servlet-mapping>
+----
 
 It should appear on your screen like:
 
@@ -77,14 +79,11 @@ Here is the code to send save command to server
 
 [source,html]
 ----
-
-// Bind dirty of dolphin attribute to enable save button
-instantUpdateAttributePM.onDirty(function (event) {
+instantUpdateAttributePM.onDirty(function (event) { // <1>
     saveButton.disabled = !event.newValue;
 });
 
-// send request value changed to server
-saveButton.onclick = function () {
+saveButton.onclick = function () { // <2>
     dolphin.send(CMD_LOG, {
        onFinished: function (models) {
         instantUpdateAttributePM.rebase();
@@ -92,7 +91,8 @@ saveButton.onclick = function () {
     });
 };
 ----
-
+<1> Bind dirty of dolphin attribute to enable save button
+<2> Send request value changed to server
 
 *That is it!*
 

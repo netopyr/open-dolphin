@@ -28,20 +28,21 @@ As an example: no longer do you need to call
 
 [source,java]
 ----
-// sending command
-changeValue(attribute, value);
+changeValue(attribute, value); // <1>
 
-// to be replaced with
-changeValueCommand(attribute, value);
+changeValueCommand(attribute, value); //<2>
 ----
+<1> Sending command
+<2> To be replaced with
+
 
 on the server side but you can directly use
 
 [source,java]
 ----
-// immediate state change
-attribute.setValue(value);
+attribute.setValue(value); // <1>
 ----
+<1> Immediate state change
 
 which will immediately change the attribute value on the server side _and_ send the appropriate command
 to the client.

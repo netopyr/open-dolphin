@@ -1,6 +1,6 @@
 A presentation model contains a set of attributes and each attribute defines a value in the presentation model.
-Once the attributes are created we can create a presentation model that will automatically synced between client and server
-whenever anything in it will be changed. This will happen if the value of an attribute will be changed.
+Once the attributes are created we can create a presentation model that will automatically synchronize between client and server.
+That is when the value of an attribute changes.
 
 In open dolphin attributes
 
@@ -18,4 +18,39 @@ automatically updated and available for binding.
 * Have an optional _qualifier_ property to capture the fact that this attribute
 represents a qualified feature in the domain world.
 
-* Have a type _Tag_ , with the type of presentation models attributes can be found by using its tag
+* Can have a type _Tag_, so attributes can be found by using this tag.
+
+.OpenDolphin attributes tags
+|===
+|Tag |Description
+
+|Tag.VALUE
+|The actual value of the attribute. This is the default if no tag is given.
+
+|Tag.LABEL
+|The to-be-displayed String, not the key. Internationalization happens on the server.
+
+|Tag.WIDGET_HINT
+|A single text; e.g. "textArea" if the String value should be displayed in a text area instead of a textField
+
+|Tag.VALUE_TYPE
+|A single text; e.g. "java.util.Date" if the value String represents a date
+
+|Tag.REGEX
+|Regular expression for local, syntactical constraints like in "rejectField"
+
+|Tag.HELP_URL
+|Url.toExternalForm()
+
+|Tag.TOOLTIP
+|Tooltip text for the attribute
+
+|Tag.MANDATORY
+|"true" or "false"; maps to Grails constraint nullable:false
+
+|Tag.VISIBLE
+|"true" or "false"; maps to Grails constraint display:true
+
+|Tag.ENABLED
+|"true" or "false"
+|===

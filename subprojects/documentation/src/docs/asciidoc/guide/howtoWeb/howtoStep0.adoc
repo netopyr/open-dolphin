@@ -34,26 +34,26 @@ Here is how the code looks like:
 var PM_PERSON = "modelId"
 var ATT_FIRSTNAME = "attrId"
 
- // set up the dolphin
-var dolphin = opendolphin.dolphin(null, false);
+var dolphin = opendolphin.dolphin(null, false); // <1>
 
-// make dolphin attribute to do the double binding with
-var instantUpdateAttributePM = dolphin.attribute(ATT_FIRSTNAME, null, "Initial Value");
-// make client PM and add the attribute
-dolphin.presentationModel(PM_PERSON, undefined, instantUpdateAttributePM);
+var instantUpdateAttributePM = dolphin.attribute(ATT_FIRSTNAME, null, "Initial Value"); // <2>
+dolphin.presentationModel(PM_PERSON, undefined, instantUpdateAttributePM); <3>
 
-// get html element to bind against the opendolphin attribute
-var instantUpdateHtmlInput = document.getElementById("instant-update-input");
+var instantUpdateHtmlInput = document.getElementById("instant-update-input"); // <4>
 
-// bind input of textfield to attribute (client change)
-instantUpdateHtmlInput.oninput = function (event) {
+instantUpdateHtmlInput.oninput = function (event) { // <5>
     instantUpdateAttributePM.setValue(instantUpdateHtmlInput.value);
 };
 
-// bind other direction as well (e.g. for rebase(reset on client side) or server-side change)
-instantUpdateAttributePM.onValueChange(function (event) {
+instantUpdateAttributePM.onValueChange(function (event) { // <6>
     instantUpdateHtmlInput.value = event.newValue;
 });
 ----
+<1> set up the dolphin
+<2> make dolphin attribute to do the double binding with
+<3> make client PM and add the attribute
+<4> get html element to bind against the opendolphin attribute
+<5> bind input of textfield to attribute (client change)
+<6> bind other direction as well (e.g. for rebase(reset on client side) or server-side change)
 
 

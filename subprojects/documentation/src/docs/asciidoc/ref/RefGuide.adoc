@@ -11,9 +11,9 @@ The 3 most important interfaces of Open Dolphin are
 * Attribute
 
 All three interfaces are defined in the dolphin-core module.
-In addition to the core model Open Dolphin provides a module for the client and the server side.
-Each of this modules contains a specialization of the interfaces.
-The dolphin-client module contains the ClientDolphin, ClientPresentationModel and ClientAttribute interfaces that extend the base ones for example.
+In addition to the core model, Open Dolphin provides a module for the client and the server side.
+Each module contains a specialization of the interfaces.
+The dolphin-client module contains the ClientDolphin, ClientPresentationModel and ClientAttribute interfaces.
 
 ifeval::["{backend}"=="html5"]
 link:./../guide/UserGuide.html[User Guide]
@@ -30,7 +30,7 @@ include::action/action.adoc[]
 == Attribute
 include::attribute/attribute.adoc[]
 
-=== create
+=== Create
 include::attribute/create.adoc[Create]
 
 === Dirty

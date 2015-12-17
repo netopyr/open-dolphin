@@ -14,8 +14,7 @@ Here is how the code to rebase looks like:
 ----
 var rebaseButton = document.getElementById("rebase-button");
 
-// Bind dirty of dolphin attribute to enable rebase button
-instantUpdateAttributePM.onDirty(function (event) {
+instantUpdateAttributePM.onDirty(function (event) { // <1>
     rebaseButton.disabled = !event.newValue;
 });
 
@@ -23,3 +22,4 @@ rebaseButton.onclick = function () {
     instantUpdateAttributePM.rebase();
 };
 ----
+<1> Bind dirty of dolphin attribute to enable rebase button

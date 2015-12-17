@@ -14,7 +14,7 @@ presentationModel factory method that sets
 
 * the unique id (if null it will be set to a generated id)
 * the type (may be null if no type is required)
-* a variable argument list of link:http://open-dolphin.org/download/api/org/opendolphin/core/client/ClientAttribute.html[ClientAttributes],
+* a variable argument list of link:http://open-dolphin.org/download/api/org/opendolphin/core/client/ClientAttribute.html[ClientAttribute],
 
 see also the link:./../guide/UserGuide.html#_the_purpose_of_attributes[Attribute] guide.
 
@@ -33,14 +33,19 @@ Generate attributes from named arguments or a map.
 [source,groovy]
 ----
 def pm = clientDolphin.presentationModel("myPmId", firstName:"Dierk", lastName:"Koenig")
+----
 
-Using constants (recommended) for any variant of the above.
 [source,groovy]
+----
 final FIRST = "firstName"
 final LAST  = "lastName"
-// mind the parentheses
 def pm = clientDolphin.presentationModel("myPmId", (FIRST):"Dierk", (LAST):"Koenig")
 ----
+
+*javascript style*
+[source,javascript]
+var instantUpdateAttributePM = clientDolphin.attribute("FIRST", null, "Dierk");
+clientDolphin.presentationModel("myPmId", undefined, instantUpdateAttributePM);
 
 === Create a Presentation Model from the (server) controller
 
@@ -99,7 +104,6 @@ Otherwise the calls are identical
 [source,groovy]
 Map data = [firstName: "Dierk", lastName:"Koenig"]
 presentationModel "MyPmId", "MyType", new DTO(Slot.slots(data))
-
 
 === Create client-side-only Presentation Models
 

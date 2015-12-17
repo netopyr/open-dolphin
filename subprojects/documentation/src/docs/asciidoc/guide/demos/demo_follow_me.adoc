@@ -13,7 +13,7 @@ locations, devices, and circumstances where you can best do your work.
 
 The OpenDolphin architecture makes it particularly easy to accommodate the follow-me scenario since
 
-. it supports [many devices|guide:demo_multi_device]
+. it supports <<One application on multiple devices,many devices>>
 . it keeps the _presentation state_ on the server side.
 
 It is the combination of both aspects that makes the next-generation apps possible.
