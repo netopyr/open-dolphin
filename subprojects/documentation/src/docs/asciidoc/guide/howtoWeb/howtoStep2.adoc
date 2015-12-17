@@ -12,7 +12,7 @@ image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step2.png[width=500,he
 
 Here is how the code to reset looks like:
 
-[source,html]
+[source,html,indent=0]
 ----
  var resetButton = document.getElementById("reset-button");
 

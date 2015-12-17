@@ -71,9 +71,9 @@ Here is how the code has to connect to server has to be:
 var PM_PERSON = "step_7.TutorialConstants.modelId";
 var ATT_FIRSTNAME = "attrId";
 
-//SET SERVER CONNECTION
-var SERVER_URL = "http://localhost:8080/myFirstDolphin/tutorial/";
+var SERVER_URL = "http://localhost:8080/myFirstDolphin/tutorial/"; // <1>
 ----
+<1> Set server connection
 
 Here is the code to send save command to server
 
