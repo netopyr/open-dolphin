@@ -29,7 +29,7 @@ In a server command the presentation models can be accessed and modified.
 So for example it's possible to define a save command.
 Once the client triggers that command, current content of presentation model is converted into business entities and stored into the DB.
 
-=== Triggering a command from the Client
+== Triggering a command from the Client
 
 Client dolphin interface provides a java-friendly convenience method for sending a named command and
 a groovy-friendly convenience method for sending a named command that expects only presentation model responses

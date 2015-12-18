@@ -46,7 +46,7 @@ WARNING: The application programmer should only use the facade layer.
 
 The figure below summarizes the vertical and horizontal structuring
 
-image::./resources/img/OpenDolphin-Architecture-Structure.png[width=500,height=500]
+image::./img/OpenDolphin-Architecture-Structure.png[width=500,height=500]
 
 While the structural part of the Dolphin architecture is rather
 obvious and straight-forward, the concepts and rules that stand behind

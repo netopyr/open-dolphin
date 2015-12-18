@@ -18,7 +18,7 @@ link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/w
 
 It should appear on your screen like:
 
-image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step0.png[width=500,height=500]
+image::./img/dolphin_pics/OpenDolphin-HowTo-Web-step0.png[width=500,height=500]
 
 
 The code creates the basic app skeleton with dolphin client set up, creates client presentation model with one attribute and bind the value.

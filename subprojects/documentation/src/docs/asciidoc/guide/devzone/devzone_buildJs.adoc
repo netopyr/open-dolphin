@@ -1,3 +1,4 @@
+
 The following sections describe how to build the OpenDolphin javascript client and how to publish it so that it can be consumed by applications.
 
 The Javascript client is implemented in Typescript and located in `subprojects/client-javascript`.

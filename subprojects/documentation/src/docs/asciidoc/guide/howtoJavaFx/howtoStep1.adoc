@@ -4,7 +4,7 @@ just slightly with a TextField and a Button that prints the content of the TextF
 
 The application should appear on your screen like:
 
-image::./resources/img/dolphin_pics/OpenDolphin-HowTo-step1.png[]
+image::./img/dolphin_pics/OpenDolphin-HowTo-step1.png[]
 
 The code now contains references to the widgets
 [source,java]

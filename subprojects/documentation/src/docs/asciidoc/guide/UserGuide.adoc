@@ -1,10 +1,11 @@
 = Dolphin User Guide Documentation
 ////
 TODO we shouldn't include the images directory in each image reference, but it didn't work for PDF generation
-:imagesdir: ./resources/img
+:imagesdir: ./img
 ////
 :toc: left
 :sectnums:
+:stylesheet: ./../stylesheet/dolphin.css
 
 ifeval::["{backend}"=="html5"]
 Welcome to the OpenDolphin documentation
@@ -29,7 +30,6 @@ architecture and vice versa.
 ____
 Understanding means recognizing the details in the whole and the whole from its details.
 ____
-
 
 link:./../ref/RefGuide.html[Quick Reference]
 ============================================

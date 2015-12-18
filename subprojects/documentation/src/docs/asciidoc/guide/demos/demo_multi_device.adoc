@@ -9,7 +9,7 @@ that you can connect to
 * from a tablet
 * from a smartphone
 
-image::./resources/img/dolphin_pics/OpenDolphin-Demo-Multi-Device.png[]
+image::./img/dolphin_pics/OpenDolphin-Demo-Multi-Device.png[]
 
 The way to achieve this is to have
 

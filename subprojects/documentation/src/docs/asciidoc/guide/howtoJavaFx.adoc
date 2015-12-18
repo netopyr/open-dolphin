@@ -36,7 +36,7 @@ Otherwise use the command line launcher as described in the readme.
 
 When your setup is correct, it should appear on your screen like:
 
-image::./resources/img/dolphin_pics/OpenDolphin-HowTo-step0.png[]
+image::./img/dolphin_pics/OpenDolphin-HowTo-step0.png[]
 
 This code illustrates a simple call to the JavaFX API. This code displays a window with the title "Dolphin Jump Start"
 displayed in the title of the window.

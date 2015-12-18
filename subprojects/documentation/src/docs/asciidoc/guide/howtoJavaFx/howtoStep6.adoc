@@ -2,7 +2,7 @@ We finish the application with some more refactorings in
 link:https://github.com/canoo/DolphinJumpStart/blob/master/client/src/main/java/step_6/TutorialApplication.java[step6.TutorialApplication]
 and some tweaks to the view such that it appears like
 
-image::./resources/img/dolphin_pics/OpenDolphin-HowTo-step6.png[]
+image::./img/dolphin_pics/OpenDolphin-HowTo-step6.png[]
 
 The true value of the change is not visible in a screenshot, though, since it is in the behavior.
 The modified background color of the text field appears as soon as it becomes dirty and is

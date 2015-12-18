@@ -32,8 +32,7 @@ asciidoctor {
     // let's convert to PDF while we're at it
     backends = ['html5', 'pdf']
 
-    attributes 'stylesheet'             : './../stylesheet/dolphin.css',
-               'source-highlighter'     : 'coderay',
+    attributes 'source-highlighter'     : 'coderay',
                'coderay-linenums-mode'  : 'table',
                'author'                 : 'Authors: The dolphin team',
                'revnumber'              : 'PRE-1.0',

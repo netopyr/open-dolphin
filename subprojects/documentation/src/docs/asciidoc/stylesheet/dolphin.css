@@ -681,4 +681,8 @@ b.conum * { color: inherit !important; }
 
 .conum:not([data-value]):empty { display: none; }
 
+#__a_href_ref_refguidelefttoc_html_quick_reference_a, #__a_href_guide_userguidelefttoc_html_user_guide_a { display: none; }
+
 #__a_href_ref_refguide_html_quick_reference_a, #__a_href_guide_userguide_html_user_guide_a { display: none; }
+
+#header { background-image: url("./../stylesheet/dolphin.png"); background-position: right top; background-repeat: no-repeat; }

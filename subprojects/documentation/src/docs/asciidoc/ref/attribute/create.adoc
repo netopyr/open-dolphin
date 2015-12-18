@@ -1,7 +1,7 @@
 Attribute contains unique Id and unique property name per presentation model.
 Attributes can be created on the client via the dolphin facade.
 
-=== Create client-side Attributes
+== Create client-side Attributes
 
 To create a new clientAttribute in java the preferred constructor
 
