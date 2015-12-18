@@ -28,17 +28,3 @@ include::demos/demo_point_of_sale.adoc[]
 === Integration of many technologies into one app
 include::demos/demo_integration.adoc[]
 
-== tbd Configuration and Setup
-include::config.adoc[]
-
-=== Standalone in-memory usage
-include::config/config_standalone.adoc[]
-
-=== Remote setup
-include::config/config_remote.adoc[]
-
-== tbd Developer Zone
-include::devzone.adoc[]
-
-=== How to build
-include::devzone/devzone_build.adoc[]

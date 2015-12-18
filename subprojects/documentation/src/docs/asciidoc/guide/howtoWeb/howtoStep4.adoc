@@ -64,7 +64,7 @@ image::./resources/img/dolphin_pics/OpenDolphin-HowTo-Web-step4.png[width=500,he
 
 Code is in link:https://github.com/canoo/DolphinJumpStart/blob/master/server-app/src/main/webapp/step4.html[step4.JumpStart]
 
-Here is how the code has to connect to server has to be:
+Here is how the code to connect to server has to be:
 
 [source,html]
 ----

@@ -53,3 +53,10 @@ OpenDolphin Demos
 endif::[]
 
 include::userGuideDemoSection.adoc[]
+
+ifeval::["{backend}"=="html5"]
+OpenDolphin Configurations and Dev. zone
+========================================
+endif::[]
+
+include::userGuideConfDevSection.adoc[]
