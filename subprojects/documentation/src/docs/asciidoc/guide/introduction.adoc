@@ -1,32 +1,3 @@
-OpenDolphin
-===========
-
-Welcome to the OpenDolphin documentation
-
-.The documentation comes in two parts
-The User Guide::
-    explains the architecture, the concepts, and possible usages.
-    It is like a book that you may want to read to understand what OpenDolphin
-    is all about, what drives its design, and how it works in general.
-
-The API Reference::
-    lets you quickly look up code snippets that you need when using OpenDolphin in your
-    own projects. It is all about the implementation details.
-
-The user guide and the references are cross-linked such that you can always jump back and forth
-between the overall picture and how it materializes in the details.
-No matter where you start, you can always refer from detailed explanations to its place in the
-architecture and vice versa.
-
-
-[quote, Johann Wolfgang v. Goethe, Farbenlehre]
-____
-Understanding means recognizing the details in the whole and the whole from its details.
-____
-
-
-== User Guide
-
 OpenDolphin is a Model-View-Controller architecture that enforces strict decoupling between
 Views and Controllers. They can never refer directly to each other. Their sole mean of communication
 is through shared _Presentation Models_.
@@ -61,28 +32,29 @@ Views live on the client device and determine *how* to display Presentation Mode
 to the user. To that end, they can leverage the full range of their device features.
 
 
+*Responsibilities*
+
+* Server
+** What to display
+** Business logic + presentation logic incl. workflow
+
+* Client
+** How to display
+** visualize state + transitions
 
 
-== API Reference
+*Collaboration*
 
-=== Server Side (Controller)
+* Presentation model is synchronized by Dolphin
+* Communication follows the Command Pattern
+* Client may send application-specific commands, i.e on button pressed
+* Server reacts through presentation model changes
 
-==== Registering Actions
-==== Creating Presentation Models
-==== Reading and Writing Attribute Values
-==== Binding to Attributes
+*Key effects*
 
-=== Client Side (View)
+* Fully exploits native client capabilities, i.e JavaFX
+* Enforces clean structures
+* Protects investment in application logic
 
-==== Java Desktop (Swing, JavaFX, and others)
-
-===== Creating Presentation Models
-===== Reading and Writing Attribute Values
-===== Binding to Attributes
-===== Sending Commands
-
-==== Browser (JavaScript, TypeScript, and others)
-===== Creating Presentation Models
-===== Reading and Writing Attribute Values
-===== Binding to Attributes
-===== Sending Commands
+Throughout this documentation, we will refer to this introduction and especially the
+section on <<Architecture>> expands on the value of clean structures.
