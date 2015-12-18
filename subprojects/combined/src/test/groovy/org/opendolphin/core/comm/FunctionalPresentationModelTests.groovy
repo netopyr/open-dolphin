@@ -113,17 +113,15 @@ class FunctionalPresentationModelTests extends GroovyTestCase {
 
     void testPerformanceWithBlindCommandBatcher() {
         def batcher = new BlindCommandBatcher(mergeValueChanges:true, deferMillis: 100)
-        def connector = new InMemoryClientConnector(context.clientDolphin, batcher)
+        def connector = new InMemoryClientConnector(context.clientDolphin, serverDolphin.serverConnector, batcher)
         connector.uiThreadHandler = new RunLaterUiThreadHandler()
-        connector.serverConnector = serverDolphin.serverConnector
         context.clientDolphin.clientConnector = connector
         doTestPerformance()
     }
 
     void testPerformanceWithSynchronousConnector() {
-        def connector = new SynchronousInMemoryClientConnector(context.clientDolphin)
+        def connector = new SynchronousInMemoryClientConnector(context.clientDolphin, serverDolphin.serverConnector)
         connector.uiThreadHandler = { fail "should not reach here! " } as UiThreadHandler
-        connector.serverConnector = serverDolphin.serverConnector
         context.clientDolphin.clientConnector = connector
         doTestPerformance()
     }

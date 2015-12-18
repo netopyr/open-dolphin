@@ -32,10 +32,9 @@ class DefaultInMemoryConfig {
         LogConfig.logCommunication()
 
         clientDolphin.clientModelStore = new ClientModelStore(clientDolphin)
-        clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin)
+        clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin, serverDolphin.serverConnector)
 
         clientDolphin.clientConnector.sleepMillis = 100
-        clientDolphin.clientConnector.serverConnector = serverDolphin.serverConnector
 
     }
 
