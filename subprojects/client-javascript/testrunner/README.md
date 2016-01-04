@@ -19,3 +19,11 @@ Run tests
 ----------
  
 `> karma start`
+
+Running Karma with the karma-sauce-launcher plugin locally
+----------------------------------------------------------
+create sauce.json file with username and key ( see example at https://github.com/saucelabs/karma-sauce-example)
+
+Then run karma using karma.conf-ci.js file configuration
+
+`>karma start karma.conf-ci.js`
