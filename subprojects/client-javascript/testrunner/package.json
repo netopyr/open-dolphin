@@ -10,6 +10,6 @@
     "karma-teamcity-reporter": "~0.2.1",
     "karma-typescript-preprocessor": "~0.0.19",
     "phantomjs": "~1.9.18",
-    "typescript": "~1.5"
+    "typescript": "1.7"
   }
 }
