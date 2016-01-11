@@ -3,11 +3,7 @@ Client javascript Dolphin tests runner
 
 Prerequisites
 -------------
-Install node globally
-
-Install karma-cli globally to use karma in the command line
-
-`> npm install -g karma-cli`
+Install node globally. Used version to build '4.2.4'.
 
 Before karma execution make sure to run
 
@@ -15,10 +11,10 @@ Before karma execution make sure to run
 
 This will install all dependencies specified in package.json into node_modules in your current working directory 
 
-Run tests
-----------
+Run tests locally
+----------------
  
-`> karma start`
+`>./node-modules/karma/bin/karma start`
 
 Running Karma with the karma-sauce-launcher plugin locally
 ----------------------------------------------------------
@@ -26,4 +22,4 @@ create sauce.json file with username and key ( see example at https://github.com
 
 Then run karma using karma.conf-ci.js file configuration
 
-`>karma start karma.conf-ci.js`
+`>./node-modules/karma/bin/karma start karma.conf-ci.js`

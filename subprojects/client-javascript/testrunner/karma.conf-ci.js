@@ -14,7 +14,7 @@ module.exports = function(config) {
     },
     'SL_FireFox': {
       base: 'SauceLabs',
-      browserName: 'firefox',
+      browserName: 'firefox'
     },
     'SL_Opera': {
       base: 'SauceLabs',
