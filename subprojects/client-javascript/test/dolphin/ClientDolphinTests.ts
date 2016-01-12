@@ -4,6 +4,7 @@
 /// <reference path="../../js/dolphin/ClientDolphin.ts"/>
 /// <reference path="../../js/dolphin/ClientModelStore.ts"/>
 /// <reference path="../../js/dolphin/ClientConnector.ts"/>
+/// <reference path="../../js/dolphin/NoTransmitter.ts"/>
 /// <reference path="../../js/dolphin/Command.ts"/>
 /// <reference path="../../js/dolphin/Tag.ts"/>
 
