@@ -27,7 +27,7 @@ module opendolphin {
 
             attr.setValue(1);
 
-            this.areIdentical(spoofedOld, 0)
+            this.areIdentical(spoofedOld, 55)
             this.areIdentical(spoofedNew, 1)
 
         }
