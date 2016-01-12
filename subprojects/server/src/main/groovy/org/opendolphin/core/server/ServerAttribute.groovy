@@ -52,10 +52,10 @@ class ServerAttribute extends BaseAttribute {
 
     @Override
     void setBaseValue(Object value) {
-        super.setBaseValue(value)
         if (notifyClient) {
             presentationModel.modelStore.currentResponse << new AttributeMetadataChangedCommand(attributeId: id, metadataName: Attribute.BASE_VALUE, value:value)
         }
+        super.setBaseValue(value)
         // on the server side, we have no listener on the model store to care for the distribution of
         // baseValue changes to all attributes of the same qualifier so we must care for that ourselves
         forAllQualified { if (value != it.baseValue) it.setBaseValue(value) }
