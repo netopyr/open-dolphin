@@ -114,7 +114,6 @@ class JavaFxProjector implements IProjector {
         dolphin.send 'init', { pms ->        // only do binding after server has initialized the tags
             ClientPresentationModel model = dolphin.getAt(pmId)
             int row = 0
-            try { grid.add(new Label(""), 0,0); } catch (ignore) {} // fake workaround for Java 8_60}
 
             // make a new row in the grid for each attribute in the form's presentation model
             for (ClientAttribute valAtt in model.attributes.findAll{it.tag == VALUE}) {

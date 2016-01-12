@@ -25,6 +25,7 @@ import static org.opendolphin.demo.MyProps.ATT.*
 
 def config = new JavaFxInMemoryConfig()
 def dolphin = config.serverDolphin
+println dolphin
 
 // example for setting tags at startup
 dolphin.action "init", { cmd, response ->
