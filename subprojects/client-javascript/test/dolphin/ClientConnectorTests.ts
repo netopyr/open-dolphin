@@ -10,7 +10,6 @@
 /// <reference path="../../js/dolphin/CallNamedActionCommand.ts" />
 /// <reference path="../../js/dolphin/SavedPresentationModelNotification.ts" />
 /// <reference path="../../js/dolphin/InitializeAttributeCommand.ts" />
-/// <reference path="../../js/dolphin/RebaseCommand.ts" />");
 /// <reference path="../../js/dolphin/ValueChangedCommand.ts" />
 /// <reference path="../../js/dolphin/DeleteAllPresentationModelsOfTypeCommand.ts" />
 /// <reference path="../../js/dolphin/DeletePresentationModelCommand.ts" />
