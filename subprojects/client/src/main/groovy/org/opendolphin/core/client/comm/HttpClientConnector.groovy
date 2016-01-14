@@ -76,6 +76,12 @@ class HttpClientConnector extends ClientConnector {
                 signalHttpClient.execute(httpPost, signalResponseHandler)
             } else {
                 response = httpClient.execute(httpPost, responseHandler)
+
+                def cookieStore = httpClient.cookieStore
+                if( cookieStore ) {
+                    signalHttpClient.cookieStore = cookieStore;
+                }
+
                 log.finest response
                 result = codec.decode(response)
             }
