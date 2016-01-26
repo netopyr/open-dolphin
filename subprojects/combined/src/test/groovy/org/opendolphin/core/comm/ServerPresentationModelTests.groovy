@@ -84,7 +84,7 @@ class ServerPresentationModelTests extends GroovyTestCase {
     }
 
     void testSecondServerActionCanRelyOnAttributeReset() {
-        def model = clientDolphin.presentationModel("PM1", att1:'base' )
+        volatile model = clientDolphin.presentationModel("PM1", att1:'base' )
         model.att1.value = 'changed'
         assert model.att1.dirty
 
@@ -112,7 +112,7 @@ class ServerPresentationModelTests extends GroovyTestCase {
     }
 
     void testSecondServerActionCanRelyOnAttributeRebase() {
-        def model = clientDolphin.presentationModel("PM1", att1:'base', att2:'base')
+        volatile model = clientDolphin.presentationModel("PM1", att1:'base', att2:'base')
         model.att1.qualifier = 'qualifier'
         model.att2.qualifier = 'qualifier'
 
