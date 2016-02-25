@@ -70,11 +70,10 @@ var opendolphin;
 })(opendolphin || (opendolphin = {}));
 /// <reference path="Command.ts" />
 /// <reference path="Tag.ts" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var opendolphin;
 (function (opendolphin) {
@@ -209,10 +208,12 @@ var opendolphin;
                 return;
             }
             if (this.findAttributeByPropertyNameAndTag(attribute.propertyName, attribute.tag)) {
-                throw new Error("There already is an attribute with property name: " + attribute.propertyName + " and tag: " + attribute.tag + " in presentation model with id: " + this.id);
+                throw new Error("There already is an attribute with property name: " + attribute.propertyName
+                    + " and tag: " + attribute.tag + " in presentation model with id: " + this.id);
             }
             if (attribute.getQualifier() && this.findAttributeByQualifier(attribute.getQualifier())) {
-                throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier() + " in presentation model with id: " + this.id);
+                throw new Error("There already is an attribute with qualifier: " + attribute.getQualifier()
+                    + " in presentation model with id: " + this.id);
             }
             attribute.setPresentationModel(this);
             this.attributes.push(attribute);
@@ -574,7 +575,10 @@ var opendolphin;
             else {
                 batch.push(candidate);
             }
-            if (!candidate.handler && !(candidate.command['className'] == "org.opendolphin.core.comm.NamedCommand") && !(candidate.command['className'] == "org.opendolphin.core.comm.EmptyNotification")) {
+            if (!candidate.handler &&
+                !(candidate.command['className'] == "org.opendolphin.core.comm.NamedCommand") &&
+                !(candidate.command['className'] == "org.opendolphin.core.comm.EmptyNotification") // and no unknown client side effect
+            ) {
                 this.processNext(maxBatchSize - 1, queue, batch); // then we can proceed with batching
             }
         };
@@ -1013,6 +1017,9 @@ var opendolphin;
         ClientDolphin.prototype.send = function (commandName, onFinished) {
             this.clientConnector.send(new opendolphin.NamedCommand(commandName), onFinished);
         };
+        ClientDolphin.prototype.reset = function (successHandler) {
+            this.clientConnector.reset(successHandler);
+        };
         ClientDolphin.prototype.sendEmpty = function (onFinished) {
             this.clientConnector.send(new opendolphin.EmptyNotification(), onFinished);
         };
@@ -1269,6 +1276,9 @@ var opendolphin;
         ClientConnector.prototype.setReleaseCommand = function (newCommand) {
             this.releaseCommand = newCommand;
         };
+        ClientConnector.prototype.reset = function (successHandler) {
+            this.transmitter.reset(successHandler);
+        };
         ClientConnector.prototype.send = function (command, onFinished) {
             this.commandQueue.push({ command: command, handler: onFinished });
             if (this.currentlySending) {
@@ -1287,9 +1297,7 @@ var opendolphin;
             this.currentlySending = true;
             var cmdsAndHandlers = this.commandBatcher.batch(this.commandQueue);
             var callback = cmdsAndHandlers[cmdsAndHandlers.length - 1].handler;
-            var commands = cmdsAndHandlers.map(function (cah) {
-                return cah.command;
-            });
+            var commands = cmdsAndHandlers.map(function (cah) { return cah.command; });
             this.transmitter.transmit(commands, function (response) {
                 //console.log("server response: [" + response.map(it => it.id).join(", ") + "] ");
                 var touchedPMs = [];
@@ -1491,9 +1499,9 @@ var opendolphin;
             this.waiting = true;
             var me = this; // oh, boy, this took some time to find...
             this.send(this.pushListener, { onFinished: function (models) {
-                me.waiting = false;
-                me.listen();
-            }, onFinishedData: null });
+                    me.waiting = false;
+                    me.listen();
+                }, onFinishedData: null });
         };
         ClientConnector.prototype.release = function () {
             if (!this.waiting)
@@ -1549,6 +1557,9 @@ var opendolphin;
         NoTransmitter.prototype.signal = function (command) {
             // do nothing
         };
+        NoTransmitter.prototype.reset = function (successHandler) {
+            // do nothing
+        };
         return NoTransmitter;
     })();
     opendolphin.NoTransmitter = NoTransmitter;
@@ -1583,6 +1594,7 @@ var opendolphin;
             }
             this.codec = new opendolphin.Codec();
             if (reset) {
+                console.log('HttpTransmitter.invalidate() is deprecated. Use ClientDolphin.reset(OnSuccessHandler) instead');
                 this.invalidate();
             }
         }
@@ -1638,8 +1650,24 @@ var opendolphin;
             this.sig.open('POST', this.url, true);
             this.sig.send(this.codec.encode([command]));
         };
+        // Deprecated ! Use 'reset(OnSuccessHandler) instead
         HttpTransmitter.prototype.invalidate = function () {
             this.http.open('POST', this.url + 'invalidate?', false);
+            this.http.send();
+        };
+        HttpTransmitter.prototype.reset = function (successHandler) {
+            var _this = this;
+            this.http.onreadystatechange = function (evt) {
+                if (_this.http.readyState == _this.HttpCodes.finished) {
+                    if (_this.http.status == _this.HttpCodes.success) {
+                        successHandler.onSuccess();
+                    }
+                    else {
+                        _this.handleError('application', "HttpTransmitter.reset(): HTTP Status != 200");
+                    }
+                }
+            };
+            this.http.open('POST', this.url + 'invalidate?', true);
             this.http.send();
         };
         return HttpTransmitter;
