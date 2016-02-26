@@ -36,7 +36,9 @@ class CrudActions extends DolphinServerAction {
          * Pull all positions for the selected portfolio from service lookup
          */
         serverDolphin.action PositionConstants.CMD.PULL, { cmd, response ->
+            println "Server selection key: $SELECTED"
             def visiblePortfolio  = serverDolphin.findPresentationModelById(SELECTED)
+            println "visible Portfolio is " + visiblePortfolio[PORTFOLIO_ID].value
             def selectedPortfolio = serverDolphin.findPresentationModelById(visiblePortfolio[PORTFOLIO_ID].value as String)
             def positions = crudService.listPositions(selectedPortfolio[DOMAIN_ID].value.toLong())
             positions.eachWithIndex { positionDTO, index ->
