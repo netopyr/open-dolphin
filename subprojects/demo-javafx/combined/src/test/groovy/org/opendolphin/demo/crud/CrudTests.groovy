@@ -66,7 +66,6 @@ class CrudTests extends Specification {
 
         when: "we add 10 to one position"
         def positions = clientDolphin.findAllPresentationModelsByType(PositionConstants.TYPE.POSITION)
-        println positions
         def domId = portfolio[PortfolioConstants.ATT.DOMAIN_ID].value
         def position = positions.find { it[PositionConstants.ATT.PORTFOLIO_ID].value == domId }
         position[PositionConstants.ATT.WEIGHT].value += 10
