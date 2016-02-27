@@ -87,7 +87,12 @@ class JsonCodec implements Codec {
     List<Command> decode(String transmitted) {
         def result = new LinkedList()
         def got = new JsonSlurper().parseText(transmitted)
-        got.each { cmd ->
+
+        def validPackagePrefix = Command.class.getPackage().getName()
+
+        got.findAll { cmd ->
+            cmd['className'] != null && String.class.cast(cmd['className']).startsWith(validPackagePrefix)
+        }.each { cmd ->
             Command responseCommand = Class.forName(cmd['className']).newInstance()
             cmd.each { key, value ->
                 if (key == 'className') return
