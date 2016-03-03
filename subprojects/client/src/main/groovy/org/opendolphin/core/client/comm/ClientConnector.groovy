@@ -126,9 +126,12 @@ abstract class ClientConnector {
             }
         }
         def callback = commandsAndHandlers.first().handler // there can only be one relevant handler anyway
-        if (callback) {
+        // added != null check instead of using simple Groovy truth because of NPE through GROOVY-7709
+        if (callback !=null) {
             callback.onFinished((List<ClientPresentationModel>) touchedPresentationModels.unique { ((ClientPresentationModel) it).id })
-            callback.onFinishedData(touchedDataMaps)
+            if (callback instanceof OnFinishedData) {
+                callback.onFinishedData(touchedDataMaps)
+            }
         }
     }
 
