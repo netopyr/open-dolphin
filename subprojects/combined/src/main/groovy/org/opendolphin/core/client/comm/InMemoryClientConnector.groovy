@@ -32,7 +32,7 @@ class InMemoryClientConnector extends ClientConnector {
         this.serverConnector = serverConnector
     }
 
-    InMemoryClientConnector(ClientDolphin clientDolphin, ServerConnector serverConnector, CommandBatcher commandBatcher) {
+    InMemoryClientConnector(ClientDolphin clientDolphin, ServerConnector serverConnector, ICommandBatcher commandBatcher) {
         super(clientDolphin, commandBatcher)
         this.serverConnector = serverConnector
     }

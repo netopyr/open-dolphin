@@ -48,7 +48,7 @@ class HttpClientConnector extends ClientConnector {
         this(clientDolphin, null, servletUrl)
     }
 
-    HttpClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher, String servletUrl) {
+    HttpClientConnector(ClientDolphin clientDolphin, ICommandBatcher commandBatcher, String servletUrl) {
         super(clientDolphin, commandBatcher)
         this.servletUrl = servletUrl
         this.responseHandler = new SessionAffinityCheckingResponseHandler()

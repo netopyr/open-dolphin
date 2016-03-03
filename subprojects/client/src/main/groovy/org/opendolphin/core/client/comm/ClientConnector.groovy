@@ -49,13 +49,13 @@ abstract class ClientConnector {
     }
 
     protected final ClientDolphin clientDolphin
-    protected final CommandBatcher commandBatcher
+    protected final ICommandBatcher commandBatcher
 
     ClientConnector(ClientDolphin clientDolphin) {
         this(clientDolphin, null)
     }
 
-    ClientConnector(ClientDolphin clientDolphin, CommandBatcher commandBatcher) {
+    ClientConnector(ClientDolphin clientDolphin, ICommandBatcher commandBatcher) {
         this.clientDolphin = clientDolphin
         this.commandBatcher = commandBatcher ?: new CommandBatcher()
 
