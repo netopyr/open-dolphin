@@ -21,18 +21,22 @@ import org.opendolphin.core.client.comm.InMemoryClientConnector
 import org.opendolphin.core.client.comm.JavaFXUiThreadHandler
 import org.opendolphin.core.comm.DefaultInMemoryConfig
 
+import static org.opendolphin.demo.util.StarterUtil.*
 
 class JavaFxInMemoryConfig extends DefaultInMemoryConfig {
 
     JavaFxInMemoryConfig() {
         def batcher = new BlindCommandBatcher(deferMillis: 400, mergeValueChanges: true)
-        clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin, batcher)
 
+        clientDolphin.clientConnector = new InMemoryClientConnector(clientDolphin, serverDolphin.serverConnector, batcher)
         clientDolphin.clientConnector.sleepMillis = 100
-        clientDolphin.clientConnector.serverConnector = serverDolphin.serverConnector
 
         clientDolphin.clientConnector.uiThreadHandler = new JavaFXUiThreadHandler()
         serverDolphin.registerDefaultActions()
+
+
+        macFontWorkaround()
     }
+
 
 }

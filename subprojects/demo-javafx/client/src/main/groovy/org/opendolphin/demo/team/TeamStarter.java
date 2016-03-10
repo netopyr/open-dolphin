@@ -1,16 +1,18 @@
 package org.opendolphin.demo.team;
 
 import javafx.application.Application;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientModelStore;
 import org.opendolphin.core.client.comm.BlindCommandBatcher;
 import org.opendolphin.core.client.comm.HttpClientConnector;
 import org.opendolphin.core.client.comm.JavaFXUiThreadHandler;
 import org.opendolphin.core.comm.JsonCodec;
+import org.opendolphin.demo.util.StarterUtil;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.HashMap;
 
 // todo: make url base configurable from command line
 
@@ -34,9 +36,13 @@ public class TeamStarter {
 
         TeamApplication.clientDolphin = clientDolphin;
 
-        String result = connector.uploadFile(new File("/data.txt"), DefaultGroovyMethods.toURI("http://localhost:8080/dolphin-grails/fileUpload/save"));
-        System.out.println("uploaded and returned: "+result);
+//        String result = connector.uploadFile(new File("/data.txt"), DefaultGroovyMethods.toURI("http://localhost:8080/dolphin-grails/fileUpload/save"));
+//        System.out.println("uploaded and returned: "+result);
+
+        StarterUtil.macFontWorkaround();
+
 
         Application.launch(TeamApplication.class);
+
     }
 }
