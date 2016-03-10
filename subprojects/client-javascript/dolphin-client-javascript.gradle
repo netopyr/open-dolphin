@@ -70,7 +70,7 @@ task jsZip (type: Zip) {
 
 compileTypeScript {
 	source    = file 'js/dolphin'
-	outputDir = file 'js/dolphin'
+//	outputDir = file 'js/dolphin'
 	module    = 'AMD' // one of AMD, COMMONJS, SYSTEM, UMD
 	sourcemap = true
 	out       = file 'build/opendolphin.js'
